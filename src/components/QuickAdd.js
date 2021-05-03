@@ -1,12 +1,17 @@
-import IconButton from "./IconButton";
+import IconButton from "./buttons/IconButton";
 import PlusIcon from "@heroicons/react/outline/PlusIcon";
+import PropTypes from "prop-types";
 
-export default function QuickAdd() {
+export default function QuickAdd({ onAdd }) {
 	return (
 		<div className="fixed right-5 bottom-5">
-			<IconButton color="purple">
+			<IconButton color="blue" onClick={onAdd}>
 				<PlusIcon className="h-6 y-6 text-white" />
 			</IconButton>
 		</div>
 	);
 }
+
+QuickAdd.propTypes = {
+	onAdd: PropTypes.func.isRequired,
+};
