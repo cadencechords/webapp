@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import FilledButton from "./buttons/FilledButton";
 import OutlinedInput from "./inputs/OutlinedInput";
 import PasswordRequirements from "./PasswordRequirements";
+import AuthApi from "../api/AuthApi";
+import Alert from "./Alert";
 
 export default function SignUp() {
 	const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -13,10 +15,16 @@ export default function SignUp() {
 	const [isLongEnough, setIsLongEnough] = useState(false);
 	const [isUncommon, setIsUncommon] = useState(false);
 	const [canSignUp, setCanSignUp] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [alertMessage, setAlertMessage] = useState(null);
+	const [alertColor, setAlertColor] = useState(null);
+
+	const router = useHistory();
 
 	const MIN_PASSWORD_LENGTH = 8;
 
 	useEffect(() => {
+		document.title = "Sign Up";
 		const script = document.createElement("script");
 
 		script.src = "http://localhost:3000/scripts/passwords.js";
@@ -40,9 +48,9 @@ export default function SignUp() {
 
 		setCanSignUp(
 			passwordValue === passwordConfirmation &&
-				score >= 3 &&
-				passwordValue.length >= MIN_PASSWORD_LENGTH &&
-				email !== ""
+			score >= 3 &&
+			passwordValue.length >= MIN_PASSWORD_LENGTH &&
+			email !== ""
 		);
 	};
 
@@ -52,9 +60,9 @@ export default function SignUp() {
 
 		setCanSignUp(
 			confirmationValue === password &&
-				isUncommon &&
-				isLongEnough &&
-				email !== ""
+			isUncommon &&
+			isLongEnough &&
+			email !== ""
 		);
 	};
 
@@ -63,11 +71,37 @@ export default function SignUp() {
 
 		setCanSignUp(
 			passwordConfirmation === password &&
-				isUncommon &&
-				isLongEnough &&
-				emailValue !== ""
+			isUncommon &&
+			isLongEnough &&
+			emailValue !== ""
 		);
 	};
+
+	const handleSignUp = async () => {
+		setLoading(true);
+
+		try {
+			let { status } = await AuthApi.signUp(email, password, passwordConfirmation);
+			setAlertColor("blue");
+			setAlertMessage("Thanks for signing up! Check your email for further instructions.");
+		} catch (error) {
+			setAlertColor("red");
+			setAlertMessage(error?.response?.data?.errors?.full_messages);
+		} finally {
+			setLoading(false);
+			clearFields();
+		}
+	}
+
+	const clearFields = () => {
+		setEmail("");
+		setPassword("");
+		setPasswordConfirmation("");
+		setIsPasswordFocused(false);
+		setIsLongEnough(false);
+		setCanSignUp(false);
+		setIsUncommon(false);
+	}
 
 	return (
 		<div className="w-screen h-screen flex">
@@ -81,41 +115,55 @@ export default function SignUp() {
 						login here
 					</Link>
 				</div>
-				<div className="py-4">
+				<div className="py-2">
 					<div className="mb-2">Email</div>
-					<OutlinedInput
-						placeholder="email"
-						type="email"
-						onChange={handleEmailChange}
-					/>
-
-					<div className="mb-2">Password</div>
-					<OutlinedInput
-						placeholder="password"
-						type="password"
-						onFocus={() => setIsPasswordFocused(true)}
-						onChange={handlePasswordChange}
-					/>
-
-					{isPasswordFocused && (
-						<PasswordRequirements
-							isUncommon={isUncommon}
-							isLongEnough={isLongEnough}
+					<div className="mb-4">
+						<OutlinedInput
+							placeholder="email"
+							type="email"
+							onChange={handleEmailChange}
+							value={email}
 						/>
-					)}
+
+					</div>
+					<div className="mb-2">Password</div>
+					<div className="mb-4">
+						<OutlinedInput
+							value={password}
+							placeholder="password"
+							type="password"
+							onFocus={() => setIsPasswordFocused(true)}
+							onChange={handlePasswordChange}
+						/>
+
+						{isPasswordFocused && (
+							<div className="mt-4">
+								<PasswordRequirements
+									isUncommon={isUncommon}
+									isLongEnough={isLongEnough}
+								/></div>
+						)}
+					</div>
 
 					<div className="mb-2">Confirm Password</div>
-					<OutlinedInput
-						placeholder="enter your password again"
-						type="password"
-						onChange={handleConfirmationChange}
-					/>
+					<div className="mb-4">
+						<OutlinedInput
+							value={passwordConfirmation}
+							placeholder="enter your password again"
+							type="password"
+							onChange={handleConfirmationChange}
+						/>
+					</div>
 				</div>
-				<div className="my-3">
-					<FilledButton full bold disabled={!canSignUp}>
-						Sign Up
-					</FilledButton>
-				</div>
+				{alertMessage && <div className="mb-6">
+					<Alert color={alertColor} dismissable onDismiss={() => setAlertMessage(null)}>
+						{alertMessage}
+					</Alert>
+				</div>}
+
+				<FilledButton full bold disabled={!canSignUp} loading={loading} onClick={handleSignUp}>
+					Sign Up
+				</FilledButton>
 			</div>
 		</div>
 	);

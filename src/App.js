@@ -6,6 +6,9 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Editor from "./components/Editor";
 import SignUp from "./components/SignUp";
+import EmailConfirmationSuccess from "./components/EmailConfirmationSuccess";
+import TeamLogin from "./components/TeamLogin";
+import CreateNewTeam from "./components/CreateNewTeam";
 
 function App() {
 	return (
@@ -13,6 +16,15 @@ function App() {
 			<Router>
 				<Route path="/login" exact>
 					<Login />
+				</Route>
+				<Route path="/login/teams" exact>
+					<TeamLogin />
+				</Route>
+				<Route path="/login/teams/new" exact>
+					<CreateNewTeam />
+				</Route>
+				<Route path="/confirmation" exact>
+					<EmailConfirmationSuccess />
 				</Route>
 				<Route path="/signup" exact>
 					<SignUp />

@@ -10,7 +10,7 @@ export default function OpenButton({
 	return (
 		<button
 			className={`p-2 text-${color}-600  focus:outline-none outline-none transition-all hover:bg-${hoverColor}-${hoverWeight} rounded-md ${
-				full && " w-full text-left"
+				full && " w-full"
 			} ${bold && " font-semibold"}`}
 			onClick={onClick}
 		>
