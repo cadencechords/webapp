@@ -3,6 +3,8 @@ import { Link, useHistory } from "react-router-dom";
 import FilledButton from "./buttons/FilledButton";
 import AuthApi from "../api/AuthApi";
 import Alert from "./Alert";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../store/authSlice";
 
 export default function Login() {
 	const [canLogin, setCanLogin] = useState(false);
@@ -11,6 +13,7 @@ export default function Login() {
 	const [loading, setLoading] = useState(false);
 	const [alertMessage, setAlertMessage] = useState(null);
 	const [alertColor, setAlertColor] = useState(null);
+	const dispatch = useDispatch();
 	const router = useHistory();
 
 	const handlePasswordChange = (passwordValue) => {
@@ -41,6 +44,12 @@ export default function Login() {
 	};
 
 	const setAuthInLocalStorage = (headers) => {
+		let accessToken = headers["access-token"];
+		let client = headers["client"];
+		let uid = headers["uid"];
+
+		dispatch(setAuth({ accessToken, client, uid }));
+
 		localStorage.setItem("access-token", headers["access-token"]);
 		localStorage.setItem("uid", headers["uid"]);
 		localStorage.setItem("client", headers["client"]);

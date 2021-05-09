@@ -3,53 +3,31 @@ import TableHead from "./TableHead";
 import TableRow from "./TableRow";
 import BinderColor from "./BinderColor";
 
-export default function BindersTable() {
+export default function BindersTable({ binders }) {
 	const router = useHistory();
-	const binders = [
-		{
-			name: (
-				<div className="flex items-center">
-					<BinderColor color="purple" />
-					<span className="ml-2">Hymns</span>
-				</div>
-			),
-			numSongs: 30,
-			created: new Date().toDateString(),
-			id: 0,
-		},
-		{
-			name: (
-				<div className="flex items-center">
-					<BinderColor color="red" />
-					<span className="ml-2">Ukrainian Hymns</span>
-				</div>
-			),
-			numSongs: 900,
-			created: new Date(new Date().setDate(-40)).toDateString(),
-			id: 1,
-			color: "red",
-		},
-		{
-			name: "Russian Hymns",
-			numSongs: 200,
-			created: new Date(new Date().setDate(-23)).toDateString(),
-			id: 2,
-			color: "green",
-		},
-	];
 
 	const handleOpenBinder = (binderId) => {
 		router.push(`/app/binders/${binderId}`);
 	};
 
+	let binderOptions = binders.map((binder) => ({
+		...binder,
+		name: (
+			<div className="flex items-center">
+				<BinderColor color={binder.color} />
+				<span className="ml-3">{binder.name}</span>
+			</div>
+		),
+		numSongs: binder.songs ? binder.songs.length : 0,
+	}));
 	return (
 		<>
 			<table className="w-full">
 				<TableHead columns={["NAME", "NUMBER OF SONGS", "CREATED"]} editable />
 				<tbody>
-					{binders?.map((binder) => (
+					{binderOptions?.map((binder) => (
 						<TableRow
-							columns={[binder.name, binder.numSongs, binder.created]}
+							columns={[binder.name, binder.numSongs, new Date(binder.created_at).toDateString()]}
 							key={binder.id}
 							onClick={() => handleOpenBinder(binder.id)}
 						/>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import FilledButton from "./buttons/FilledButton";
 import OutlinedInput from "./inputs/OutlinedInput";
 import PasswordRequirements from "./PasswordRequirements";
@@ -11,15 +11,12 @@ export default function SignUp() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordConfirmation, setPasswordConfirmation] = useState("");
-	const [passwordsMatch, setPasswordsMatch] = useState(false);
 	const [isLongEnough, setIsLongEnough] = useState(false);
 	const [isUncommon, setIsUncommon] = useState(false);
 	const [canSignUp, setCanSignUp] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [alertMessage, setAlertMessage] = useState(null);
 	const [alertColor, setAlertColor] = useState(null);
-
-	const router = useHistory();
 
 	const MIN_PASSWORD_LENGTH = 8;
 
@@ -48,32 +45,23 @@ export default function SignUp() {
 
 		setCanSignUp(
 			passwordValue === passwordConfirmation &&
-			score >= 3 &&
-			passwordValue.length >= MIN_PASSWORD_LENGTH &&
-			email !== ""
+				score >= 3 &&
+				passwordValue.length >= MIN_PASSWORD_LENGTH &&
+				email !== ""
 		);
 	};
 
 	const handleConfirmationChange = (confirmationValue) => {
-		setPasswordsMatch(confirmationValue === password);
 		setPasswordConfirmation(confirmationValue);
 
-		setCanSignUp(
-			confirmationValue === password &&
-			isUncommon &&
-			isLongEnough &&
-			email !== ""
-		);
+		setCanSignUp(confirmationValue === password && isUncommon && isLongEnough && email !== "");
 	};
 
 	const handleEmailChange = (emailValue) => {
 		setEmail(emailValue);
 
 		setCanSignUp(
-			passwordConfirmation === password &&
-			isUncommon &&
-			isLongEnough &&
-			emailValue !== ""
+			passwordConfirmation === password && isUncommon && isLongEnough && emailValue !== ""
 		);
 	};
 
@@ -81,7 +69,7 @@ export default function SignUp() {
 		setLoading(true);
 
 		try {
-			let { status } = await AuthApi.signUp(email, password, passwordConfirmation);
+			await AuthApi.signUp(email, password, passwordConfirmation);
 			setAlertColor("blue");
 			setAlertMessage("Thanks for signing up! Check your email for further instructions.");
 		} catch (error) {
@@ -91,7 +79,7 @@ export default function SignUp() {
 			setLoading(false);
 			clearFields();
 		}
-	}
+	};
 
 	const clearFields = () => {
 		setEmail("");
@@ -101,14 +89,12 @@ export default function SignUp() {
 		setIsLongEnough(false);
 		setCanSignUp(false);
 		setIsUncommon(false);
-	}
+	};
 
 	return (
 		<div className="w-screen h-screen flex">
 			<div className="m-auto lg:w-2/5 sm:w-3/4 md:w-3/5 w-full px-3 max-w-xl">
-				<h1 className="font-bold text-3xl text-center mb-2">
-					Sign up for an account
-				</h1>
+				<h1 className="font-bold text-3xl text-center mb-2">Sign up for an account</h1>
 				<div className="text-center mb-4">
 					Or
 					<Link to="/login" className="text-blue-600 font-semibold ml-1">
@@ -124,7 +110,6 @@ export default function SignUp() {
 							onChange={handleEmailChange}
 							value={email}
 						/>
-
 					</div>
 					<div className="mb-2">Password</div>
 					<div className="mb-4">
@@ -138,10 +123,8 @@ export default function SignUp() {
 
 						{isPasswordFocused && (
 							<div className="mt-4">
-								<PasswordRequirements
-									isUncommon={isUncommon}
-									isLongEnough={isLongEnough}
-								/></div>
+								<PasswordRequirements isUncommon={isUncommon} isLongEnough={isLongEnough} />
+							</div>
 						)}
 					</div>
 
@@ -155,11 +138,13 @@ export default function SignUp() {
 						/>
 					</div>
 				</div>
-				{alertMessage && <div className="mb-6">
-					<Alert color={alertColor} dismissable onDismiss={() => setAlertMessage(null)}>
-						{alertMessage}
-					</Alert>
-				</div>}
+				{alertMessage && (
+					<div className="mb-6">
+						<Alert color={alertColor} dismissable onDismiss={() => setAlertMessage(null)}>
+							{alertMessage}
+						</Alert>
+					</div>
+				)}
 
 				<FilledButton full bold disabled={!canSignUp} loading={loading} onClick={handleSignUp}>
 					Sign Up

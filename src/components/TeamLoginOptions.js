@@ -1,12 +1,16 @@
 import { Link, useHistory } from "react-router-dom";
 import OpenButton from "./buttons/OpenButton";
 import TeamLoginOption from "./TeamLoginOption";
+import { useDispatch } from "react-redux";
+import { setTeam } from "../store/authSlice";
 
 export default function TeamLoginOptions({ teams }) {
 	const router = useHistory();
+	const dispatch = useDispatch();
 
 	const handleLoginTeam = (teamId) => {
 		localStorage.setItem("teamId", teamId);
+		dispatch(setTeam(teamId));
 		router.push("/app");
 	};
 

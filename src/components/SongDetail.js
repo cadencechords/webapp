@@ -3,7 +3,7 @@ import OutlinedButton from "./buttons/OutlinedButton";
 import PageTitle from "./PageTitle";
 import PrinterIcon from "@heroicons/react/outline/PrinterIcon";
 import PrintSongDialog from "./PrintSongDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DetailSection from "./DetailSection";
 import ArtistField from "./ArtistField";
 import BpmField from "./BpmField";
@@ -11,15 +11,66 @@ import MeterField from "./MeterField";
 import SongKeyField from "./SongKeyField";
 import SongPreview from "./SongPreview";
 import PencilIcon from "@heroicons/react/solid/PencilIcon";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
+import PulseLoader from "react-spinners/PulseLoader";
+import SongApi from "../api/SongApi";
+import FilledButton from "./buttons/FilledButton";
+import { isEmpty } from "../utils/ObjectUtils";
 
 export default function SongDetail() {
-	const [isPrintingOpen, setIsPrintingOpen] = useState(false);
-	const [name, setName] = useState("Amazing Grace");
+	const [showPrintDialog, setShowPrintDialog] = useState(false);
+	const [song, setSong] = useState();
+	const [pendingUpdates, setPendingUpdates] = useState({});
+	const [saving, setSaving] = useState(false);
 	const router = useHistory();
+	const { id } = useParams();
+
+	useEffect(() => {
+		async function fetchSong() {
+			try {
+				let result = await SongApi.getOneById(id);
+				setSong(result.data);
+			} catch (error) {
+				console.log(error);
+			}
+		}
+
+		fetchSong();
+	}, [id]);
+
+	if (!song) {
+		return (
+			<div className="text-center py-4">
+				<PulseLoader color="blue" />
+			</div>
+		);
+	}
 
 	const handleOpenInEditor = () => {
 		router.push("/editor");
+	};
+
+	const handleUpdate = (field, value) => {
+		let updates = { ...pendingUpdates };
+		updates[field] = value;
+		setPendingUpdates(updates);
+
+		let updatedSong = { ...song };
+		updatedSong[field] = value;
+		setSong(updatedSong);
+	};
+
+	const handleSaveChanges = async () => {
+		setSaving(true);
+		try {
+			let result = await SongApi.updateOneById(id, pendingUpdates);
+			setSong(result.data);
+			setPendingUpdates({});
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setSaving(false);
+		}
 	};
 
 	return (
@@ -27,19 +78,16 @@ export default function SongDetail() {
 			<div className="md:border-r md:pr-4 col-span-4 md:col-span-3">
 				<div className="flex items-center justify-between">
 					<PageTitle
-						title="Amazing Grace"
+						title={song.name}
 						editable
-						onChange={(editedName) => setName(editedName)}
+						onChange={(editedName) => handleUpdate("name", editedName)}
 					/>
-					<OpenButton onClick={() => setIsPrintingOpen(true)}>
+					<OpenButton onClick={() => setShowPrintDialog(true)}>
 						<PrinterIcon className="text-gray-500 h-5 w-5" />
 					</OpenButton>
 				</div>
 
-				<PrintSongDialog
-					open={isPrintingOpen}
-					onCloseDialog={() => setIsPrintingOpen(false)}
-				/>
+				<PrintSongDialog open={showPrintDialog} onCloseDialog={() => setShowPrintDialog(false)} />
 				<div className="mb-3">
 					<OutlinedButton onClick={handleOpenInEditor}>
 						<div className="flex flex-row items-center">
@@ -54,10 +102,19 @@ export default function SongDetail() {
 			</div>
 			<div className="md:col-span-1 md:pl-5 pl-2">
 				<div className="border-b py-6 mt-1">
-					<ArtistField artist="Christ Tomlin" />
-					<BpmField bpm="86" />
-					<MeterField meter="4/4" />
-					<SongKeyField songKey="Ab" />
+					<ArtistField
+						artist={song.artist}
+						onChange={(editedArtist) => handleUpdate("artist", editedArtist)}
+					/>
+					<BpmField bpm={song.bpm} onChange={(editedBpm) => handleUpdate("bpm", editedBpm)} />
+					<MeterField
+						meter={song.meter}
+						onChange={(editedMeter) => handleUpdate("meter", editedMeter)}
+					/>
+					<SongKeyField
+						songKey={song.key}
+						onChange={(editedKey) => handleUpdate("key", editedKey)}
+					/>
 				</div>
 				<div className="py-6">
 					<DetailSection title="Binders" />
@@ -65,6 +122,14 @@ export default function SongDetail() {
 					<DetailSection title="Themes" />
 				</div>
 			</div>
+
+			{!isEmpty(pendingUpdates) && (
+				<div className="fixed bottom-8 right-8 shadow-md">
+					<FilledButton bold onClick={handleSaveChanges} loading={saving}>
+						Save Changes
+					</FilledButton>
+				</div>
+			)}
 		</div>
 	);
 }

@@ -29,16 +29,11 @@ export default function StyledDialog({
 						leaveFrom="opacity-100"
 						leaveTo="opacity-0"
 					>
-						<Dialog.Overlay
-							className={`fixed inset-0 bg-black bg-opacity-${overlayOpacity}`}
-						/>
+						<Dialog.Overlay className={`fixed inset-0 bg-black bg-opacity-${overlayOpacity}`} />
 					</Transition.Child>
 
 					{/* This element is to trick the browser into centering the modal contents. */}
-					<span
-						className="inline-block h-screen align-middle"
-						aria-hidden="true"
-					>
+					<span className="inline-block h-screen align-middle" aria-hidden="true">
 						&#8203;
 					</span>
 					<Transition.Child
@@ -53,10 +48,7 @@ export default function StyledDialog({
 						<div
 							className={`inline-block w-full max-w-${size} p-6 mt-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-xl`}
 						>
-							<Dialog.Title
-								as="h3"
-								className="text-lg font-medium leading-6 text-gray-900"
-							>
+							<Dialog.Title as="h3" className="text-lg  leading-6 text-gray-900 font-semibold">
 								{title}
 							</Dialog.Title>
 							<div className="my-2">{children}</div>

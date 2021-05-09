@@ -1,4 +1,5 @@
 import axios from "axios";
+import { constructAuthHeaders } from "../utils/AuthUtils";
 
 export default class TeamApi {
 	static getAll() {
@@ -14,14 +15,4 @@ export default class TeamApi {
 			headers: constructAuthHeaders(),
 		});
 	}
-}
-
-function constructAuthHeaders() {
-	let headers = {
-		"access-token": localStorage.getItem("access-token"),
-		client: localStorage.getItem("client"),
-		uid: localStorage.getItem("uid"),
-	};
-
-	return headers;
 }
