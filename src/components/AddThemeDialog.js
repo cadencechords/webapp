@@ -9,6 +9,7 @@ import ThemeApi from "../api/ThemeApi";
 import ThemeOptions from "./ThemeOptions";
 import FixedBottomMobile from "./FixedBottomMobile";
 import SongApi from "../api/SongApi";
+import WellInput from "./inputs/WellInput";
 
 export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThemesAdded }) {
 	const [availableThemes, setAvailableThemes] = useState([]);
@@ -17,6 +18,7 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 	const [newTheme, setNewTheme] = useState("");
 	const [themesToAdd, setThemesToAdd] = useState([]);
 	const [savingAdditions, setSavingAdditions] = useState(false);
+	const [searchTerm, setSearchTerm] = useState("");
 
 	useEffect(() => {
 		async function fetchThemes() {
@@ -83,6 +85,7 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 		setCreating(false);
 		setLoading(false);
 		setSavingAdditions(false);
+		setSearchTerm("");
 		onCloseDialog();
 	};
 
@@ -95,38 +98,47 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 		}
 	};
 
+	const filterAvailableThemes = () => {
+		return availableThemes.filter((theme) =>
+			theme.name.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	};
+
 	return (
 		<StyledDialog open={open} onCloseDialog={handleClose} title="Add themes" size="xl">
-			<OutlinedInput
-				placeholder="Ex: love, loss, hope"
-				onChange={setNewTheme}
-				label="Add a new theme"
-				button="Create"
-				value={newTheme}
-				buttonLoading={creating}
-				onButtonClick={handleCreateTheme}
-			/>
-
-			<OrDivider />
-
 			<Label>Add an existing theme</Label>
+			<WellInput value={searchTerm} onChange={setSearchTerm} />
 			{availableThemes.length === 0 ? (
 				<div className="py-4">
 					<NoDataMessage loading={loading}>You haven't created any themes yet</NoDataMessage>
 				</div>
 			) : (
 				<ThemeOptions
-					themes={availableThemes}
+					themes={filterAvailableThemes()}
 					onToggle={handleThemeToggled}
 					selectedThemes={themesToAdd}
 				/>
 			)}
+
+			<OrDivider />
+			<div className="pb-4">
+				<OutlinedInput
+					placeholder="Ex: love, loss, hope"
+					onChange={setNewTheme}
+					label="Add a new theme"
+					button="Create"
+					value={newTheme}
+					buttonLoading={creating}
+					onButtonClick={handleCreateTheme}
+				/>
+			</div>
 
 			<FixedBottomMobile>
 				<AddCancelActions
 					onCancel={handleClose}
 					onAdd={handleSaveThemes}
 					loadingAdd={savingAdditions}
+					addDisabled={themesToAdd?.length === 0}
 				/>
 			</FixedBottomMobile>
 		</StyledDialog>

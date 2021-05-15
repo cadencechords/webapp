@@ -17,12 +17,12 @@ export default function StyledDialog({
 		<Transition show={open} as={Fragment}>
 			<Dialog
 				as="div"
-				className="fixed inset-0 z-10 overflow-y-auto"
+				className="fixed inset-0 z-10 max-h-full"
 				static
 				open={open}
 				onClose={onCloseDialog}
 			>
-				<div className="min-h-screen sm:px-4 text-center">
+				<div className="sm:px-4 text-center max-h-full overflow-auto">
 					<Transition.Child
 						as={Fragment}
 						enter="ease-out duration-300"
@@ -36,7 +36,7 @@ export default function StyledDialog({
 					</Transition.Child>
 
 					{/* This element is to trick the browser into centering the modal contents. */}
-					<span className="inline-block h-screen align-middle" aria-hidden="true">
+					<span className="inline-block align-middle" aria-hidden="true">
 						&#8203;
 					</span>
 					<Transition.Child
@@ -49,7 +49,10 @@ export default function StyledDialog({
 						leaveTo="opacity-0 scale-95"
 					>
 						<div
-							className={`inline-block w-full h-screen sm:h-full sm:max-w-${size} sm:mt-8 overflow-hidden text-left align-middle transition-all transform bg-white sm:shadow-xl sm:rounded-xl `}
+							className={
+								`inline-block w-full sm:max-w-${size} min-h-screen sm:min-h-full` +
+								` sm:mt-8 overflow-y-auto text-left align-middle transition-all transform bg-white sm:shadow-xl sm:rounded-xl `
+							}
 						>
 							{showClose && (
 								<span className="absolute top-4 right-4">

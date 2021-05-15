@@ -17,6 +17,7 @@ import SongApi from "../api/SongApi";
 import FilledButton from "./buttons/FilledButton";
 import { isEmpty } from "../utils/ObjectUtils";
 import AddThemeDialog from "./AddThemeDialog";
+import AddGenreDialog from "./AddGenreDialog";
 
 export default function SongDetail() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -24,6 +25,8 @@ export default function SongDetail() {
 	const [pendingUpdates, setPendingUpdates] = useState({});
 	const [saving, setSaving] = useState(false);
 	const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
+	const [showAddGenreDialog, setShowGenreDialog] = useState(false);
+
 	const router = useHistory();
 	const { id } = useParams();
 
@@ -79,11 +82,25 @@ export default function SongDetail() {
 		setSong({ ...song, themes: song.themes.concat(newThemes) });
 	};
 
+	const handleGenresAdded = (newGenres) => {
+		setSong({ ...song, genres: song.genres.concat(newGenres) });
+	};
+
 	const handleRemoveTheme = async (themeIdToRemove) => {
 		try {
 			await SongApi.removeThemes(song.id, [themeIdToRemove]);
 			let newThemesList = song.themes.filter((themeInList) => themeInList.id !== themeIdToRemove);
 			setSong({ ...song, themes: newThemesList });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handleRemoveGenre = async (genreIdToRemove) => {
+		try {
+			await SongApi.removeGenres(song.id, [genreIdToRemove]);
+			let newGenresList = song.genres.filter((genreInList) => genreInList.id !== genreIdToRemove);
+			setSong({ ...song, genres: newGenresList });
 		} catch (error) {
 			console.log(error);
 		}
@@ -116,7 +133,7 @@ export default function SongDetail() {
 				</div>
 				<SongPreview />
 			</div>
-			<div className="md:col-span-1 md:pl-5 pl-2">
+			<div className="md:col-span-1 md:pl-5 pl-2 col-span-4">
 				<div className="border-b py-6 mt-1">
 					<ArtistField
 						artist={song.artist}
@@ -134,7 +151,12 @@ export default function SongDetail() {
 				</div>
 				<div className="py-6">
 					<DetailSection title="Binders" />
-					<DetailSection title="Genres" items={song.genres} />
+					<DetailSection
+						title="Genres"
+						items={song.genres}
+						onAdd={() => setShowGenreDialog(true)}
+						onDelete={handleRemoveGenre}
+					/>
 					<DetailSection
 						title="Themes"
 						items={song.themes}
@@ -151,6 +173,13 @@ export default function SongDetail() {
 					</FilledButton>
 				</div>
 			)}
+
+			<AddGenreDialog
+				open={showAddGenreDialog}
+				currentSong={song}
+				onCloseDialog={() => setShowGenreDialog(false)}
+				onGenresAdded={handleGenresAdded}
+			/>
 
 			<AddThemeDialog
 				open={showAddThemeDialog}

@@ -62,4 +62,27 @@ export default class SongApi {
 			);
 		}
 	}
+
+	static addGenres(songId, genreIds) {
+		if (genreIds.length > 0) {
+			return axios.post(
+				SONGS_URL + `/${songId}/genres`,
+				{ genre_ids: genreIds, team_id: getTeamId() },
+				{ headers: constructAuthHeaders() }
+			);
+		}
+	}
+
+	static removeGenres(songId, genreIds) {
+		if (genreIds?.length > 0) {
+			return axios.delete(
+				SONGS_URL +
+					`/${songId}/genres?${combineParamValues(
+						"genre_ids[]=",
+						genreIds
+					)}&team_id=${getTeamId()}`,
+				{ headers: constructAuthHeaders() }
+			);
+		}
+	}
 }

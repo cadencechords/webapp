@@ -1,7 +1,7 @@
 import FilledButton from "./FilledButton";
 import OpenButton from "./OpenButton";
 
-export default function AddCancelActions({ onAdd, onCancel, loadingAdd }) {
+export default function AddCancelActions({ onAdd, onCancel, loadingAdd, addDisabled }) {
 	return (
 		<div className="flex md:justify-end justify-center">
 			<OpenButton color="gray" className="mr-2 md:flex-grow-0 flex-grow" onClick={onCancel}>
@@ -12,7 +12,7 @@ export default function AddCancelActions({ onAdd, onCancel, loadingAdd }) {
 				className="ml-2 md:flex-grow-0 flex-grow"
 				onClick={onAdd}
 				loading={loadingAdd}
-				disabled={loadingAdd}
+				disabled={addDisabled}
 			>
 				Add
 			</FilledButton>
