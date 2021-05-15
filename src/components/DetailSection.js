@@ -10,9 +10,11 @@ export default function DetailSection({ title, items, onAdd, onDelete }) {
 		<div className="mb-1">
 			<div className="mb-2 flex justify-between items-center">
 				<DetailTitle>{title}</DetailTitle>
-				<OpenButton onClick={onAdd}>
-					<PlusIcon className="h-4 w-4 text-gray-700 " />
-				</OpenButton>
+				{onAdd && (
+					<OpenButton onClick={onAdd}>
+						<PlusIcon className="h-4 w-4 text-gray-700 " />
+					</OpenButton>
+				)}
 			</div>
 			{items?.length > 0 ? (
 				<div className="flex flex-wrap">
@@ -20,10 +22,12 @@ export default function DetailSection({ title, items, onAdd, onDelete }) {
 						<span className="mr-2 mb-2" key={item.id}>
 							<DetailTag>
 								<span className="mx-1">{item.name}</span>
-								<XIcon
-									className="h-3 w-3 text-gray-700 cursor-pointer"
-									onClick={() => onDelete(item.id)}
-								/>
+								{onDelete && (
+									<XIcon
+										className="h-3 w-3 text-gray-700 cursor-pointer"
+										onClick={() => onDelete(item.id)}
+									/>
+								)}
 							</DetailTag>
 						</span>
 					))}

@@ -18,6 +18,7 @@ import FilledButton from "./buttons/FilledButton";
 import { isEmpty } from "../utils/ObjectUtils";
 import AddThemeDialog from "./AddThemeDialog";
 import AddGenreDialog from "./AddGenreDialog";
+import BinderColor from "./BinderColor";
 
 export default function SongDetail() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -106,6 +107,16 @@ export default function SongDetail() {
 		}
 	};
 
+	const bindersTags = song?.binders?.map((binder) => ({
+		id: binder.id,
+		name: (
+			<div className="flex items-center">
+				<BinderColor color={binder.color} size={3} />
+				<span className="ml-2">{binder.name}</span>
+			</div>
+		),
+	}));
+
 	return (
 		<div className="grid grid-cols-4">
 			<div className="md:border-r md:pr-4 col-span-4 md:col-span-3">
@@ -150,7 +161,7 @@ export default function SongDetail() {
 					/>
 				</div>
 				<div className="py-6">
-					<DetailSection title="Binders" />
+					<DetailSection title="Binders" items={bindersTags} />
 					<DetailSection
 						title="Genres"
 						items={song.genres}
