@@ -12,6 +12,7 @@ module.exports = {
 			backgroundColor: ["checked"],
 			borderColor: ["checked"],
 			borderWidth: ["last"],
+			display: ["group-hover"],
 		},
 	},
 	plugins: [],

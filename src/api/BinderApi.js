@@ -1,4 +1,5 @@
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
+import { combineParamValues } from "../utils/ObjectUtils";
 import axios from "axios";
 
 const BINDERS_URL = process.env.REACT_APP_API_URL + "/binders";
@@ -38,5 +39,25 @@ export default class BinderApi {
 		return axios.put(BINDERS_URL + `/${binderId}?team_id=${getTeamId()}`, allowedParams, {
 			headers: constructAuthHeaders(),
 		});
+	}
+
+	static addSongs(binderId, songIds) {
+		if (songIds.length > 0) {
+			return axios.post(
+				BINDERS_URL + `/${binderId}/songs`,
+				{ song_ids: songIds, team_id: getTeamId() },
+				{ headers: constructAuthHeaders() }
+			);
+		}
+	}
+
+	static removeSongs(binderId, songIds) {
+		if (songIds.length > 0) {
+			return axios.delete(
+				BINDERS_URL +
+					`/${binderId}/songs?${combineParamValues("song_ids[]=", songIds)}&team_id=${getTeamId()}`,
+				{ headers: constructAuthHeaders() }
+			);
+		}
 	}
 }

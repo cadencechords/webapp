@@ -1,6 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import PropTypes from "prop-types";
+import OpenButton from "./buttons/OpenButton";
+import XIcon from "@heroicons/react/outline/XIcon";
 
 export default function StyledDialog({
 	open,
@@ -9,6 +11,7 @@ export default function StyledDialog({
 	children,
 	overlayOpacity,
 	size,
+	showClose,
 }) {
 	return (
 		<Transition show={open} as={Fragment}>
@@ -19,7 +22,7 @@ export default function StyledDialog({
 				open={open}
 				onClose={onCloseDialog}
 			>
-				<div className="min-h-screen px-4 text-center">
+				<div className="min-h-screen sm:px-4 text-center">
 					<Transition.Child
 						as={Fragment}
 						enter="ease-out duration-300"
@@ -46,12 +49,21 @@ export default function StyledDialog({
 						leaveTo="opacity-0 scale-95"
 					>
 						<div
-							className={`inline-block w-full max-w-${size} p-6 mt-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-xl`}
+							className={`inline-block w-full h-screen sm:h-full sm:max-w-${size} sm:mt-8 overflow-hidden text-left align-middle transition-all transform bg-white sm:shadow-xl sm:rounded-xl `}
 						>
-							<Dialog.Title as="h3" className="text-lg  leading-6 text-gray-900 font-semibold">
-								{title}
+							{showClose && (
+								<span className="absolute top-4 right-4">
+									<OpenButton onClick={onCloseDialog}>
+										<XIcon className="h-4 w-4 text-gray-700" />
+									</OpenButton>
+								</span>
+							)}
+							<Dialog.Title as="h3" className=" border-b">
+								<div className="text-lg leading-6 text-gray-900 font-semibold px-5 py-6">
+									{title}
+								</div>
 							</Dialog.Title>
-							<div className="my-2">{children}</div>
+							<div className="my-2 px-5 py-6">{children}</div>
 						</div>
 					</Transition.Child>
 				</div>
@@ -66,6 +78,7 @@ StyledDialog.propTypes = {
 };
 
 StyledDialog.defaultProps = {
-	overlayOpacity: 50,
+	overlayOpacity: 20,
 	size: "md",
+	showClose: true,
 };

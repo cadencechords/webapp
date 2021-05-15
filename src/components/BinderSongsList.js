@@ -7,7 +7,7 @@ import SearchSongsDialog from "./SearchSongsDialog";
 import { useHistory } from "react-router";
 import NoDataMessage from "./NoDataMessage";
 
-export default function BinderSongsList({ boundSongs, onChange }) {
+export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songsBeingRemoved }) {
 	const [showSearchDialog, setShowSearchDialog] = useState(false);
 	const router = useHistory();
 
@@ -19,16 +19,21 @@ export default function BinderSongsList({ boundSongs, onChange }) {
 		<>
 			<div className="flex justify-between mb-4 items-end">
 				<SectionTitle title="Songs in this binder" />
-				<FilledButton bold onClick={() => setShowSearchDialog(true)} color="blue">
-					Add Songs
-				</FilledButton>
+				<FilledButton onClick={() => setShowSearchDialog(true)}>Add Songs</FilledButton>
 			</div>
 			<table className="w-full">
-				<TableHead columns={["NAME"]} />
+				<TableHead columns={["NAME", ""]} />
 
 				<tbody>
 					{boundSongs?.map((song) => (
-						<TableRow columns={[song.name]} key={song.id} onClick={() => handleOpenSong(song.id)} />
+						<TableRow
+							columns={[song.name]}
+							key={song.id}
+							onClick={() => handleOpenSong(song.id)}
+							removable
+							onRemove={() => onRemoveSong(song)}
+							removing={songsBeingRemoved.includes(song.id)}
+						/>
 					))}
 				</tbody>
 			</table>
@@ -36,7 +41,7 @@ export default function BinderSongsList({ boundSongs, onChange }) {
 			<SearchSongsDialog
 				open={showSearchDialog}
 				onCloseDialog={() => setShowSearchDialog(false)}
-				onChange={onChange}
+				onAdd={onAdd}
 				boundSongs={boundSongs}
 			/>
 		</>

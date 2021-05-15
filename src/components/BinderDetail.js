@@ -15,6 +15,7 @@ export default function BinderDetail() {
 	const [binder, setBinder] = useState();
 	const [pendingUpdates, setPendingUpdates] = useState({});
 	const [saving, setSaving] = useState(false);
+	const [songIdsBeingRemoved, setSongIdsBeingRemoved] = useState([]);
 	const { id } = useParams();
 
 	useEffect(() => {
@@ -43,13 +44,38 @@ export default function BinderDetail() {
 	const handleSaveChanges = async () => {
 		setSaving(true);
 		try {
-			let { data } = await BinderApi.updateOneById(id, pendingUpdates);
-			setBinder(data);
-			setPendingUpdates({});
+			if (!isEmpty(pendingUpdates)) {
+				let { data } = await BinderApi.updateOneById(id, pendingUpdates);
+				setBinder(data);
+				setPendingUpdates({});
+			}
 		} catch (error) {
 			console.log(error);
 		} finally {
 			setSaving(false);
+		}
+	};
+
+	const handleAddSongs = (addedSongs) => {
+		setBinder({
+			...binder,
+			songs: binder.songs.concat(addedSongs),
+		});
+	};
+
+	const handleRemoveSong = async (songToRemove) => {
+		setSongIdsBeingRemoved([...songIdsBeingRemoved, songToRemove.id]);
+		try {
+			await BinderApi.removeSongs(binder.id, [songToRemove.id]);
+			let updatedSongsList = binder.songs?.filter((song) => song.id !== songToRemove.id);
+			setBinder({ ...binder, songs: updatedSongsList });
+
+			let updatedIdsBeingRemoved = songIdsBeingRemoved.filter(
+				(beingRemoved) => beingRemoved !== songToRemove.id
+			);
+			setSongIdsBeingRemoved(updatedIdsBeingRemoved);
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
@@ -88,7 +114,9 @@ export default function BinderDetail() {
 			</div>
 			<BinderSongsList
 				boundSongs={binder.songs}
-				onChange={(editedSongsList) => handleUpdate("songs", editedSongsList)}
+				onAdd={handleAddSongs}
+				onRemoveSong={handleRemoveSong}
+				songsBeingRemoved={songIdsBeingRemoved}
 			/>
 
 			{!isEmpty(pendingUpdates) && (

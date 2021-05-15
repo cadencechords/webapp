@@ -16,12 +16,14 @@ import PulseLoader from "react-spinners/PulseLoader";
 import SongApi from "../api/SongApi";
 import FilledButton from "./buttons/FilledButton";
 import { isEmpty } from "../utils/ObjectUtils";
+import AddThemeDialog from "./AddThemeDialog";
 
 export default function SongDetail() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
 	const [song, setSong] = useState();
 	const [pendingUpdates, setPendingUpdates] = useState({});
 	const [saving, setSaving] = useState(false);
+	const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
 	const router = useHistory();
 	const { id } = useParams();
 
@@ -73,6 +75,20 @@ export default function SongDetail() {
 		}
 	};
 
+	const handleThemesAdded = (newThemes) => {
+		setSong({ ...song, themes: song.themes.concat(newThemes) });
+	};
+
+	const handleRemoveTheme = async (themeIdToRemove) => {
+		try {
+			await SongApi.removeThemes(song.id, [themeIdToRemove]);
+			let newThemesList = song.themes.filter((themeInList) => themeInList.id !== themeIdToRemove);
+			setSong({ ...song, themes: newThemesList });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<div className="grid grid-cols-4">
 			<div className="md:border-r md:pr-4 col-span-4 md:col-span-3">
@@ -118,8 +134,13 @@ export default function SongDetail() {
 				</div>
 				<div className="py-6">
 					<DetailSection title="Binders" />
-					<DetailSection title="Genres" />
-					<DetailSection title="Themes" />
+					<DetailSection title="Genres" items={song.genres} />
+					<DetailSection
+						title="Themes"
+						items={song.themes}
+						onAdd={() => setShowAddThemeDialog(true)}
+						onDelete={handleRemoveTheme}
+					/>
 				</div>
 			</div>
 
@@ -130,6 +151,13 @@ export default function SongDetail() {
 					</FilledButton>
 				</div>
 			)}
+
+			<AddThemeDialog
+				open={showAddThemeDialog}
+				onCloseDialog={() => setShowAddThemeDialog(false)}
+				currentSong={song}
+				onThemesAdded={handleThemesAdded}
+			/>
 		</div>
 	);
 }
