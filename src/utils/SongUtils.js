@@ -1,3 +1,22 @@
+export function format(song, formatOptions) {
+	let linesOfSong = song.split(/\r\n|\r|\n/);
+
+	let formattedSong = linesOfSong.map((line) => {
+		console.log(line);
+		if (isChordLine(line)) {
+			return <p className="text-xl text-blue-500 font-semibold whitespace-pre-wrap">{line}</p>;
+		} else if (isNewLine(line)) {
+			return <br />;
+		} else {
+			return <p className="text-xl text-black font-semibold whitespace-pre-wrap">{line}</p>;
+		}
+	});
+
+	let songFormats = "";
+	songFormats += parseAlignment(formatOptions?.alignment);
+	return <div className={songFormats}>{formattedSong}</div>;
+}
+
 export function isChordLine(line) {
 	if (line) {
 		let parts = line.split(" ");
@@ -16,6 +35,10 @@ export function isChordLine(line) {
 	} else {
 		return false;
 	}
+}
+
+export function isNewLine(line) {
+	return line === "";
 }
 
 // prettier-ignore
@@ -54,3 +77,11 @@ export const POSSIBLE_MINOR_CHORDS = {
 	"Gm": 11,
 	"G#m": 12,
 };
+
+function parseAlignment(alignment) {
+	if (alignment === "left" || alignment === "center" || alignment === "right") {
+		return "text-" + alignment;
+	} else {
+		return "text-left";
+	}
+}

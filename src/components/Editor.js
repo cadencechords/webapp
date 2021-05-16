@@ -2,35 +2,39 @@ import FilledButton from "./buttons/FilledButton";
 import ChordOptions from "./ChordOptions";
 import LyricOptions from "./LyricOptions";
 import PageTitle from "./PageTitle";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import OpenButton from "./buttons/OpenButton";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import { useHistory } from "react-router";
-import { isChordLine } from "../utils/SongUtils";
+import { isChordLine, format } from "../utils/SongUtils";
+import ButtonSwitch from "./buttons/ButtonSwitch";
 
 export default function Editor() {
-	const editorRef = useRef(null);
-	const [alignment, setAlignment] = useState("left");
+	const [editorView, setEditorView] = useState("Edit");
+	const [formatOptions, setFormatOptions] = useState({});
 	const router = useHistory();
 	const [chordsBold, setChordsBold] = useState(false);
+	const [numLines, setNumLines] = useState(100);
+	const [formattedSong, setFormattedSong] = useState("");
+	const [unformattedSong, setUnformattedSong] = useState("");
 
 	const handleGoBack = () => {
 		router.goBack();
 	};
 
-	const handleSave = () => {
-		let editorContents = document.getElementById("editor");
-		editorContents.style["font-family"] = "monospace";
-		let songLines = editorContents.children;
+	const handleChange = (value) => {
+		setUnformattedSong(value);
+		setNumLines(value.split(/\r\n|\r|\n/).length + 1);
+	};
 
-		for (let i = 0; i < songLines.length; ++i) {
-			let line = songLines[i];
-			if (line.tagName === "DIV") {
-				if (isChordLine(line.textContent)) {
-					line.style["font-weight"] = `${chordsBold ? "600" : "500"}`;
-				}
-			}
-		}
+	const formatSong = () => {
+		return format(unformattedSong, formatOptions);
+	};
+
+	const handleFormatChange = (formatOption, value) => {
+		let formatOptionsCopy = { ...formatOptions };
+		formatOptionsCopy[formatOption] = value;
+		setFormatOptions(formatOptionsCopy);
 	};
 
 	return (
@@ -45,28 +49,35 @@ export default function Editor() {
 					<PageTitle title="Amazing Grace" />
 				</div>
 				<span>
-					<FilledButton onClick={handleSave}>Save Changes</FilledButton>
+					<FilledButton>Save Changes</FilledButton>
 				</span>
 			</div>
 			<div className="bg-gray-100 py-3 px-5 border-t border-gray-200 border-b">
 				<LyricOptions
-					onAlignmentChange={(newAlignment) => setAlignment(newAlignment)}
+					onAlignmentChange={(newAlignment) => handleFormatChange("alignment", newAlignment)}
 				/>
 			</div>
 			<div className="grid grid-cols-4">
-				<div
-					contentEditable
-					className="col-span-3 container font-mono px-12 py-10 mx-auto focus:outline-none outline-none"
-					onChange={(event) => console.log(event)}
-					ref={editorRef}
-					id="editor"
-				>
-					<div
-						style={{ textAlign: `${alignment}`, fontFamily: "monospace" }}
-						className="font-mono"
-					>
-						Content
+				<div className="col-span-3 container mx-auto px-10">
+					<div className="flex justify-center mt-2 mb-4">
+						<ButtonSwitch
+							buttonLabels={["Edit", "Format"]}
+							activeButtonLabel={editorView}
+							onClick={setEditorView}
+						/>
 					</div>
+					{editorView === "Edit" ? (
+						<textarea
+							onChange={(e) => handleChange(e.target.value)}
+							rows={numLines}
+							value={unformattedSong}
+							className="w-full outline-none focus:outline-none text-base resize-none font-mono"
+							style={{ fontFamily: "monospace" }}
+							placeholder="Start typing here"
+						/>
+					) : (
+						formatSong()
+					)}
 				</div>
 				<div className="col-span-1 border-gray-300 border-l px-3">
 					<ChordOptions
