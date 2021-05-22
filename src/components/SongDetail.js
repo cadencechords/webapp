@@ -19,6 +19,8 @@ import { isEmpty } from "../utils/ObjectUtils";
 import AddThemeDialog from "./AddThemeDialog";
 import AddGenreDialog from "./AddGenreDialog";
 import BinderColor from "./BinderColor";
+import { setSongBeingEdited } from "../store/editorSlice";
+import { useDispatch } from "react-redux";
 
 export default function SongDetail() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -30,6 +32,7 @@ export default function SongDetail() {
 
 	const router = useHistory();
 	const { id } = useParams();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		async function fetchSong() {
@@ -53,6 +56,7 @@ export default function SongDetail() {
 	}
 
 	const handleOpenInEditor = () => {
+		dispatch(setSongBeingEdited(song));
 		router.push("/editor");
 	};
 
@@ -142,7 +146,7 @@ export default function SongDetail() {
 						</div>
 					</OutlinedButton>
 				</div>
-				<SongPreview />
+				<SongPreview song={song} />
 			</div>
 			<div className="md:col-span-1 md:pl-5 pl-2 col-span-4">
 				<div className="border-b py-6 mt-1">

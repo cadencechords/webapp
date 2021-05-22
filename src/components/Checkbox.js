@@ -6,7 +6,7 @@ export default function Checkbox({ color, checked, onChange }) {
 		<>
 			<input type="checkbox" className="hidden" readOnly checked={checked} />
 			<button
-				className={`w-5 h-5 ring-${color}-300 focus:outline-none focus:ring-2 outline-none rounded-md cursor-pointer flex items-center justify-center ${
+				className={`w-5 h-5 ring-${color}-300 shadow-sm focus:outline-none focus:ring-2 outline-none rounded-md cursor-pointer flex items-center justify-center ${
 					checked ? " bg-" + color + "-600" : " border border-gray-300 "
 				}`}
 				onClick={() => onChange(!checked)}

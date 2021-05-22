@@ -1,28 +1,8 @@
-export function format(song, formatOptions) {
-	let linesOfSong = song.split(/\r\n|\r|\n/);
-
-	let formattedSong = linesOfSong.map((line) => {
-		console.log(line);
-		if (isChordLine(line)) {
-			return <p className="text-xl text-blue-500 font-semibold whitespace-pre-wrap">{line}</p>;
-		} else if (isNewLine(line)) {
-			return <br />;
-		} else {
-			return <p className="text-xl text-black font-semibold whitespace-pre-wrap">{line}</p>;
-		}
-	});
-
-	let songFormats = "";
-	songFormats += parseAlignment(formatOptions?.alignment);
-	return <div className={songFormats}>{formattedSong}</div>;
-}
-
 export function isChordLine(line) {
 	if (line) {
 		let parts = line.split(" ");
 		parts = parts.map((part) => part.replace(/\s/g, ""));
 		parts = parts.filter((part) => part !== "");
-		console.log(parts);
 		let numChordMatches = 0;
 
 		parts?.forEach((part) => {
@@ -31,7 +11,7 @@ export function isChordLine(line) {
 			}
 		});
 
-		return numChordMatches > parts.length / 2;
+		return numChordMatches >= parts.length / 2;
 	} else {
 		return false;
 	}
@@ -78,7 +58,7 @@ export const POSSIBLE_MINOR_CHORDS = {
 	"G#m": 12,
 };
 
-function parseAlignment(alignment) {
+export function parseAlignment(alignment) {
 	if (alignment === "left" || alignment === "center" || alignment === "right") {
 		return "text-" + alignment;
 	} else {

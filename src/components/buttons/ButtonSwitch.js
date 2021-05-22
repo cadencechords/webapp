@@ -1,8 +1,12 @@
 export default function ButtonSwitch({ activeButtonLabel, buttonLabels, onClick }) {
 	return (
 		<div className="p-1 bg-gray-200 flex rounded-md max-w-md w-96 border flex-shrink-0">
-			{buttonLabels.map((label) => (
-				<ButtonSwitchOption active={label === activeButtonLabel} onClick={() => onClick(label)}>
+			{buttonLabels.map((label, index) => (
+				<ButtonSwitchOption
+					key={index}
+					active={label === activeButtonLabel}
+					onClick={() => onClick(label)}
+				>
 					{label}
 				</ButtonSwitchOption>
 			))}

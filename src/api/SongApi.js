@@ -34,6 +34,9 @@ export default class SongApi {
 		if (updates.artist) allowedParams.artist = updates.artist;
 		if (updates.meter) allowedParams.meter = updates.meter;
 		if (updates.key) allowedParams.key = updates.key;
+		if (updates.content) allowedParams.content = updates.content;
+		if (updates.font) allowedParams.font = updates.font;
+		if (updates.fontSize) allowedParams.font_size = Number.parseInt(updates.fontSize);
 
 		return axios.put(SONGS_URL + `/${songId}?team_id=${getTeamId()}`, allowedParams, {
 			headers: constructAuthHeaders(),
