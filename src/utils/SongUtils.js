@@ -1,3 +1,5 @@
+import { Page, Text, View, Document, Font } from "@react-pdf/renderer";
+
 export function isChordLine(line) {
 	if (line) {
 		let parts = line.split(" ");
@@ -64,4 +66,46 @@ export function parseAlignment(alignment) {
 	} else {
 		return "text-left";
 	}
+}
+
+export function toPdf(song, showChords) {
+	let linesOfSong = song.content.split(/\r\n|\r|\n/);
+
+	let pdfLines = linesOfSong.map((line, index) => {
+		if (isNewLine(line)) {
+			return <Text key={index}> &nbsp;</Text>;
+		} else if (isChordLine(line) && showChords) {
+			return <Text key={index}>{line}</Text>;
+		} else if (!isChordLine(line)) {
+			return (
+				<Text key={index} style={{ marginBottom: 4 }}>
+					{line}
+				</Text>
+			);
+		}
+	});
+
+	// Font.register({ family: song.font });
+
+	let pdf = (
+		<Document creator="Cadence" producer="Cadence" author="Cadence">
+			<Page size="A4">
+				<View style={{ marginTop: ".75in", marginLeft: "1in", marginBottom: ".25in" }}>
+					<Text style={{ fontWeight: "bold" }}>{song.name}</Text>
+				</View>
+				<View
+					style={{
+						fontSize: song.font_size + "px",
+						marginLeft: "1in",
+						marginRight: "1in",
+						flexGrow: 1,
+					}}
+				>
+					{pdfLines}
+				</View>
+			</Page>
+		</Document>
+	);
+
+	return pdf;
 }

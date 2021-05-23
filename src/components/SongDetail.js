@@ -135,7 +135,11 @@ export default function SongDetail() {
 					</OpenButton>
 				</div>
 
-				<PrintSongDialog open={showPrintDialog} onCloseDialog={() => setShowPrintDialog(false)} />
+				<PrintSongDialog
+					song={song}
+					open={showPrintDialog}
+					onCloseDialog={() => setShowPrintDialog(false)}
+				/>
 				<div className="mb-3">
 					<OutlinedButton onClick={handleOpenInEditor}>
 						<div className="flex flex-row items-center">
