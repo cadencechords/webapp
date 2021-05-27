@@ -14,7 +14,7 @@ export default function OpenButton({
 }) {
 	return (
 		<button
-			className={`p-2 text-${color}-600  focus:outline-none outline-none transition-all hover:bg-${hoverColor}-${hoverWeight} rounded-md ${
+			className={`px-3 py-1 text-sm text-${color}-600 focus:outline-none outline-none transition-all hover:bg-${hoverColor}-${hoverWeight} rounded-md ${
 				full && " w-full"
 			} ${bold && " font-semibold"} ${className}`}
 			onClick={!disabled ? onClick : null}

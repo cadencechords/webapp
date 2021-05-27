@@ -4,6 +4,7 @@ const initialState = {
 	client: localStorage.getItem("client"),
 	uid: localStorage.getItem("uid"),
 	teamId: localStorage.getItem("teamId"),
+	currentUser: null,
 };
 
 export const authSlice = createSlice({
@@ -21,10 +22,14 @@ export const authSlice = createSlice({
 			console.log("setting team:", action.payload);
 			state.teamId = action.payload;
 		},
+		setCurrentUser: (state, action) => {
+			console.log("Setting current user:", action.payload);
+			state.currentUser = action.payload;
+		},
 	},
 });
 
-export const { setAuth, setTeam } = authSlice.actions;
+export const { setAuth, setTeam, setCurrentUser } = authSlice.actions;
 
 export default authSlice.reducer;
 
@@ -36,4 +41,5 @@ export const selectAuth = (state) => {
 	};
 };
 
-export const selectTeamId = (state) => state.teamId;
+export const selectTeamId = (state) => state?.auth.teamId;
+export const selectCurrentUser = (state) => state.auth.currentUser;

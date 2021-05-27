@@ -1,3 +1,3 @@
 export default function SectionTitle({ title }) {
-	return <h2 className="my-3 font-bold text-lg">{title}</h2>;
+	return <h2 className="my-3 font-semibold text-lg">{title}</h2>;
 }

@@ -14,7 +14,7 @@ export default function StyledListBox({ options, onChange, selectedOption, backg
 				{selectedOption.template}
 				<SelectorIcon className="w-4 h-4 text-gray-500" />
 			</Listbox.Button>
-			<Listbox.Options className="max-h-20 overflow-auto bg-white shadow-lg absolute w-full rounded-md mt-1 py-2">
+			<Listbox.Options className="max-h-20 overflow-auto bg-white shadow-lg w-full rounded-md mt-1 py-2">
 				{options?.map((option, index) => (
 					<Listbox.Option
 						key={index}

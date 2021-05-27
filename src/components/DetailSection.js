@@ -18,8 +18,8 @@ export default function DetailSection({ title, items, onAdd, onDelete }) {
 			</div>
 			{items?.length > 0 ? (
 				<div className="flex flex-wrap">
-					{items?.map((item) => (
-						<span className="mr-2 mb-2" key={item.id}>
+					{items?.map((item, index) => (
+						<span className="mr-2 mb-2" key={index}>
 							<DetailTag>
 								<span className="mx-1">{item.name}</span>
 								{onDelete && (

@@ -69,29 +69,38 @@ export function parseAlignment(alignment) {
 }
 
 export function toPdf(song, showChords) {
-	let linesOfSong = song.content.split(/\r\n|\r|\n/);
+	let pdfLines = "";
 
-	let pdfLines = linesOfSong.map((line, index) => {
-		if (isNewLine(line)) {
-			return <Text key={index}> &nbsp;</Text>;
-		} else if (isChordLine(line) && showChords) {
-			return <Text key={index}>{line}</Text>;
-		} else if (!isChordLine(line)) {
-			return (
-				<Text key={index} style={{ marginBottom: 4 }}>
-					{line}
-				</Text>
-			);
-		}
-	});
+	if (song.content) {
+		Font.register({
+			family: "",
+		});
+		let linesOfSong = song.content.split(/\r\n|\r|\n/);
 
-	// Font.register({ family: song.font });
+		pdfLines = linesOfSong.map((line, index) => {
+			if (isNewLine(line)) {
+				return <Text key={index}> &nbsp;</Text>;
+			} else if (isChordLine(line) && showChords) {
+				return <Text key={index}>{line}</Text>;
+			} else if (!isChordLine(line)) {
+				return (
+					<Text key={index} style={{ marginBottom: 4 }}>
+						{line}
+					</Text>
+				);
+			}
+		});
+
+		// Font.register({ family: song.font });
+	} else {
+		pdfLines = <Text></Text>;
+	}
 
 	let pdf = (
 		<Document creator="Cadence" producer="Cadence" author="Cadence">
 			<Page size="A4">
 				<View style={{ marginTop: ".75in", marginLeft: "1in", marginBottom: ".25in" }}>
-					<Text style={{ fontWeight: "bold" }}>{song.name}</Text>
+					<Text>{song.name}</Text>
 				</View>
 				<View
 					style={{

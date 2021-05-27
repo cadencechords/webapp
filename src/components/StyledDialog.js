@@ -12,7 +12,16 @@ export default function StyledDialog({
 	overlayOpacity,
 	size,
 	showClose,
+	fullscreen,
 }) {
+	let sizeClasses = fullscreen
+		? `min-h-screen sm:min-h-full w-full sm:max-w-${size} `
+		: ` max-w-${size} w-full `;
+
+	let mobileStyleClasses = fullscreen
+		? ` sm:shadow-xl sm:rounded-xl sm:mt-8 `
+		: ` shadow-xl rounded-xl mt-8 `;
+
 	return (
 		<Transition show={open} as={Fragment}>
 			<Dialog
@@ -50,8 +59,8 @@ export default function StyledDialog({
 					>
 						<div
 							className={
-								`inline-block w-full sm:max-w-${size} min-h-screen sm:min-h-full` +
-								` sm:mt-8 overflow-y-auto text-left align-middle transition-all transform bg-white sm:shadow-xl sm:rounded-xl `
+								`inline-block ${sizeClasses} ${mobileStyleClasses} ` +
+								` overflow-y-auto text-left align-middle transition-all transform bg-white  `
 							}
 						>
 							{showClose && (
@@ -84,4 +93,5 @@ StyledDialog.defaultProps = {
 	overlayOpacity: 20,
 	size: "md",
 	showClose: true,
+	fullscreen: true,
 };

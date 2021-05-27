@@ -31,7 +31,7 @@ export default function Sidenav() {
 					/>
 					<SidenavLink
 						text="Team members"
-						to="/app/#"
+						to="/app/members"
 						icon={<UserGroupIcon className={iconClasses} />}
 					/>
 				</div>
