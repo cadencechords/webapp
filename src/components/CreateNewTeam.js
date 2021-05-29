@@ -4,19 +4,22 @@ import CenteredPage from "./CenteredPage";
 import OutlinedInput from "./inputs/OutlinedInput";
 import TeamApi from "../api/TeamApi";
 import { useHistory } from "react-router";
+import { useDispatch } from "react-redux";
+import { setTeamId } from "../store/authSlice";
 
 export default function CreateNewTeam() {
-	const [teamName, setTeamName] = useState("");
+	const [teamName, setTeamIdName] = useState("");
 	const [loading, setLoading] = useState(false);
 	const router = useHistory();
+	const dispatch = useDispatch();
 
 	const handleCreate = async () => {
 		setLoading(!loading);
 
 		try {
 			let newTeam = { name: teamName };
-			let result = await TeamApi.createOne(newTeam);
-			localStorage.setItem("teamId", result.data.id);
+			let { data } = await TeamApi.createOne(newTeam);
+			dispatch(setTeamId(data.id));
 			router.push("/app");
 		} catch (error) {
 			console.log(error);
@@ -32,7 +35,7 @@ export default function CreateNewTeam() {
 			<OutlinedInput
 				placeholder="Name"
 				value={teamName}
-				onChange={(editedTeamName) => setTeamName(editedTeamName)}
+				onChange={(editedTeamName) => setTeamIdName(editedTeamName)}
 			/>
 
 			<div className="mt-6">

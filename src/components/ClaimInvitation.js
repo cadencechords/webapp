@@ -5,7 +5,7 @@ import CenteredPage from "./CenteredPage";
 import PulseLoader from "react-spinners/PulseLoader";
 import InvitationApi from "../api/InvitationApi";
 import { useDispatch } from "react-redux";
-import { setAuth, setTeam } from "../store/authSlice";
+import { setAuth, setTeamId } from "../store/authSlice";
 import Alert from "./Alert";
 
 export function useQuery() {
@@ -29,7 +29,7 @@ export default function ClaimInvitation() {
 				let client = result.headers["client"];
 				let uid = result.headers["uid"];
 				dispatch(setAuth({ accessToken, client, uid }));
-				dispatch(setTeam(result.data.team_id));
+				dispatch(setTeamId(result.data.team_id));
 				router.push("/app");
 			} catch (error) {
 				if (error.response.status === 404) {

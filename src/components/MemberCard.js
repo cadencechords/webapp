@@ -1,6 +1,12 @@
+import EditableData from "./inputs/EditableData";
 import ProfilePicture from "./ProfilePicture";
+import OpenInput from "./inputs/OpenInput";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../store/authSlice";
 
 export default function MemberCard({ member, isCurrentUser }) {
+	const currentUser = useSelector(selectCurrentUser);
+
 	if (member) {
 		let adminStatusBubble;
 		if (member.is_admin) {
@@ -27,9 +33,11 @@ export default function MemberCard({ member, isCurrentUser }) {
 				</div>
 				{adminStatusBubble} {currentUserBubble}
 				<div className="font-semibold">
-					{member.first_name} {member.last_name}
+					{member.first_name ? member.first_name + " " + member.last_name : member.email}
 				</div>
-				<div className="font-semibold text-sm text-gray-500">{member.position}</div>
+				{currentUser.is_admin && (
+					<OpenInput placeholder="Enter position here" value={member.position} />
+				)}
 			</div>
 		);
 	} else {

@@ -8,12 +8,15 @@ import AccountDetail from "./AccountDetail";
 import PersonalDetails from "./PersonalDetails";
 import UserApi from "../api/UserApi";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setCurrentUser } from "../store/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectTeamId, setCurrentTeam, setCurrentUser } from "../store/authSlice";
 import MembersList from "./MembersList";
+import TeamApi from "../api/TeamApi";
 
 export default function Content() {
 	const dispatch = useDispatch();
+	const teamId = useSelector(selectTeamId);
+
 	useEffect(() => {
 		async function fetchCurrentUser() {
 			try {
@@ -26,6 +29,15 @@ export default function Content() {
 
 		fetchCurrentUser();
 	});
+
+	useEffect(() => {
+		async function fetchCurrentTeam() {
+			let { data } = await TeamApi.getCurrentTeam();
+			dispatch(setCurrentTeam(data.team));
+		}
+		fetchCurrentTeam();
+	}, [teamId]);
+
 	return (
 		<div className="md:ml-56 md:px-10 px-2 py-3">
 			<div className="container mx-auto">

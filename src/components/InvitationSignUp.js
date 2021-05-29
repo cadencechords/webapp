@@ -7,7 +7,7 @@ import FilledButton from "./buttons/FilledButton";
 import Alert from "./Alert";
 import InvitationApi from "../api/InvitationApi";
 import { useDispatch } from "react-redux";
-import { setTeam, setAuth } from "../store/authSlice";
+import { setTeamId, setAuth } from "../store/authSlice";
 import { useHistory } from "react-router";
 
 export default function InvitationSignUp() {
@@ -58,7 +58,7 @@ export default function InvitationSignUp() {
 			let client = result.headers["client"];
 			let uid = result.headers["uid"];
 			dispatch(setAuth({ accessToken, client, uid }));
-			dispatch(setTeam(result.data.team_id));
+			dispatch(setTeamId(result.data.team_id));
 
 			router.push("/app");
 		} catch (error) {

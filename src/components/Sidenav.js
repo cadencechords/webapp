@@ -3,16 +3,24 @@ import FolderOpenIcon from "@heroicons/react/outline/FolderOpenIcon";
 import MusicNoteIcon from "@heroicons/react/solid/MusicNoteIcon";
 import ViewGridAddIcon from "@heroicons/react/outline/ViewGridAddIcon";
 import UserGroupIcon from "@heroicons/react/solid/UserGroupIcon";
+import { useSelector } from "react-redux";
+import { selectCurrentTeam } from "../store/authSlice";
+import TeamOptionsPopover from "./TeamOptionsPopover";
 
 export default function Sidenav() {
 	let iconClasses = "h-4 w-4";
+
+	const currentTeam = useSelector(selectCurrentTeam);
+
+	let currentTeamCard = null;
+	if (currentTeam) {
+		currentTeamCard = <TeamOptionsPopover team={currentTeam} />;
+	}
+
 	return (
 		<div className="fixed h-full  bg-gray-50 md:w-56 w-0 transition-all border-r shadow-inner">
 			<div className="hidden md:flex flex-col">
-				<div className="font-display flex items-center justify-center font-extrabold text-gray-700 text-2xl tracking-wider h-16 bg-white border-b">
-					Cadence
-				</div>
-
+				{currentTeamCard}
 				<div className="px-2 flex flex-col py-3 ">
 					<SidenavLink
 						text="Binders"

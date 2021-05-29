@@ -4,6 +4,7 @@ import CenteredPage from "./CenteredPage";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../store/authSlice";
 import ProfilePicture from "./ProfilePicture";
+import { Link } from "react-router-dom";
 
 export default function AccountDetail() {
 	const currentUser = useSelector(selectCurrentUser);
@@ -26,7 +27,8 @@ export default function AccountDetail() {
 						</div>
 					) : (
 						<div className="text-center">
-							You haven't provided your name yet. You can do that here
+							You haven't provided your name yet. You can do that{" "}
+							<Link to="/app/account/personal">here</Link>
 						</div>
 					)}
 				</div>

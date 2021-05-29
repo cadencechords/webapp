@@ -6,7 +6,7 @@ import NoTeamYet from "./NoTeamYet";
 import TeamLoginOptions from "./TeamLoginOptions";
 
 export default function TeamLogin() {
-	const [teams, setTeams] = useState([]);
+	const [teams, setTeamIds] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -15,7 +15,7 @@ export default function TeamLogin() {
 		async function fetchTeams() {
 			try {
 				let result = await TeamApi.getAll();
-				setTeams(result.data);
+				setTeamIds(result.data);
 			} catch (error) {
 				console.log(error);
 			} finally {
