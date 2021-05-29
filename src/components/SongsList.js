@@ -8,6 +8,8 @@ import NoDataMessage from "./NoDataMessage";
 import SongApi from "../api/SongApi";
 
 export default function SongsList() {
+	useEffect(() => (document.title = "Songs"));
+
 	const [isCreating, setIsCreating] = useState(false);
 	const [songs, setSongs] = useState([]);
 	const [loading, setLoading] = useState(false);

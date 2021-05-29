@@ -16,11 +16,14 @@ export const authSlice = createSlice({
 			state.accessToken = action.payload.accessToken;
 			state.uid = action.payload.uid;
 			state.client = action.payload.client;
+			localStorage.setItem("access-token", action.payload.accessToken);
+			localStorage.setItem("uid", action.payload.uid);
+			localStorage.setItem("client", action.payload.client);
 		},
 
 		setTeam: (state, action) => {
-			console.log("setting team:", action.payload);
 			state.teamId = action.payload;
+			localStorage.setItem("teamId", action.payload);
 		},
 		setCurrentUser: (state, action) => {
 			console.log("Setting current user:", action.payload);

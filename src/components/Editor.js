@@ -12,7 +12,6 @@ import { useSelector } from "react-redux";
 import { selectSongBeingEdited, setSongBeingEdited } from "../store/editorSlice";
 import SongApi from "../api/SongApi";
 import { isEmpty } from "../utils/ObjectUtils";
-import { useDispatch } from "react-redux";
 
 export default function Editor() {
 	const [editorView, setEditorView] = useState("Edit");
@@ -22,7 +21,6 @@ export default function Editor() {
 	const [savingUpdates, setSavingUpdates] = useState(false);
 	const songBeingEdited = useSelector(selectSongBeingEdited);
 	const [dirty, setDirty] = useState(false);
-	const dispatch = useDispatch();
 	const router = useHistory();
 
 	if (!songBeingEdited || isEmpty(songBeingEdited)) {

@@ -2,7 +2,15 @@ import PencilIcon from "@heroicons/react/solid/PencilIcon";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
 import OpenButton from "./buttons/OpenButton";
 
-export default function TableRow({ columns, editable, onClick, removable, onRemove, removing }) {
+export default function TableRow({
+	columns,
+	editable,
+	onClick,
+	removable,
+	onRemove,
+	removing,
+	actions,
+}) {
 	return (
 		<tr className="border-b hover:bg-gray-50">
 			{columns?.map((column, index) => (
@@ -30,6 +38,7 @@ export default function TableRow({ columns, editable, onClick, removable, onRemo
 					</OpenButton>
 				</td>
 			)}
+			<td>{actions}</td>
 		</tr>
 	);
 }

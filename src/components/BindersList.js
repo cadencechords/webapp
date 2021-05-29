@@ -8,6 +8,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
 
 export default function BindersList() {
+	useEffect(() => (document.title = "Binders"));
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 	const [binders, setBinders] = useState([]);
 	const [loading, setLoading] = useState(false);

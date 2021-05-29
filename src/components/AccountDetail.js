@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import NoDataMessage from "./NoDataMessage";
 import CenteredPage from "./CenteredPage";
-import UserCircleIcon from "@heroicons/react/outline/UserCircleIcon";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../store/authSlice";
 import ProfilePicture from "./ProfilePicture";

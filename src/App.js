@@ -9,6 +9,8 @@ import SignUp from "./components/SignUp";
 import EmailConfirmationSuccess from "./components/EmailConfirmationSuccess";
 import TeamLogin from "./components/TeamLogin";
 import CreateNewTeam from "./components/CreateNewTeam";
+import ClaimInvitation from "./components/ClaimInvitation";
+import InvitationSignUp from "./components/InvitationSignUp";
 
 function App() {
 	return (
@@ -36,6 +38,12 @@ function App() {
 					<Sidenav />
 					<Navbar />
 					<Content />
+				</Route>
+				<Route path="/invitations" exact>
+					<ClaimInvitation />
+				</Route>
+				<Route path="/invitations/signup" exact>
+					<InvitationSignUp />
 				</Route>
 			</Router>
 		</div>

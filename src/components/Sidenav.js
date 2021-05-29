@@ -7,9 +7,9 @@ import UserGroupIcon from "@heroicons/react/solid/UserGroupIcon";
 export default function Sidenav() {
 	let iconClasses = "h-4 w-4";
 	return (
-		<div className="fixed h-full  bg-gray-800 md:w-56 w-0 transition-all">
+		<div className="fixed h-full  bg-gray-50 md:w-56 w-0 transition-all border-r shadow-inner">
 			<div className="hidden md:flex flex-col">
-				<div className="font-display flex items-center justify-center font-extrabold text-white text-2xl tracking-wider h-16 bg-gray-900">
+				<div className="font-display flex items-center justify-center font-extrabold text-gray-700 text-2xl tracking-wider h-16 bg-white border-b">
 					Cadence
 				</div>
 
