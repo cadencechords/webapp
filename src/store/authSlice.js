@@ -33,10 +33,24 @@ export const authSlice = createSlice({
 		setCurrentTeam: (state, action) => {
 			state.currentTeam = action.payload;
 		},
+
+		logOut: (state) => {
+			delete state.accessToken;
+			delete state.client;
+			delete state.currentTeam;
+			delete state.currentUser;
+			delete state.teamId;
+			delete state.uid;
+
+			localStorage.removeItem("access-token");
+			localStorage.removeItem("uid");
+			localStorage.removeItem("client");
+			localStorage.removeItem("teamId");
+		},
 	},
 });
 
-export const { setAuth, setTeamId, setCurrentUser, setCurrentTeam } = authSlice.actions;
+export const { setAuth, setTeamId, setCurrentUser, setCurrentTeam, logOut } = authSlice.actions;
 
 export default authSlice.reducer;
 

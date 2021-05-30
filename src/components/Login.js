@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import FilledButton from "./buttons/FilledButton";
 import AuthApi from "../api/AuthApi";
@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { setAuth } from "../store/authSlice";
 
 export default function Login() {
+	useEffect(() => (document.title = "Login"));
 	const [canLogin, setCanLogin] = useState(false);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
