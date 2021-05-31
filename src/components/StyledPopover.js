@@ -2,18 +2,10 @@ import { Popover } from "@headlessui/react";
 import { useState } from "react";
 import { usePopper } from "react-popper";
 
-export default function StyledPopover({ children, button, position, offsets }) {
+export default function StyledPopover({ children, button, position }) {
 	let [referenceElement, setReferenceElement] = useState();
 	let [popperElement, setPopperElement] = useState();
 	const [arrowElement, setArrowElement] = useState(null);
-
-	const offsetModifier = {
-		name: "offset",
-		enabled: true,
-		options: {
-			offset: offsets,
-		},
-	};
 
 	let { styles, attributes } = usePopper(referenceElement, popperElement, {
 		placement: position,
@@ -37,8 +29,3 @@ export default function StyledPopover({ children, button, position, offsets }) {
 		</Popover>
 	);
 }
-
-StyledPopover.defaultProps = {
-	position: "bottom",
-	offsets: [0, 0],
-};

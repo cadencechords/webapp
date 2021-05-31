@@ -29,6 +29,7 @@ export default function OutlinedInput({
 					autoComplete="off"
 					value={value}
 					autoCapitalize="off"
+					pattern={type.toLowerCase() === "date" ? "d{4}-d{2}-d{2}" : ""}
 				/>
 
 				{button && (

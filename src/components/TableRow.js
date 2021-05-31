@@ -38,7 +38,7 @@ export default function TableRow({
 					</OpenButton>
 				</td>
 			)}
-			<td>{actions}</td>
+			{actions && <td>{actions}</td>}
 		</tr>
 	);
 }
