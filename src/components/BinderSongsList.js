@@ -1,10 +1,10 @@
 import SectionTitle from "./SectionTitle";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
-import FilledButton from "./buttons/FilledButton";
 import { useState } from "react";
 import SearchSongsDialog from "./SearchSongsDialog";
 import { useHistory } from "react-router";
+import OpenButton from "./buttons/OpenButton";
 
 export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songsBeingRemoved }) {
 	const [showSearchDialog, setShowSearchDialog] = useState(false);
@@ -18,7 +18,9 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 		<>
 			<div className="flex justify-between mb-4 items-end">
 				<SectionTitle title="Songs in this binder" />
-				<FilledButton onClick={() => setShowSearchDialog(true)}>Add Songs</FilledButton>
+				<OpenButton onClick={() => setShowSearchDialog(true)} bold color="blue">
+					Add Songs
+				</OpenButton>
 			</div>
 			<table className="w-full">
 				<TableHead columns={["NAME", ""]} />

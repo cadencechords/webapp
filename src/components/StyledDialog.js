@@ -13,6 +13,7 @@ export default function StyledDialog({
 	size,
 	showClose,
 	fullscreen,
+	borderedTop,
 }) {
 	let sizeClasses = fullscreen
 		? `min-h-screen sm:min-h-full w-full sm:max-w-${size} `
@@ -70,7 +71,7 @@ export default function StyledDialog({
 									</OpenButton>
 								</span>
 							)}
-							<Dialog.Title as="h3" className=" border-b">
+							<Dialog.Title as="h3" className={borderedTop ? ` border-b ` : ""}>
 								<div className="text-lg leading-6 text-gray-900 font-semibold px-5 py-6">
 									{title}
 								</div>
@@ -94,4 +95,5 @@ StyledDialog.defaultProps = {
 	size: "md",
 	showClose: true,
 	fullscreen: true,
+	borderedTop: true,
 };

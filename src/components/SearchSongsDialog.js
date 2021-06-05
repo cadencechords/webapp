@@ -76,7 +76,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 	));
 
 	return (
-		<StyledDialog open={open} onCloseDialog={handleClose}>
+		<StyledDialog open={open} onCloseDialog={handleClose} borderedTop={false}>
 			<div className="border-b pb-2 mb-7">
 				<OpenInput placeholder="Search for a specific song" />
 			</div>
@@ -102,7 +102,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 					</FilledButton>
 				</span>
 				<span className="w-1/2 ml-2">
-					<OpenButton full onClick={handleClose}>
+					<OpenButton full bold onClick={handleClose}>
 						Cancel
 					</OpenButton>
 				</span>

@@ -30,6 +30,8 @@ export default function SongDetail() {
 	const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
 	const [showAddGenreDialog, setShowGenreDialog] = useState(false);
 
+	useEffect(() => (document.title = song ? song.name : "Songs"));
+
 	const router = useHistory();
 	const { id } = useParams();
 	const dispatch = useDispatch();

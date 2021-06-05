@@ -6,6 +6,7 @@ import UpcomingSetsTable from "./UpcomingSetsTable";
 import QuickAdd from "./QuickAdd";
 import CreateSetlistDialog from "./CreateSetlistDialog";
 import PulseLoader from "react-spinners/PulseLoader";
+import { useHistory } from "react-router";
 
 export default function SetsList() {
 	useEffect(() => (document.title = "Sets"));
@@ -14,6 +15,7 @@ export default function SetsList() {
 	const [pastSetlists, setPastSetlists] = useState([]);
 	const [showCreateSetlistDialog, setShowCreateSetlistDialog] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const router = useHistory();
 
 	useEffect(() => {
 		async function fetchSetlists() {
@@ -37,7 +39,14 @@ export default function SetsList() {
 		let past = setlists.filter((setlist) => {
 			let scheduledDate = new Date(setlist.scheduled_date);
 			let utcScheduledDate = new Date(
-				Date.UTC(scheduledDate.getFullYear(), scheduledDate.getMonth(), scheduledDate.getDate())
+				Date.UTC(
+					scheduledDate.getFullYear(),
+					scheduledDate.getMonth(),
+					scheduledDate.getDate(),
+					24,
+					0,
+					0
+				)
 			);
 			return today.getTime() > utcScheduledDate.getTime();
 		});
@@ -45,7 +54,14 @@ export default function SetsList() {
 		let upcoming = setlists.filter((setlist) => {
 			let scheduledDate = new Date(setlist.scheduled_date);
 			let utcScheduledDate = new Date(
-				Date.UTC(scheduledDate.getFullYear(), scheduledDate.getMonth(), scheduledDate.getDate())
+				Date.UTC(
+					scheduledDate.getFullYear(),
+					scheduledDate.getMonth(),
+					scheduledDate.getDate(),
+					24,
+					0,
+					0
+				)
 			);
 			return today.getTime() <= utcScheduledDate.getTime();
 		});
@@ -56,6 +72,10 @@ export default function SetsList() {
 
 	const handleSetlistCreated = (newSetlist) => {
 		setSetlists([...setlists, newSetlist]);
+	};
+
+	const handleRouteToSetlist = (setlistId) => {
+		router.push(`/app/sets/${setlistId}`);
 	};
 
 	if (loading) {
@@ -72,8 +92,8 @@ export default function SetsList() {
 	return (
 		<>
 			<PageTitle title="Sets" />
-			<UpcomingSetsTable setlists={upcomingSetlists} />
-			<PastSetsTable setlists={pastSetlists} />
+			<UpcomingSetsTable setlists={upcomingSetlists} onClick={handleRouteToSetlist} />
+			<PastSetsTable setlists={pastSetlists} onClick={handleRouteToSetlist} />
 			<QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
 			<CreateSetlistDialog
 				open={showCreateSetlistDialog}

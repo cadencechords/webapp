@@ -1,11 +1,18 @@
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
 import axios from "axios";
+import { combineParamValues } from "../utils/ObjectUtils";
 
 const SETLISTS_URL = process.env.REACT_APP_API_URL + "/setlists";
 
 export default class SetlistApi {
 	static getAll() {
 		return axios.get(SETLISTS_URL + `?team_id=${getTeamId()}`, {
+			headers: constructAuthHeaders(),
+		});
+	}
+
+	static getOne(setlistId) {
+		return axios.get(SETLISTS_URL + `/${setlistId}?team_id=${getTeamId()}`, {
 			headers: constructAuthHeaders(),
 		});
 	}
@@ -21,5 +28,41 @@ export default class SetlistApi {
 
 			return axios.post(SETLISTS_URL, allowedParams, { headers: constructAuthHeaders() });
 		}
+	}
+
+	static addSongs(setlistId, songIds) {
+		if (songIds.length > 0) {
+			return axios.post(
+				SETLISTS_URL + `/${setlistId}/songs`,
+				{ song_ids: songIds, team_id: getTeamId() },
+				{ headers: constructAuthHeaders() }
+			);
+		}
+	}
+
+	static removeSongs(setlistId, songIds) {
+		if (songIds.length > 0) {
+			return axios.delete(
+				SETLISTS_URL +
+					`/${setlistId}/songs?${combineParamValues(
+						"song_ids[]=",
+						songIds
+					)}&team_id=${getTeamId()}`,
+				{ headers: constructAuthHeaders() }
+			);
+		}
+	}
+
+	static updateScheduledSong(updates, songId, setlistId) {
+		let allowedParams = {};
+
+		if (updates.position !== undefined && updates.position !== null)
+			allowedParams.position = updates.position;
+
+		allowedParams.team_id = getTeamId();
+
+		return axios.put(SETLISTS_URL + `/${setlistId}/songs/${songId}`, allowedParams, {
+			headers: constructAuthHeaders(),
+		});
 	}
 }

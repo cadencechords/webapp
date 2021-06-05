@@ -1,6 +1,7 @@
 export function toShortDate(dateToConvert) {
 	if (dateToConvert instanceof String || typeof dateToConvert === "string") {
 		dateToConvert = new Date(dateToConvert);
+		dateToConvert.setDate(dateToConvert.getDate() + 1);
 	}
 
 	let dayOfWeek = DAY_OF_WEEK[dateToConvert.getDay()];

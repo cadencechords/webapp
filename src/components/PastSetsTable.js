@@ -3,7 +3,7 @@ import TableHead from "./TableHead";
 import TableRow from "./TableRow";
 import { toShortDate } from "../utils/DateUtils";
 
-export default function PastSetsTable({ setlists }) {
+export default function PastSetsTable({ setlists, onClick }) {
 	return (
 		<>
 			<SectionTitle title="Previous" />
@@ -15,6 +15,7 @@ export default function PastSetsTable({ setlists }) {
 							<TableRow
 								key={setlist.id}
 								columns={[setlist.name, toShortDate(setlist.scheduled_date), setlist.songs?.length]}
+								onClick={() => onClick(setlist.id)}
 							/>
 						))}
 					</tbody>

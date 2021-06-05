@@ -15,7 +15,7 @@ export default function SongsTable({ songs }) {
 				<TableHead columns={["NAME", "BINDERS", "CREATED"]} editable />
 				<tbody>
 					{songs?.map((song) => {
-						let binders = song.binders?.length > 0 ? "binders" : "-";
+						let binders = song.binders?.length > 0 ? concatBinderNames(song.binders) : "-";
 						return (
 							<TableRow
 								columns={[song.name, binders, new Date(song.created_at).toDateString()]}
@@ -28,4 +28,9 @@ export default function SongsTable({ songs }) {
 			</table>
 		</>
 	);
+}
+
+function concatBinderNames(binders) {
+	let names = binders.map((binder) => binder.name);
+	return names.join(", ");
 }
