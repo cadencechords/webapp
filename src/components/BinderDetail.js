@@ -7,7 +7,7 @@ import PageTitle from "./PageTitle";
 import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
 import { isEmpty } from "../utils/ObjectUtils";
-import FilledButton from "./buttons/FilledButton";
+import Button from ".//Button";
 import EditableData from "./inputs/EditableData";
 
 export default function BinderDetail() {
@@ -121,9 +121,9 @@ export default function BinderDetail() {
 
 			{!isEmpty(pendingUpdates) && (
 				<div className="fixed bottom-8 right-8 shadow-md">
-					<FilledButton bold onClick={handleSaveChanges} loading={saving}>
+					<Button onClick={handleSaveChanges} loading={saving}>
 						Save Changes
-					</FilledButton>
+					</Button>
 				</div>
 			)}
 		</div>

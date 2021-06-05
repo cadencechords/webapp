@@ -3,12 +3,12 @@ import CenteredPage from "./CenteredPage";
 import OutlinedInput from "./inputs/OutlinedInput";
 import { useQuery } from "./ClaimInvitation";
 import PasswordRequirements from "./PasswordRequirements";
-import FilledButton from "./buttons/FilledButton";
 import Alert from "./Alert";
 import InvitationApi from "../api/InvitationApi";
 import { useDispatch } from "react-redux";
 import { setTeamId, setAuth } from "../store/authSlice";
 import { useHistory } from "react-router";
+import Button from "./Button";
 
 export default function InvitationSignUp() {
 	const [password, setPassword] = useState("");
@@ -109,9 +109,9 @@ export default function InvitationSignUp() {
 					</div>
 				)}
 
-				<FilledButton full bold disabled={!canSignUp} loading={loading} onClick={handleSignUp}>
+				<Button full disabled={!canSignUp} loading={loading} onClick={handleSignUp}>
 					Sign Up
-				</FilledButton>
+				</Button>
 			</CenteredPage>
 		);
 	} else {

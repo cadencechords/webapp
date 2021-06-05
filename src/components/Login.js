@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import FilledButton from "./buttons/FilledButton";
 import AuthApi from "../api/AuthApi";
 import Alert from "./Alert";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../store/authSlice";
+import Button from "./Button";
 
 export default function Login() {
 	useEffect(() => (document.title = "Login"));
@@ -101,9 +101,9 @@ export default function Login() {
 					</div>
 				)}
 				<div className="my-3">
-					<FilledButton full bold disabled={!canLogin} loading={loading} onClick={handleLogin}>
+					<Button full bold disabled={!canLogin} loading={loading} onClick={handleLogin}>
 						Login
-					</FilledButton>
+					</Button>
 				</div>
 			</div>
 		</div>

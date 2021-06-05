@@ -65,4 +65,23 @@ export default class SetlistApi {
 			headers: constructAuthHeaders(),
 		});
 	}
+
+	static deleteOne(setlistId) {
+		return axios.delete(SETLISTS_URL + `/${setlistId}?team_id=${getTeamId()}`, {
+			headers: constructAuthHeaders(),
+		});
+	}
+
+	static updateOne(updates, setlistId) {
+		if (updates) {
+			let allowedParams = {};
+
+			if (updates.name) allowedParams.name = updates.name;
+
+			allowedParams.team_id = getTeamId();
+			return axios.put(SETLISTS_URL + `/${setlistId}`, allowedParams, {
+				headers: constructAuthHeaders(),
+			});
+		}
+	}
 }

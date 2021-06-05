@@ -11,4 +11,18 @@ export default class PlanningCenterApi {
 			{ headers: constructAuthHeaders() }
 		);
 	}
+
+	static getSongs(offset, query) {
+		return axios.get(`${PCO_URL}/songs?offset=${offset}${query ? "&query=" + query : ""}`, {
+			headers: constructAuthHeaders(),
+		});
+	}
+
+	static importSongs(songIds) {
+		return axios.post(
+			PCO_URL + "/songs",
+			{ songs: songIds, team_id: getTeamId() },
+			{ headers: constructAuthHeaders() }
+		);
+	}
 }

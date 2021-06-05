@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import FilledButton from "./buttons/FilledButton";
+import Button from "./Button";
 import CenteredPage from "./CenteredPage";
 import PulseLoader from "react-spinners/PulseLoader";
 import InvitationApi from "../api/InvitationApi";
@@ -52,7 +52,7 @@ export default function ClaimInvitation() {
 				<div className="text-center">
 					Uh oh, looks like something went wrong.
 					<Link className="mt-3 inline-block" to="/login">
-						<FilledButton>Take me home</FilledButton>
+						<Button>Take me home</Button>
 					</Link>
 				</div>
 			</CenteredPage>

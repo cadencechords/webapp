@@ -15,6 +15,7 @@ import TeamApi from "../api/TeamApi";
 import SetlistDetail from "./SetlistDetail";
 import SongImportSources from "./SongImportSources";
 import PlanningCenterRedirect from "./PlanningCenterRedirect";
+import PlanningCenterSongsList from "./PlanningCenterSongsList";
 
 export default function Content() {
 	const dispatch = useDispatch();
@@ -31,7 +32,7 @@ export default function Content() {
 		}
 
 		fetchCurrentUser();
-	});
+	}, [dispatch]);
 
 	useEffect(() => {
 		async function fetchCurrentTeam() {
@@ -50,6 +51,9 @@ export default function Content() {
 				</Route>
 				<Route path="/app/binders" exact>
 					<BindersList />
+				</Route>
+				<Route path="/app/import/pco/songs" exact>
+					<PlanningCenterSongsList />
 				</Route>
 				<Route path="/app/import/pco_redirect" exact>
 					<PlanningCenterRedirect />

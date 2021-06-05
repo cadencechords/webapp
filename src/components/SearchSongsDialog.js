@@ -6,9 +6,9 @@ import StackedList from "./StackedList";
 import OpenButton from "./buttons/OpenButton";
 import SongApi from "../api/SongApi";
 import PulseLoader from "react-spinners/PulseLoader";
-import FilledButton from "./buttons/FilledButton";
 import BinderApi from "../api/BinderApi";
 import { useParams } from "react-router";
+import Button from "./Button";
 
 export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onAdd }) {
 	const [songs, setSongs] = useState([]);
@@ -92,14 +92,9 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 
 			<div className="flex justify-between mt-6 items-center">
 				<span className="w-1/2 mr-2">
-					<FilledButton
-						onClick={handleSaveAdds}
-						full
-						disabled={songsToAdd.length === 0}
-						loading={saving}
-					>
+					<Button onClick={handleSaveAdds} full disabled={songsToAdd.length === 0} loading={saving}>
 						Add {songsToAdd.length} song{songsToAdd.length === 1 ? "" : "s"}
-					</FilledButton>
+					</Button>
 				</span>
 				<span className="w-1/2 ml-2">
 					<OpenButton full bold onClick={handleClose}>

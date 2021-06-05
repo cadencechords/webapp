@@ -1,12 +1,16 @@
 import OutlinedInput from "./inputs/OutlinedInput";
 import StyledDialog from "./StyledDialog";
-import FilledButton from "./buttons/FilledButton";
 import { useState } from "react";
 import SongApi from "../api/SongApi";
+import { useHistory } from "react-router";
+import OrDivider from "./OrDivider";
+import OpenButton from "./buttons/OpenButton";
+import Button from "./Button";
 
 export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
 	const [name, setName] = useState("");
 	const [loading, setLoading] = useState(false);
+	const router = useHistory();
 
 	const canCreate = Boolean(name);
 
@@ -32,9 +36,15 @@ export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
 				<OutlinedInput placeholder="ex: Amazing Grace" value={name} onChange={setName} />
 			</div>
 
-			<FilledButton bold full disabled={!canCreate} loading={loading} onClick={handleCreate}>
+			<Button full disabled={!canCreate} loading={loading} onClick={handleCreate}>
 				Create Song
-			</FilledButton>
+			</Button>
+
+			<OrDivider />
+
+			<OpenButton full color="blue" bold onClick={() => router.push("/app/import")}>
+				Import a song
+			</OpenButton>
 		</StyledDialog>
 	);
 }

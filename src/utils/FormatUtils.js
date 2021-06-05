@@ -29,3 +29,8 @@ export const FONT_SIZES = [
 	"29",
 	"30",
 ];
+
+export function pluralOrSingularize(word, items) {
+	let letterS = items.length === 1 ? "" : "s";
+	return word + letterS;
+}

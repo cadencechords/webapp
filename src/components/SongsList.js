@@ -43,7 +43,7 @@ export default function SongsList() {
 			</div>
 		);
 	} else if (!loading && songs.length === 0) {
-		content = <NoDataMessage type="song" />;
+		content = <NoDataMessage type="songs" />;
 	} else {
 		content = <SongsTable songs={songs} />;
 	}

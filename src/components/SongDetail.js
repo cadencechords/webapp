@@ -14,13 +14,13 @@ import PencilIcon from "@heroicons/react/solid/PencilIcon";
 import { useHistory, useParams } from "react-router";
 import PulseLoader from "react-spinners/PulseLoader";
 import SongApi from "../api/SongApi";
-import FilledButton from "./buttons/FilledButton";
 import { isEmpty } from "../utils/ObjectUtils";
 import AddThemeDialog from "./AddThemeDialog";
 import AddGenreDialog from "./AddGenreDialog";
 import BinderColor from "./BinderColor";
 import { setSongBeingEdited } from "../store/editorSlice";
 import { useDispatch } from "react-redux";
+import Button from "./Button";
 
 export default function SongDetail() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -189,9 +189,9 @@ export default function SongDetail() {
 
 			{!isEmpty(pendingUpdates) && (
 				<div className="fixed bottom-8 right-8 shadow-md">
-					<FilledButton bold onClick={handleSaveChanges} loading={saving}>
+					<Button bold onClick={handleSaveChanges} loading={saving}>
 						Save Changes
-					</FilledButton>
+					</Button>
 				</div>
 			)}
 

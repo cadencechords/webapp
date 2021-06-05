@@ -2,7 +2,7 @@ import { useState } from "react";
 import ColorsList from "./ColorsList";
 import OutlinedInput from "./inputs/OutlinedInput";
 import StyledDialog from "./StyledDialog";
-import FilledButton from "./buttons/FilledButton";
+import Button from "./Button";
 import BinderApi from "../api/BinderApi";
 
 export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
@@ -52,9 +52,9 @@ export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 				<ColorsList onChange={setColor} color={color} />
 			</div>
 
-			<FilledButton full bold loading={loading} onClick={handleCreate}>
+			<Button full loading={loading} onClick={handleCreate}>
 				Create
-			</FilledButton>
+			</Button>
 		</StyledDialog>
 	);
 }

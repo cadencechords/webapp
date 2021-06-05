@@ -1,13 +1,13 @@
 import MemberCard from "./MemberCard";
 import PendingInvitationsList from "./PendingInvitationsList";
 import SectionTitle from "./SectionTitle";
-import FilledButton from "./buttons/FilledButton";
 import { useEffect, useState } from "react";
 import SendInvitesDialog from "./SendInvitesDialog";
 import InvitationApi from "../api/InvitationApi";
 import TeamApi from "../api/TeamApi";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../store/authSlice";
+import Button from "./Button";
 
 export default function MembersList() {
 	useEffect(() => (document.title = "Members"), []);
@@ -66,7 +66,7 @@ export default function MembersList() {
 			<>
 				<div className="flex items-center justify-between">
 					<SectionTitle title="Current members" />
-					<FilledButton onClick={() => setShowInvitationDialog(true)}>Send an Invite</FilledButton>
+					<Button onClick={() => setShowInvitationDialog(true)}>Send an invite</Button>
 				</div>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 my-5">
 					{memberCards}

@@ -32,7 +32,7 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 		}
 
 		fetchSongs();
-	}, [open]);
+	}, [open, boundSongs]);
 
 	useEffect(() => {
 		setFilteredSongs(songs.filter((song) => song.name.toLowerCase().includes(query.toLowerCase())));
@@ -93,7 +93,7 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 			</div>
 			<StackedList items={songListItems} />
 			<AddCancelActions
-				addText={songsToAdd.length != 1 ? `Add ${songsToAdd.length} songs` : "Add 1 song"}
+				addText={songsToAdd.length !== 1 ? `Add ${songsToAdd.length} songs` : "Add 1 song"}
 				onCancel={handleCloseDialog}
 				loadingAdd={savingAdds}
 				onAdd={handleSaveAdds}

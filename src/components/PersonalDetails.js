@@ -2,9 +2,9 @@ import { useSelector, useDispatch } from "react-redux";
 import OutlinedInput from "./inputs/OutlinedInput";
 import { selectCurrentUser, setCurrentUser } from "../store/authSlice";
 import { useEffect, useState } from "react";
-import FilledButton from "./buttons/FilledButton";
 import UserApi from "../api/UserApi";
 import ProfilePictureDetail from "./ProfilePictureDetail";
+import Button from "./Button";
 
 export default function PersonalDetails() {
 	const currentUser = useSelector(selectCurrentUser);
@@ -74,15 +74,9 @@ export default function PersonalDetails() {
 						/>
 					</div>
 				</div>
-				<FilledButton
-					full
-					bold
-					disabled={!changesMade}
-					onClick={handleSaveUpdates}
-					loading={savingChanges}
-				>
+				<Button full disabled={!changesMade} onClick={handleSaveUpdates} loading={savingChanges}>
 					Save Changes
-				</FilledButton>
+				</Button>
 			</div>
 		);
 	} else {

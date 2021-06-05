@@ -1,4 +1,4 @@
-import EditableData from "./inputs/EditableData";
+// import EditableData from "./inputs/EditableData";
 import ProfilePicture from "./ProfilePicture";
 import OpenInput from "./inputs/OpenInput";
 import { useSelector } from "react-redux";

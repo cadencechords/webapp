@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import FilledButton from "./buttons/FilledButton";
 import OutlinedInput from "./inputs/OutlinedInput";
 import PasswordRequirements from "./PasswordRequirements";
 import AuthApi from "../api/AuthApi";
 import Alert from "./Alert";
+import Button from "./Button";
 
 export default function SignUp() {
 	const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -146,9 +146,9 @@ export default function SignUp() {
 					</div>
 				)}
 
-				<FilledButton full bold disabled={!canSignUp} loading={loading} onClick={handleSignUp}>
+				<Button full disabled={!canSignUp} loading={loading} onClick={handleSignUp}>
 					Sign Up
-				</FilledButton>
+				</Button>
 			</div>
 		</div>
 	);

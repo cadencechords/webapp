@@ -1,11 +1,11 @@
 import { useState } from "react";
-import FilledButton from "./buttons/FilledButton";
 import CenteredPage from "./CenteredPage";
 import OutlinedInput from "./inputs/OutlinedInput";
 import TeamApi from "../api/TeamApi";
 import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { setTeamId } from "../store/authSlice";
+import Button from "./Button";
 
 export default function CreateNewTeam() {
 	const [teamName, setTeamIdName] = useState("");
@@ -39,9 +39,9 @@ export default function CreateNewTeam() {
 			/>
 
 			<div className="mt-6">
-				<FilledButton full bold loading={loading} onClick={handleCreate}>
+				<Button full loading={loading} onClick={handleCreate}>
 					Create
-				</FilledButton>
+				</Button>
 			</div>
 		</CenteredPage>
 	);

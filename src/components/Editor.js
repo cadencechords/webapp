@@ -1,4 +1,3 @@
-import FilledButton from "./buttons/FilledButton";
 import ChordOptions from "./ChordOptions";
 import LyricOptions from "./LyricOptions";
 import PageTitle from "./PageTitle";
@@ -12,6 +11,7 @@ import { useSelector } from "react-redux";
 import { selectSongBeingEdited, setSongBeingEdited } from "../store/editorSlice";
 import SongApi from "../api/SongApi";
 import { isEmpty } from "../utils/ObjectUtils";
+import Button from "./Button";
 
 export default function Editor() {
 	const [editorView, setEditorView] = useState("Edit");
@@ -84,9 +84,9 @@ export default function Editor() {
 					<PageTitle title={songBeingEdited.name} />
 				</div>
 				<span>
-					<FilledButton disabled={!dirty} onClick={handleSaveChanges} loading={savingUpdates}>
+					<Button disabled={!dirty} onClick={handleSaveChanges} loading={savingUpdates}>
 						Save Changes
-					</FilledButton>
+					</Button>
 				</span>
 			</div>
 			<div className="bg-gray-100 py-3 px-5 border-t border-gray-200 border-b sticky top-0">

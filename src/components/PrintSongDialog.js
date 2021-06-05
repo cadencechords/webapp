@@ -3,7 +3,7 @@ import StyledDialog from "./StyledDialog";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { toPdf } from "../utils/SongUtils";
 import { useState } from "react";
-import FilledButton from "./buttons/FilledButton";
+import Button from "./Button";
 
 export default function PrintSongDialog({ song, open, onCloseDialog }) {
 	const [lyricsAndChordsClicked, setLyricsAndChordsClicked] = useState(false);
@@ -15,9 +15,9 @@ export default function PrintSongDialog({ song, open, onCloseDialog }) {
 		printLyrics = (
 			<PDFDownloadLink document={toPdf(song, false)} fileName={`${song.name} Lyrics.pdf`}>
 				{({ blob, url, loading, error }) => (
-					<FilledButton full loading={!blob} disabled={!blob}>
+					<Button full loading={!blob} disabled={!blob}>
 						Download Now
-					</FilledButton>
+					</Button>
 				)}
 			</PDFDownloadLink>
 		);
@@ -35,9 +35,9 @@ export default function PrintSongDialog({ song, open, onCloseDialog }) {
 		printLyricsAndChords = (
 			<PDFDownloadLink document={toPdf(song, true)} fileName={`${song.name} Lyrics and Chords.pdf`}>
 				{({ blob, url, loading, error }) => (
-					<FilledButton full loading={!blob} disabled={!blob}>
+					<Button full loading={!blob} disabled={!blob}>
 						Download Now
-					</FilledButton>
+					</Button>
 				)}
 			</PDFDownloadLink>
 		);

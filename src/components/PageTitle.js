@@ -2,7 +2,7 @@ export default function PageTitle({ title, editable, onChange }) {
 	if (editable) {
 		return (
 			<input
-				className="my-4 font-bold p-2 text-2xl w-full outline-none focus:outline-none focus:bg-gray-100 hover:bg-gray-100 rounded"
+				className="font-bold p-2 text-2xl w-full outline-none focus:outline-none focus:bg-gray-100 hover:bg-gray-100 rounded transition-colors"
 				defaultValue={title}
 				onChange={(e) => onChange(e.target.value)}
 			/>
