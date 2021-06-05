@@ -3,9 +3,9 @@ import SectionTitle from "./SectionTitle";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
 import XIcon from "@heroicons/react/outline/XIcon";
-import OutlinedButton from "./buttons/OutlinedButton";
 import NoDataMessage from "./NoDataMessage";
 import InvitationApi from "../api/InvitationApi";
+import Button from "./Button";
 
 export default function PendingInvitationsList({ invitations, loading, onInvitationDeleted }) {
 	const handleDeleteInvitation = async (invitationId) => {
@@ -38,9 +38,14 @@ export default function PendingInvitationsList({ invitations, loading, onInvitat
 							let actions = (
 								<div>
 									<span className="mr-2">
-										<OutlinedButton onClick={() => handleResendInvitation(invitation.id)}>
+										<Button
+											variant="outlined"
+											size="xs"
+											color="black"
+											onClick={() => handleResendInvitation(invitation.id)}
+										>
 											Resend
-										</OutlinedButton>
+										</Button>
 									</span>
 									<OpenButton onClick={() => handleDeleteInvitation(invitation.id)}>
 										<XIcon className="h-4" />

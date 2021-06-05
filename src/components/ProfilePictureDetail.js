@@ -1,10 +1,10 @@
 import Label from "./Label";
 import ProfilePicture from "./ProfilePicture";
-import OutlinedButton from "./buttons/OutlinedButton";
 import OpenButton from "./buttons/OpenButton";
 import { useRef, useState } from "react";
 import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import MobileProfilePictureMenu from "./mobile menus/MobileProfilePictureMenu";
+import Button from "./Button";
 
 export default function ProfilePictureDetail({ url }) {
 	const [showMobileActionsDialog, setShowMobileActionsDialog] = useState(false);
@@ -40,9 +40,9 @@ export default function ProfilePictureDetail({ url }) {
 			/>
 			<div className="md:flex md:justify-end hidden">
 				<span className="md:mr-2 md:w-20">
-					<OutlinedButton full onClick={handleOpenFileDialog}>
+					<Button color="black" variant="outlined" full onClick={handleOpenFileDialog}>
 						Change
-					</OutlinedButton>
+					</Button>
 				</span>
 				<OpenButton bold full className="md:w-20">
 					Remove

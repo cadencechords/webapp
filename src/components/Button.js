@@ -23,7 +23,7 @@ export default function Button({
 		if (color === "black") {
 			colorClasses += ` text-white bg-black `;
 		} else {
-			colorClasses += ` text-white bg-${color}-600 hover:bg-${color}-800 focus:big-${color}-800 shadow-sm `;
+			colorClasses += ` text-white bg-${color}-600 hover:bg-${color}-800 focus:bg-${color}-800 shadow-sm `;
 		}
 		loadingColor = "white";
 		disabledClasses += ` bg-gray-100 text-gray-600 `;

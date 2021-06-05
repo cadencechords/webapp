@@ -1,5 +1,4 @@
 import OpenButton from "./buttons/OpenButton";
-import OutlinedButton from "./buttons/OutlinedButton";
 import PageTitle from "./PageTitle";
 import PrinterIcon from "@heroicons/react/outline/PrinterIcon";
 import PrintSongDialog from "./PrintSongDialog";
@@ -143,14 +142,14 @@ export default function SongDetail() {
 					onCloseDialog={() => setShowPrintDialog(false)}
 				/>
 				<div className="mb-3">
-					<OutlinedButton onClick={handleOpenInEditor}>
+					<Button variant="outlined" color="black" onClick={handleOpenInEditor}>
 						<div className="flex flex-row items-center">
 							<span className="mr-1">
 								<PencilIcon className="w-4 h-4 text-blue-700" />
 							</span>
 							Edit Song
 						</div>
-					</OutlinedButton>
+					</Button>
 				</div>
 				<SongPreview song={song} />
 			</div>

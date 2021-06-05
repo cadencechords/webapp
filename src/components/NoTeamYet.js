@@ -1,4 +1,5 @@
 import { useHistory } from "react-router";
+import Button from "./Button";
 import OutlinedButton from "./buttons/OutlinedButton";
 
 export default function NoTeamYet() {
@@ -9,9 +10,9 @@ export default function NoTeamYet() {
 			<div className="text-xl font-semibold mb-4">
 				Looks like you aren't a part of any teams yet
 			</div>
-			<OutlinedButton full onClick={() => router.push("/login/teams/new")}>
+			<Button variant="outlined" full onClick={() => router.push("/login/teams/new")}>
 				Make one now
-			</OutlinedButton>
+			</Button>
 		</>
 	);
 }
