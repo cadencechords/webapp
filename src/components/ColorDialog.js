@@ -1,8 +1,8 @@
 import { useState } from "react";
 import BinderColor from "./BinderColor";
-import OpenButton from "./buttons/OpenButton";
 import StyledDialog from "./StyledDialog";
 import { COLORS } from "../utils/BinderUtils";
+import Button from "./Button";
 
 export default function ColorDialog({ open, onCloseDialog, binderColor, onChange }) {
 	const [currentColor, setCurrentColor] = useState(binderColor);
@@ -24,9 +24,9 @@ export default function ColorDialog({ open, onCloseDialog, binderColor, onChange
 			<BinderColor color={currentColor} block />
 
 			<div className="mt-4">
-				<OpenButton color="blue" full bold onClick={handleUpdate}>
+				<Button variant="open" color="blue" full onClick={handleUpdate}>
 					Confirm
-				</OpenButton>
+				</Button>
 			</div>
 		</StyledDialog>
 	);

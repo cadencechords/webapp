@@ -1,9 +1,9 @@
-import OpenButton from "./buttons/OpenButton";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import ArrowNarrowRightIcon from "@heroicons/react/outline/ArrowNarrowRightIcon";
 import PulseLoader from "react-spinners/PulseLoader";
+import Button from "./Button";
 
 export default function AsyncPaginationTable({
 	headers,
@@ -28,18 +28,24 @@ export default function AsyncPaginationTable({
 				</tbody>
 			</table>
 			<div className="flex items-center justify-between">
-				<OpenButton bold disabled={previousDisabled} onClick={onPrevious}>
+				<Button
+					variant="open"
+					color="black"
+					size="xs"
+					disabled={previousDisabled}
+					onClick={onPrevious}
+				>
 					<div className="flex items-center">
 						<ArrowNarrowLeftIcon className="w-4 mr-3" /> Previous
 					</div>
-				</OpenButton>
+				</Button>
 				{loading && <PulseLoader size="7" color="blue" />}
-				<OpenButton bold onClick={onNext}>
+				<Button variant="open" color="black" size="xs" bold onClick={onNext}>
 					<div className="flex items-center">
 						Next
 						<ArrowNarrowRightIcon className="ml-3 w-4" />
 					</div>
-				</OpenButton>
+				</Button>
 			</div>
 		</div>
 	);

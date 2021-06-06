@@ -3,7 +3,6 @@ import OpenInput from "./inputs/OpenInput";
 import Checkbox from "./Checkbox";
 import { useEffect, useState } from "react";
 import StackedList from "./StackedList";
-import OpenButton from "./buttons/OpenButton";
 import SongApi from "../api/SongApi";
 import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
@@ -97,9 +96,9 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 					</Button>
 				</span>
 				<span className="w-1/2 ml-2">
-					<OpenButton full bold onClick={handleClose}>
+					<Button variant="open" color="black" full onClick={handleClose}>
 						Cancel
-					</OpenButton>
+					</Button>
 				</span>
 			</div>
 		</StyledDialog>

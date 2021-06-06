@@ -4,7 +4,6 @@ import { useState } from "react";
 import SongApi from "../api/SongApi";
 import { useHistory } from "react-router";
 import OrDivider from "./OrDivider";
-import OpenButton from "./buttons/OpenButton";
 import Button from "./Button";
 
 export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
@@ -42,9 +41,9 @@ export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
 
 			<OrDivider />
 
-			<OpenButton full color="blue" bold onClick={() => router.push("/app/import")}>
+			<Button variant="open" full color="blue" onClick={() => router.push("/app/import")}>
 				Import a song
-			</OpenButton>
+			</Button>
 		</StyledDialog>
 	);
 }

@@ -2,7 +2,6 @@ import ChordOptions from "./ChordOptions";
 import LyricOptions from "./LyricOptions";
 import PageTitle from "./PageTitle";
 import { useEffect, useState } from "react";
-import OpenButton from "./buttons/OpenButton";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import { useHistory } from "react-router";
 import ButtonSwitch from "./buttons/ButtonSwitch";
@@ -77,9 +76,9 @@ export default function Editor() {
 			<div className="px-3 container mx-auto flex items-center justify-between">
 				<div className="flex items-center">
 					<span className="mr-4">
-						<OpenButton onClick={handleGoBack}>
+						<Button variant="open" size="xs" onClick={handleGoBack}>
 							<ArrowNarrowLeftIcon className="text-gray-600 h-6 w-6" />
-						</OpenButton>
+						</Button>
 					</span>
 					<PageTitle title={songBeingEdited.name} />
 				</div>

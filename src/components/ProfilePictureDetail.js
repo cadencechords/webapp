@@ -1,6 +1,5 @@
 import Label from "./Label";
 import ProfilePicture from "./ProfilePicture";
-import OpenButton from "./buttons/OpenButton";
 import { useRef, useState } from "react";
 import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import MobileProfilePictureMenu from "./mobile menus/MobileProfilePictureMenu";
@@ -44,9 +43,9 @@ export default function ProfilePictureDetail({ url }) {
 						Change
 					</Button>
 				</span>
-				<OpenButton bold full className="md:w-20">
+				<Button variant="open" color="black" className="md:w-20">
 					Remove
-				</OpenButton>
+				</Button>
 			</div>
 			<MobileProfilePictureMenu
 				open={showMobileActionsDialog}

@@ -1,9 +1,9 @@
 import DetailTag from "./DetailTag";
 import DetailTitle from "./DetailTitle";
-import OpenButton from "./buttons/OpenButton";
 import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import XIcon from "@heroicons/react/outline/XIcon";
 import NoDataMessage from "./NoDataMessage";
+import Button from "./Button";
 
 export default function DetailSection({ title, items, onAdd, onDelete }) {
 	return (
@@ -11,9 +11,9 @@ export default function DetailSection({ title, items, onAdd, onDelete }) {
 			<div className="mb-2 flex justify-between items-center">
 				<DetailTitle>{title}</DetailTitle>
 				{onAdd && (
-					<OpenButton onClick={onAdd}>
+					<Button size="xs" variant="open" onClick={onAdd}>
 						<PlusIcon className="h-4 w-4 text-gray-700 " />
-					</OpenButton>
+					</Button>
 				)}
 			</div>
 			{items?.length > 0 ? (

@@ -1,6 +1,6 @@
 import PencilIcon from "@heroicons/react/solid/PencilIcon";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
-import OpenButton from "./buttons/OpenButton";
+import Button from "./Button";
 
 export default function TableRow({
 	columns,
@@ -33,9 +33,15 @@ export default function TableRow({
 
 			{removable && (
 				<td className="text-right pr-4">
-					<OpenButton onClick={onRemove} loading={removing} color="grey" disabled={removing}>
+					<Button
+						onClick={onRemove}
+						loading={removing}
+						variant="open"
+						size="xs"
+						disabled={removing}
+					>
 						<TrashIcon className="h-4 w-4 text-gray-600" />
-					</OpenButton>
+					</Button>
 				</td>
 			)}
 			{actions && <td>{actions}</td>}

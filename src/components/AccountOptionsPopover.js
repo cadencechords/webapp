@@ -1,10 +1,10 @@
 import UserCircleIcon from "@heroicons/react/outline/UserCircleIcon";
 import { useDispatch } from "react-redux";
-import OpenButton from "./buttons/OpenButton";
 import StyledPopover from "./StyledPopover";
 import { logOut } from "../store/authSlice";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
+import Button from "./Button";
 
 export default function AccountOptionsPopover() {
 	const dispatch = useDispatch();
@@ -24,14 +24,14 @@ export default function AccountOptionsPopover() {
 			<StyledPopover button={button} position="bottom-start">
 				<div className="w-60">
 					<Link to="/app/account">
-						<OpenButton full bold>
+						<Button variant="open" color="black" full>
 							<div className="h-8 flex items-center justify-center">Settings</div>
-						</OpenButton>
+						</Button>
 					</Link>
 					<hr />
-					<OpenButton full bold color="red" onClick={handleLogOut}>
+					<Button variant="open" full color="red" onClick={handleLogOut}>
 						<div className="h-8 flex items-center justify-center">Log out</div>
-					</OpenButton>
+					</Button>
 				</div>
 			</StyledPopover>
 		</div>

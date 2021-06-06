@@ -1,8 +1,8 @@
 import StyledPopover from "./StyledPopover";
 import ProfilePicture from "./ProfilePicture";
-import OpenButton from "./buttons/OpenButton";
 import SwitchHorizontalIcon from "@heroicons/react/outline/SwitchHorizontalIcon";
 import { Link } from "react-router-dom";
+import Button from "./Button";
 
 export default function TeamOptionsPopover({ team }) {
 	let button = (
@@ -16,12 +16,12 @@ export default function TeamOptionsPopover({ team }) {
 	return (
 		<StyledPopover button={button}>
 			<div className="w-64">
-				<OpenButton full bold>
+				<Button variant="open" full>
 					<Link className="flex justify-start text-gray-600 h-8 items-center" to="/login/teams">
 						<SwitchHorizontalIcon className="mx-4 h-4 text-gray-600" />
 						Switch teams
 					</Link>
-				</OpenButton>
+				</Button>
 			</div>
 		</StyledPopover>
 	);

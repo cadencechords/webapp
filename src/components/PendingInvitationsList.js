@@ -1,4 +1,3 @@
-import OpenButton from "./buttons/OpenButton";
 import SectionTitle from "./SectionTitle";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
@@ -36,7 +35,7 @@ export default function PendingInvitationsList({ invitations, loading, onInvitat
 					<tbody>
 						{invitations?.map((invitation) => {
 							let actions = (
-								<div>
+								<div className="flex items-center">
 									<span className="mr-2">
 										<Button
 											variant="outlined"
@@ -47,9 +46,14 @@ export default function PendingInvitationsList({ invitations, loading, onInvitat
 											Resend
 										</Button>
 									</span>
-									<OpenButton onClick={() => handleDeleteInvitation(invitation.id)}>
+									<Button
+										variant="open"
+										size="xs"
+										color="black"
+										onClick={() => handleDeleteInvitation(invitation.id)}
+									>
 										<XIcon className="h-4" />
-									</OpenButton>
+									</Button>
 								</div>
 							);
 							return (

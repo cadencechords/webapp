@@ -1,4 +1,3 @@
-import OpenButton from "./buttons/OpenButton";
 import PageTitle from "./PageTitle";
 import PrinterIcon from "@heroicons/react/outline/PrinterIcon";
 import PrintSongDialog from "./PrintSongDialog";
@@ -131,9 +130,9 @@ export default function SongDetail() {
 						editable
 						onChange={(editedName) => handleUpdate("name", editedName)}
 					/>
-					<OpenButton onClick={() => setShowPrintDialog(true)}>
+					<Button size="xs" variant="open" color="gray" onClick={() => setShowPrintDialog(true)}>
 						<PrinterIcon className="text-gray-500 h-5 w-5" />
-					</OpenButton>
+					</Button>
 				</div>
 
 				<PrintSongDialog
@@ -142,7 +141,7 @@ export default function SongDetail() {
 					onCloseDialog={() => setShowPrintDialog(false)}
 				/>
 				<div className="mb-3">
-					<Button variant="outlined" color="black" onClick={handleOpenInEditor}>
+					<Button variant="outlined" size="xs" color="black" onClick={handleOpenInEditor}>
 						<div className="flex flex-row items-center">
 							<span className="mr-1">
 								<PencilIcon className="w-4 h-4 text-blue-700" />

@@ -1,9 +1,9 @@
-import OpenButton from "./buttons/OpenButton";
 import MenuAlt2Icon from "@heroicons/react/outline/MenuAlt2Icon";
 import MenuIcon from "@heroicons/react/outline/MenuIcon";
 import MenuAlt3Icon from "@heroicons/react/outline/MenuAlt3Icon";
 import FontsListBox from "./FontsListBox";
 import FontSizesListBox from "./FontSizesListBox";
+import Button from "./Button";
 
 export default function LyricOptions({
 	onAlignmentChange,
@@ -14,15 +14,20 @@ export default function LyricOptions({
 	return (
 		<div className="flex items-center">
 			<span className="px-3 border-r border-gray-300">
-				<OpenButton hoverWeight={200} onClick={() => onAlignmentChange("left")}>
+				<Button
+					size="xs"
+					variant="open"
+					hoverWeight={200}
+					onClick={() => onAlignmentChange("left")}
+				>
 					<MenuAlt2Icon className="text-gray-500 h-4 w-4" />
-				</OpenButton>
-				<OpenButton hoverWeight={200} onClick={() => onAlignmentChange("center")}>
+				</Button>
+				<Button size="xs" variant="open" onClick={() => onAlignmentChange("center")}>
 					<MenuIcon className="text-gray-500 h-4 w-4" />
-				</OpenButton>
-				<OpenButton hoverWeight={200} onClick={() => onAlignmentChange("right")}>
+				</Button>
+				<Button size="xs" variant="open" onClick={() => onAlignmentChange("right")}>
 					<MenuAlt3Icon className="text-gray-500 h-4 w-4" />
-				</OpenButton>
+				</Button>
 			</span>
 
 			<span className="px-3 border-r border-gray-300 relative">

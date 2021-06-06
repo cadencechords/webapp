@@ -1,6 +1,6 @@
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
-import OpenButton from "./buttons/OpenButton";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import Button from "./Button";
 
 export default function DragAndDropTable({ onReorder, items, removeable, onRemove, onClick }) {
 	const reorder = (list, startIndex, endIndex) => {
@@ -56,9 +56,14 @@ export default function DragAndDropTable({ onReorder, items, removeable, onRemov
 											</span>
 
 											{removeable && (
-												<OpenButton color="grey" onClick={() => onRemove(item.id)}>
+												<Button
+													color="grey"
+													size="xs"
+													variant="open"
+													onClick={() => onRemove(item.id)}
+												>
 													<TrashIcon className="h-4 w-4 text-gray-600" />
-												</OpenButton>
+												</Button>
 											)}
 										</div>
 									)}

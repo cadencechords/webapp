@@ -1,4 +1,3 @@
-import OpenButton from "./buttons/OpenButton";
 import StyledDialog from "./StyledDialog";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { toPdf } from "../utils/SongUtils";
@@ -23,9 +22,9 @@ export default function PrintSongDialog({ song, open, onCloseDialog }) {
 		);
 	} else {
 		printLyrics = (
-			<OpenButton full onClick={() => setLyricsClicked(true)}>
+			<Button color="black" variant="open" full onClick={() => setLyricsClicked(true)}>
 				Print lyrics only
-			</OpenButton>
+			</Button>
 		);
 	}
 
@@ -43,9 +42,9 @@ export default function PrintSongDialog({ song, open, onCloseDialog }) {
 		);
 	} else {
 		printLyricsAndChords = (
-			<OpenButton full onClick={() => setLyricsAndChordsClicked(true)}>
+			<Button variant="open" color="black" full onClick={() => setLyricsAndChordsClicked(true)}>
 				Print lyrics and chords
-			</OpenButton>
+			</Button>
 		);
 	}
 
@@ -67,9 +66,9 @@ export default function PrintSongDialog({ song, open, onCloseDialog }) {
 			<div className="mb-4">{printLyricsAndChords}</div>
 
 			<div className="flex justify-end">
-				<OpenButton bold color="blue" onClick={handleCloseDialog}>
+				<Button variant="open" color="blue" onClick={handleCloseDialog}>
 					Cancel
-				</OpenButton>
+				</Button>
 			</div>
 		</StyledDialog>
 	);

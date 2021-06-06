@@ -1,5 +1,5 @@
 import XIcon from "@heroicons/react/outline/XIcon";
-import OpenButton from "./buttons/OpenButton";
+import Button from "./Button";
 
 export default function Alert({ dismissable, color, onDismiss, children }) {
 	return (
@@ -8,9 +8,9 @@ export default function Alert({ dismissable, color, onDismiss, children }) {
 		>
 			{children}
 			{dismissable && (
-				<OpenButton hoverWeight={0} onClick={onDismiss}>
+				<Button size="xs" variant="open" color="black" onClick={onDismiss}>
 					<XIcon className="w-4 h-4" />
-				</OpenButton>
+				</Button>
 			)}
 		</div>
 	);

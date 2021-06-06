@@ -1,8 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import PropTypes from "prop-types";
-import OpenButton from "./buttons/OpenButton";
 import XIcon from "@heroicons/react/outline/XIcon";
+import Button from "./Button";
 
 export default function StyledDialog({
 	open,
@@ -66,9 +66,9 @@ export default function StyledDialog({
 						>
 							{showClose && (
 								<span className="absolute top-4 right-4">
-									<OpenButton onClick={onCloseDialog}>
+									<Button variant="open" size="xs" onClick={onCloseDialog}>
 										<XIcon className="h-4 w-4 text-gray-700" />
-									</OpenButton>
+									</Button>
 								</span>
 							)}
 							<Dialog.Title as="h3" className={borderedTop ? ` border-b ` : ""}>

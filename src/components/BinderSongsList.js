@@ -4,7 +4,7 @@ import TableRow from "./TableRow";
 import { useState } from "react";
 import SearchSongsDialog from "./SearchSongsDialog";
 import { useHistory } from "react-router";
-import OpenButton from "./buttons/OpenButton";
+import Button from "./Button";
 
 export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songsBeingRemoved }) {
 	const [showSearchDialog, setShowSearchDialog] = useState(false);
@@ -16,11 +16,17 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 
 	return (
 		<>
-			<div className="flex justify-between mb-4 items-end">
+			<div className="flex justify-between mb-2 items-center">
 				<SectionTitle title="Songs in this binder" />
-				<OpenButton onClick={() => setShowSearchDialog(true)} bold color="blue">
+				<Button
+					variant="open"
+					size="xs"
+					onClick={() => setShowSearchDialog(true)}
+					bold
+					color="blue"
+				>
 					Add Songs
-				</OpenButton>
+				</Button>
 			</div>
 			<table className="w-full">
 				<TableHead columns={["NAME", ""]} />

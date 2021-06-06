@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useHistory, useParams } from "react-router";
 import SetlistApi from "../api/SetlistApi";
 import AddSongsToSetDialog from "./AddSongsToSetDialog";
-import OpenButton from "./buttons/OpenButton";
+import Button from "./Button";
 import DragAndDropTable from "./DragAndDropTable";
 
 export default function SetlistSongsList({ songs, onSongsAdded, onReordered, onSongRemoved }) {
@@ -41,9 +41,9 @@ export default function SetlistSongsList({ songs, onSongsAdded, onReordered, onS
 		<>
 			<div className="font-semibold pb-2 flex justify-between items-center border-b">
 				Songs
-				<OpenButton bold color="blue" onClick={() => setShowSongsDialog(true)}>
+				<Button size="xs" variant="open" onClick={() => setShowSongsDialog(true)}>
 					Add Song
-				</OpenButton>
+				</Button>
 			</div>
 
 			<DragAndDropTable

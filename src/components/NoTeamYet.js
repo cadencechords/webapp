@@ -1,6 +1,5 @@
 import { useHistory } from "react-router";
 import Button from "./Button";
-import OutlinedButton from "./buttons/OutlinedButton";
 
 export default function NoTeamYet() {
 	const router = useHistory();

@@ -10,8 +10,9 @@ export default function Button({
 	onClick,
 	loading,
 	disabled,
+	className,
 }) {
-	let defaultClasses = " outline-none focus:outline-none transition-colors text-sm ";
+	let defaultClasses = ` outline-none focus:outline-none transition-colors text-sm ${className} `;
 	let colorClasses = "";
 	let disabledClasses = " cursor-default ";
 	let roundedClasses = "";
