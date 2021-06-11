@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const AUTH_URL = `${process.env.REACT_APP_API_URL}/AUTH`;
+// const AUTH_URL = `${process.env.REACT_APP_API_URL}/AUTH`;
 export default class AuthApi {
 	static signUp(email, password, passwordConfirmation) {
 		return axios.post(process.env.REACT_APP_API_URL + "/auth", {

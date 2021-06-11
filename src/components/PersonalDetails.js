@@ -48,8 +48,6 @@ export default function PersonalDetails() {
 		}
 	};
 
-	const handleProfilePictureChange = () => {};
-
 	if (currentUser) {
 		return (
 			<div className="max-w-4xl mx-auto">

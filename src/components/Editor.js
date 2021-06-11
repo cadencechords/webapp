@@ -88,7 +88,7 @@ export default function Editor() {
 					</Button>
 				</span>
 			</div>
-			<div className="bg-gray-100 py-3 px-5 border-t border-gray-200 border-b sticky top-0">
+			<div className="bg-gray-50 py-3 px-5 border-t border-gray-200 border-b sticky top-0">
 				<LyricOptions
 					onAlignmentChange={(newAlignment) => handleFormatChange("alignment", newAlignment)}
 					onFontChange={(newFont) => handleFormatChange("font", newFont)}

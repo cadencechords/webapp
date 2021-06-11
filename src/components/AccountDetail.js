@@ -17,10 +17,10 @@ export default function AccountDetail() {
 		return (
 			<>
 				<div className="text-gray-500">
-					<div className="w-24 m-auto">
+					<div className="w-24 m-auto flex items-center justify-center my-2">
 						<ProfilePicture url={currentUser.image_url} />
 					</div>
-					<div className="font-semibold text-sm text-center mb-2">{currentUser.email}</div>
+					<div className="font-semibold text-sm text-center mb-1">{currentUser.email}</div>
 					{currentUser.first_name ? (
 						<div className="font-semibold text-black text-center text-xl">
 							{currentUser.first_name} {currentUser.last_name}

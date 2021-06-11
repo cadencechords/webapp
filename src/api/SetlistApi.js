@@ -77,6 +77,7 @@ export default class SetlistApi {
 			let allowedParams = {};
 
 			if (updates.name) allowedParams.name = updates.name;
+			if (updates.scheduledDate) allowedParams.scheduled_date = updates.scheduledDate;
 
 			allowedParams.team_id = getTeamId();
 			return axios.put(SETLISTS_URL + `/${setlistId}`, allowedParams, {

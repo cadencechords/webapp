@@ -3,7 +3,16 @@ import StyledDialog from "../StyledDialog";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
 import DesktopComputerIcon from "@heroicons/react/outline/DesktopComputerIcon";
 
-export default function MobileProfilePictureMenu({ open, onCloseDialog, onOpenFileDialog }) {
+export default function MobileProfilePictureMenu({
+	open,
+	onCloseDialog,
+	onOpenFileDialog,
+	onDeleteImage,
+}) {
+	const handleDeleteImage = () => {
+		onDeleteImage();
+		onCloseDialog();
+	};
 	return (
 		<StyledDialog
 			onCloseDialog={onCloseDialog}
@@ -17,7 +26,7 @@ export default function MobileProfilePictureMenu({ open, onCloseDialog, onOpenFi
 					Upload from device
 				</div>
 			</MobileMenuButton>
-			<MobileMenuButton full color="red">
+			<MobileMenuButton full color="red" onClick={handleDeleteImage}>
 				<div className="flex items-center">
 					<TrashIcon className="mr-4 h-5" />
 					Remove photo

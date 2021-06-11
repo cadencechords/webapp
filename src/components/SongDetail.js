@@ -19,6 +19,8 @@ import BinderColor from "./BinderColor";
 import { setSongBeingEdited } from "../store/editorSlice";
 import { useDispatch } from "react-redux";
 import Button from "./Button";
+import PlayIcon from "@heroicons/react/solid/PlayIcon";
+import FullscreenDialog from "./FullscreenDialog";
 
 export default function SongDetail() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -27,6 +29,7 @@ export default function SongDetail() {
 	const [saving, setSaving] = useState(false);
 	const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
 	const [showAddGenreDialog, setShowGenreDialog] = useState(false);
+	const [showSongFullscreen, setShowSongFullscreen] = useState(true);
 
 	useEffect(() => (document.title = song ? song.name : "Songs"));
 
@@ -124,7 +127,7 @@ export default function SongDetail() {
 	return (
 		<div className="grid grid-cols-4">
 			<div className="md:border-r md:pr-4 col-span-4 md:col-span-3">
-				<div className="flex items-center justify-between">
+				<div className="flex items-center justify-between mb-2">
 					<PageTitle
 						title={song.name}
 						editable
@@ -147,6 +150,15 @@ export default function SongDetail() {
 								<PencilIcon className="w-4 h-4 text-blue-700" />
 							</span>
 							Edit Song
+						</div>
+					</Button>
+
+					<Button variant="outlined" size="xs" color="black" className="ml-3">
+						<div className="flex flex-row items-center">
+							<span className="mr-1">
+								<PlayIcon className="w-4 h-4 text-purple-700" />
+							</span>
+							Present Song
 						</div>
 					</Button>
 				</div>
@@ -206,6 +218,9 @@ export default function SongDetail() {
 				currentSong={song}
 				onThemesAdded={handleThemesAdded}
 			/>
+			{/* // <FullscreenDialog open={showSongFullscreen} onCloseDialog={() => {}}>
+			// 	<button>hi</button>
+			// </FullscreenDialog> */}
 		</div>
 	);
 }

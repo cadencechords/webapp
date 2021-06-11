@@ -1,18 +1,18 @@
-import UserCircleIcon from "@heroicons/react/outline/UserCircleIcon";
 import { useDispatch } from "react-redux";
 import StyledPopover from "./StyledPopover";
-import { logOut } from "../store/authSlice";
+import { logOut, selectCurrentUser } from "../store/authSlice";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import Button from "./Button";
+import ProfilePicture from "./ProfilePicture";
+import { useSelector } from "react-redux";
 
 export default function AccountOptionsPopover() {
 	const dispatch = useDispatch();
 	const router = useHistory();
+	const currentUser = useSelector(selectCurrentUser);
 
-	let button = (
-		<UserCircleIcon className="h-6 w-6 text-gray-400 hover:text-gray-500 transition-all cursor-pointer" />
-	);
+	let button = <ProfilePicture url={currentUser?.image_url} size="xs" />;
 
 	const handleLogOut = () => {
 		dispatch(logOut());

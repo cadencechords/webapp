@@ -9,13 +9,14 @@ import PersonalDetails from "./PersonalDetails";
 import UserApi from "../api/UserApi";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectTeamId, setCurrentTeam, setCurrentUser } from "../store/authSlice";
+import { selectTeamId, setCurrentTeam, setCurrentUser, setMembership } from "../store/authSlice";
 import MembersList from "./MembersList";
 import TeamApi from "../api/TeamApi";
 import SetlistDetail from "./SetlistDetail";
 import SongImportSources from "./SongImportSources";
 import PlanningCenterRedirect from "./PlanningCenterRedirect";
 import PlanningCenterSongsList from "./PlanningCenterSongsList";
+import TeamDetail from "./TeamDetail";
 
 export default function Content() {
 	const dispatch = useDispatch();
@@ -26,13 +27,21 @@ export default function Content() {
 			try {
 				let { data } = await UserApi.getCurrentUser();
 				dispatch(setCurrentUser(data));
+
+				let membershipResponse = await UserApi.getTeamMembership();
+				dispatch(
+					setMembership({
+						is_admin: membershipResponse.data.is_admin,
+						role: membershipResponse.data.role,
+					})
+				);
 			} catch (error) {
 				console.log(error);
 			}
 		}
 
 		fetchCurrentUser();
-	}, [dispatch]);
+	}, [dispatch, teamId]);
 
 	useEffect(() => {
 		async function fetchCurrentTeam() {
@@ -40,8 +49,9 @@ export default function Content() {
 			dispatch(setCurrentTeam(data.team));
 			document.title = data.team.name;
 		}
+
 		fetchCurrentTeam();
-	}, [teamId]);
+	}, [teamId, dispatch]);
 
 	return (
 		<div className="md:ml-56 md:px-10 px-2 py-3">
@@ -81,6 +91,9 @@ export default function Content() {
 				</Route>
 				<Route path="/app/members" exact>
 					<MembersList />
+				</Route>
+				<Route path="/app/team">
+					<TeamDetail />
 				</Route>
 			</div>
 		</div>

@@ -6,8 +6,9 @@ import SendInvitesDialog from "./SendInvitesDialog";
 import InvitationApi from "../api/InvitationApi";
 import TeamApi from "../api/TeamApi";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../store/authSlice";
+import { selectCurrentTeam, selectCurrentUser } from "../store/authSlice";
 import Button from "./Button";
+import PageTitle from "./PageTitle";
 
 export default function MembersList() {
 	useEffect(() => (document.title = "Members"), []);
@@ -16,6 +17,7 @@ export default function MembersList() {
 	const [members, setMembers] = useState([]);
 	const [invitations, setInvitations] = useState([]);
 	const currentUser = useSelector(selectCurrentUser);
+	const currentTeam = useSelector(selectCurrentTeam);
 
 	useEffect(() => {
 		async function fetchInvitations() {
@@ -58,12 +60,42 @@ export default function MembersList() {
 		setInvitations(updatedInvitesList);
 	};
 
+	const handleAdminChanged = (memberId, isAdmin) => {
+		let membersCopy = Array.from(members);
+		let memberChanged = membersCopy.find((member) => member.id === memberId);
+		memberChanged.is_admin = isAdmin;
+		setMembers(membersCopy);
+	};
+
+	const handleMemberRemoved = (memberIdToRemove) => {
+		let filteredMembers = members.filter((member) => member.id !== memberIdToRemove);
+		setMembers(filteredMembers);
+	};
+
+	const handlePositionChanged = (userId, newPosition) => {
+		let membersCopy = members.slice();
+		let memberToUpdateIndex = members.findIndex((member) => member.id === userId);
+		let updatedMember = membersCopy[memberToUpdateIndex];
+		updatedMember.position = newPosition;
+		membersCopy.splice(memberToUpdateIndex, 1, updatedMember);
+		setMembers(membersCopy);
+	};
+
 	if (currentUser) {
 		const memberCards = members.map((member) => (
-			<MemberCard key={member.id} member={member} isCurrentUser={currentUser.id === member.id} />
+			<MemberCard
+				key={member.id}
+				member={member}
+				isCurrentUser={currentUser.id === member.id}
+				onAdminStatusChanged={handleAdminChanged}
+				onRemoved={handleMemberRemoved}
+				onPositionChanged={(newPosition) => handlePositionChanged(member.id, newPosition)}
+			/>
 		));
 		return (
 			<>
+				<PageTitle title={currentTeam?.name} />
+
 				<div className="flex items-center justify-between">
 					<SectionTitle title="Current members" />
 					<Button onClick={() => setShowInvitationDialog(true)}>Send an invite</Button>

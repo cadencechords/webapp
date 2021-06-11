@@ -14,7 +14,7 @@ export default function SetsList() {
 	const [upcomingSetlists, setUpcomingSetlists] = useState([]);
 	const [pastSetlists, setPastSetlists] = useState([]);
 	const [showCreateSetlistDialog, setShowCreateSetlistDialog] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const router = useHistory();
 
 	useEffect(() => {

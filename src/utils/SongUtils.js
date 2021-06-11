@@ -88,6 +88,8 @@ export function toPdf(song, showChords) {
 						{line}
 					</Text>
 				);
+			} else {
+				return "";
 			}
 		});
 

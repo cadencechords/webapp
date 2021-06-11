@@ -9,11 +9,13 @@ import SectionTitle from "./SectionTitle";
 import PageTitle from "./PageTitle";
 import _ from "lodash";
 import Button from "./Button";
+import ChangeSetlistDateDialog from "./ChangeSetlistDateDialog";
 
 export default function SetlistDetail() {
 	const [setlist, setSetlist] = useState();
 	const [loading, setLoading] = useState(true);
 	const [deleting, setDeleting] = useState(false);
+	const [showChangeDateDialog, setShowChangeDateDialog] = useState(false);
 	const router = useHistory();
 	const id = useParams().id;
 
@@ -51,6 +53,7 @@ export default function SetlistDetail() {
 		debounce(newName);
 	};
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounce = useCallback(
 		_.debounce((newName) => {
 			try {
@@ -81,7 +84,10 @@ export default function SetlistDetail() {
 				<div className="grid md:grid-cols-3 grid-cols-1 gap-5 w-full py-2">
 					<div className="col-span-1">
 						<PageTitle title={setlist.name} editable onChange={handleNameChange} />
-						<div className="text-gray-500 flex items-center">
+						<div
+							className="text-gray-500 flex items-center cursor-pointer"
+							onClick={() => setShowChangeDateDialog(true)}
+						>
 							<ClockIcon className="h-4 w-4 mr-2" />
 							<span className="leading-6 h-6">{toShortDate(setlist.scheduled_date)}</span>
 						</div>
@@ -101,6 +107,14 @@ export default function SetlistDetail() {
 						Delete this set
 					</Button>
 				</div>
+				<ChangeSetlistDateDialog
+					open={showChangeDateDialog}
+					onCloseDialog={() => setShowChangeDateDialog(false)}
+					scheduledDate={setlist.scheduled_date}
+					onDateChanged={(newScheduledDate) =>
+						setSetlist({ ...setlist, scheduled_date: newScheduledDate })
+					}
+				/>
 			</>
 		);
 	}

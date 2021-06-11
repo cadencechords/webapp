@@ -25,7 +25,7 @@ export default function PlanningCenterSongsList() {
 			setLoadingSongs(true);
 			try {
 				let offset = page * NUMBER_PER_PAGE;
-				let { data } = await PlanningCenterApi.getSongs(offset, query);
+				let { data } = await PlanningCenterApi.getSongs(offset, debouncedQuery);
 				setSongs(data);
 			} catch (error) {
 				console.log(error);
@@ -57,6 +57,7 @@ export default function PlanningCenterSongsList() {
 		debounce(newQuery);
 	};
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounce = useCallback(
 		_.debounce((query) => {
 			setPage(0);
