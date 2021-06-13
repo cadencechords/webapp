@@ -20,7 +20,10 @@ import { setSongBeingEdited } from "../store/editorSlice";
 import { useDispatch } from "react-redux";
 import Button from "./Button";
 import PlayIcon from "@heroicons/react/solid/PlayIcon";
-import FullscreenDialog from "./FullscreenDialog";
+import FullscreenSong from "./FullscreenSong";
+import Toggle from "./Toggle";
+import EyeIcon from "@heroicons/react/outline/EyeIcon";
+import EyeOffIcon from "@heroicons/react/outline/EyeOffIcon";
 
 export default function SongDetail() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -29,18 +32,25 @@ export default function SongDetail() {
 	const [saving, setSaving] = useState(false);
 	const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
 	const [showAddGenreDialog, setShowGenreDialog] = useState(false);
-	const [showSongFullscreen, setShowSongFullscreen] = useState(true);
+	const [showSongFullscreen, setShowSongFullscreen] = useState(false);
 
 	useEffect(() => (document.title = song ? song.name : "Songs"));
 
 	const router = useHistory();
 	const { id } = useParams();
+
+	const [showChordsDisabled, setShowChordsDisabled] = useState(() => {
+		console.log(localStorage.getItem(`show_chords_disabled_song_${id}`));
+		return Boolean(localStorage.getItem(`show_chords_disabled_song_${id}`));
+	});
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		async function fetchSong() {
 			try {
 				let result = await SongApi.getOneById(id);
+				result.data.showChordsDisabled = localStorage.getItem(`show_chords_disabled_song_${id}`);
 				setSong(result.data);
 			} catch (error) {
 				console.log(error);
@@ -124,6 +134,12 @@ export default function SongDetail() {
 		),
 	}));
 
+	const handleShowChordsToggled = (toggleValue) => {
+		setShowChordsDisabled(toggleValue);
+		setSong({ ...song, showChordsDisabled: toggleValue });
+		localStorage.setItem(`show_chords_disabled_song_${id}`, toggleValue);
+	};
+
 	return (
 		<div className="grid grid-cols-4">
 			<div className="md:border-r md:pr-4 col-span-4 md:col-span-3">
@@ -143,24 +159,44 @@ export default function SongDetail() {
 					open={showPrintDialog}
 					onCloseDialog={() => setShowPrintDialog(false)}
 				/>
-				<div className="mb-3">
-					<Button variant="outlined" size="xs" color="black" onClick={handleOpenInEditor}>
-						<div className="flex flex-row items-center">
-							<span className="mr-1">
-								<PencilIcon className="w-4 h-4 text-blue-700" />
-							</span>
-							Edit Song
-						</div>
-					</Button>
+				<div className="mb-3 flex justify-between items-center">
+					<span>
+						<Button variant="outlined" size="xs" color="black" onClick={handleOpenInEditor}>
+							<div className="flex flex-row items-center">
+								<span className="mr-1">
+									<PencilIcon className="w-4 h-4 text-blue-700" />
+								</span>
+								Edit Song
+							</div>
+						</Button>
 
-					<Button variant="outlined" size="xs" color="black" className="ml-3">
-						<div className="flex flex-row items-center">
-							<span className="mr-1">
-								<PlayIcon className="w-4 h-4 text-purple-700" />
-							</span>
-							Present Song
-						</div>
+						<Button
+							variant="outlined"
+							size="xs"
+							color="black"
+							className="ml-3"
+							onClick={() => setShowSongFullscreen(true)}
+						>
+							<div className="flex flex-row items-center">
+								<span className="mr-1">
+									<PlayIcon className="w-4 h-4 text-purple-700" />
+								</span>
+								Present Song
+							</div>
+						</Button>
+					</span>
+					<Button variant="open" onClick={() => handleShowChordsToggled(!showChordsDisabled)}>
+						{showChordsDisabled ? (
+							<EyeOffIcon className="h-5 text-gray-600" />
+						) : (
+							<EyeIcon className="h-5" />
+						)}
 					</Button>
+					{/* <Toggle
+						enabled={showChords}
+						onChange={handleShowChordsToggled}
+						label={showChords ? "Hide chords" : "Show chords"}
+					/> */}
 				</div>
 				<SongPreview song={song} />
 			</div>
@@ -196,7 +232,6 @@ export default function SongDetail() {
 					/>
 				</div>
 			</div>
-
 			{!isEmpty(pendingUpdates) && (
 				<div className="fixed bottom-8 right-8 shadow-md">
 					<Button bold onClick={handleSaveChanges} loading={saving}>
@@ -204,23 +239,23 @@ export default function SongDetail() {
 					</Button>
 				</div>
 			)}
-
 			<AddGenreDialog
 				open={showAddGenreDialog}
 				currentSong={song}
 				onCloseDialog={() => setShowGenreDialog(false)}
 				onGenresAdded={handleGenresAdded}
 			/>
-
 			<AddThemeDialog
 				open={showAddThemeDialog}
 				onCloseDialog={() => setShowAddThemeDialog(false)}
 				currentSong={song}
 				onThemesAdded={handleThemesAdded}
 			/>
-			{/* // <FullscreenDialog open={showSongFullscreen} onCloseDialog={() => {}}>
-			// 	<button>hi</button>
-			// </FullscreenDialog> */}
+			<FullscreenSong
+				open={showSongFullscreen}
+				onCloseDialog={() => setShowSongFullscreen(false)}
+				song={song}
+			></FullscreenSong>
 		</div>
 	);
 }

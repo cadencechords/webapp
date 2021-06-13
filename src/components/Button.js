@@ -11,6 +11,7 @@ export default function Button({
 	loading,
 	disabled,
 	className,
+	onKeyUp,
 }) {
 	let defaultClasses = ` outline-none focus:outline-none transition-colors text-sm ${className} `;
 	let colorClasses = "";
@@ -46,6 +47,7 @@ export default function Button({
             ${sizeClasses} ${fontClasses} ${roundedClasses} h`}
 			onClick={onClick}
 			disabled={disabled}
+			onKeyUp={onKeyUp}
 		>
 			{loading ? <PulseLoader color={loadingColor} size={8} /> : children}
 		</button>

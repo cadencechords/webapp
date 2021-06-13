@@ -1,4 +1,5 @@
 import { Page, Text, View, Document, Font } from "@react-pdf/renderer";
+import ReactDOMServer from "react-dom/server";
 
 export function isChordLine(line) {
 	if (line) {
@@ -119,4 +120,115 @@ export function toPdf(song, showChords) {
 	);
 
 	return pdf;
+}
+
+export function toHtmlString(songText) {
+	if (songText) {
+		let linesOfSong = songText.split(/\r\n|\r|\n/);
+		let html = linesOfSong.map((line, index) => {
+			if (isNewLine(line)) {
+				return (
+					<p key={index}>
+						<br />
+					</p>
+				);
+			} else {
+				return <p key={index}>{line}</p>;
+			}
+		});
+
+		return ReactDOMServer.renderToStaticMarkup(html);
+	}
+}
+
+export function toHtml(songText, formatOptions) {
+	console.log(formatOptions);
+	let linesOfSong = songText.split(/\r\n|\r|\n/);
+
+	if (!formatOptions.boldChords && !formatOptions.italicChords) {
+		return linesOfSong.map((line, index) => {
+			if (isNewLine(line)) {
+				return (
+					<p key={index}>
+						<br />
+					</p>
+				);
+			} else {
+				return <p key={index}>{line}</p>;
+			}
+		});
+	} else {
+		return linesOfSong.map((line, index) => {
+			if (isChordLine(line)) {
+				if (formatOptions.showChordsDisabled) {
+					return null;
+				} else {
+					if (formatOptions.boldChords && formatOptions.italicChords) {
+						return (
+							<p key={index}>
+								<i>
+									<strong>{line}</strong>
+								</i>
+							</p>
+						);
+					} else if (formatOptions.boldChords) {
+						return (
+							<p key={index}>
+								<strong>{line}</strong>
+							</p>
+						);
+					} else {
+						return (
+							<p key={index}>
+								<i>{line}</i>
+							</p>
+						);
+					}
+				}
+			} else if (isNewLine(line)) {
+				return (
+					<p key={index}>
+						<br />
+					</p>
+				);
+			} else {
+				return <p key={index}>{line}</p>;
+			}
+		});
+	}
+}
+
+export function getFormats(songText, formatOptions) {
+	let linesOfSong = songText.split(/\r\n|\r|\n/);
+	let formats = [];
+
+	if (formatOptions.boldChords || formatOptions.italicChords) {
+		let characterPosition = 0;
+		linesOfSong.forEach((line) => {
+			formats.push({
+				start: characterPosition,
+				length: line.length,
+				format: "bold",
+				value: isChordLine(line) && formatOptions.boldChords,
+			});
+
+			formats.push({
+				start: characterPosition,
+				length: line.length,
+				format: "italic",
+				value: isChordLine(line) && formatOptions.italicChords,
+			});
+
+			characterPosition += line.length + 1;
+		});
+	} else {
+		let format = { start: 0, length: songText.length, format: "bold", value: false };
+		formats.push(format);
+		format = { start: 0, length: songText.length, format: "italic", value: false };
+		formats.push(format);
+	}
+
+	formats.push({ start: 0, length: songText.length, format: "font", value: formatOptions.font });
+
+	return formats;
 }

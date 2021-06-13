@@ -47,7 +47,6 @@ export default function Content() {
 		async function fetchCurrentTeam() {
 			let { data } = await TeamApi.getCurrentTeam();
 			dispatch(setCurrentTeam(data.team));
-			document.title = data.team.name;
 		}
 
 		fetchCurrentTeam();

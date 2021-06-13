@@ -14,3 +14,15 @@
 .form-tick {
 	background-color: green !important;
 }
+
+.ql-clipboard {
+	display:none;
+}
+
+.ql-editor {
+	outline: none;
+}
+
+.ql-editor:focus {
+	outline: none;
+}

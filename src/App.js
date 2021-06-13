@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Sidenav from "./components/Sidenav";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from "./components/Login";
-import Editor from "./components/Editor";
+import EditorWorkbench from "./components/EditorWorkbench";
 import SignUp from "./components/SignUp";
 import EmailConfirmationSuccess from "./components/EmailConfirmationSuccess";
 import TeamLogin from "./components/TeamLogin";
@@ -32,7 +32,7 @@ function App() {
 					<SignUp />
 				</Route>
 				<Route path="/editor" exact>
-					<Editor />
+					<EditorWorkbench />
 				</Route>
 				<Route path="/app">
 					<Sidenav />
