@@ -17,6 +17,7 @@ import SongImportSources from "./SongImportSources";
 import PlanningCenterRedirect from "./PlanningCenterRedirect";
 import PlanningCenterSongsList from "./PlanningCenterSongsList";
 import TeamDetail from "./TeamDetail";
+import MemberDetail from "./MemberDetail";
 
 export default function Content() {
 	const dispatch = useDispatch();
@@ -87,6 +88,9 @@ export default function Content() {
 				</Route>
 				<Route path="/app/account" exact>
 					<AccountDetail />
+				</Route>
+				<Route path="/app/members/:id" exact>
+					<MemberDetail />
 				</Route>
 				<Route path="/app/members" exact>
 					<MembersList />

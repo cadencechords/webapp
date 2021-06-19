@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { selectCurrentTeam, selectCurrentUser } from "../store/authSlice";
 import Button from "./Button";
 import PageTitle from "./PageTitle";
+import MemberMenu from "./mobile menus/MemberMenu";
 
 export default function MembersList() {
 	useEffect(() => (document.title = "Members"), []);
@@ -18,6 +19,7 @@ export default function MembersList() {
 	const [invitations, setInvitations] = useState([]);
 	const currentUser = useSelector(selectCurrentUser);
 	const currentTeam = useSelector(selectCurrentTeam);
+	const [memberBeingViewed, setMemberBeingViewed] = useState(null);
 
 	useEffect(() => {
 		async function fetchInvitations() {
@@ -87,9 +89,8 @@ export default function MembersList() {
 				key={member.id}
 				member={member}
 				isCurrentUser={currentUser.id === member.id}
-				onAdminStatusChanged={handleAdminChanged}
-				onRemoved={handleMemberRemoved}
 				onPositionChanged={(newPosition) => handlePositionChanged(member.id, newPosition)}
+				onShowMemberMenu={() => setMemberBeingViewed(member)}
 			/>
 		));
 		return (
@@ -115,6 +116,14 @@ export default function MembersList() {
 					onCloseDialog={() => setShowInvitationDialog(false)}
 					currentMembers={members}
 					onInviteSent={handleInviteSent}
+				/>
+
+				<MemberMenu
+					open={Boolean(memberBeingViewed)}
+					onCloseDialog={() => setMemberBeingViewed(null)}
+					member={memberBeingViewed}
+					onRemoved={handleMemberRemoved}
+					onAdminStatusChanged={handleAdminChanged}
 				/>
 			</>
 		);

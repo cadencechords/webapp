@@ -1,43 +1,13 @@
 import ProfilePicture from "./ProfilePicture";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../store/authSlice";
 import Button from "./Button";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import UserApi from "../api/UserApi";
 import EditableData from "./inputs/EditableData";
+import DotsVerticalIcon from "@heroicons/react/outline/DotsVerticalIcon";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
-export default function MemberCard({
-	member,
-	isCurrentUser,
-	onAdminStatusChanged,
-	onRemoved,
-	onPositionChanged,
-}) {
-	const currentUser = useSelector(selectCurrentUser);
-	const [loading, setLoading] = useState(false);
-
-	const handleChangeAdminStatus = async (isAdmin) => {
-		setLoading(true);
-		try {
-			await UserApi.updateMembership(member.id, { isAdmin });
-			onAdminStatusChanged(member.id, isAdmin);
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	const handleRemoveFromTeam = async () => {
-		try {
-			await UserApi.deleteMembership(member.id);
-			onRemoved(member.id);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
+export default function MemberCard({ member, isCurrentUser, onPositionChanged, onShowMemberMenu }) {
 	const handlePositionChange = (newPosition) => {
 		onPositionChanged(newPosition);
 		debounce(newPosition);
@@ -74,32 +44,6 @@ export default function MemberCard({
 			);
 		}
 
-		let adminButton = null;
-
-		if (currentUser.is_admin) {
-			adminButton = (
-				<Button
-					color="purple"
-					size="xs"
-					className="mt-4 mb-1"
-					full
-					onClick={() => handleChangeAdminStatus(!member.is_admin)}
-					loading={loading}
-				>
-					{member.is_admin ? "Remove" : "Make"} admin
-				</Button>
-			);
-		}
-
-		let deleteButton = null;
-		if (currentUser.is_admin) {
-			deleteButton = (
-				<Button variant="open" color="red" onClick={handleRemoveFromTeam} full size="xs">
-					Remove from team
-				</Button>
-			);
-		}
-
 		let teamPosition = null;
 		if (isCurrentUser) {
 			teamPosition = (
@@ -110,9 +54,14 @@ export default function MemberCard({
 					onChange={handlePositionChange}
 				/>
 			);
+		} else {
+			teamPosition = <div className="text-sm">{member.position}</div>;
 		}
 		return (
-			<div className="rounded-md bg-gray-50 py-3 px-5 text-center">
+			<div className="rounded-md bg-gray-50 py-3 px-5 text-center relative">
+				<Button variant="open" className="absolute right-2 top-2" onClick={onShowMemberMenu}>
+					<DotsVerticalIcon className="text-gray-600 h-5" />
+				</Button>
 				<div className="m-auto w-20 h-20 flex items-center justify-center">
 					<ProfilePicture url={member.image_url} />
 				</div>
@@ -121,11 +70,14 @@ export default function MemberCard({
 					{member.first_name ? member.first_name + " " + member.last_name : member.email}
 				</div>
 				{teamPosition}
-				{adminButton}
-				{deleteButton}
+				<Link to={`/app/members/${member.id}`}>
+					<Button variant="outlined" size="xs" full className="mt-2">
+						View profile
+					</Button>
+				</Link>
 			</div>
 		);
 	} else {
-		return "";
+		return null;
 	}
 }

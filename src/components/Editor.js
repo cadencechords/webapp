@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import { toHtmlString, getFormats } from "../utils/SongUtils";
 
@@ -12,18 +12,7 @@ export default function Editor({ content, onContentChange, formatOptions }) {
 	const [classes] = useState("my-4");
 	const editorRef = useRef();
 
-	useEffect(() => {
-		handleFormatSong();
-	}, [formatOptions]);
-
-	const handleContentChange = () => {
-		if (editorRef?.current) {
-			let songInEditor = editorRef.current.getEditor().getText();
-			onContentChange(songInEditor);
-		}
-	};
-
-	const handleFormatSong = () => {
+	const handleFormatSong = useCallback(() => {
 		let songInEditor = editorRef.current.getEditor().getText();
 		let formats = getFormats(songInEditor, formatOptions);
 
@@ -37,6 +26,17 @@ export default function Editor({ content, onContentChange, formatOptions }) {
 
 		elements[0].style.fontFamily = formatOptions.font;
 		elements[0].style.fontSize = formatOptions.fontSize + "px";
+	}, [formatOptions]);
+
+	useEffect(() => {
+		handleFormatSong();
+	}, [formatOptions, handleFormatSong]);
+
+	const handleContentChange = () => {
+		if (editorRef?.current) {
+			let songInEditor = editorRef.current.getEditor().getText();
+			onContentChange(songInEditor);
+		}
 	};
 
 	const handleKeyUp = (e) => {

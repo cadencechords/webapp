@@ -21,7 +21,6 @@ import { useDispatch } from "react-redux";
 import Button from "./Button";
 import PlayIcon from "@heroicons/react/solid/PlayIcon";
 import FullscreenSong from "./FullscreenSong";
-import Toggle from "./Toggle";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import EyeOffIcon from "@heroicons/react/outline/EyeOffIcon";
 
@@ -192,11 +191,6 @@ export default function SongDetail() {
 							<EyeIcon className="h-5" />
 						)}
 					</Button>
-					{/* <Toggle
-						enabled={showChords}
-						onChange={handleShowChordsToggled}
-						label={showChords ? "Hide chords" : "Show chords"}
-					/> */}
 				</div>
 				<SongPreview song={song} />
 			</div>
