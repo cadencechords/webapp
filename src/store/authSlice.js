@@ -22,6 +22,8 @@ export const authSlice = createSlice({
 			localStorage.setItem("client", action.payload.client);
 		},
 
+		setAccessToken: (state, action) => {},
+
 		setTeamId: (state, action) => {
 			state.teamId = action.payload;
 			localStorage.setItem("teamId", action.payload);
@@ -60,7 +62,7 @@ export const { setAuth, setTeamId, setCurrentUser, setCurrentTeam, logOut, setMe
 
 export default authSlice.reducer;
 
-export const selectAuth = (state) => {
+export const selectCredentials = (state) => {
 	return {
 		accessToken: state.auth.accessToken,
 		client: state.auth.client,
@@ -71,3 +73,6 @@ export const selectAuth = (state) => {
 export const selectTeamId = (state) => state?.auth.teamId;
 export const selectCurrentUser = (state) => state.auth.currentUser;
 export const selectCurrentTeam = (state) => state.auth.currentTeam;
+
+export const selectHasCredentials = (state) =>
+	state.auth.accessToken && state.auth.client && state.auth.uid;
