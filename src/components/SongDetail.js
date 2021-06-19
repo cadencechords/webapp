@@ -39,7 +39,6 @@ export default function SongDetail() {
 	const { id } = useParams();
 
 	const [showChordsDisabled, setShowChordsDisabled] = useState(() => {
-		console.log(localStorage.getItem(`show_chords_disabled_song_${id}`));
 		return Boolean(localStorage.getItem(`show_chords_disabled_song_${id}`));
 	});
 
@@ -49,7 +48,9 @@ export default function SongDetail() {
 		async function fetchSong() {
 			try {
 				let result = await SongApi.getOneById(id);
-				result.data.showChordsDisabled = localStorage.getItem(`show_chords_disabled_song_${id}`);
+				result.data.showChordsDisabled = Boolean(
+					localStorage.getItem(`show_chords_disabled_song_${id}`)
+				);
 				setSong(result.data);
 			} catch (error) {
 				console.log(error);
