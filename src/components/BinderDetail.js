@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useHistory } from "react-router";
 import BinderColor from "./BinderColor";
 import BinderSongsList from "./BinderSongsList";
 import ColorDialog from "./ColorDialog";
@@ -17,6 +17,7 @@ export default function BinderDetail() {
 	const [saving, setSaving] = useState(false);
 	const [songIdsBeingRemoved, setSongIdsBeingRemoved] = useState([]);
 	const { id } = useParams();
+	const router = useHistory();
 
 	useEffect(() => {
 		async function fetchBinder() {
@@ -25,11 +26,14 @@ export default function BinderDetail() {
 				setBinder(data);
 			} catch (error) {
 				console.log(error);
+				if (error?.response?.status === 401) {
+					router.push("/login");
+				}
 			}
 		}
 
 		fetchBinder();
-	}, [id]);
+	}, [id, router]);
 
 	const handleUpdate = (field, value) => {
 		let updates = { ...pendingUpdates };
@@ -51,6 +55,9 @@ export default function BinderDetail() {
 			}
 		} catch (error) {
 			console.log(error);
+			if (error?.response?.status === 401) {
+				router.push("/login");
+			}
 		} finally {
 			setSaving(false);
 		}
@@ -76,6 +83,9 @@ export default function BinderDetail() {
 			setSongIdsBeingRemoved(updatedIdsBeingRemoved);
 		} catch (error) {
 			console.log(error);
+			if (error?.response?.status === 401) {
+				router.push("/login");
+			}
 		}
 	};
 

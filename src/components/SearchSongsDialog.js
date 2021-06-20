@@ -8,6 +8,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
 import { useParams } from "react-router";
 import Button from "./Button";
+import { useHistory } from "react-router";
 
 export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onAdd }) {
 	const [songs, setSongs] = useState([]);
@@ -15,6 +16,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 	const [loading, setLoading] = useState(false);
 	const [saving, setSaving] = useState(false);
 	const { id } = useParams();
+	const router = useHistory();
 
 	useEffect(() => {
 		async function fetchSongs() {
@@ -26,12 +28,15 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 				setSongs(unboundSongs);
 			} catch (error) {
 				console.log(error);
+				if (error?.response?.status === 401) {
+					router.push("/login");
+				}
 			} finally {
 				setLoading(false);
 			}
 		}
 		fetchSongs();
-	}, [boundSongs]);
+	}, [boundSongs, router]);
 
 	const handleChecked = (shouldAdd, song) => {
 		let songsSet = new Set(songsToAdd);
@@ -60,6 +65,9 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 		} catch (error) {
 			console.log(error);
 			setSaving(false);
+			if (error?.response?.status === 401) {
+				router.push("/login");
+			}
 		}
 	};
 

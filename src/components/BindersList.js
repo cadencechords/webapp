@@ -6,12 +6,14 @@ import PageTitle from "./PageTitle";
 import BindersTable from "./BindersTable";
 import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
+import { useHistory } from "react-router";
 
 export default function BindersList() {
 	useEffect(() => (document.title = "Binders"));
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 	const [binders, setBinders] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const router = useHistory();
 
 	useEffect(() => {
 		async function fetchBinders() {
@@ -20,6 +22,9 @@ export default function BindersList() {
 				let result = await BinderApi.getAll();
 				setBinders(result.data);
 			} catch (error) {
+				if (error.response.status === 401) {
+					router.push("/login");
+				}
 				console.log(error);
 			} finally {
 				setLoading(false);
@@ -27,7 +32,7 @@ export default function BindersList() {
 		}
 
 		fetchBinders();
-	}, []);
+	}, [router]);
 
 	let content = null;
 

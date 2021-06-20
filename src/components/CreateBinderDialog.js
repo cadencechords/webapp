@@ -4,12 +4,14 @@ import OutlinedInput from "./inputs/OutlinedInput";
 import StyledDialog from "./StyledDialog";
 import Button from "./Button";
 import BinderApi from "../api/BinderApi";
+import { useHistory } from "react-router";
 
 export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
 	const [color, setColor] = useState("none");
 	const [loading, setLoading] = useState(false);
+	const router = useHistory();
 
 	const handleCloseDialog = () => {
 		setName("");
@@ -27,6 +29,9 @@ export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 			handleCloseDialog();
 		} catch (error) {
 			console.log(error);
+			if (error?.response?.status === 401) {
+				router.push("/login");
+			}
 		} finally {
 			setLoading(false);
 		}

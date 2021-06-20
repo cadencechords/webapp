@@ -11,13 +11,17 @@ export default function PageTitle({ title, editable, onChange, align }) {
 			/>
 		);
 	} else {
-		return (
-			<h1 className={`my-4 font-bold flex items-center text-2xl justify-${align}`}>{title}</h1>
-		);
+		return <h1 className={`my-4 font-bold flex items-center ${ALIGNMENTS[align]}`}>{title}</h1>;
 	}
 }
 
 PageTitle.defaultProps = {
 	editable: false,
 	align: "left",
+};
+
+const ALIGNMENTS = {
+	left: "justify-left",
+	center: "justify-center",
+	right: "justify-right",
 };

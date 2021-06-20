@@ -55,13 +55,7 @@ export default function PrintSongDialog({ song, open, onCloseDialog }) {
 	};
 
 	return (
-		<StyledDialog
-			open={open}
-			onCloseDialog={handleCloseDialog}
-			size="xs"
-			title="Printing"
-			overlayOpacity={30}
-		>
+		<StyledDialog open={open} onCloseDialog={handleCloseDialog} size="xs" title="Printing">
 			<div className="mb-2">{printLyrics}</div>
 			<div className="mb-4">{printLyricsAndChords}</div>
 

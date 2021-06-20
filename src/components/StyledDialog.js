@@ -9,15 +9,14 @@ export default function StyledDialog({
 	onCloseDialog,
 	title,
 	children,
-	overlayOpacity,
 	size,
 	showClose,
 	fullscreen,
 	borderedTop,
 }) {
 	let sizeClasses = fullscreen
-		? `min-h-screen sm:min-h-full w-full sm:max-w-${size} `
-		: ` max-w-${size} w-full `;
+		? `min-h-screen sm:min-h-full w-full ${SM_MAX_WIDTHS[size]} `
+		: ` ${MAX_WIDTHS[size]} w-full `;
 
 	let mobileStyleClasses = fullscreen
 		? ` sm:shadow-xl sm:rounded-xl sm:mt-8 `
@@ -42,7 +41,7 @@ export default function StyledDialog({
 						leaveFrom="opacity-100"
 						leaveTo="opacity-0"
 					>
-						<Dialog.Overlay className={`fixed inset-0 bg-black bg-opacity-${overlayOpacity}`} />
+						<Dialog.Overlay className={`fixed inset-0 bg-black bg-opacity-20`} />
 					</Transition.Child>
 
 					{/* This element is to trick the browser into centering the modal contents. */}
@@ -91,9 +90,22 @@ StyledDialog.propTypes = {
 };
 
 StyledDialog.defaultProps = {
-	overlayOpacity: 20,
 	size: "md",
 	showClose: true,
 	fullscreen: true,
 	borderedTop: true,
+};
+
+const MAX_WIDTHS = {
+	sm: "max-w-sm",
+	md: "max-w-md",
+	lg: "max-w-lg",
+	xl: "max-w-xl",
+};
+
+const SM_MAX_WIDTHS = {
+	sm: "sm:max-w-sm",
+	md: "sm:max-w-md",
+	lg: "sm:max-w-lg",
+	xl: "sm:max-w-xl",
 };

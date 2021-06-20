@@ -1,21 +1,19 @@
 import "./App.css";
-import Content from "./components/Content";
-import Navbar from "./components/Navbar";
-import Sidenav from "./components/Sidenav";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from "./components/Login";
-import EditorWorkbench from "./components/EditorWorkbench";
 import SignUp from "./components/SignUp";
 import EmailConfirmationSuccess from "./components/EmailConfirmationSuccess";
 import TeamLogin from "./components/TeamLogin";
 import CreateNewTeam from "./components/CreateNewTeam";
 import ClaimInvitation from "./components/ClaimInvitation";
 import InvitationSignUp from "./components/InvitationSignUp";
+import SecuredRoutes from "./components/SecuredRoutes";
 
 function App() {
 	return (
 		<div>
 			<Router>
+				<SecuredRoutes />
 				<Route path="/login" exact>
 					<Login />
 				</Route>
@@ -30,14 +28,6 @@ function App() {
 				</Route>
 				<Route path="/signup" exact>
 					<SignUp />
-				</Route>
-				<Route path="/editor" exact>
-					<EditorWorkbench />
-				</Route>
-				<Route path="/app">
-					<Sidenav />
-					<Navbar />
-					<Content />
 				</Route>
 				<Route path="/invitations" exact>
 					<ClaimInvitation />
