@@ -142,59 +142,62 @@ export function toHtmlString(songText) {
 }
 
 export function toHtml(songText, formatOptions) {
-	console.log(formatOptions);
-	let linesOfSong = songText.split(/\r\n|\r|\n/);
+	if (songText) {
+		let linesOfSong = songText.split(/\r\n|\r|\n/);
 
-	if (!formatOptions.boldChords && !formatOptions.italicChords) {
-		return linesOfSong.map((line, index) => {
-			if (isNewLine(line)) {
-				return (
-					<p key={index}>
-						<br />
-					</p>
-				);
-			} else {
-				return <p key={index}>{line}</p>;
-			}
-		});
-	} else {
-		return linesOfSong.map((line, index) => {
-			if (isChordLine(line)) {
-				if (formatOptions.showChordsDisabled) {
-					return null;
+		if (!formatOptions.boldChords && !formatOptions.italicChords) {
+			return linesOfSong.map((line, index) => {
+				if (isNewLine(line)) {
+					return (
+						<p key={index}>
+							<br />
+						</p>
+					);
 				} else {
-					if (formatOptions.boldChords && formatOptions.italicChords) {
-						return (
-							<p key={index}>
-								<i>
-									<strong>{line}</strong>
-								</i>
-							</p>
-						);
-					} else if (formatOptions.boldChords) {
-						return (
-							<p key={index}>
-								<strong>{line}</strong>
-							</p>
-						);
-					} else {
-						return (
-							<p key={index}>
-								<i>{line}</i>
-							</p>
-						);
-					}
+					return <p key={index}>{line}</p>;
 				}
-			} else if (isNewLine(line)) {
-				return (
-					<p key={index}>
-						<br />
-					</p>
-				);
-			} else {
-				return <p key={index}>{line}</p>;
-			}
-		});
+			});
+		} else {
+			return linesOfSong.map((line, index) => {
+				if (isChordLine(line)) {
+					if (formatOptions.showChordsDisabled) {
+						return null;
+					} else {
+						if (formatOptions.boldChords && formatOptions.italicChords) {
+							return (
+								<p key={index}>
+									<i>
+										<strong>{line}</strong>
+									</i>
+								</p>
+							);
+						} else if (formatOptions.boldChords) {
+							return (
+								<p key={index}>
+									<strong>{line}</strong>
+								</p>
+							);
+						} else {
+							return (
+								<p key={index}>
+									<i>{line}</i>
+								</p>
+							);
+						}
+					}
+				} else if (isNewLine(line)) {
+					return (
+						<p key={index}>
+							<br />
+						</p>
+					);
+				} else {
+					return <p key={index}>{line}</p>;
+				}
+			});
+		}
+	} else {
+		return <i>No content yet</i>;
 	}
 }
 
