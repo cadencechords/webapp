@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import BACKGROUND_COLORS from "../Button";
+import { BACKGROUND_COLORS } from "../Button";
 
 export default function IconButton({ children, color, onClick }) {
 	return (

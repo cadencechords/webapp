@@ -1,4 +1,4 @@
-import TEXT_COLORS from "../Button";
+import { TEXT_COLORS } from "../Button";
 
 export default function MobileMenuButton({ children, onClick, full, color }) {
 	let classes =
