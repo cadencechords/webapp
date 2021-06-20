@@ -34,7 +34,12 @@ export default function SendInvitesDialog({ open, onCloseDialog, currentMembers,
 	return (
 		<StyledDialog open={open} onCloseDialog={handleCloseDialog} title="Invite a new member">
 			<div className="mb-4">
-				<OutlinedInput placeholder="Email" value={newMemberEmail} onChange={setNewMemberEmail} />
+				<OutlinedInput
+					placeholder="Email"
+					value={newMemberEmail}
+					onChange={setNewMemberEmail}
+					type="email"
+				/>
 			</div>
 			<AddCancelActions
 				addText="Send invite"

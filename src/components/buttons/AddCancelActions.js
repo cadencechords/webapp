@@ -3,7 +3,7 @@ import Button from "../Button";
 export default function AddCancelActions({ onAdd, onCancel, loadingAdd, addDisabled, addText }) {
 	return (
 		<div className="flex md:justify-end justify-center">
-			<Button variant="open" color="gray" className="mr-2" onClick={onCancel}>
+			<Button variant="open" color="gray" className="mr-2 flex-grow" onClick={onCancel}>
 				Cancel
 			</Button>
 			<Button

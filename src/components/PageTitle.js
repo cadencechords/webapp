@@ -11,7 +11,9 @@ export default function PageTitle({ title, editable, onChange, align }) {
 			/>
 		);
 	} else {
-		return <h1 className={`my-4 font-bold flex items-center ${ALIGNMENTS[align]}`}>{title}</h1>;
+		return (
+			<h1 className={`my-4 font-bold flex items-center ${ALIGNMENTS[align]} text-xl`}>{title}</h1>
+		);
 	}
 }
 
