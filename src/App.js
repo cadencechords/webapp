@@ -13,7 +13,6 @@ function App() {
 	return (
 		<div>
 			<Router>
-				<SecuredRoutes />
 				<Route path="/login" exact>
 					<Login />
 				</Route>
@@ -35,6 +34,7 @@ function App() {
 				<Route path="/invitations/signup" exact>
 					<InvitationSignUp />
 				</Route>
+				<SecuredRoutes />
 			</Router>
 		</div>
 	);
