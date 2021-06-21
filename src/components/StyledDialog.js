@@ -20,13 +20,13 @@ export default function StyledDialog({
 
 	let mobileStyleClasses = fullscreen
 		? ` sm:shadow-xl sm:rounded-xl sm:mt-8 `
-		: ` shadow-xl rounded-xl mt-8 `;
+		: ` shadow-xl rounded-xl mt-8`;
 
 	return (
 		<Transition show={open} as={Fragment}>
 			<Dialog
 				as="div"
-				className="fixed inset-0 z-10 max-h-full"
+				className={`fixed inset-0 z-10 max-h-full ${fullscreen ? "mx-0" : "mx-3"}`}
 				static
 				open={open}
 				onClose={onCloseDialog}

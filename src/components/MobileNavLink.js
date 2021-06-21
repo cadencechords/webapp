@@ -18,7 +18,10 @@ export default function MobileNavLink({ text, to, icon, onClick }) {
 		);
 	} else {
 		return (
-			<button className="focus:outline-none outline-none py-2 flex flex-grow flex-col justify-center items-center rounded font-semibold transition-all text-gray-500">
+			<button
+				onClick={onClick}
+				className="focus:outline-none outline-none py-2 flex flex-grow flex-col justify-center items-center rounded font-semibold transition-all text-gray-500"
+			>
 				<span>{icon}</span>
 				<span className="text-sm">{text}</span>
 			</button>
@@ -27,5 +30,5 @@ export default function MobileNavLink({ text, to, icon, onClick }) {
 }
 
 MobileNavLink.propTypes = {
-	text: PropTypes.string.isRequired,
+	text: PropTypes.string,
 };
