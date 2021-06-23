@@ -17,6 +17,7 @@ import PageLoading from "./PageLoading";
 import Content from "./Content";
 import EditorWorkbench from "./EditorWorkbench";
 import CenteredPage from "./CenteredPage";
+import SongPresenter from "./SongPresenter";
 
 export default function SecuredRoutes() {
 	const dispatch = useDispatch();
@@ -75,6 +76,9 @@ export default function SecuredRoutes() {
 				</Route>
 				<Route path="/editor" exact>
 					<EditorWorkbench />
+				</Route>
+				<Route path="/songs/:id/present" exact>
+					<SongPresenter />
 				</Route>
 			</>
 		);

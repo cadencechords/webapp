@@ -20,9 +20,9 @@ import { setSongBeingEdited } from "../store/editorSlice";
 import { useDispatch } from "react-redux";
 import Button from "./Button";
 import PlayIcon from "@heroicons/react/solid/PlayIcon";
-import FullscreenSong from "./FullscreenSong";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import EyeOffIcon from "@heroicons/react/outline/EyeOffIcon";
+import { setSongBeingPresented } from "../store/presenterSlice";
 
 export default function SongDetail() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -31,7 +31,7 @@ export default function SongDetail() {
 	const [saving, setSaving] = useState(false);
 	const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
 	const [showAddGenreDialog, setShowGenreDialog] = useState(false);
-	const [showSongFullscreen, setShowSongFullscreen] = useState(false);
+	const dispatch = useDispatch();
 
 	useEffect(() => (document.title = song ? song.name : "Songs"));
 
@@ -41,8 +41,6 @@ export default function SongDetail() {
 	const [showChordsDisabled, setShowChordsDisabled] = useState(() => {
 		return localStorage.getItem(`show_chords_disabled_song_${id}`) === "true";
 	});
-
-	const dispatch = useDispatch();
 
 	useEffect(() => {
 		async function fetchSong() {
@@ -93,6 +91,11 @@ export default function SongDetail() {
 		} finally {
 			setSaving(false);
 		}
+	};
+
+	const handlePresentSong = () => {
+		dispatch(setSongBeingPresented(song));
+		router.push(`/songs/${id}/present`);
 	};
 
 	const handleThemesAdded = (newThemes) => {
@@ -174,7 +177,7 @@ export default function SongDetail() {
 							size="xs"
 							color="black"
 							className="ml-3"
-							onClick={() => setShowSongFullscreen(true)}
+							onClick={handlePresentSong}
 						>
 							<div className="flex flex-row items-center">
 								<span className="mr-1">
@@ -245,11 +248,6 @@ export default function SongDetail() {
 				currentSong={song}
 				onThemesAdded={handleThemesAdded}
 			/>
-			<FullscreenSong
-				open={showSongFullscreen}
-				onCloseDialog={() => setShowSongFullscreen(false)}
-				song={song}
-			></FullscreenSong>
 		</div>
 	);
 }
