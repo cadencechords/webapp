@@ -151,7 +151,13 @@ export default function SongDetail() {
 						editable
 						onChange={(editedName) => handleUpdate("name", editedName)}
 					/>
-					<Button size="xs" variant="open" color="gray" onClick={() => setShowPrintDialog(true)}>
+					<Button
+						size="xs"
+						variant="open"
+						color="gray"
+						onClick={() => setShowPrintDialog(true)}
+						className="hidden sm:block"
+					>
 						<PrinterIcon className="text-gray-500 h-5 w-5" />
 					</Button>
 				</div>
@@ -161,7 +167,7 @@ export default function SongDetail() {
 					open={showPrintDialog}
 					onCloseDialog={() => setShowPrintDialog(false)}
 				/>
-				<div className="mb-3 flex justify-between items-center">
+				<div className="mb-3 justify-between items-center hidden sm:flex">
 					<span>
 						<Button variant="outlined" size="xs" color="black" onClick={handleOpenInEditor}>
 							<div className="flex flex-row items-center">
@@ -193,6 +199,51 @@ export default function SongDetail() {
 						) : (
 							<EyeIcon className="h-5" />
 						)}
+					</Button>
+				</div>
+				<div className="flex sm:hidden justify-between mx-auto max-w-md mb-4">
+					<Button
+						variant="outlined"
+						size="medium"
+						color="black"
+						className="flex flex-col justify-center items-center"
+						onClick={handleOpenInEditor}
+					>
+						<PencilIcon className="h-5 w-5 text-blue-700" /> Edit
+					</Button>
+					<Button
+						variant="outlined"
+						size="medium"
+						color="black"
+						className="flex flex-col justify-center items-center"
+						onClick={handlePresentSong}
+					>
+						<PlayIcon className="h-5 w-5 text-purple-700" /> Present
+					</Button>
+
+					<Button
+						variant="outlined"
+						size="medium"
+						color="black"
+						className="flex flex-col justify-center items-center"
+						onClick={() => setShowPrintDialog(true)}
+					>
+						<PrinterIcon className="h-5 w-5 text-gray-600" /> Print
+					</Button>
+
+					<Button
+						className="flex flex-col justify-center items-center"
+						variant="outlined"
+						color="black"
+						size="medium"
+						onClick={() => handleShowChordsToggled(!showChordsDisabled)}
+					>
+						{showChordsDisabled ? (
+							<EyeOffIcon className="h-5 text-gray-600" />
+						) : (
+							<EyeIcon className="h-5 text-blue-700" />
+						)}
+						Chords
 					</Button>
 				</div>
 				<SongPreview song={song} />

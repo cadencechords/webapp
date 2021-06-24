@@ -7,6 +7,7 @@ import BindersTable from "./BindersTable";
 import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
 import { useHistory } from "react-router";
+import MobileHeader from "./MobileHeader";
 
 export default function BindersList() {
 	useEffect(() => (document.title = "Binders"));
@@ -54,14 +55,25 @@ export default function BindersList() {
 
 	return (
 		<>
-			<PageTitle title="Binders" />
+			<div className="hidden sm:block">
+				<PageTitle title="Binders" />
+			</div>
+			<div className="h-14 mb-4 sm:hidden">
+				<MobileHeader
+					title="Binders"
+					className="shadow-inner"
+					onAdd={() => setShowCreateDialog(true)}
+				/>
+			</div>
 			{content}
 			<CreateBinderDialog
 				open={showCreateDialog}
 				onCloseDialog={() => setShowCreateDialog(false)}
 				onCreated={handleBinderCreated}
 			/>
-			<QuickAdd onAdd={() => setShowCreateDialog(true)} />
+			<div className="hidden sm:block">
+				<QuickAdd onAdd={() => setShowCreateDialog(true)} />
+			</div>
 		</>
 	);
 }

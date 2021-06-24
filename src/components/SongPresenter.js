@@ -23,7 +23,7 @@ export default function SongPresenter() {
 				song={song}
 				onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
 			/>
-			<div className="mx-auto container p-3 whitespace-pre-wrap" style={formatStyles}>
+			<div className="mx-auto max-w-2xl p-3 whitespace-pre-wrap" style={formatStyles}>
 				{toHtml(song.content, {
 					boldChords: song.bold_chords,
 					italicChords: song.italic_chords,

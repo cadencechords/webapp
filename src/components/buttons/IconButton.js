@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 import { BACKGROUND_COLORS } from "../Button";
 
-export default function IconButton({ children, color, onClick }) {
+export default function IconButton({ children, color, onClick, className }) {
 	return (
 		<button
-			className={`focus:outline-none outline-none border-0 rounded-full ${BACKGROUND_COLORS[color]} transition-all p-2 shadow-sm`}
+			className={`focus:outline-none outline-none border-0 rounded-full ${BACKGROUND_COLORS[color]} transition-all p-2 shadow-sm ${className}`}
 			onClick={onClick}
 		>
 			{children}

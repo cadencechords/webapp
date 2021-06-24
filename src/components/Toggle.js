@@ -11,12 +11,12 @@ export default function Toggle({ enabled, onChange, label, color, spacing }) {
 					onChange={onChange}
 					className={`${
 						enabled ? BACKGROUND_COLORS[color] : "bg-gray-200"
-					} relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none `}
+					} relative inline-flex items-center md:h-6 h-7 rounded-full md:w-11 w-12 transition-colors focus:outline-none `}
 				>
 					<span
 						className={`${
 							enabled ? "translate-x-6" : "translate-x-1"
-						} inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+						} inline-block md:w-4 md:h-4 h-5 w-5 transform bg-white rounded-full transition-transform`}
 					/>
 				</Switch>
 			</div>
