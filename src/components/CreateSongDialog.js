@@ -18,6 +18,7 @@ export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
 		try {
 			let result = await SongApi.createOne({ name });
 			if (onCreate) {
+				setName("");
 				onCreate(result.data);
 				onCloseDialog();
 			}

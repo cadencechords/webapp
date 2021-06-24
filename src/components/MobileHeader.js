@@ -4,7 +4,7 @@ import PlusIcon from "@heroicons/react/outline/PlusIcon";
 export default function MobileHeader({ title, className, onAdd }) {
 	return (
 		<div
-			className={`py-3 px-1 border-b fixed left-0 top-0 right-0 ${className} font-semibold text-center`}
+			className={`bg-white py-3 px-1 border-b fixed left-0 top-0 right-0 ${className} font-semibold text-center`}
 		>
 			{title}
 

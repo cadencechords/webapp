@@ -8,6 +8,9 @@ import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
 import { useHistory } from "react-router";
 import MobileHeader from "./MobileHeader";
+import Button from "./Button";
+import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
+import BinderColor from "./BinderColor";
 
 export default function BindersList() {
 	useEffect(() => (document.title = "Binders"));
@@ -46,7 +49,28 @@ export default function BindersList() {
 	} else if (!loading && binders.length === 0) {
 		content = <NoDataMessage type="binder" />;
 	} else if (!loading && binders.length > 0) {
-		content = <BindersTable binders={binders} />;
+		content = (
+			<>
+				<div className="hidden sm:block">
+					<BindersTable binders={binders} />
+				</div>
+				<div className="sm:hidden">
+					{binders.map((binder) => (
+						<div
+							key={binder.id}
+							className="border-b py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
+							onClick={() => router.push(`/app/binders/${binder.id}`)}
+						>
+							<BinderColor color={binder.color} />
+							<div className="ml-3">
+								<div className="font-semibold">{binder.name}</div>
+								<div className="text-sm text-gray-600">{binder.description}</div>
+							</div>
+						</div>
+					))}
+				</div>
+			</>
+		);
 	}
 
 	const handleBinderCreated = (newBinder) => {
@@ -71,6 +95,16 @@ export default function BindersList() {
 				onCloseDialog={() => setShowCreateDialog(false)}
 				onCreated={handleBinderCreated}
 			/>
+			<Button
+				variant="open"
+				className="fixed bottom-12 left-0 rounded-none flex items-center justify-center sm:hidden h-12"
+				full
+				style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
+				onClick={() => setShowCreateDialog(true)}
+			>
+				<PlusCircleIcon className="h-4 w-4 mr-2 text-blue-700" />
+				Add new binder
+			</Button>
 			<div className="hidden sm:block">
 				<QuickAdd onAdd={() => setShowCreateDialog(true)} />
 			</div>
