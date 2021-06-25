@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import EmailConfirmationSuccess from "./components/EmailConfirmationSuccess";
@@ -13,28 +13,30 @@ function App() {
 	return (
 		<div>
 			<Router>
-				<Route path="/login" exact>
-					<Login />
-				</Route>
-				<Route path="/login/teams" exact>
-					<TeamLogin />
-				</Route>
-				<Route path="/login/teams/new" exact>
-					<CreateNewTeam />
-				</Route>
-				<Route path="/confirmation" exact>
-					<EmailConfirmationSuccess />
-				</Route>
-				<Route path="/signup" exact>
-					<SignUp />
-				</Route>
-				<Route path="/invitations" exact>
-					<ClaimInvitation />
-				</Route>
-				<Route path="/invitations/signup" exact>
-					<InvitationSignUp />
-				</Route>
-				<SecuredRoutes />
+				<Switch>
+					<Route path="/login" exact>
+						<Login />
+					</Route>
+					<Route path="/login/teams" exact>
+						<TeamLogin />
+					</Route>
+					<Route path="/login/teams/new" exact>
+						<CreateNewTeam />
+					</Route>
+					<Route path="/confirmation" exact>
+						<EmailConfirmationSuccess />
+					</Route>
+					<Route path="/signup" exact>
+						<SignUp />
+					</Route>
+					<Route path="/invitations" exact>
+						<ClaimInvitation />
+					</Route>
+					<Route path="/invitations/signup" exact>
+						<InvitationSignUp />
+					</Route>
+					<SecuredRoutes />
+				</Switch>
 			</Router>
 		</div>
 	);
