@@ -30,13 +30,13 @@ export default function LyricOptions({
 				</Button>
 			</span>
 
-			<span className="px-3 border-r border-gray-300 relative">
+			<div className="px-3 border-r border-gray-300 w-32 relative">
 				<FontsListBox selectedFont={formatOptions.font} onChange={onFontChange} />
-			</span>
+			</div>
 
-			<span className="px-3 relative">
+			<div className="px-3 relative w-24">
 				<FontSizesListBox selectedFontSize={formatOptions.fontSize} onChange={onFontSizeChange} />
-			</span>
+			</div>
 		</div>
 	);
 }

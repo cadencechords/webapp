@@ -45,10 +45,10 @@ export default function Button({
 
 	return (
 		<button
-			className={`${defaultClasses}
+			className={`
             ${disabled ? disabledClasses : colorClasses} 
-            ${sizeClasses} ${fontClasses} ${roundedClasses} h`}
-			onClick={onClick}
+            ${sizeClasses} ${fontClasses} ${roundedClasses} ${defaultClasses}`}
+			onClick={loading ? null : onClick}
 			disabled={disabled}
 			onKeyUp={onKeyUp}
 			style={style}

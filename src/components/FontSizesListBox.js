@@ -12,7 +12,7 @@ export default function FontSizesListBox({ selectedFontSize, onChange }) {
 
 	const selectedFontSizeOption = {
 		value: selectedFontSize,
-		template: <div className="text-sm pr-2">{selectedFontSize}</div>,
+		template: <div className="text-sm">{selectedFontSize}</div>,
 	};
 	return (
 		<StyledListBox

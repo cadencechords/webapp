@@ -17,7 +17,7 @@ export default function FontsListBox({ selectedFont, onChange }) {
 	const selectedFontOption = {
 		value: selectedFont,
 		template: (
-			<div style={{ fontFamily: selectedFont }} className="pr-2 text-sm">
+			<div className="overflow-hidden overflow-ellipsis whitespace-nowrap text-sm">
 				{selectedFont}
 			</div>
 		),

@@ -10,8 +10,11 @@ import SongApi from "../api/SongApi";
 import { isEmpty } from "../utils/ObjectUtils";
 import Button from "./Button";
 import Editor from "./Editor";
+import EditorMobileTopNav from "./EditorMobileTopNav";
+import EditorDrawer from "./EditorDrawer";
 
 export default function EditorWorkbench() {
+	const [showEditorDrawer, setShowEditorDrawer] = useState(false);
 	const [formatOptions, setFormatOptions] = useState({});
 	const [updatedSong, setUpdatedSong] = useState("");
 	const [savingUpdates, setSavingUpdates] = useState(false);
@@ -71,38 +74,57 @@ export default function EditorWorkbench() {
 
 	return (
 		<>
-			<div className="px-3 container mx-auto flex items-center justify-between">
-				<div className="flex items-center">
-					<span className="mr-4">
-						<Button variant="open" size="xs" onClick={handleGoBack}>
-							<ArrowNarrowLeftIcon className="text-gray-600 h-6 w-6" />
-						</Button>
-					</span>
-					<PageTitle title={songBeingEdited.name} />
-				</div>
-				<span>
-					<Button disabled={!dirty} onClick={handleSaveChanges} loading={savingUpdates}>
+			<div className="sm:hidden">
+				<EditorMobileTopNav
+					song={songBeingEdited}
+					onShowEditorDrawer={() => setShowEditorDrawer(true)}
+				/>
+				<EditorDrawer
+					formatOptions={formatOptions}
+					open={showEditorDrawer}
+					onClose={() => setShowEditorDrawer(false)}
+					onFormatChange={handleFormatChange}
+				/>
+				<div className="fixed w-full bottom-0 p-3">
+					<Button full disabled={!dirty} onClick={handleSaveChanges} loading={savingUpdates}>
 						Save Changes
 					</Button>
-				</span>
+				</div>
 			</div>
-			<div className="bg-gray-50 py-3 px-5 border-t border-gray-200 border-b sticky top-0">
-				<LyricOptions
-					onAlignmentChange={(newAlignment) => handleFormatChange("alignment", newAlignment)}
-					onFontChange={(newFont) => handleFormatChange("font", newFont)}
-					onFontSizeChange={(newFontSize) => handleFormatChange("fontSize", newFontSize)}
-					formatOptions={formatOptions}
-				/>
+			<div className="hidden sm:block">
+				<div className="px-3 container mx-auto flex items-center justify-between">
+					<div className="flex items-center">
+						<span className="mr-4">
+							<Button variant="open" size="xs" onClick={handleGoBack}>
+								<ArrowNarrowLeftIcon className="text-gray-600 h-6 w-6" />
+							</Button>
+						</span>
+						<PageTitle title={songBeingEdited.name} />
+					</div>
+					<span>
+						<Button disabled={!dirty} onClick={handleSaveChanges} loading={savingUpdates}>
+							Save Changes
+						</Button>
+					</span>
+				</div>
+				<div className="bg-gray-50 py-3 px-5 border-t border-gray-200 border-b sticky top-0">
+					<LyricOptions
+						onAlignmentChange={(newAlignment) => handleFormatChange("alignment", newAlignment)}
+						onFontChange={(newFont) => handleFormatChange("font", newFont)}
+						onFontSizeChange={(newFontSize) => handleFormatChange("fontSize", newFontSize)}
+						formatOptions={formatOptions}
+					/>
+				</div>
 			</div>
 			<div className="grid grid-cols-4">
-				<div className="col-span-3 container mx-auto px-10">
+				<div className="col-span-4 sm:col-span-3 container mx-auto px-10 mb-12 sm:mb-0 ">
 					<Editor
 						content={songBeingEdited.content}
 						formatOptions={formatOptions}
 						onContentChange={handleContentChange}
 					/>
 				</div>
-				<div className="col-span-1 border-gray-300 border-l px-3">
+				<div className="hidden sm:block col-span-1 border-gray-300 border-l px-3">
 					<ChordOptions
 						onBoldToggled={(toggleValue) => handleFormatChange("boldChords", toggleValue)}
 						onItalicsToggled={(toggleValue) => handleFormatChange("italicChords", toggleValue)}
