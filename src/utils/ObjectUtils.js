@@ -7,3 +7,7 @@ export function combineParamValues(paramName, values) {
 	combined += values.join("&" + paramName);
 	return combined;
 }
+
+export function isNullOrEmpty(text) {
+	return text === null || text === undefined || text.match(/^\s*$/).length > 1;
+}

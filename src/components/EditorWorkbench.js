@@ -69,7 +69,9 @@ export default function EditorWorkbench() {
 
 	const handleContentChange = (newContent) => {
 		setUpdatedSong(newContent);
-		setDirty(true);
+		if (newContent !== songBeingEdited.content) {
+			setDirty(true);
+		}
 	};
 
 	return (
@@ -85,7 +87,7 @@ export default function EditorWorkbench() {
 					onClose={() => setShowEditorDrawer(false)}
 					onFormatChange={handleFormatChange}
 				/>
-				<div className="fixed w-full bottom-0 p-3">
+				<div className="fixed w-full bottom-0 p-3 z-20">
 					<Button full disabled={!dirty} onClick={handleSaveChanges} loading={savingUpdates}>
 						Save Changes
 					</Button>

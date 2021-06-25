@@ -10,6 +10,7 @@ import MobileHeader from "./MobileHeader";
 import Button from "./Button";
 import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import { useHistory } from "react-router-dom";
+import ExclamationIcon from "@heroicons/react/outline/ExclamationIcon";
 
 export default function SongsList() {
 	useEffect(() => (document.title = "Songs"));
@@ -51,6 +52,7 @@ export default function SongsList() {
 	} else if (!loading && songs.length === 0) {
 		content = <NoDataMessage type="songs" />;
 	} else {
+		let exclamationIcon = <ExclamationIcon className="h-4 w-4 text-gray-600 mr-2" />;
 		content = (
 			<>
 				<div className="hidden sm:block">
@@ -61,9 +63,14 @@ export default function SongsList() {
 						<div
 							key={song.id}
 							className="border-b py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
-							onClick={() => router.push(`/app/songs/${song.id}`)}
 						>
-							<div className="overflow-hidden overflow-ellipsis whitespace-nowrap">{song.name}</div>
+							{!song?.content && exclamationIcon}
+							<div
+								className="overflow-hidden overflow-ellipsis whitespace-nowrap"
+								onClick={() => router.push(`/app/songs/${song.id}`)}
+							>
+								{song.name}
+							</div>
 						</div>
 					))}
 				</div>
