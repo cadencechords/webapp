@@ -7,6 +7,11 @@ import QuickAdd from "./QuickAdd";
 import CreateSetlistDialog from "./CreateSetlistDialog";
 import PulseLoader from "react-spinners/PulseLoader";
 import { useHistory } from "react-router";
+import MobileHeaderAndBottomButton from "./MobileHeaderAndBottomButton";
+import CenteredPage from "./CenteredPage";
+import { toShortDate } from "../utils/DateUtils";
+import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
+import MusicNoteIcon from "@heroicons/react/solid/MusicNoteIcon";
 
 export default function SetsList() {
 	useEffect(() => (document.title = "Sets"));
@@ -81,9 +86,18 @@ export default function SetsList() {
 	if (loading) {
 		return (
 			<>
-				<PageTitle title="Sets" />
-				<div className="text-center py-4">
-					<PulseLoader color="blue" />
+				<div className="hidden sm:block">
+					<PageTitle title="Sets" />
+					<div className="text-center py-4">
+						<PulseLoader color="blue" />
+					</div>
+				</div>
+				<div className="sm:hidden">
+					<CenteredPage className="overflow-y-hidden">
+						<div className="text-center">
+							<PulseLoader color="blue" />
+						</div>
+					</CenteredPage>
 				</div>
 			</>
 		);
@@ -91,15 +105,68 @@ export default function SetsList() {
 
 	return (
 		<>
-			<PageTitle title="Sets" />
-			<UpcomingSetsTable setlists={upcomingSetlists} onClick={handleRouteToSetlist} />
-			<PastSetsTable setlists={pastSetlists} onClick={handleRouteToSetlist} />
-			<QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
-			<CreateSetlistDialog
-				open={showCreateSetlistDialog}
-				onCloseDialog={() => setShowCreateSetlistDialog(false)}
-				onCreated={handleSetlistCreated}
-			/>
+			<div className="sm:hidden mt-14 mb-20">
+				<MobileHeaderAndBottomButton
+					buttonText="Add a set"
+					onAdd={() => setShowCreateSetlistDialog(true)}
+					pageTitle="Sets"
+				/>
+				<div className="mb-4">
+					<h2 className="text-lg font-semibold">Upcoming</h2>
+					{upcomingSetlists?.map((setlist) => (
+						<div
+							key={setlist.id}
+							onClick={() => handleRouteToSetlist(setlist.id)}
+							className="border-b last:border-0 py-2.5 px-2 hover:bg-gray-50 focus:bg-gray-50 cursor-pointer"
+						>
+							<div>{setlist.name}</div>
+							<div className="text-sm text-gray-600 flex items-center">
+								<div className="flex items-center">
+									<CalendarIcon className="w-4 h-4 mr-2" />
+									{toShortDate(setlist.scheduled_date)}
+								</div>
+								<div className="ml-5 flex items-center">
+									<MusicNoteIcon className="w-4 h-4 mr-2" />
+									{setlist.songs?.length}
+								</div>
+							</div>
+						</div>
+					))}
+				</div>
+				<div>
+					<h2 className="text-lg font-semibold">Previous</h2>
+					{pastSetlists?.map((setlist) => (
+						<div
+							key={setlist.id}
+							onClick={() => handleRouteToSetlist(setlist.id)}
+							className="border-b last:border-0 py-2.5 px-2 hover:bg-gray-50 focus:bg-gray-50 cursor-pointer"
+						>
+							<div>{setlist.name}</div>
+							<div className="text-sm text-gray-600 flex items-center">
+								<div className="flex items-center">
+									<CalendarIcon className="w-4 h-4 mr-2" />
+									{toShortDate(setlist.scheduled_date)}
+								</div>
+								<div className="ml-5 flex items-center">
+									<MusicNoteIcon className="w-4 h-4 mr-2" />
+									{setlist.songs?.length}
+								</div>
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+			<div className="hidden sm:block">
+				<PageTitle title="Sets" />
+				<UpcomingSetsTable setlists={upcomingSetlists} onClick={handleRouteToSetlist} />
+				<PastSetsTable setlists={pastSetlists} onClick={handleRouteToSetlist} />
+				<QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
+				<CreateSetlistDialog
+					open={showCreateSetlistDialog}
+					onCloseDialog={() => setShowCreateSetlistDialog(false)}
+					onCreated={handleSetlistCreated}
+				/>
+			</div>
 		</>
 	);
 }
