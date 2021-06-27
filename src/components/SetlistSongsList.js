@@ -39,7 +39,7 @@ export default function SetlistSongsList({ songs, onSongsAdded, onReordered, onS
 
 	return (
 		<>
-			<div className="font-semibold pb-2 flex justify-between items-center border-b">
+			<div className="font-semibold text-lg pb-2 flex justify-between items-center border-b">
 				Songs
 				<Button size="xs" variant="open" onClick={() => setShowSongsDialog(true)}>
 					Add Song

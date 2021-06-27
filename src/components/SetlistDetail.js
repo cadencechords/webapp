@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router";
 import SetlistApi from "../api/SetlistApi";
 import { toShortDate } from "../utils/DateUtils";
 import PageLoading from "./PageLoading";
-import ClockIcon from "@heroicons/react/outline/ClockIcon";
+import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
 import SetlistSongsList from "./SetlistSongsList";
 import SectionTitle from "./SectionTitle";
 import PageTitle from "./PageTitle";
@@ -88,7 +88,7 @@ export default function SetlistDetail() {
 							className="text-gray-500 flex items-center cursor-pointer"
 							onClick={() => setShowChangeDateDialog(true)}
 						>
-							<ClockIcon className="h-4 w-4 mr-2" />
+							<CalendarIcon className="h-4 w-4 mr-2" />
 							<span className="leading-6 h-6">{toShortDate(setlist.scheduled_date)}</span>
 						</div>
 					</div>

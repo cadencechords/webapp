@@ -56,7 +56,7 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 						className="border-b py-2.5 flex justify-between items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
 						key={song.id}
 					>
-						<div onClick={() => handleOpenSong(song.id)}>
+						<div onClick={() => handleOpenSong(song.id)} className="flex-grow">
 							<div className="overflow-hidden overflow-ellipsis whitespace-nowrap">{song.name}</div>
 						</div>
 						<Button
