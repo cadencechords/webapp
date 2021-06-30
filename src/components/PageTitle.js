@@ -3,7 +3,7 @@ export default function PageTitle({ title, editable, onChange, align }) {
 		return (
 			<input
 				className={
-					`font-bold p-2 text-2xl w-full outline-none ` +
+					`appearance-none font-bold p-2 text-2xl w-full outline-none ` +
 					` focus:outline-none focus:bg-gray-100 hover:bg-gray-100 rounded transition-colors`
 				}
 				defaultValue={title}

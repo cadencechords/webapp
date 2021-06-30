@@ -10,6 +10,9 @@ import PageTitle from "./PageTitle";
 import _ from "lodash";
 import Button from "./Button";
 import ChangeSetlistDateDialog from "./ChangeSetlistDateDialog";
+import { useDispatch } from "react-redux";
+import { setSetlistBeingPresented } from "../store/presenterSlice";
+import PlayIcon from "@heroicons/react/solid/PlayIcon";
 
 export default function SetlistDetail() {
 	const [setlist, setSetlist] = useState();
@@ -18,6 +21,7 @@ export default function SetlistDetail() {
 	const [showChangeDateDialog, setShowChangeDateDialog] = useState(false);
 	const router = useHistory();
 	const id = useParams().id;
+	const dispatch = useDispatch();
 
 	useEffect(() => (document.title = setlist ? setlist.name + " | Sets" : "Set"), [setlist]);
 	useEffect(() => {
@@ -53,6 +57,11 @@ export default function SetlistDetail() {
 		debounce(newName);
 	};
 
+	const handleOpenInPresenter = () => {
+		dispatch(setSetlistBeingPresented(setlist));
+		router.push(`/sets/${id}/present`);
+	};
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounce = useCallback(
 		_.debounce((newName) => {
@@ -85,12 +94,21 @@ export default function SetlistDetail() {
 					<div className="col-span-1">
 						<PageTitle title={setlist.name} editable onChange={handleNameChange} />
 						<div
-							className="text-gray-500 flex items-center cursor-pointer"
+							className="text-gray-500 flex items-center cursor-pointer mb-4"
 							onClick={() => setShowChangeDateDialog(true)}
 						>
 							<CalendarIcon className="h-4 w-4 mr-2" />
 							<span className="leading-6 h-6">{toShortDate(setlist.scheduled_date)}</span>
 						</div>
+						<Button
+							variant="outlined"
+							color="black"
+							onClick={handleOpenInPresenter}
+							className="flex items-center justify-center"
+							size="xs"
+						>
+							<PlayIcon className="h-4 w-4 text-purple-700 mr-1" /> Present
+						</Button>
 					</div>
 					<div className="col-span-2">
 						<SetlistSongsList

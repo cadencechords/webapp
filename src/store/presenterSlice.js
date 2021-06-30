@@ -3,7 +3,7 @@ export const presenterSlice = createSlice({
 	name: "presenter",
 	initialState: {
 		songBeingPresented: {},
-		setBeingPresented: {},
+		setlistBeingPresented: {},
 	},
 
 	reducers: {
@@ -14,13 +14,22 @@ export const presenterSlice = createSlice({
 		adjustSongBeingPresented: (state, action) => {
 			state.songBeingPresented = { ...state.songBeingPresented, ...action.payload };
 		},
+
+		setSetlistBeingPresented: (state, action) => {
+			state.setlistBeingPresented = action.payload;
+		},
 	},
 });
 
-export const { setSongBeingPresented, adjustSongBeingPresented } = presenterSlice.actions;
+export const { setSongBeingPresented, adjustSongBeingPresented, setSetlistBeingPresented } =
+	presenterSlice.actions;
 
 export default presenterSlice.reducer;
 
 export const selectSongBeingPresented = (state) => {
 	return state.presenter.songBeingPresented;
+};
+
+export const selectSetlistBeingPresented = (state) => {
+	return state.presenter.setlistBeingPresented;
 };

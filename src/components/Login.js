@@ -74,7 +74,7 @@ export default function Login() {
 				</div>
 				<div className="py-5">
 					<input
-						className="px-3 py-2 border-gray-300 focus:outline-none outline-none w-full border rounded-t-md focus:ring-inset focus:ring-2 focus:ring-blue-400 "
+						className="appearance-none px-3 py-2 border-gray-300 focus:outline-none outline-none w-full border rounded-t-md focus:ring-inset focus:ring-2 focus:ring-blue-400 "
 						placeholder="email"
 						type="email"
 						autoComplete="off"
@@ -84,7 +84,7 @@ export default function Login() {
 					/>
 
 					<input
-						className="px-3 py-2 shadow-sm focus:outline-none border-gray-300 outline-none w-full border rounded-b-md border-t-0 focus:ring-inset focus:ring-2 focus:ring-blue-400"
+						className="appearance-none px-3 py-2 shadow-sm focus:outline-none border-gray-300 outline-none w-full border rounded-b-md border-t-0 focus:ring-inset focus:ring-2 focus:ring-blue-400"
 						placeholder="password"
 						type="password"
 						autoComplete="off"

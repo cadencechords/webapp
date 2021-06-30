@@ -16,6 +16,7 @@ import MemberDetail from "./MemberDetail";
 import Sidenav from "./Sidenav";
 import Navbar from "./Navbar";
 import MobileNav from "./MobileNav";
+import SearchPage from "./SearchPage";
 
 export default function Content() {
 	return (
@@ -66,6 +67,9 @@ export default function Content() {
 					</Route>
 					<Route path="/app/team">
 						<TeamDetail />
+					</Route>
+					<Route path="/app/search">
+						<SearchPage />
 					</Route>
 				</div>
 			</div>
