@@ -3,7 +3,7 @@ import Button from "./Button";
 
 export default function Alert({ dismissable, color, onDismiss, children }) {
 	return (
-		<div className={`rounded ${COLOR_CLASSES[color]}  flex items-center justify-between`}>
+		<div className={`rounded ${COLOR_CLASSES[color]}  flex-between`}>
 			{children}
 			{dismissable && (
 				<Button size="xs" variant="open" color="black" onClick={onDismiss}>

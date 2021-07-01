@@ -13,7 +13,7 @@ export default function EditorMobileTopNav({ song, onShowEditorDrawer }) {
 	if (song) {
 		return (
 			<nav className="py-2 px-1 border-b bg-gray-50">
-				<div className="flex items-center justify-between max-w-3xl mx-auto">
+				<div className="flex-between max-w-3xl mx-auto">
 					<Button variant="open" color="gray" onClick={handleGoBack}>
 						<ArrowNarrowLeftIcon className="h-6 w-6" />
 					</Button>

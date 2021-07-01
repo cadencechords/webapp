@@ -62,7 +62,7 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 				<Button variant="open" className="absolute right-2 top-2" onClick={onShowMemberMenu}>
 					<DotsVerticalIcon className="text-gray-600 h-5" />
 				</Button>
-				<div className="m-auto w-20 h-20 flex items-center justify-center">
+				<div className="m-auto w-20 h-20 flex-center">
 					<ProfilePicture url={member.image_url} />
 				</div>
 				{adminStatusBubble} {currentUserBubble}

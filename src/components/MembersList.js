@@ -97,7 +97,7 @@ export default function MembersList() {
 			<>
 				<PageTitle title={currentTeam?.name} />
 
-				<div className="flex items-center justify-between">
+				<div className="flex-between">
 					<SectionTitle title="Current members" />
 					<Button onClick={() => setShowInvitationDialog(true)}>Send an invite</Button>
 				</div>

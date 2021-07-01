@@ -15,7 +15,7 @@ export default function SongPresenterMobileTopNav({ song, onShowOptionsDrawer })
 	if (song) {
 		return (
 			<nav className="py-2 px-1 border-b bg-gray-50">
-				<div className="flex items-center justify-between max-w-3xl mx-auto">
+				<div className="flex-between max-w-3xl mx-auto">
 					<Button variant="open" color="gray" onClick={handleGoBack}>
 						<ArrowNarrowLeftIcon className="h-6 w-6" />
 					</Button>
@@ -29,6 +29,6 @@ export default function SongPresenterMobileTopNav({ song, onShowOptionsDrawer })
 			</nav>
 		);
 	} else {
-		return <nav className="py-2 px-1 border-b bg-gray-50 flex items-center justify-between"></nav>;
+		return <nav className="py-2 px-1 border-b bg-gray-50 flex-between"></nav>;
 	}
 }

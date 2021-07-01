@@ -45,7 +45,7 @@ export default function DragAndDropTable({ onReorder, items, removeable, onRemov
 											ref={provided.innerRef}
 											{...provided.draggableProps}
 											{...provided.dragHandleProps}
-											className="border-b hover:bg-gray-50 py-2 px-2 bg-white flex items-center justify-between"
+											className="border-b hover:bg-gray-50 py-2 px-2 bg-white flex-between"
 											style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
 										>
 											<span

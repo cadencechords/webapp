@@ -19,7 +19,7 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 	return (
 		<>
 			<div className="sm:block hidden">
-				<div className="flex justify-between mb-2 items-center">
+				<div className="flex-between mb-2">
 					<SectionTitle title="Songs in this binder" />
 					<Button
 						variant="open"
@@ -53,7 +53,7 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 				<SectionTitle title="Songs in this binder" />
 				{boundSongs.map((song) => (
 					<div
-						className="border-b py-2.5 flex justify-between items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
+						className="border-b py-2.5 flex-between px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
 						key={song.id}
 					>
 						<div onClick={() => handleOpenSong(song.id)} className="flex-grow">
@@ -79,7 +79,7 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 			/>
 			<Button
 				variant="open"
-				className="bg-white fixed bottom-12 left-0 rounded-none flex items-center justify-center sm:hidden h-12"
+				className="bg-white fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
 				full
 				style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
 				onClick={() => setShowSearchDialog(true)}

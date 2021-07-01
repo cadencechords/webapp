@@ -20,7 +20,7 @@ export default function ProfilePicture({ url, size, onClick }) {
 		return (
 			<div
 				style={{ width: SIZES[size], height: SIZES[size] }}
-				className={`flex items-center justify-center ${
+				className={`flex-center ${
 					onClick ? " cursor-pointer hover:opacity-90 transition-opacity" : ""
 				}`}
 				onClick={onClick}

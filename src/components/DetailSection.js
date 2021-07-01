@@ -8,7 +8,7 @@ import Button from "./Button";
 export default function DetailSection({ title, items, onAdd, onDelete }) {
 	return (
 		<div className="mb-1">
-			<div className="mb-2 flex justify-between items-center">
+			<div className="mb-2 flex-between">
 				<DetailTitle>{title}</DetailTitle>
 				{onAdd && (
 					<Button size="xs" variant="open" onClick={onAdd}>

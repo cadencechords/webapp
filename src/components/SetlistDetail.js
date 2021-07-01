@@ -104,7 +104,7 @@ export default function SetlistDetail() {
 							variant="outlined"
 							color="black"
 							onClick={handleOpenInPresenter}
-							className="flex items-center justify-center"
+							className="flex-center"
 							size="xs"
 						>
 							<PlayIcon className="h-4 w-4 text-purple-700 mr-1" /> Present

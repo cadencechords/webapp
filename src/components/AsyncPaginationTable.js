@@ -27,7 +27,7 @@ export default function AsyncPaginationTable({
 					))}
 				</tbody>
 			</table>
-			<div className="flex items-center justify-between">
+			<div className="flex-between">
 				<Button
 					variant="open"
 					color="black"
@@ -35,13 +35,13 @@ export default function AsyncPaginationTable({
 					disabled={previousDisabled}
 					onClick={onPrevious}
 				>
-					<div className="flex items-center">
+					<div className="flex-center">
 						<ArrowNarrowLeftIcon className="w-4 mr-3" /> Previous
 					</div>
 				</Button>
 				{loading && <PulseLoader size="7" color="blue" />}
 				<Button variant="open" color="black" size="xs" bold onClick={onNext}>
-					<div className="flex items-center">
+					<div className="flex-center">
 						Next
 						<ArrowNarrowRightIcon className="ml-3 w-4" />
 					</div>

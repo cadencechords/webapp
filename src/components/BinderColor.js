@@ -11,9 +11,7 @@ export default function BinderColor({ color, onClick, block, size }) {
 		<div
 			onClick={handleClick}
 			className={`${HEIGHT_SIZES[size]} 
-				focus:outline-none outline-none flex items-center justify-center translate-y-6 rounded ${
-					COLORS[color]
-				}
+				focus:outline-none outline-none flex-center translate-y-6 rounded ${COLORS[color]}
 				${block ? " w-full py-3" : WIDTH_SIZES[size]} 
 				${onClick ? " cursor-pointer" : " cursor-default"} 
 				${color === "none" ? " border border-gray-300" : ""}

@@ -94,7 +94,7 @@ export default function EditorWorkbench() {
 				</div>
 			</div>
 			<div className="hidden sm:block">
-				<div className="px-3 container mx-auto flex items-center justify-between">
+				<div className="px-3 container mx-auto flex-between">
 					<div className="flex items-center">
 						<span className="mr-4">
 							<Button variant="open" size="xs" onClick={handleGoBack}>

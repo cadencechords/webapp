@@ -53,7 +53,7 @@ export default function ProfilePictureDetail({ url }) {
 		<>
 			<Label>Photo</Label>
 			<div className="m-auto mb-4 relative">
-				<div className="flex items-center justify-center">
+				<div className="flex-center">
 					<ProfilePicture url={url} size="xl2" />
 				</div>
 				<button

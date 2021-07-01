@@ -62,7 +62,7 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 	};
 
 	const songListItems = filteredSongs.map((song) => (
-		<div key={song.id} className="flex items-center">
+		<div key={song.id} className="flex-center">
 			<Checkbox
 				checked={songsToAdd.includes(song)}
 				color="blue"

@@ -8,7 +8,7 @@ export default function StyledListBox({ options, onChange, selectedOption, backg
 				<Listbox.Button
 					className={
 						`transition-all px-3 py-2 shadow-sm h-8 text-left border-gray-300 focus:outline-none outline-none` +
-						` w-full border rounded-md focus:ring-inset focus:ring-2 focus:ring-blue-400 flex items-center justify-between` +
+						` w-full border rounded-md focus:ring-inset focus:ring-2 focus:ring-blue-400 flex-between` +
 						` ${background === "white" ? "bg-white" : " bg-" + background + "-200"}`
 					}
 				>

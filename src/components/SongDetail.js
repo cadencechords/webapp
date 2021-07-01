@@ -145,7 +145,7 @@ export default function SongDetail() {
 	return (
 		<div className="grid grid-cols-4">
 			<div className="md:border-r md:pr-4 col-span-4 md:col-span-3">
-				<div className="flex items-center justify-between mb-2">
+				<div className="flex-between mb-2">
 					<PageTitle
 						title={song.name}
 						editable
@@ -206,7 +206,7 @@ export default function SongDetail() {
 						variant="outlined"
 						size="medium"
 						color="black"
-						className="flex flex-col justify-center items-center"
+						className="flex-center flex-col"
 						onClick={handleOpenInEditor}
 					>
 						<PencilIcon className="h-5 w-5 text-blue-700" /> Edit
@@ -215,7 +215,7 @@ export default function SongDetail() {
 						variant="outlined"
 						size="medium"
 						color="black"
-						className="flex flex-col justify-center items-center"
+						className="flex-center flex-col"
 						onClick={handlePresentSong}
 					>
 						<PlayIcon className="h-5 w-5 text-purple-700" /> Present
@@ -225,14 +225,14 @@ export default function SongDetail() {
 						variant="outlined"
 						size="medium"
 						color="black"
-						className="flex flex-col justify-center items-center"
+						className="flex-center flex-col"
 						onClick={() => setShowPrintDialog(true)}
 					>
 						<PrinterIcon className="h-5 w-5 text-gray-600" /> Print
 					</Button>
 
 					<Button
-						className="flex flex-col justify-center items-center"
+						className="flex-center flex-col"
 						variant="outlined"
 						color="black"
 						size="medium"

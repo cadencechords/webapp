@@ -99,7 +99,7 @@ export default function BinderDetail() {
 
 	return (
 		<div>
-			<div className="flex items-center">
+			<div className="flex-center">
 				<span className="mr-2 cursor-pointer">
 					<BinderColor color={binder.color} onClick={() => setShowColorPicker(true)} />
 					<ColorDialog

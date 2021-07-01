@@ -8,7 +8,7 @@ export default function MobileHeaderAndBottomButton({ pageTitle, onAdd, buttonTe
 			<MobileHeader title={pageTitle} onAdd={onAdd} />
 			<Button
 				variant="open"
-				className="bg-white fixed bottom-12 left-0 rounded-none flex items-center justify-center sm:hidden h-12"
+				className="bg-white fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
 				full
 				style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
 				onClick={onAdd}

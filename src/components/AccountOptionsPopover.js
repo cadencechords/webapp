@@ -25,12 +25,12 @@ export default function AccountOptionsPopover() {
 				<div className="w-60">
 					<Link to="/app/account">
 						<Button variant="open" color="black" full>
-							<div className="h-8 flex items-center justify-center">Settings</div>
+							<div className="h-8 flex-center">Settings</div>
 						</Button>
 					</Link>
 					<hr />
 					<Button variant="open" full color="red" onClick={handleLogOut}>
-						<div className="h-8 flex items-center justify-center">Log out</div>
+						<div className="h-8 flex-center">Log out</div>
 					</Button>
 				</div>
 			</StyledPopover>

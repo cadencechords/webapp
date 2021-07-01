@@ -9,7 +9,7 @@ export default function MobileNavLink({ text, to, icon, onClick }) {
 		return (
 			<Link
 				to={to}
-				className={`flex flex-col flex-grow justify-center items-center py-2 rounded font-semibold transition-all ${
+				className={`flex-center flex-col flex-grow py-2 rounded font-semibold transition-all ${
 					isCurrentRoute ? "text-blue-700 " : "text-gray-500 "
 				} hover:text-gray-700`}
 			>
@@ -20,7 +20,7 @@ export default function MobileNavLink({ text, to, icon, onClick }) {
 		return (
 			<button
 				onClick={onClick}
-				className="focus:outline-none outline-none py-2 flex flex-grow flex-col justify-center items-center rounded font-semibold transition-all text-gray-500"
+				className="focus:outline-none outline-none py-2 flex-center flex-grow flex-col rounded font-semibold transition-all text-gray-500"
 			>
 				<span>{icon}</span>
 				<span className="text-sm">{text}</span>

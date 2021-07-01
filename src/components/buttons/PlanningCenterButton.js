@@ -21,7 +21,7 @@ export default function PlanningCenterButton() {
 
 	return (
 		<button
-			className="focus:outline-none outline-none flex items-center justify-center rounded-md shadow-md p-2 bg-blue-600"
+			className="focus:outline-none outline-none flex-center rounded-md shadow-md p-2 bg-blue-600"
 			style={{ height: "40px" }}
 			onClick={handleClick}
 		>

@@ -17,7 +17,7 @@ export default function AccountDetail() {
 		return (
 			<>
 				<div className="text-gray-500">
-					<div className="w-24 m-auto flex items-center justify-center my-2">
+					<div className="w-24 m-auto flex-center my-2">
 						<ProfilePicture url={currentUser.image_url} />
 					</div>
 					<div className="font-semibold text-sm text-center mb-1">{currentUser.email}</div>
