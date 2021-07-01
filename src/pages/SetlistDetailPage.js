@@ -2,19 +2,19 @@ import { useEffect, useState, useCallback } from "react";
 import { useHistory, useParams } from "react-router";
 import SetlistApi from "../api/SetlistApi";
 import { toShortDate } from "../utils/DateUtils";
-import PageLoading from "./PageLoading";
+import PageLoading from "../components/PageLoading";
 import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
-import SetlistSongsList from "./SetlistSongsList";
-import SectionTitle from "./SectionTitle";
-import PageTitle from "./PageTitle";
+import SetlistSongsList from "../components/SetlistSongsList";
+import SectionTitle from "../components/SectionTitle";
+import PageTitle from "../components/PageTitle";
 import _ from "lodash";
-import Button from "./Button";
-import ChangeSetlistDateDialog from "./ChangeSetlistDateDialog";
+import Button from "../components/Button";
+import ChangeSetlistDateDialog from "../components/ChangeSetlistDateDialog";
 import { useDispatch } from "react-redux";
 import { setSetlistBeingPresented } from "../store/presenterSlice";
 import PlayIcon from "@heroicons/react/solid/PlayIcon";
 
-export default function SetlistDetail() {
+export default function SetlistDetailPage() {
 	const [setlist, setSetlist] = useState();
 	const [loading, setLoading] = useState(true);
 	const [deleting, setDeleting] = useState(false);

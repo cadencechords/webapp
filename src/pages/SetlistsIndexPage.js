@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import SetlistApi from "../api/SetlistApi";
-import PageTitle from "./PageTitle";
-import PastSetsTable from "./PastSetsTable";
-import UpcomingSetsTable from "./UpcomingSetsTable";
-import QuickAdd from "./QuickAdd";
-import CreateSetlistDialog from "./CreateSetlistDialog";
+import PageTitle from "../components/PageTitle";
+import PastSetsTable from "../components/PastSetsTable";
+import UpcomingSetsTable from "../components/UpcomingSetsTable";
+import QuickAdd from "../components/QuickAdd";
+import CreateSetlistDialog from "../components/CreateSetlistDialog";
 import PulseLoader from "react-spinners/PulseLoader";
 import { useHistory } from "react-router";
-import MobileHeaderAndBottomButton from "./MobileHeaderAndBottomButton";
-import CenteredPage from "./CenteredPage";
+import MobileHeaderAndBottomButton from "../components/MobileHeaderAndBottomButton";
+import CenteredPage from "../components/CenteredPage";
 import { toShortDate } from "../utils/DateUtils";
 import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
 import MusicNoteIcon from "@heroicons/react/solid/MusicNoteIcon";
 
-export default function SetsList() {
+export default function SetlistsIndexPage() {
 	useEffect(() => (document.title = "Sets"));
 	const [setlists, setSetlists] = useState([]);
 	const [upcomingSetlists, setUpcomingSetlists] = useState([]);

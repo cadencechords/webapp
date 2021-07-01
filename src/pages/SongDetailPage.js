@@ -1,30 +1,30 @@
-import PageTitle from "./PageTitle";
+import PageTitle from "../components/PageTitle";
 import PrinterIcon from "@heroicons/react/outline/PrinterIcon";
-import PrintSongDialog from "./PrintSongDialog";
+import PrintSongDialog from "../components/PrintSongDialog";
 import { useEffect, useState } from "react";
-import DetailSection from "./DetailSection";
-import ArtistField from "./ArtistField";
-import BpmField from "./BpmField";
-import MeterField from "./MeterField";
-import SongKeyField from "./SongKeyField";
-import SongPreview from "./SongPreview";
+import DetailSection from "../components/DetailSection";
+import ArtistField from "../components/ArtistField";
+import BpmField from "../components/BpmField";
+import MeterField from "../components/MeterField";
+import SongKeyField from "../components/SongKeyField";
+import SongPreview from "../components/SongPreview";
 import PencilIcon from "@heroicons/react/solid/PencilIcon";
 import { useHistory, useParams } from "react-router";
 import PulseLoader from "react-spinners/PulseLoader";
 import SongApi from "../api/SongApi";
 import { isEmpty } from "../utils/ObjectUtils";
-import AddThemeDialog from "./AddThemeDialog";
-import AddGenreDialog from "./AddGenreDialog";
-import BinderColor from "./BinderColor";
+import AddThemeDialog from "../components/AddThemeDialog";
+import AddGenreDialog from "../components/AddGenreDialog";
+import BinderColor from "../components/BinderColor";
 import { setSongBeingEdited } from "../store/editorSlice";
 import { useDispatch } from "react-redux";
-import Button from "./Button";
+import Button from "../components/Button";
 import PlayIcon from "@heroicons/react/solid/PlayIcon";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import EyeOffIcon from "@heroicons/react/outline/EyeOffIcon";
 import { setSongBeingPresented } from "../store/presenterSlice";
 
-export default function SongDetail() {
+export default function SongDetailPage() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
 	const [song, setSong] = useState();
 	const [pendingUpdates, setPendingUpdates] = useState({});

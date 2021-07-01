@@ -1,18 +1,18 @@
-import CreateBinderDialog from "./CreateBinderDialog";
-import NoDataMessage from "./NoDataMessage";
-import QuickAdd from "./QuickAdd";
+import CreateBinderDialog from "../components/CreateBinderDialog";
+import NoDataMessage from "../components/NoDataMessage";
+import QuickAdd from "../components/QuickAdd";
 import { useEffect, useState } from "react";
-import PageTitle from "./PageTitle";
-import BindersTable from "./BindersTable";
+import PageTitle from "../components/PageTitle";
+import BindersTable from "../components/BindersTable";
 import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
 import { useHistory } from "react-router";
-import MobileHeader from "./MobileHeader";
-import Button from "./Button";
+import MobileHeader from "../components/MobileHeader";
+import Button from "../components/Button";
 import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
-import BinderColor from "./BinderColor";
+import BinderColor from "../components/BinderColor";
 
-export default function BindersList() {
+export default function BindersIndexPage() {
 	useEffect(() => (document.title = "Binders"));
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 	const [binders, setBinders] = useState([]);

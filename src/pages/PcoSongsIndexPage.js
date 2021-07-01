@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import PlanningCenterApi from "../api/PlanningCenterApi";
-import Checkbox from "./Checkbox";
-import PageTitle from "./PageTitle";
-import PlanningCenterSongsTable from "./PlanningCenterSongsTable";
-import SectionTitle from "./SectionTitle";
-import SelectedPcoSongsTable from "./SelectedPcoSongsTable";
+import Checkbox from "../components/Checkbox";
+import PageTitle from "../components/PageTitle";
+import PlanningCenterSongsTable from "../components/PlanningCenterSongsTable";
+import SectionTitle from "../components/SectionTitle";
+import SelectedPcoSongsTable from "../components/SelectedPcoSongsTable";
 import { pluralOrSingularize } from "../utils/FormatUtils";
 import _ from "lodash";
-import Button from "./Button";
+import Button from "../components/Button";
 
 const NUMBER_PER_PAGE = 25;
 
-export default function PlanningCenterSongsList() {
+export default function PcoSongsIndexPage() {
 	const [loadingSongs, setLoadingSongs] = useState(true);
 	const [songs, setSongs] = useState([]);
 	const [songsToImport, setSongsToImport] = useState([]);

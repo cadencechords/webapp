@@ -11,7 +11,7 @@ export default function SetlistNavigation({ songs, onSongIndexChange }) {
 
 	return (
 		<>
-			<div className="fixed bottom-0 w-full flex border-t">
+			<div className="fixed bottom-0 w-full flex border-t bg-white">
 				<MobileMenuButton
 					full
 					disabled={songIndex === 0}

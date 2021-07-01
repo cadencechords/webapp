@@ -3,7 +3,7 @@ import useQuery from "../hooks/useQuery";
 import PlanningCenterApi from "../api/PlanningCenterApi";
 import { useHistory } from "react-router";
 
-export default function PlanningCenterRedirect() {
+export default function PcoRedirectPage() {
 	const code = useQuery().get("code");
 	const router = useHistory();
 

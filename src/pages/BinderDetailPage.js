@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router";
-import BinderColor from "./BinderColor";
-import BinderSongsList from "./BinderSongsList";
-import ColorDialog from "./ColorDialog";
-import PageTitle from "./PageTitle";
+import BinderColor from "../components/BinderColor";
+import BinderSongsList from "../components/BinderSongsList";
+import ColorDialog from "../components/ColorDialog";
+import PageTitle from "../components/PageTitle";
 import PulseLoader from "react-spinners/PulseLoader";
 import BinderApi from "../api/BinderApi";
 import { isEmpty } from "../utils/ObjectUtils";
-import Button from ".//Button";
-import EditableData from "./inputs/EditableData";
+import Button from "../components/Button";
+import EditableData from "../components/inputs/EditableData";
 
-export default function BinderDetail() {
+export default function BinderDetailPage() {
 	const [showColorPicker, setShowColorPicker] = useState(false);
 	const [binder, setBinder] = useState();
 	const [pendingUpdates, setPendingUpdates] = useState({});

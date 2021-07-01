@@ -1,7 +1,7 @@
 // import CadenceButton from "./buttons/CadenceButton";
-import PlanningCenterButton from "./buttons/PlanningCenterButton";
+import PlanningCenterButton from "../components/buttons/PlanningCenterButton";
 
-export default function SongImportSources() {
+export default function SongImportSourcesIndexPage() {
 	return (
 		<>
 			<div className="font-bold text-2xl text-center py-4">Import Songs</div>

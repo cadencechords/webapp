@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import NoDataMessage from "./NoDataMessage";
-import CenteredPage from "./CenteredPage";
+import NoDataMessage from "../components/NoDataMessage";
+import CenteredPage from "../components/CenteredPage";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../store/authSlice";
-import ProfilePicture from "./ProfilePicture";
+import ProfilePicture from "../components/ProfilePicture";
 import { Link } from "react-router-dom";
 
-export default function AccountDetail() {
+export default function AccountDetailPage() {
 	const currentUser = useSelector(selectCurrentUser);
 
 	useEffect(() => {

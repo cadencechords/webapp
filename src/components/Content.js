@@ -1,22 +1,25 @@
-import BindersList from "./BindersList";
-import { Route } from "react-router-dom";
-import SongsList from "./SongsList";
-import SetsList from "./SetsList";
-import BinderDetail from "./BinderDetail";
-import SongDetail from "./SongDetail";
-import AccountDetail from "./AccountDetail";
+import TeamDetailPage from "../pages/TeamDetailPage";
+import SetlistDetailPage from "../pages/SetlistDetailPage";
+import AccountDetailPage from "../pages/AccountDetailPage";
+import BinderDetailPage from "../pages/BinderDetailPage";
+import SongDetailPage from "../pages/SongDetailPage";
+import MemberDetailPage from "../pages/MemberDetailPage";
+
+import BindersIndexPage from "../pages/BindersIndexPage";
+import SetlistsIndexPage from "../pages/SetlistsIndexPage";
+import SongsIndexPage from "../pages/SongsIndexPage";
+import MembersIndexPage from "../pages/MembersIndexPage";
+import PcoSongsIndexPage from "../pages/PcoSongsIndexPage";
+import SongImportSourcesIndexPage from "../pages/SongImportSourcesIndexPage";
+
+import PcoRedirectPage from "../pages/PcoRedirectPage";
 import PersonalDetails from "./PersonalDetails";
-import MembersList from "./MembersList";
-import SetlistDetail from "./SetlistDetail";
-import SongImportSources from "./SongImportSources";
-import PlanningCenterRedirect from "./PlanningCenterRedirect";
-import PlanningCenterSongsList from "./PlanningCenterSongsList";
-import TeamDetail from "./TeamDetail";
-import MemberDetail from "./MemberDetail";
+import SearchPage from "./SearchPage";
+
+import { Route } from "react-router-dom";
 import Sidenav from "./Sidenav";
 import Navbar from "./Navbar";
 import MobileNav from "./MobileNav";
-import SearchPage from "./SearchPage";
 
 export default function Content() {
 	return (
@@ -27,46 +30,46 @@ export default function Content() {
 			<div className="md:ml-56 md:px-10 px-2 py-3">
 				<div className="container mx-auto">
 					<Route path="/app/binders/:id" exact>
-						<BinderDetail />
+						<BinderDetailPage />
 					</Route>
 					<Route path="/app/binders" exact>
-						<BindersList />
+						<BindersIndexPage />
 					</Route>
 					<Route path="/app/import/pco/songs" exact>
-						<PlanningCenterSongsList />
+						<PcoSongsIndexPage />
 					</Route>
 					<Route path="/app/import/pco_redirect" exact>
-						<PlanningCenterRedirect />
+						<PcoRedirectPage />
 					</Route>
 					<Route path="/app/import" exact>
-						<SongImportSources />
+						<SongImportSourcesIndexPage />
 					</Route>
 					<Route path="/app/songs/:id" exact>
-						<SongDetail />
+						<SongDetailPage />
 					</Route>
 					<Route path="/app/songs" exact>
-						<SongsList />
+						<SongsIndexPage />
 					</Route>
 					<Route path="/app/sets" exact>
-						<SetsList />
+						<SetlistsIndexPage />
 					</Route>
 					<Route path="/app/sets/:id" exact>
-						<SetlistDetail />
+						<SetlistDetailPage />
 					</Route>
 					<Route path="/app/account/personal" exact>
 						<PersonalDetails />
 					</Route>
 					<Route path="/app/account" exact>
-						<AccountDetail />
+						<AccountDetailPage />
 					</Route>
 					<Route path="/app/members/:id" exact>
-						<MemberDetail />
+						<MemberDetailPage />
 					</Route>
 					<Route path="/app/members" exact>
-						<MembersList />
+						<MembersIndexPage />
 					</Route>
 					<Route path="/app/team">
-						<TeamDetail />
+						<TeamDetailPage />
 					</Route>
 					<Route path="/app/search">
 						<SearchPage />

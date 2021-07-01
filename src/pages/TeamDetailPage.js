@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FileApi from "../api/FileApi";
 import { selectCurrentTeam, setCurrentTeam } from "../store/authSlice";
-import PageTitle from "./PageTitle";
-import ProfilePicture from "./ProfilePicture";
-import MobileProfilePictureMenu from "./mobile menus/MobileProfilePictureMenu";
+import PageTitle from "../components/PageTitle";
+import ProfilePicture from "../components/ProfilePicture";
+import MobileProfilePictureMenu from "../components/mobile menus/MobileProfilePictureMenu";
 
-export default function TeamDetail() {
+export default function TeamDetailPage() {
 	const currentTeam = useSelector(selectCurrentTeam);
 	useEffect(() => (document.title = currentTeam ? currentTeam.name : "Team Details"));
 	const inputRef = useRef();
