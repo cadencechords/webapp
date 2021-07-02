@@ -80,7 +80,7 @@ export default function SetlistsIndexPage() {
 	};
 
 	const handleRouteToSetlist = (setlistId) => {
-		router.push(`/app/sets/${setlistId}`);
+		router.push(`/sets/${setlistId}`);
 	};
 
 	if (loading) {

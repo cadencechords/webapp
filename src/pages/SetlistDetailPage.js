@@ -78,7 +78,7 @@ export default function SetlistDetailPage() {
 		setDeleting(true);
 		try {
 			await SetlistApi.deleteOne(id);
-			router.push("/app/sets");
+			router.push("/sets");
 		} catch (error) {
 			console.log(error);
 			setDeleting(false);

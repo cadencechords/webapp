@@ -12,12 +12,12 @@ export default function MobileNavbar() {
 	return (
 		<>
 			<div className="fixed bottom-0 bg-white w-full border-t md:hidden py-1 flex">
-				<MobileNavLink icon={<SearchIcon className={iconClasses} />} to="/app/search" />
+				<MobileNavLink icon={<SearchIcon className={iconClasses} />} to="/search" />
 				<MobileNavLink
 					icon={<MenuIcon className={iconClasses} />}
 					onClick={() => setShowMenuDialog(true)}
 				/>
-				<MobileNavLink icon={<UserIcon className={iconClasses} />} to="/app/account" />
+				<MobileNavLink icon={<UserIcon className={iconClasses} />} to="/account" />
 			</div>
 			<AppMenu open={showMenuDialog} onCloseDialog={() => setShowMenuDialog(false)} />
 		</>

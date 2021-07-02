@@ -24,22 +24,14 @@ export default function Sidenav() {
 				<div className="px-2 flex flex-col py-3 ">
 					<SidenavLink
 						text="Binders"
-						to="/app/binders"
+						to="/binders"
 						icon={<FolderOpenIcon className={iconClasses} />}
 					/>
-					<SidenavLink
-						text="Songs"
-						to="/app/songs"
-						icon={<MusicNoteIcon className={iconClasses} />}
-					/>
-					<SidenavLink
-						text="Sets"
-						to="/app/sets"
-						icon={<ViewGridAddIcon className={iconClasses} />}
-					/>
+					<SidenavLink text="Songs" to="/songs" icon={<MusicNoteIcon className={iconClasses} />} />
+					<SidenavLink text="Sets" to="/sets" icon={<ViewGridAddIcon className={iconClasses} />} />
 					<SidenavLink
 						text="Team members"
-						to="/app/members"
+						to="/members"
 						icon={<UserGroupIcon className={iconClasses} />}
 					/>
 				</div>

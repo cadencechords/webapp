@@ -67,7 +67,7 @@ export default function SongsList() {
 							{!song?.content && exclamationIcon}
 							<div
 								className="overflow-hidden overflow-ellipsis whitespace-nowrap"
-								onClick={() => router.push(`/app/songs/${song.id}`)}
+								onClick={() => router.push(`/songs/${song.id}`)}
 							>
 								{song.name}
 							</div>

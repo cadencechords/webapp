@@ -31,7 +31,7 @@ export default function SetPresenter() {
 	};
 
 	const handleRouteToSetDetail = () => {
-		router.push(`/app/sets/${id}`);
+		router.push(`/sets/${id}`);
 	};
 
 	if (setlist?.songs) {

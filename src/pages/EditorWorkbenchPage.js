@@ -23,7 +23,7 @@ export default function EditorWorkbenchPage() {
 	const router = useHistory();
 
 	if (!songBeingEdited || isEmpty(songBeingEdited)) {
-		router.push("/app");
+		router.push("/");
 	}
 
 	useEffect(() => {

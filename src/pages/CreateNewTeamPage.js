@@ -20,7 +20,7 @@ export default function CreateNewTeamPage() {
 			let newTeam = { name: teamName };
 			let { data } = await TeamApi.createOne(newTeam);
 			dispatch(setTeamId(data.id));
-			router.push("/app");
+			router.push("/");
 		} catch (error) {
 			console.log(error);
 			setLoading(false);

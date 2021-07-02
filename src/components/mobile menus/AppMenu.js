@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 export default function AppMenu({ onCloseDialog, open }) {
 	return (
 		<StyledDialog onCloseDialog={onCloseDialog} open={open} title="Menu" fullscreen={false}>
-			<Link to="/app/binders">
+			<Link to="/binders">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">
 						<FolderOpenIcon className="mr-4 h-5" />
@@ -18,7 +18,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 				</MobileMenuButton>
 			</Link>
 
-			<Link to="/app/songs">
+			<Link to="/songs">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">
 						<MusicNoteIcon className="mr-4 h-5" />
@@ -27,7 +27,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 				</MobileMenuButton>
 			</Link>
 
-			<Link to="/app/sets">
+			<Link to="/sets">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">
 						<ViewGridAddIcon className="mr-4 h-5" />
@@ -36,7 +36,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 				</MobileMenuButton>
 			</Link>
 
-			<Link to="/app/members">
+			<Link to="/members">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">
 						<UserGroupIcon className="mr-4 h-5" />

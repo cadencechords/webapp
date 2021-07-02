@@ -11,7 +11,7 @@ export default function PlanningCenterButton() {
 
 	const handleClick = () => {
 		if (currentUser?.pco_connected) {
-			router.push("/app/import/pco/songs");
+			router.push("/import/pco/songs");
 		} else {
 			window.location =
 				`https://api.planningcenteronline.com/oauth/authorize?client_id=${PCO_CLIENT_ID}` +

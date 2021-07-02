@@ -11,7 +11,7 @@ export default function TeamLoginOptions({ teams }) {
 	const handleLoginTeam = (teamId) => {
 		localStorage.setItem("teamId", teamId);
 		dispatch(setTeamId(teamId));
-		router.push("/app");
+		router.push("/");
 	};
 
 	return (

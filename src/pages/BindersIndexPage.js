@@ -59,7 +59,7 @@ export default function BindersIndexPage() {
 						<div
 							key={binder.id}
 							className="border-b py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
-							onClick={() => router.push(`/app/binders/${binder.id}`)}
+							onClick={() => router.push(`/binders/${binder.id}`)}
 						>
 							<BinderColor color={binder.color} />
 							<div className="ml-3">

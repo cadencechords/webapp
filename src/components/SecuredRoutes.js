@@ -73,9 +73,6 @@ export default function SecuredRoutes() {
 	if (currentUser && currentTeam) {
 		return (
 			<>
-				<Route path="/app">
-					<Content />
-				</Route>
 				<Route path="/editor" exact>
 					<EditorWorkbenchPage />
 				</Route>
@@ -84,6 +81,9 @@ export default function SecuredRoutes() {
 				</Route>
 				<Route path="/sets/:id/present" exact>
 					<SetPresenterPage />
+				</Route>
+				<Route path="/">
+					<Content />
 				</Route>
 			</>
 		);

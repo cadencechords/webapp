@@ -18,7 +18,7 @@ export default function TeamOptionsPopover({ team }) {
 		<StyledPopover button={button}>
 			<div className="w-64">
 				<Button variant="open" full>
-					<Link className="flex justify-start text-gray-600 h-8 items-center" to="/app/team">
+					<Link className="flex justify-start text-gray-600 h-8 items-center" to="/team">
 						<InformationCircleIcon className="mx-4 h-4 text-gray-600" />
 						View details
 					</Link>

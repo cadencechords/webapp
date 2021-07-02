@@ -9,7 +9,7 @@ export default function SongPresenterMobileTopNav({ song, onShowOptionsDrawer })
 	const { id } = useParams();
 
 	const handleGoBack = () => {
-		router.push(`/app/songs/${id}`);
+		router.push(`/songs/${id}`);
 	};
 
 	if (song) {

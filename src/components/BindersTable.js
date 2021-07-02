@@ -7,7 +7,7 @@ export default function BindersTable({ binders }) {
 	const router = useHistory();
 
 	const handleOpenBinder = (binderId) => {
-		router.push(`/app/binders/${binderId}`);
+		router.push(`/binders/${binderId}`);
 	};
 
 	let binderOptions = binders.map((binder) => ({

@@ -60,7 +60,7 @@ export default function InvitationSignUpPage() {
 			dispatch(setAuth({ accessToken, client, uid }));
 			dispatch(setTeamId(result.data.team_id));
 
-			router.push("/app");
+			router.push("/");
 		} catch (error) {
 			setAlertMessage(error?.response?.data?.message);
 			setLoading(false);

@@ -42,7 +42,7 @@ export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
 
 			<OrDivider />
 
-			<Button variant="open" full color="blue" onClick={() => router.push("/app/import")}>
+			<Button variant="open" full color="blue" onClick={() => router.push("/import")}>
 				Import a song
 			</Button>
 		</StyledDialog>

@@ -34,7 +34,7 @@ export default function SetlistSongsList({ songs, onSongsAdded, onReordered, onS
 	};
 
 	const handleRouteToSongDetail = (songId) => {
-		router.push(`/app/songs/${songId}`);
+		router.push(`/songs/${songId}`);
 	};
 
 	return (

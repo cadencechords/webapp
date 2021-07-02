@@ -70,7 +70,7 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 					{member.first_name ? member.first_name + " " + member.last_name : member.email}
 				</div>
 				{teamPosition}
-				<Link to={`/app/members/${member.id}`}>
+				<Link to={`/members/${member.id}`}>
 					<Button variant="outlined" size="xs" full className="mt-2">
 						View profile
 					</Button>

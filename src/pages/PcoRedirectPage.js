@@ -11,7 +11,7 @@ export default function PcoRedirectPage() {
 		async function authorize() {
 			try {
 				await PlanningCenterApi.authorize(code);
-				router.push("/app/import/pco/songs");
+				router.push("/import/pco/songs");
 			} catch (error) {
 				console.log(error);
 			}

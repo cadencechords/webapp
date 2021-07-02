@@ -37,7 +37,7 @@ export default function AccountDetailPage() {
 					) : (
 						<div className="text-center">
 							You haven't provided your name yet. You can do that
-							<Link to="/app/account/personal">here</Link>
+							<Link to="/account/personal">here</Link>
 						</div>
 					)}
 				</div>

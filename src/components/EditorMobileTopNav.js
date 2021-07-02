@@ -7,7 +7,7 @@ export default function EditorMobileTopNav({ song, onShowEditorDrawer }) {
 	const router = useHistory();
 
 	const handleGoBack = () => {
-		router.push(`/app/songs/${song.id}`);
+		router.push(`/songs/${song.id}`);
 	};
 
 	if (song) {

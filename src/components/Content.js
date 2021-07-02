@@ -29,49 +29,49 @@ export default function Content() {
 			<MobileNav />
 			<div className="md:ml-56 md:px-10 px-2 py-3">
 				<div className="container mx-auto">
-					<Route path="/app/binders/:id" exact>
+					<Route path="/binders/:id" exact>
 						<BinderDetailPage />
 					</Route>
-					<Route path="/app/binders" exact>
+					<Route path="/binders" exact>
 						<BindersIndexPage />
 					</Route>
-					<Route path="/app/import/pco/songs" exact>
+					<Route path="/import/pco/songs" exact>
 						<PcoSongsIndexPage />
 					</Route>
-					<Route path="/app/import/pco_redirect" exact>
+					<Route path="/import/pco_redirect" exact>
 						<PcoRedirectPage />
 					</Route>
-					<Route path="/app/import" exact>
+					<Route path="/import" exact>
 						<SongImportSourcesIndexPage />
 					</Route>
-					<Route path="/app/songs/:id" exact>
+					<Route path="/songs/:id" exact>
 						<SongDetailPage />
 					</Route>
-					<Route path="/app/songs" exact>
+					<Route path="/songs" exact>
 						<SongsIndexPage />
 					</Route>
-					<Route path="/app/sets" exact>
+					<Route path="/sets" exact>
 						<SetlistsIndexPage />
 					</Route>
-					<Route path="/app/sets/:id" exact>
+					<Route path="/sets/:id" exact>
 						<SetlistDetailPage />
 					</Route>
-					<Route path="/app/account/personal" exact>
+					<Route path="/account/personal" exact>
 						<PersonalDetails />
 					</Route>
-					<Route path="/app/account" exact>
+					<Route path="/account" exact>
 						<AccountDetailPage />
 					</Route>
-					<Route path="/app/members/:id" exact>
+					<Route path="/members/:id" exact>
 						<MemberDetailPage />
 					</Route>
-					<Route path="/app/members" exact>
+					<Route path="/members" exact>
 						<MembersIndexPage />
 					</Route>
-					<Route path="/app/team">
+					<Route path="/team">
 						<TeamDetailPage />
 					</Route>
-					<Route path="/app/search">
+					<Route path="/search">
 						<SearchPage />
 					</Route>
 				</div>

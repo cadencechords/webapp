@@ -13,7 +13,7 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 	const router = useHistory();
 
 	const handleOpenSong = (songId) => {
-		router.push(`/app/songs/${songId}`);
+		router.push(`/songs/${songId}`);
 	};
 
 	return (

@@ -23,7 +23,7 @@ export default function AccountOptionsPopover() {
 		<div className="mr-5">
 			<StyledPopover button={button} position="bottom-start">
 				<div className="w-60">
-					<Link to="/app/account">
+					<Link to="/account">
 						<Button variant="open" color="black" full>
 							<div className="h-8 flex-center">Settings</div>
 						</Button>
