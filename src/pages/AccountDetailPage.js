@@ -6,6 +6,7 @@ import { logOut, selectCurrentUser } from "../store/authSlice";
 import ProfilePicture from "../components/ProfilePicture";
 import { Link, useHistory } from "react-router-dom";
 import Button from "../components/Button";
+import SectionTitle from "../components/SectionTitle";
 
 export default function AccountDetailPage() {
 	const currentUser = useSelector(selectCurrentUser);
@@ -39,13 +40,20 @@ export default function AccountDetailPage() {
 							<Link to="/app/account/personal">here</Link>
 						</div>
 					)}
-
-					<div className="flex">
-						<Button className="w-full sm:w-auto mt-8 sm:ml-auto" onClick={handleLogout}>
-							Log out
-						</Button>
-					</div>
 				</div>
+				<SectionTitle title="Log Out" underline />
+				<div className="mb-1">Switch to or create another team</div>
+				<Link to="/login/teams">
+					<Button variant="outlined" color="black" className="w-full sm:w-auto">
+						Switch teams
+					</Button>
+				</Link>
+				<div className="mt-4 mb-1">Log out of your account completely</div>
+				<span>
+					<Button onClick={handleLogout} color="red" className="w-full sm:w-auto">
+						Log out
+					</Button>
+				</span>
 			</>
 		);
 	} else {
