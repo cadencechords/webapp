@@ -25,4 +25,8 @@ export default class PlanningCenterApi {
 			{ headers: constructAuthHeaders() }
 		);
 	}
+
+	static disconnect() {
+		return axios.delete(PCO_URL + "/users/me", { headers: constructAuthHeaders() });
+	}
 }
