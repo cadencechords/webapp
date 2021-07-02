@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import Button from "./Button";
-import CenteredPage from "./CenteredPage";
+import Button from "../components/Button";
+import CenteredPage from "../components/CenteredPage";
 import PulseLoader from "react-spinners/PulseLoader";
 import InvitationApi from "../api/InvitationApi";
 import { useDispatch } from "react-redux";
 import { setAuth, setTeamId } from "../store/authSlice";
-import Alert from "./Alert";
+import Alert from "../components/Alert";
 
 export function useQuery() {
 	return new URLSearchParams(useLocation().search);
 }
 
-export default function ClaimInvitation() {
+export default function ClaimInvitationPage() {
 	const token = useQuery().get("token");
 	const [claimingToken, setClaimingToken] = useState(false);
 	const [errors, setErrors] = useState(null);

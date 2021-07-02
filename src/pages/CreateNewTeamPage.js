@@ -1,13 +1,13 @@
 import { useState } from "react";
-import CenteredPage from "./CenteredPage";
-import OutlinedInput from "./inputs/OutlinedInput";
+import CenteredPage from "../components/CenteredPage";
+import OutlinedInput from "../components/inputs/OutlinedInput";
 import TeamApi from "../api/TeamApi";
 import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { setTeamId } from "../store/authSlice";
-import Button from "./Button";
+import Button from "../components/Button";
 
-export default function CreateNewTeam() {
+export default function CreateNewTeamPage() {
 	const [teamName, setTeamIdName] = useState("");
 	const [loading, setLoading] = useState(false);
 	const router = useHistory();

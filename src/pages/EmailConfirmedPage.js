@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import CenteredPage from "./CenteredPage";
-import Button from "./Button";
+import CenteredPage from "../components/CenteredPage";
+import Button from "../components/Button";
 
 export default function EmailConfirmationSuccess() {
 	useEffect(() => {

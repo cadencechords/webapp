@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import OutlinedInput from "./inputs/OutlinedInput";
-import PasswordRequirements from "./PasswordRequirements";
+import OutlinedInput from "../components/inputs/OutlinedInput";
+import PasswordRequirements from "../components/PasswordRequirements";
 import AuthApi from "../api/AuthApi";
-import Alert from "./Alert";
-import Button from "./Button";
+import Alert from "../components/Alert";
+import Button from "../components/Button";
 
-export default function SignUp() {
+export default function SignUpPage() {
 	const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");

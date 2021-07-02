@@ -1,6 +1,6 @@
-import ChordOptions from "./ChordOptions";
-import LyricOptions from "./LyricOptions";
-import PageTitle from "./PageTitle";
+import ChordOptions from "../components/ChordOptions";
+import LyricOptions from "../components/LyricOptions";
+import PageTitle from "../components/PageTitle";
 import { useEffect, useState } from "react";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import { useHistory } from "react-router";
@@ -8,12 +8,12 @@ import { useSelector } from "react-redux";
 import { selectSongBeingEdited, setSongBeingEdited } from "../store/editorSlice";
 import SongApi from "../api/SongApi";
 import { isEmpty } from "../utils/ObjectUtils";
-import Button from "./Button";
-import Editor from "./Editor";
-import EditorMobileTopNav from "./EditorMobileTopNav";
-import EditorDrawer from "./EditorDrawer";
+import Button from "../components/Button";
+import Editor from "../components/Editor";
+import EditorMobileTopNav from "../components/EditorMobileTopNav";
+import EditorDrawer from "../components/EditorDrawer";
 
-export default function EditorWorkbench() {
+export default function EditorWorkbenchPage() {
 	const [showEditorDrawer, setShowEditorDrawer] = useState(false);
 	const [formatOptions, setFormatOptions] = useState({});
 	const [updatedSong, setUpdatedSong] = useState("");

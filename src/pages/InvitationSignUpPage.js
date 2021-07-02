@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import CenteredPage from "./CenteredPage";
-import OutlinedInput from "./inputs/OutlinedInput";
-import { useQuery } from "./ClaimInvitation";
-import PasswordRequirements from "./PasswordRequirements";
-import Alert from "./Alert";
+import CenteredPage from "../components/CenteredPage";
+import OutlinedInput from "../components/inputs/OutlinedInput";
+import { useQuery } from "./ClaimInvitationPage";
+import PasswordRequirements from "../components/PasswordRequirements";
+import Alert from "../components/Alert";
 import InvitationApi from "../api/InvitationApi";
 import { useDispatch } from "react-redux";
 import { setTeamId, setAuth } from "../store/authSlice";
 import { useHistory } from "react-router";
-import Button from "./Button";
+import Button from "../components/Button";
 
-export default function InvitationSignUp() {
+export default function InvitationSignUpPage() {
 	const [password, setPassword] = useState("");
 	const [passwordConfirmation, setPasswordConfirmation] = useState("");
 	const [isPasswordFocused, setIsPasswordFocused] = useState(false);

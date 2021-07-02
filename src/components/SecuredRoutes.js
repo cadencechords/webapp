@@ -15,10 +15,11 @@ import TeamApi from "../api/TeamApi";
 import { useHistory } from "react-router";
 import PageLoading from "./PageLoading";
 import Content from "./Content";
-import EditorWorkbench from "./EditorWorkbench";
 import CenteredPage from "./CenteredPage";
-import SongPresenter from "./SongPresenter";
-import SetPresenter from "./SetPresenter";
+
+import EditorWorkbenchPage from "../pages/EditorWorkbenchPage";
+import SongPresenterPage from "../pages/SongPresenterPage";
+import SetPresenterPage from "../pages/SetPresenterPage";
 
 export default function SecuredRoutes() {
 	const dispatch = useDispatch();
@@ -76,13 +77,13 @@ export default function SecuredRoutes() {
 					<Content />
 				</Route>
 				<Route path="/editor" exact>
-					<EditorWorkbench />
+					<EditorWorkbenchPage />
 				</Route>
 				<Route path="/songs/:id/present" exact>
-					<SongPresenter />
+					<SongPresenterPage />
 				</Route>
 				<Route path="/sets/:id/present" exact>
-					<SetPresenter />
+					<SetPresenterPage />
 				</Route>
 			</>
 		);

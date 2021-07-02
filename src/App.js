@@ -1,13 +1,14 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
-import EmailConfirmationSuccess from "./components/EmailConfirmationSuccess";
-import TeamLogin from "./components/TeamLogin";
-import CreateNewTeam from "./components/CreateNewTeam";
-import ClaimInvitation from "./components/ClaimInvitation";
-import InvitationSignUp from "./components/InvitationSignUp";
 import SecuredRoutes from "./components/SecuredRoutes";
+
+import ClaimInvitationPage from "./pages/ClaimInvitationPage";
+import InvitationSignUpPage from "./pages/InvitationSignUpPage";
+import EmailConfirmedPage from "./pages/EmailConfirmedPage";
+import CreateNewTeamPage from "./pages/CreateNewTeamPage";
+import TeamLoginPage from "./pages/TeamLoginPage";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
 
 function App() {
 	return (
@@ -15,25 +16,25 @@ function App() {
 			<Router>
 				<Switch>
 					<Route path="/login" exact>
-						<Login />
+						<LoginPage />
 					</Route>
 					<Route path="/login/teams" exact>
-						<TeamLogin />
+						<TeamLoginPage />
 					</Route>
 					<Route path="/login/teams/new" exact>
-						<CreateNewTeam />
+						<CreateNewTeamPage />
 					</Route>
 					<Route path="/confirmation" exact>
-						<EmailConfirmationSuccess />
+						<EmailConfirmedPage />
 					</Route>
 					<Route path="/signup" exact>
-						<SignUp />
+						<SignUpPage />
 					</Route>
 					<Route path="/invitations" exact>
-						<ClaimInvitation />
+						<ClaimInvitationPage />
 					</Route>
 					<Route path="/invitations/signup" exact>
-						<InvitationSignUp />
+						<InvitationSignUpPage />
 					</Route>
 					<SecuredRoutes />
 				</Switch>

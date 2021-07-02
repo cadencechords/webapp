@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import AuthApi from "../api/AuthApi";
-import Alert from "./Alert";
+import Alert from "../components/Alert";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../store/authSlice";
-import Button from "./Button";
+import Button from "../components/Button";
 
-export default function Login() {
+export default function LoginPage() {
 	useEffect(() => (document.title = "Login"));
 	const [canLogin, setCanLogin] = useState(false);
 	const [email, setEmail] = useState("");

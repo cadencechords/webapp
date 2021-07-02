@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import PulseLoader from "react-spinners/PulseLoader";
 import TeamApi from "../api/TeamApi";
-import CenteredPage from "./CenteredPage";
-import NoTeamYet from "./NoTeamYet";
-import TeamLoginOptions from "./TeamLoginOptions";
+import CenteredPage from "../components/CenteredPage";
+import NoTeamYet from "../components/NoTeamYet";
+import TeamLoginOptions from "../components/TeamLoginOptions";
 
-export default function TeamLogin() {
+export default function TeamLoginPage() {
 	const [teams, setTeamIds] = useState([]);
 	const [loading, setLoading] = useState(true);
 

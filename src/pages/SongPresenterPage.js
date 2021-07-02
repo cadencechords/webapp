@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectSongBeingPresented, adjustSongBeingPresented } from "../store/presenterSlice";
 import { toHtml } from "../utils/SongUtils";
-import SongPresenterMobileTopNav from "./SongPresenterMobileTopNav";
-import SongAdjustmentsDrawer from "./SongAdjustmentsDrawer";
+import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
+import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 
-export default function SongPresenter() {
+export default function SongPresenterPage() {
 	const song = useSelector(selectSongBeingPresented);
 	const dispatch = useDispatch();
 

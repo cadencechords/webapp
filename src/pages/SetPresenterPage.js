@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectSetlistBeingPresented } from "../store/presenterSlice";
-import SetlistNavigation from "./SetlistNavigation";
+import SetlistNavigation from "../components/SetlistNavigation";
 import { toHtml } from "../utils/SongUtils";
-import IconButton from "./buttons/IconButton";
+import IconButton from "../components/buttons/IconButton";
 import XIcon from "@heroicons/react/outline/XIcon";
 import { useHistory, useParams } from "react-router-dom";
-import PageTitle from "./PageTitle";
+import PageTitle from "../components/PageTitle";
 import SetlistApi from "../api/SetlistApi";
 import { useDispatch } from "react-redux";
 import { setSetlistBeingPresented } from "../store/presenterSlice";
-import PageLoading from "./PageLoading";
+import PageLoading from "../components/PageLoading";
 
 export default function SetPresenter() {
 	const setlist = useSelector(selectSetlistBeingPresented);
