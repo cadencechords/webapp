@@ -9,6 +9,7 @@ import CreateNewTeamPage from "./pages/CreateNewTeamPage";
 import TeamLoginPage from "./pages/TeamLoginPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import PcoRedirectPage from "./pages/PcoRedirectPage";
 
 function App() {
 	return (
@@ -35,6 +36,9 @@ function App() {
 					</Route>
 					<Route path="/invitations/signup" exact>
 						<InvitationSignUpPage />
+					</Route>
+					<Route path="/import/pco_redirect" exact>
+						<PcoRedirectPage />
 					</Route>
 					<SecuredRoutes />
 				</Switch>
