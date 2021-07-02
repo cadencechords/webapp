@@ -34,7 +34,7 @@ export default function SearchPage() {
 			<div className="mt-10">
 				{searchQuery === "" ? (
 					<div className="text-center px-4 text-gray-600">
-						Try typing something in the search bar to search for something in your library
+						Try typing in the search bar to find something in your library
 					</div>
 				) : (
 					<SearchResults />
