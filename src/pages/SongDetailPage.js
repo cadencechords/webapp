@@ -250,6 +250,10 @@ export default function SongDetailPage() {
 			</div>
 			<div className="md:col-span-1 md:pl-5 pl-2 col-span-4">
 				<div className="border-b py-6 mt-1">
+					<SongKeyField
+						songKey={song.key}
+						onChange={(editedKey) => handleUpdate("key", editedKey)}
+					/>
 					<ArtistField
 						artist={song.artist}
 						onChange={(editedArtist) => handleUpdate("artist", editedArtist)}
@@ -258,10 +262,6 @@ export default function SongDetailPage() {
 					<MeterField
 						meter={song.meter}
 						onChange={(editedMeter) => handleUpdate("meter", editedMeter)}
-					/>
-					<SongKeyField
-						songKey={song.key}
-						onChange={(editedKey) => handleUpdate("key", editedKey)}
 					/>
 				</div>
 				<div className="py-6">
