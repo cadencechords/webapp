@@ -12,6 +12,7 @@ import MembersIndexPage from "../pages/MembersIndexPage";
 import PcoSongsIndexPage from "../pages/PcoSongsIndexPage";
 import SongImportSourcesIndexPage from "../pages/SongImportSourcesIndexPage";
 
+import PcoRedirectPage from "../pages/PcoRedirectPage";
 import PersonalDetails from "./PersonalDetails";
 import SearchPage from "./SearchPage";
 
@@ -36,6 +37,9 @@ export default function Content() {
 					</Route>
 					<Route path="/import/pco/songs" exact>
 						<PcoSongsIndexPage />
+					</Route>
+					<Route path="/import/pco_redirect" exact>
+						<PcoRedirectPage />
 					</Route>
 					<Route path="/import" exact>
 						<SongImportSourcesIndexPage />
