@@ -1,16 +1,14 @@
+import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import { useState, useEffect } from "react";
+
 import CreateSongDialog from "../components/CreateSongDialog";
 import PageTitle from "../components/PageTitle";
 import QuickAdd from "../components/QuickAdd";
-import SongsTable from "../components/SongsTable";
-import PulseLoader from "react-spinners/PulseLoader";
+import SongsList from "../components/SongsList";
 import NoDataMessage from "../components/NoDataMessage";
 import SongApi from "../api/SongApi";
 import MobileHeader from "../components/MobileHeader";
 import Button from "../components/Button";
-import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
-import { useHistory } from "react-router-dom";
-import ExclamationIcon from "@heroicons/react/outline/ExclamationIcon";
 
 export default function SongsIndexPage() {
 	useEffect(() => (document.title = "Songs"));
@@ -18,8 +16,6 @@ export default function SongsIndexPage() {
 	const [isCreating, setIsCreating] = useState(false);
 	const [songs, setSongs] = useState([]);
 	const [loading, setLoading] = useState(false);
-
-	const router = useHistory();
 
 	useEffect(() => {
 		async function fetchSongs() {
@@ -43,37 +39,12 @@ export default function SongsIndexPage() {
 
 	let content = null;
 
-	if (loading) {
-		content = (
-			<div className="text-center py-4">
-				<PulseLoader color="blue" />
-			</div>
-		);
-	} else if (!loading && songs.length === 0) {
-		content = <NoDataMessage type="songs" />;
+	if (songs.length === 0) {
+		content = <NoDataMessage type="songs" loading={loading} />;
 	} else {
-		let exclamationIcon = <ExclamationIcon className="h-4 w-4 text-gray-600 mr-2" />;
 		content = (
 			<div className="mb-10">
-				<div className="hidden sm:block">
-					<SongsTable songs={songs} />
-				</div>
-				<div className="sm:hidden">
-					{songs.map((song) => (
-						<div
-							key={song.id}
-							className="border-b py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
-						>
-							{!song?.content && exclamationIcon}
-							<div
-								className="overflow-hidden overflow-ellipsis whitespace-nowrap"
-								onClick={() => router.push(`/songs/${song.id}`)}
-							>
-								{song.name}
-							</div>
-						</div>
-					))}
-				</div>
+				<SongsList songs={songs} />
 			</div>
 		);
 	}
@@ -86,7 +57,9 @@ export default function SongsIndexPage() {
 			<div className="h-14 mb-4 sm:hidden">
 				<MobileHeader title="Songs" className="shadow-inner" onAdd={() => setIsCreating(true)} />
 			</div>
+
 			{content}
+
 			<div className="hidden sm:block">
 				<QuickAdd onAdd={() => setIsCreating(true)} />
 			</div>

@@ -1,16 +1,15 @@
+import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router";
+
 import CreateBinderDialog from "../components/CreateBinderDialog";
 import NoDataMessage from "../components/NoDataMessage";
 import QuickAdd from "../components/QuickAdd";
-import { useEffect, useState } from "react";
 import PageTitle from "../components/PageTitle";
-import BindersTable from "../components/BindersTable";
-import PulseLoader from "react-spinners/PulseLoader";
+import BindersList from "../components/BindersList";
 import BinderApi from "../api/BinderApi";
-import { useHistory } from "react-router";
 import MobileHeader from "../components/MobileHeader";
 import Button from "../components/Button";
-import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
-import BinderColor from "../components/BinderColor";
 
 export default function BindersIndexPage() {
 	useEffect(() => (document.title = "Binders"));
@@ -39,36 +38,12 @@ export default function BindersIndexPage() {
 	}, [router]);
 
 	let content = null;
-
-	if (loading) {
-		content = (
-			<div className="text-center py-4">
-				<PulseLoader color="blue" />
-			</div>
-		);
-	} else if (!loading && binders.length === 0) {
-		content = <NoDataMessage type="binder" />;
-	} else if (!loading && binders.length > 0) {
+	if (binders.length === 0) {
+		content = <NoDataMessage type="binder" loading={loading} />;
+	} else {
 		content = (
 			<div className="mb-10">
-				<div className="hidden sm:block">
-					<BindersTable binders={binders} />
-				</div>
-				<div className="sm:hidden">
-					{binders.map((binder) => (
-						<div
-							key={binder.id}
-							className="border-b py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
-							onClick={() => router.push(`/binders/${binder.id}`)}
-						>
-							<BinderColor color={binder.color} />
-							<div className="ml-3">
-								<div className="font-semibold">{binder.name}</div>
-								<div className="text-sm text-gray-600">{binder.description}</div>
-							</div>
-						</div>
-					))}
-				</div>
+				<BindersList binders={binders} />
 			</div>
 		);
 	}
@@ -89,7 +64,9 @@ export default function BindersIndexPage() {
 					onAdd={() => setShowCreateDialog(true)}
 				/>
 			</div>
+
 			{content}
+
 			<CreateBinderDialog
 				open={showCreateDialog}
 				onCloseDialog={() => setShowCreateDialog(false)}
