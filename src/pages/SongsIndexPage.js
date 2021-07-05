@@ -54,7 +54,7 @@ export default function SongsIndexPage() {
 	} else {
 		let exclamationIcon = <ExclamationIcon className="h-4 w-4 text-gray-600 mr-2" />;
 		content = (
-			<>
+			<div className="mb-10">
 				<div className="hidden sm:block">
 					<SongsTable songs={songs} />
 				</div>
@@ -74,7 +74,7 @@ export default function SongsIndexPage() {
 						</div>
 					))}
 				</div>
-			</>
+			</div>
 		);
 	}
 

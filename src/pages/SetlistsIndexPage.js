@@ -105,7 +105,7 @@ export default function SetlistsIndexPage() {
 
 	return (
 		<>
-			<div className="sm:hidden mt-14 mb-20">
+			<div className="sm:hidden mt-14 mb-10">
 				<MobileHeaderAndBottomButton
 					buttonText="Add a set"
 					onAdd={() => setShowCreateSetlistDialog(true)}

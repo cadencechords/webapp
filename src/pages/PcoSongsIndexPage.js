@@ -116,15 +116,14 @@ export default function PcoSongsIndexPage() {
 				</div>
 			</div>
 
-			<div className="fixed bottom-4 right-8">
-				<Button
-					disabled={songsToImport.length === 0}
-					loading={importing}
-					onClick={handleImportSongs}
-				>
-					Import {songsToImport.length} {pluralOrSingularize("song", songsToImport)}
-				</Button>
-			</div>
+			<Button
+				disabled={songsToImport.length === 0}
+				loading={importing}
+				onClick={handleImportSongs}
+				className="fixed bottom-16 right-4 md:right-6 md:bottom-6"
+			>
+				Import {songsToImport.length} {pluralOrSingularize("song", songsToImport)}
+			</Button>
 		</>
 	);
 }

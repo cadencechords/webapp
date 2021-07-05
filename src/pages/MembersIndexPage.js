@@ -95,21 +95,23 @@ export default function MembersIndexPage() {
 		));
 		return (
 			<>
-				<PageTitle title={currentTeam?.name} />
+				<div className="mb-10">
+					<PageTitle title={currentTeam?.name} />
 
-				<div className="flex-between">
-					<SectionTitle title="Current members" />
-					<Button onClick={() => setShowInvitationDialog(true)}>Send an invite</Button>
-				</div>
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 my-5">
-					{memberCards}
-				</div>
+					<div className="flex-between">
+						<SectionTitle title="Current members" />
+						<Button onClick={() => setShowInvitationDialog(true)}>Send an invite</Button>
+					</div>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 my-5">
+						{memberCards}
+					</div>
 
-				<PendingInvitationsList
-					invitations={invitations}
-					loading={loadingInvitations}
-					onInvitationDeleted={handleInvitationDeleted}
-				/>
+					<PendingInvitationsList
+						invitations={invitations}
+						loading={loadingInvitations}
+						onInvitationDeleted={handleInvitationDeleted}
+					/>
+				</div>
 
 				<SendInvitesDialog
 					open={showInvitationDialog}

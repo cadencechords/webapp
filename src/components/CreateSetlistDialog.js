@@ -61,6 +61,7 @@ export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) 
 					value={scheduledDate}
 					label="Scheduled date"
 					onBlur={handleValidateDate}
+					className="h-4"
 				/>
 			</div>
 			<AddCancelActions

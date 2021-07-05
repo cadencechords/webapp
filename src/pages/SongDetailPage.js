@@ -281,11 +281,14 @@ export default function SongDetailPage() {
 				</div>
 			</div>
 			{!isEmpty(pendingUpdates) && (
-				<div className="fixed bottom-8 right-8 shadow-md">
-					<Button bold onClick={handleSaveChanges} loading={saving}>
-						Save Changes
-					</Button>
-				</div>
+				<Button
+					bold
+					onClick={handleSaveChanges}
+					loading={saving}
+					className="fixed bottom-16 right-4 md:right-6 md:bottom-6"
+				>
+					Save Changes
+				</Button>
 			)}
 			<AddGenreDialog
 				open={showAddGenreDialog}

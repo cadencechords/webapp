@@ -13,6 +13,7 @@ export default function OutlinedInput({
 	button,
 	onButtonClick,
 	buttonLoading,
+	className,
 }) {
 	let roundedClasses = button ? " rounded-l-md " : " rounded-md ";
 	return (
@@ -20,7 +21,7 @@ export default function OutlinedInput({
 			{label && <Label>{label}</Label>}
 			<div className="flex">
 				<input
-					className={`appearance-none transition-all px-3 py-2 shadow-sm border-gray-300 focus:outline-none outline-none w-full border ${roundedClasses} focus:ring-inset focus:ring-2 focus:ring-blue-400`}
+					className={`appearance-none transition-all px-3 py-2 shadow-sm border-gray-300 focus:outline-none outline-none w-full border ${roundedClasses} focus:ring-inset focus:ring-2 focus:ring-blue-400 ${className}`}
 					placeholder={placeholder}
 					onBlur={onBlur}
 					onFocus={onFocus}

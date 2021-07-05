@@ -50,7 +50,7 @@ export default function BindersIndexPage() {
 		content = <NoDataMessage type="binder" />;
 	} else if (!loading && binders.length > 0) {
 		content = (
-			<>
+			<div className="mb-10">
 				<div className="hidden sm:block">
 					<BindersTable binders={binders} />
 				</div>
@@ -69,7 +69,7 @@ export default function BindersIndexPage() {
 						</div>
 					))}
 				</div>
-			</>
+			</div>
 		);
 	}
 

@@ -98,7 +98,7 @@ export default function BinderDetailPage() {
 	}
 
 	return (
-		<div>
+		<div className="mb-10">
 			<div className="flex-center">
 				<span className="mr-2 cursor-pointer">
 					<BinderColor color={binder.color} onClick={() => setShowColorPicker(true)} />

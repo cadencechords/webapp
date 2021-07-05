@@ -57,6 +57,7 @@ export default function ChangeSetlistDateDialog({
 					onChange={handleDateChange}
 					value={editingScheduledDate}
 					label="Scheduled date"
+					className="h-6"
 				/>
 			</div>
 			<AddCancelActions
