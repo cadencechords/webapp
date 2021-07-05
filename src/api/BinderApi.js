@@ -5,6 +5,12 @@ import axios from "axios";
 const BINDERS_URL = process.env.REACT_APP_API_URL + "/binders";
 
 export default class BinderApi {
+	static search(name) {
+		return axios.get(`${BINDERS_URL}?team_id=${getTeamId()}&name=${name}`, {
+			headers: constructAuthHeaders(),
+		});
+	}
+
 	static getAll() {
 		return axios.get(BINDERS_URL + `?team_id=${getTeamId()}`, { headers: constructAuthHeaders() });
 	}

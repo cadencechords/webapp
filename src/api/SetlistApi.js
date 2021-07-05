@@ -5,6 +5,12 @@ import { combineParamValues } from "../utils/ObjectUtils";
 const SETLISTS_URL = process.env.REACT_APP_API_URL + "/setlists";
 
 export default class SetlistApi {
+	static search(name) {
+		return axios.get(`${SETLISTS_URL}?team_id=${getTeamId()}&name=${name}`, {
+			headers: constructAuthHeaders(),
+		});
+	}
+
 	static getAll() {
 		return axios.get(SETLISTS_URL + `?team_id=${getTeamId()}`, {
 			headers: constructAuthHeaders(),
