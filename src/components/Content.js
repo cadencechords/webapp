@@ -75,7 +75,7 @@ export default function Content() {
 						<SearchPage />
 					</Route>
 				</div>
-				<div className="h-10 md:h-0"></div>
+				<div className="h-12 md:h-0"></div>
 			</div>
 		</>
 	);

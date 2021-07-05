@@ -26,7 +26,6 @@ export default function SetPresenter() {
 	}, [setlist]);
 
 	const handleSongIndexChange = (newSongIndex) => {
-		console.log(setlist.songs[newSongIndex]);
 		setSongBeingViewed(setlist.songs[newSongIndex]);
 	};
 
@@ -38,7 +37,7 @@ export default function SetPresenter() {
 		let formatStyles = { fontFamily: songBeingViewed.font, fontSize: songBeingViewed.font_size };
 		return (
 			<>
-				<div className="mx-auto max-w-2xl p-3 whitespace-pre-wrap">
+				<div className="mx-auto max-w-2xl p-3 whitespace-pre-wrap mb-12">
 					<PageTitle title={songBeingViewed.name} />
 					<div style={formatStyles}>
 						{toHtml(songBeingViewed.content, {
