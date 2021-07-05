@@ -1,7 +1,8 @@
-import { Route } from "react-router-dom";
-import UserApi from "../api/UserApi";
+import { Route, Switch } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
+
 import {
 	selectCurrentTeam,
 	selectCurrentUser,
@@ -12,9 +13,9 @@ import {
 	setMembership,
 } from "../store/authSlice";
 import TeamApi from "../api/TeamApi";
-import { useHistory } from "react-router";
 import PageLoading from "./PageLoading";
 import Content from "./Content";
+import UserApi from "../api/UserApi";
 import CenteredPage from "./CenteredPage";
 
 import EditorWorkbenchPage from "../pages/EditorWorkbenchPage";
@@ -73,18 +74,20 @@ export default function SecuredRoutes() {
 	if (currentUser && currentTeam) {
 		return (
 			<>
-				<Route path="/editor" exact>
-					<EditorWorkbenchPage />
-				</Route>
-				<Route path="/songs/:id/present" exact>
-					<SongPresenterPage />
-				</Route>
-				<Route path="/sets/:id/present" exact>
-					<SetPresenterPage />
-				</Route>
-				<Route path="/">
-					<Content />
-				</Route>
+				<Switch>
+					<Route path="/editor" exact>
+						<EditorWorkbenchPage />
+					</Route>
+					<Route path="/songs/:id/present" exact>
+						<SongPresenterPage />
+					</Route>
+					<Route path="/sets/:id/present" exact>
+						<SetPresenterPage />
+					</Route>
+					<Route path="/">
+						<Content />
+					</Route>
+				</Switch>
 			</>
 		);
 	} else {
