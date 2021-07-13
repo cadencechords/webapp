@@ -93,7 +93,9 @@ export default function SetlistsIndexPage() {
 			<div className="hidden sm:block">
 				<PageTitle title="Sets" />
 			</div>
+
 			{content}
+
 			<div className="hidden sm:block">
 				<QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
 			</div>
