@@ -24,7 +24,7 @@ export default function SignUpPage() {
 		document.title = "Sign Up";
 		const script = document.createElement("script");
 
-		script.src = "http://localhost:3000/scripts/passwords.js";
+		script.src = "https://cadencechords.com/scripts/passwords.js";
 		script.async = true;
 
 		document.body.appendChild(script);
