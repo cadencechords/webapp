@@ -45,7 +45,7 @@ export default function KeyChooserDialog({ open, onCloseDialog, currentSongKey, 
 			borderedTop={false}
 			open={open}
 			onCloseDialog={onCloseDialog}
-			title={"Original key:  " + currentSongKey}
+			title={currentSongKey ? "Original key:  " + currentSongKey : "Original key: none"}
 		>
 			<h1 className="text-center text-3xl font-bold mb-4">{keyNote + keyQuality}</h1>
 			<h4>Choose a new key</h4>
