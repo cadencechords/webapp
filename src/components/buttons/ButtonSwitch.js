@@ -1,6 +1,6 @@
 export default function ButtonSwitch({ activeButtonLabel, buttonLabels, onClick }) {
 	return (
-		<div className="p-1 bg-gray-200 flex rounded-md max-w-md w-96 border flex-shrink-0">
+		<div className="p-1 bg-gray-100 flex rounded-md border border-gray-100 flex-shrink-0">
 			{buttonLabels.map((label, index) => (
 				<ButtonSwitchOption
 					key={index}

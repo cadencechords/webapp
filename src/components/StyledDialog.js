@@ -71,11 +71,13 @@ export default function StyledDialog({
 								</span>
 							)}
 							<Dialog.Title as="h3" className={borderedTop ? ` border-b ` : ""}>
-								<div className="text-lg leading-6 text-gray-900 font-semibold px-5 py-6">
+								<div className="text-lg leading-6 text-gray-900 font-semibold px-5 py-6 whitespace-pre">
 									{title}
 								</div>
 							</Dialog.Title>
-							<div className="my-2 px-5 py-6">{children}</div>
+							<div className={`my-2 px-5 ${borderedTop ? " py-6 " : " py-6 pt-0 "}`}>
+								{children}
+							</div>
 						</div>
 					</Transition.Child>
 				</div>

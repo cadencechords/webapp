@@ -1,4 +1,4 @@
-export default function EditableData({ value, onChange, placeholder, centered }) {
+export default function EditableData({ value, onChange, placeholder, centered, onClick }) {
 	return (
 		<input
 			className={
@@ -9,6 +9,7 @@ export default function EditableData({ value, onChange, placeholder, centered })
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
 			placeholder={placeholder}
+			onClick={onClick}
 		/>
 	);
 }
