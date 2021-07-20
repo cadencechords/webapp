@@ -37,11 +37,15 @@ export default function SongPresenterPage() {
 				{autosizing ? (
 					<Textfit mode="single" onReady={(e) => console.log(e)}>
 						<div>
-							{toHtml(song.content, {
-								boldChords: song.bold_chords,
-								italicChords: song.italic_chords,
-								showChordsDisabled: song.showChordsDisabled,
-							})}
+							{toHtml(
+								song.content,
+								{
+									boldChords: song.bold_chords,
+									italicChords: song.italic_chords,
+									showChordsDisabled: song.showChordsDisabled,
+								},
+								false
+							)}
 						</div>
 					</Textfit>
 				) : (

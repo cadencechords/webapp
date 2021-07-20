@@ -141,7 +141,7 @@ export function toHtmlString(songText) {
 	}
 }
 
-export function toHtml(songText, formatOptions) {
+export function toHtml(songText, formatOptions, whitespacePreWrap = true) {
 	if (songText) {
 		let linesOfSong = songText.split(/\r\n|\r|\n/);
 
@@ -155,7 +155,7 @@ export function toHtml(songText, formatOptions) {
 					);
 				} else {
 					return (
-						<p key={index} className="whitespace-pre">
+						<p key={index} className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}>
 							{line}
 						</p>
 					);
@@ -169,7 +169,10 @@ export function toHtml(songText, formatOptions) {
 					} else {
 						if (formatOptions.boldChords && formatOptions.italicChords) {
 							return (
-								<p key={index} className="whitespace-pre">
+								<p
+									key={index}
+									className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}
+								>
 									<i>
 										<strong>{line}</strong>
 									</i>
@@ -177,13 +180,19 @@ export function toHtml(songText, formatOptions) {
 							);
 						} else if (formatOptions.boldChords) {
 							return (
-								<p key={index} className="whitespace-pre">
+								<p
+									key={index}
+									className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}
+								>
 									<strong>{line}</strong>
 								</p>
 							);
 						} else {
 							return (
-								<p key={index} className="whitespace-pre">
+								<p
+									key={index}
+									className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}
+								>
 									<i>{line}</i>
 								</p>
 							);
