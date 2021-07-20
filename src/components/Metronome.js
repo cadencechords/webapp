@@ -30,6 +30,10 @@ export default function Metronome({ bpm, onBpmChange }) {
 		}
 	}, [bpm, metronome, isOn]);
 
+	useEffect(() => {
+		return () => metronome?.stop();
+	}, [metronome]);
+
 	const handleToggleMetronome = () => {
 		if (isOn) {
 			metronome.stop();
@@ -58,7 +62,7 @@ export default function Metronome({ bpm, onBpmChange }) {
 					<MinusIcon className="h-4 w-4" />
 				</Button>
 				<EditableData
-					value={bpm}
+					value={bpm ? bpm : ""}
 					centered
 					className="sm:text-xl text-xl"
 					type="number"

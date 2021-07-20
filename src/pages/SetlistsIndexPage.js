@@ -78,7 +78,7 @@ export default function SetlistsIndexPage() {
 	if (setlists.length === 0) {
 		content = <NoDataMessage loading={loading} type="set" />;
 	} else {
-		content = <SetlistsList upcomingSetlist={upcomingSetlists} pastSetlists={pastSetlists} />;
+		content = <SetlistsList upcomingSetlists={upcomingSetlists} pastSetlists={pastSetlists} />;
 	}
 
 	return (

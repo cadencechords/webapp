@@ -2,12 +2,12 @@ import Button from "../Button";
 
 export default function AddCancelActions({ onAdd, onCancel, loadingAdd, addDisabled, addText }) {
 	return (
-		<div className="flex md:justify-end justify-center">
-			<Button variant="open" color="gray" className="mr-2 flex-grow" onClick={onCancel}>
+		<div className="flex-center gap-3">
+			<Button className="flex-grow w-1/2" variant="open" color="gray" onClick={onCancel}>
 				Cancel
 			</Button>
 			<Button
-				className="ml-2 md:flex-grow-0 flex-grow"
+				className="flex-grow w-1/2"
 				onClick={onAdd}
 				loading={loadingAdd}
 				disabled={addDisabled}
