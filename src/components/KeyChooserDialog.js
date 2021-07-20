@@ -3,28 +3,29 @@ import SongKeyButton from "./buttons/SongKeyButton";
 import { useEffect, useState } from "react";
 import ButtonSwitch from "./buttons/ButtonSwitch";
 import Button from "./Button";
+import { parseNote, parseQuality } from "../utils/SongUtils";
 
 export default function KeyChooserDialog({ open, onCloseDialog, currentSongKey, onChange }) {
 	const [keyNote, setKeyNote] = useState(() => {
 		if (currentSongKey) {
-			return currentSongKey.charAt?.(0);
+			return parseNote(currentSongKey);
 		} else {
 			return "G";
 		}
 	});
 
 	const [keyQuality, setKeyQuality] = useState(() => {
-		return currentSongKey?.length > 1 ? "m" : "";
+		return parseQuality(currentSongKey);
 	});
 
 	useEffect(() => {
 		if (currentSongKey?.charAt?.(0)) {
-			setKeyNote(currentSongKey.charAt(0));
+			setKeyNote(parseNote(currentSongKey));
 		} else {
 			setKeyNote("G");
 		}
 
-		setKeyQuality(currentSongKey?.length > 1 ? "m" : "");
+		setKeyQuality(parseQuality(currentSongKey));
 	}, [currentSongKey, open]);
 
 	const handleKeyChange = (newKey) => {

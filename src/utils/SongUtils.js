@@ -154,7 +154,11 @@ export function toHtml(songText, formatOptions) {
 						</p>
 					);
 				} else {
-					return <p key={index}>{line}</p>;
+					return (
+						<p key={index} className="whitespace-pre">
+							{line}
+						</p>
+					);
 				}
 			});
 		} else {
@@ -165,7 +169,7 @@ export function toHtml(songText, formatOptions) {
 					} else {
 						if (formatOptions.boldChords && formatOptions.italicChords) {
 							return (
-								<p key={index}>
+								<p key={index} className="whitespace-pre">
 									<i>
 										<strong>{line}</strong>
 									</i>
@@ -173,13 +177,13 @@ export function toHtml(songText, formatOptions) {
 							);
 						} else if (formatOptions.boldChords) {
 							return (
-								<p key={index}>
+								<p key={index} className="whitespace-pre">
 									<strong>{line}</strong>
 								</p>
 							);
 						} else {
 							return (
-								<p key={index}>
+								<p key={index} className="whitespace-pre">
 									<i>{line}</i>
 								</p>
 							);
@@ -234,4 +238,30 @@ export function getFormats(songText, formatOptions) {
 	formats.push({ start: 0, length: songText.length, format: "font", value: formatOptions.font });
 
 	return formats;
+}
+
+export function parseQuality(key) {
+	if (key?.length > 0) {
+		return isMinor(key) ? "m" : "";
+	} else {
+		return key;
+	}
+}
+
+function isMinor(key) {
+	let lastChar = key.charAt(key.length - 1);
+	return lastChar === "m";
+}
+
+export function parseNote(key) {
+	if (key?.length > 0) {
+		if (isMinor(key)) {
+			let notePart = key.substring(0, key.length - 1);
+			return notePart;
+		} else {
+			return key;
+		}
+	} else {
+		return key;
+	}
 }

@@ -1,4 +1,4 @@
-export default function WellInput({ onChange, value, placeholder }) {
+export default function WellInput({ onChange, value, placeholder, autoFocus }) {
 	return (
 		<input
 			className={
@@ -7,10 +7,12 @@ export default function WellInput({ onChange, value, placeholder }) {
 			placeholder={placeholder}
 			value={value}
 			onChange={(e) => onChange(e.target.value)}
+			autoFocus={autoFocus}
 		/>
 	);
 }
 
 WellInput.defaultProps = {
 	placeholder: "Search",
+	autoFocus: false,
 };

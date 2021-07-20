@@ -67,6 +67,7 @@ export default function SearchPage() {
 				placeholder="Search for binders, sets, songs..."
 				value={searchQuery}
 				onChange={handleSearchQueryChange}
+				autoFocus
 			/>
 
 			<SearchResults results={searchResults} />

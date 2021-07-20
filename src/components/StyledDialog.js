@@ -65,7 +65,7 @@ export default function StyledDialog({
 						>
 							{showClose && (
 								<span className="absolute top-4 right-4">
-									<Button variant="open" size="xs" onClick={onCloseDialog}>
+									<Button variant="open" size="xs" onClick={onCloseDialog} tabIndex={1}>
 										<XIcon className="h-4 w-4 text-gray-700" />
 									</Button>
 								</span>

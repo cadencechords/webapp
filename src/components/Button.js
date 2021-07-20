@@ -13,6 +13,7 @@ export default function Button({
 	className,
 	onKeyUp,
 	style,
+	tabIndex,
 }) {
 	let defaultClasses = ` outline-none focus:outline-none transition-colors text-sm ${
 		className ? className : ""
@@ -52,6 +53,7 @@ export default function Button({
 			disabled={disabled}
 			onKeyUp={onKeyUp}
 			style={style}
+			tabIndex={tabIndex}
 		>
 			{loading ? <PulseLoader color={loadingColor} size={8} /> : children}
 		</button>
