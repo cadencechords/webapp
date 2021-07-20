@@ -51,21 +51,14 @@ export default function KeyChooserDialog({ open, onCloseDialog, currentSongKey, 
 			<h1 className="text-center text-3xl font-bold mb-4">{keyNote + keyQuality}</h1>
 			<h4>Choose a new key</h4>
 			<div className="grid grid-cols-3 gap-2 my-4">
-				{NOTE_NAMES.map((noteName) => (
+				{NOTE_NAMES.map((noteName, index) => (
 					<SongKeyButton
-						key={noteName}
+						key={index}
 						songKey={noteName}
 						selected={keyNote === noteName}
 						onClick={() => handleKeyChange(noteName)}
 					/>
 				))}
-				<div></div>
-				<SongKeyButton
-					songKey="G"
-					selected={keyNote === "G"}
-					onClick={() => handleKeyChange("G")}
-				/>
-				<div></div>
 			</div>
 			<div className="mb-10">
 				<h4 className="mb-3">Choose major or minor</h4>
@@ -87,4 +80,26 @@ export default function KeyChooserDialog({ open, onCloseDialog, currentSongKey, 
 	);
 }
 
-const NOTE_NAMES = ["A", "B", "C", "D", "E", "F"];
+const NOTE_NAMES = [
+	"Ab",
+	"A",
+	"A#",
+	"Bb",
+	"B",
+	"",
+	"",
+	"C",
+	"C#",
+	"Db",
+	"D",
+	"D#",
+	"Eb",
+	"E",
+	"E#",
+	"",
+	"F",
+	"F#",
+	"Gb",
+	"G",
+	"G#",
+];

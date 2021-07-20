@@ -4,6 +4,7 @@ import { selectSongBeingPresented, adjustSongBeingPresented } from "../store/pre
 import { toHtml } from "../utils/SongUtils";
 import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
+import Metronome from "../components/Metronome";
 
 export default function SongPresenterPage() {
 	const song = useSelector(selectSongBeingPresented);
@@ -23,6 +24,7 @@ export default function SongPresenterPage() {
 				song={song}
 				onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
 			/>
+
 			<div className="mx-auto max-w-2xl p-3 whitespace-pre-wrap" style={formatStyles}>
 				{toHtml(song.content, {
 					boldChords: song.bold_chords,
@@ -35,6 +37,11 @@ export default function SongPresenterPage() {
 				onClose={() => setShowOptionsDrawer(false)}
 				song={song}
 				onAdjustmentMade={handleAdjustmentMade}
+			/>
+
+			<Metronome
+				bpm={song.bpm}
+				onBpmChange={(newBpm) => dispatch(adjustSongBeingPresented({ bpm: newBpm }))}
 			/>
 		</>
 	);

@@ -3,6 +3,7 @@ import ExclamationIcon from "@heroicons/react/outline/ExclamationIcon";
 
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
+import KeyBadge from "./KeyBadge";
 
 export default function SongsList({ songs }) {
 	const router = useHistory();
@@ -20,9 +21,15 @@ export default function SongsList({ songs }) {
 					<tbody>
 						{songs?.map((song) => {
 							let binders = song.binders?.length > 0 ? concatBinderNames(song.binders) : "-";
+							let songNameAndKey = (
+								<div className="flex items-center gap-2">
+									{song.name}
+									<KeyBadge songKey={song.key} />
+								</div>
+							);
 							return (
 								<TableRow
-									columns={[song.name, binders, new Date(song.created_at).toDateString()]}
+									columns={[songNameAndKey, binders, new Date(song.created_at).toDateString()]}
 									key={song.id}
 									onClick={() => handleOpenSong(song.id)}
 								/>
@@ -39,10 +46,11 @@ export default function SongsList({ songs }) {
 					>
 						{!song?.content && exclamationIcon}
 						<div
-							className="overflow-hidden overflow-ellipsis whitespace-nowrap"
+							className="overflow-hidden overflow-ellipsis whitespace-nowrap flex items-center gap-2"
 							onClick={() => router.push(`/songs/${song.id}`)}
 						>
 							{song.name}
+							<KeyBadge songKey={song.key} />
 						</div>
 					</div>
 				))}

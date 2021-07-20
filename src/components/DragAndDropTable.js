@@ -1,6 +1,7 @@
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Button from "./Button";
+import KeyBadge from "./KeyBadge";
 
 export default function DragAndDropTable({ onReorder, items, removeable, onRemove, onClick }) {
 	const reorder = (list, startIndex, endIndex) => {
@@ -50,9 +51,10 @@ export default function DragAndDropTable({ onReorder, items, removeable, onRemov
 										>
 											<span
 												onClick={() => onClick(item.id)}
-												className="cursor-pointer hover:text-blue-600"
+												className="cursor-pointer hover:text-blue-600 flex items-center gap-2"
 											>
 												{item.name}
+												<KeyBadge songKey={item.key} />
 											</span>
 
 											{removeable && (

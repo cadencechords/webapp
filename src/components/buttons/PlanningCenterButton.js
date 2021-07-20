@@ -5,6 +5,7 @@ import { useHistory } from "react-router";
 
 const PCO_CLIENT_ID = process.env.REACT_APP_PCO_CLIENT_ID;
 const PCO_REDIRECT_URI = process.env.REACT_APP_PCO_REDIRECT_URI;
+
 export default function PlanningCenterButton() {
 	const currentUser = useSelector(selectCurrentUser);
 	const router = useHistory();
