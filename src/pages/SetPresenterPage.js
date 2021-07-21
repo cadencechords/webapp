@@ -11,10 +11,14 @@ import SetlistApi from "../api/SetlistApi";
 import { useDispatch } from "react-redux";
 import { setSetlistBeingPresented } from "../store/presenterSlice";
 import PageLoading from "../components/PageLoading";
+import Button from "../components/Button";
+import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
+import { Textfit } from "react-textfit";
 
 export default function SetPresenter() {
 	const setlist = useSelector(selectSetlistBeingPresented);
 	const [songBeingViewed, setSongBeingViewed] = useState(setlist?.songs?.[0]);
+	const [autosizing, setAutosizing] = useState(false);
 	const router = useHistory();
 	const { id } = useParams();
 	const dispatch = useDispatch();
@@ -33,6 +37,10 @@ export default function SetPresenter() {
 		router.push(`/sets/${id}`);
 	};
 
+	const handleToggleAutosize = () => {
+		setAutosizing((autosizing) => !autosizing);
+	};
+
 	if (setlist?.songs) {
 		let formatStyles = { fontFamily: songBeingViewed.font, fontSize: songBeingViewed.font_size };
 		return (
@@ -40,13 +48,35 @@ export default function SetPresenter() {
 				<div className="mx-auto max-w-2xl p-3 whitespace-pre-wrap mb-12">
 					<PageTitle title={songBeingViewed.name} />
 					<div style={formatStyles}>
-						{toHtml(songBeingViewed.content, {
-							boldChords: songBeingViewed.bold_chords,
-							italicChords: songBeingViewed.italic_chords,
-							showChordsDisabled: songBeingViewed.showChordsDisabled,
-						})}
+						{autosizing ? (
+							<Textfit mode="single" onReady={(e) => console.log(e)}>
+								{toHtml(
+									songBeingViewed.content,
+									{
+										boldChords: songBeingViewed.bold_chords,
+										italicChords: songBeingViewed.italic_chords,
+										showChordsDisabled: songBeingViewed.showChordsDisabled,
+									},
+									false
+								)}
+							</Textfit>
+						) : (
+							toHtml(songBeingViewed.content, {
+								boldChords: songBeingViewed.bold_chords,
+								italicChords: songBeingViewed.italic_chords,
+								showChordsDisabled: songBeingViewed.showChordsDisabled,
+							})
+						)}
 					</div>
 				</div>
+				<Button
+					variant="open"
+					color="gray"
+					className="fixed right-7 bottom-28"
+					onClick={handleToggleAutosize}
+				>
+					<ArrowsExpandIcon className="w-6 h-6" />
+				</Button>
 				<IconButton className="fixed bottom-16 right-8" onClick={handleRouteToSetDetail}>
 					<XIcon className="h-6 w-6" />
 				</IconButton>
