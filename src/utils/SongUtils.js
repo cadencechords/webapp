@@ -218,21 +218,21 @@ export function getFormats(songText, formatOptions) {
 	let linesOfSong = songText.split(/\r\n|\r|\n/);
 	let formats = [];
 
-	if (formatOptions.boldChords || formatOptions.italicChords) {
+	if (formatOptions.bold_chords || formatOptions.italic_chords) {
 		let characterPosition = 0;
 		linesOfSong.forEach((line) => {
 			formats.push({
 				start: characterPosition,
 				length: line.length,
 				format: "bold",
-				value: isChordLine(line) && formatOptions.boldChords,
+				value: isChordLine(line) && formatOptions.bold_chords,
 			});
 
 			formats.push({
 				start: characterPosition,
 				length: line.length,
 				format: "italic",
-				value: isChordLine(line) && formatOptions.italicChords,
+				value: isChordLine(line) && formatOptions.italic_chords,
 			});
 
 			characterPosition += line.length + 1;

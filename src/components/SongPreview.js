@@ -1,7 +1,7 @@
 import { toHtml } from "../utils/SongUtils";
 
 export default function SongPreview({ song }) {
-	let formatStyles = { fontFamily: song.font, fontSize: song.font_size };
+	let formatStyles = { fontFamily: song.format.font, fontSize: song.format.font_size };
 
 	return (
 		<div
@@ -9,8 +9,8 @@ export default function SongPreview({ song }) {
 			style={formatStyles}
 		>
 			{toHtml(song.content, {
-				boldChords: song.bold_chords,
-				italicChords: song.italic_chords,
+				boldChords: song.format.bold_chords,
+				italicChords: song.format.italic_chords,
 				showChordsDisabled: song.showChordsDisabled,
 			})}
 		</div>

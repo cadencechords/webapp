@@ -25,7 +25,7 @@ export default function Editor({ content, onContentChange, formatOptions }) {
 		let elements = document.getElementsByClassName("ql-editor");
 
 		elements[0].style.fontFamily = formatOptions.font;
-		elements[0].style.fontSize = formatOptions.fontSize + "px";
+		elements[0].style.fontSize = formatOptions.font_size + "px";
 	}, [formatOptions]);
 
 	useEffect(() => {

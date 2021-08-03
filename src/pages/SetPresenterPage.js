@@ -42,7 +42,10 @@ export default function SetPresenter() {
 	};
 
 	if (setlist?.songs) {
-		let formatStyles = { fontFamily: songBeingViewed.font, fontSize: songBeingViewed.font_size };
+		let formatStyles = {
+			fontFamily: songBeingViewed.format?.font,
+			fontSize: songBeingViewed.format?.font_size,
+		};
 		return (
 			<>
 				<div className="mx-auto max-w-2xl p-3 whitespace-pre-wrap mb-12">
@@ -53,8 +56,8 @@ export default function SetPresenter() {
 								{toHtml(
 									songBeingViewed.content,
 									{
-										boldChords: songBeingViewed.bold_chords,
-										italicChords: songBeingViewed.italic_chords,
+										boldChords: songBeingViewed.format?.bold_chords,
+										italicChords: songBeingViewed.format?.italic_chords,
 										showChordsDisabled: songBeingViewed.showChordsDisabled,
 									},
 									false
@@ -62,8 +65,8 @@ export default function SetPresenter() {
 							</Textfit>
 						) : (
 							toHtml(songBeingViewed.content, {
-								boldChords: songBeingViewed.bold_chords,
-								italicChords: songBeingViewed.italic_chords,
+								boldChords: songBeingViewed.format?.bold_chords,
+								italicChords: songBeingViewed.format?.italic_chords,
 								showChordsDisabled: songBeingViewed.showChordsDisabled,
 							})
 						)}

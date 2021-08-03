@@ -16,7 +16,7 @@ export default function SongPresenterPage() {
 	const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
 	const [autosizing, setAutosizing] = useState(false);
 
-	let formatStyles = { fontFamily: song.font, fontSize: song.font_size };
+	let formatStyles = { fontFamily: song.format.font, fontSize: song.format.font_size };
 
 	const handleAdjustmentMade = (adjustmentField, adjustmentValue) => {
 		dispatch(adjustSongBeingPresented({ [adjustmentField]: adjustmentValue }));
@@ -35,13 +35,13 @@ export default function SongPresenterPage() {
 
 			<div className="mx-auto max-w-2xl p-3" style={formatStyles}>
 				{autosizing ? (
-					<Textfit mode="single" onReady={(e) => console.log(e)}>
+					<Textfit mode="single">
 						<div>
 							{toHtml(
 								song.content,
 								{
-									boldChords: song.bold_chords,
-									italicChords: song.italic_chords,
+									boldChords: song.format.bold_chords,
+									italicChords: song.format.italic_chords,
 									showChordsDisabled: song.showChordsDisabled,
 								},
 								false
@@ -50,8 +50,8 @@ export default function SongPresenterPage() {
 					</Textfit>
 				) : (
 					toHtml(song.content, {
-						boldChords: song.bold_chords,
-						italicChords: song.italic_chords,
+						boldChords: song.format.bold_chords,
+						italicChords: song.format.italic_chords,
 						showChordsDisabled: song.showChordsDisabled,
 					})
 				)}

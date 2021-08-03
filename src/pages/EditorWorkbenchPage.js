@@ -1,25 +1,29 @@
+import { useHistory } from "react-router";
+import { useSelector } from "react-redux";
+import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
+import { useEffect, useState } from "react";
+
 import ChordOptions from "../components/ChordOptions";
 import LyricOptions from "../components/LyricOptions";
 import PageTitle from "../components/PageTitle";
-import { useEffect, useState } from "react";
-import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
-import { useHistory } from "react-router";
-import { useSelector } from "react-redux";
-import { selectSongBeingEdited, setSongBeingEdited } from "../store/editorSlice";
-import SongApi from "../api/SongApi";
+import { selectSongBeingEdited } from "../store/editorSlice";
 import { isEmpty } from "../utils/ObjectUtils";
 import Button from "../components/Button";
 import Editor from "../components/Editor";
 import EditorMobileTopNav from "../components/EditorMobileTopNav";
 import EditorDrawer from "../components/EditorDrawer";
+import SongApi from "../api/SongApi";
+import FormatApi from "../api/FormatApi";
 
 export default function EditorWorkbenchPage() {
-	const [showEditorDrawer, setShowEditorDrawer] = useState(false);
-	const [formatOptions, setFormatOptions] = useState({});
-	const [updatedSong, setUpdatedSong] = useState("");
-	const [savingUpdates, setSavingUpdates] = useState(false);
 	const songBeingEdited = useSelector(selectSongBeingEdited);
+	const [showEditorDrawer, setShowEditorDrawer] = useState(false);
+	const [format, setFormat] = useState({});
+	const [savingUpdates, setSavingUpdates] = useState(false);
 	const [dirty, setDirty] = useState(false);
+
+	const [changes, setChanges] = useState({ content: null, format: {} });
+
 	const router = useHistory();
 
 	if (!songBeingEdited || isEmpty(songBeingEdited)) {
@@ -27,14 +31,8 @@ export default function EditorWorkbenchPage() {
 	}
 
 	useEffect(() => {
-		let formatOptions = {
-			font: songBeingEdited.font,
-			fontSize: songBeingEdited.fontSize,
-			boldChords: songBeingEdited.boldChords,
-			italicChords: songBeingEdited.italicChords,
-		};
-
-		setFormatOptions(formatOptions);
+		let format = songBeingEdited.format;
+		setFormat(format);
 		document.title = songBeingEdited.name + " | Editor";
 	}, [songBeingEdited]);
 
@@ -44,32 +42,46 @@ export default function EditorWorkbenchPage() {
 
 	const handleFormatChange = (formatOption, value) => {
 		setDirty(true);
-		let formatOptionsCopy = { ...formatOptions };
+		let formatOptionsCopy = { ...format };
 		formatOptionsCopy[formatOption] = value;
-		setFormatOptions(formatOptionsCopy);
+		setFormat(formatOptionsCopy);
+		setChanges((currentChanges) => ({
+			...currentChanges,
+			format: { ...currentChanges.format, [formatOption]: value },
+		}));
 	};
 
 	const handleSaveChanges = async () => {
-		setSavingUpdates(true);
 		try {
-			if (songBeingEdited?.id) {
-				let { data } = await SongApi.updateOneById(songBeingEdited.id, {
-					...formatOptions,
-					content: updatedSong,
+			if (changes.content) {
+				setSavingUpdates(true);
+				await SongApi.updateOneById(songBeingEdited.id, {
+					content: changes.content,
 				});
-				setSongBeingEdited(data);
-				setDirty(false);
+			}
+
+			if (!isEmpty(changes.format)) {
+				setSavingUpdates(true);
+				if (format.id) {
+					await FormatApi.updateOneById(format.id, changes.format);
+				} else {
+					let newFormat = { ...changes.format };
+					newFormat.song_id = songBeingEdited.id;
+					await FormatApi.createOne(newFormat);
+				}
 			}
 		} catch (error) {
 			console.log(error);
 		} finally {
 			setSavingUpdates(false);
+			setDirty(false);
+			setChanges({ content: null, format: {} });
 		}
 	};
 
 	const handleContentChange = (newContent) => {
-		setUpdatedSong(newContent);
 		if (newContent !== songBeingEdited.content) {
+			setChanges((currentChanges) => ({ ...currentChanges, content: newContent }));
 			setDirty(true);
 		}
 	};
@@ -82,7 +94,7 @@ export default function EditorWorkbenchPage() {
 					onShowEditorDrawer={() => setShowEditorDrawer(true)}
 				/>
 				<EditorDrawer
-					formatOptions={formatOptions}
+					formatOptions={format}
 					open={showEditorDrawer}
 					onClose={() => setShowEditorDrawer(false)}
 					onFormatChange={handleFormatChange}
@@ -113,8 +125,8 @@ export default function EditorWorkbenchPage() {
 					<LyricOptions
 						onAlignmentChange={(newAlignment) => handleFormatChange("alignment", newAlignment)}
 						onFontChange={(newFont) => handleFormatChange("font", newFont)}
-						onFontSizeChange={(newFontSize) => handleFormatChange("fontSize", newFontSize)}
-						formatOptions={formatOptions}
+						onFontSizeChange={(newFontSize) => handleFormatChange("font_size", newFontSize)}
+						formatOptions={format}
 					/>
 				</div>
 			</div>
@@ -122,15 +134,15 @@ export default function EditorWorkbenchPage() {
 				<div className="col-span-4 sm:col-span-3 container mx-auto px-10 mb-12 sm:mb-0 ">
 					<Editor
 						content={songBeingEdited.content}
-						formatOptions={formatOptions}
+						formatOptions={format}
 						onContentChange={handleContentChange}
 					/>
 				</div>
 				<div className="hidden sm:block col-span-1 border-gray-300 border-l px-3">
 					<ChordOptions
-						onBoldToggled={(toggleValue) => handleFormatChange("boldChords", toggleValue)}
-						onItalicsToggled={(toggleValue) => handleFormatChange("italicChords", toggleValue)}
-						formatOptions={formatOptions}
+						onBoldToggled={(toggleValue) => handleFormatChange("bold_chords", toggleValue)}
+						onItalicsToggled={(toggleValue) => handleFormatChange("italic_chords", toggleValue)}
+						formatOptions={format}
 					/>
 				</div>
 			</div>

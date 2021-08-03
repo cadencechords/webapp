@@ -11,7 +11,7 @@ export default function Checkbox({ color, checked, onChange }) {
 				${checked ? BACKGROUND_COLORS[color] : " border border-gray-300 "}`}
 				onClick={() => onChange(!checked)}
 			>
-				<CheckIcon className="text-white font-semibold h-4 w-4" />
+				{checked && <CheckIcon className="text-white font-semibold h-4 w-4" />}
 			</button>
 		</>
 	);

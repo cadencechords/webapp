@@ -4,10 +4,10 @@ export default function ChordOptions({ formatOptions, onBoldToggled, onItalicsTo
 	return (
 		<>
 			<div className="font-semibold py-3">Chord Options</div>
-			<ChordOption optionName="Bold" on={formatOptions?.boldChords} onChange={onBoldToggled} />
+			<ChordOption optionName="Bold" on={formatOptions?.bold_chords} onChange={onBoldToggled} />
 			<ChordOption
 				optionName="Italicized"
-				on={formatOptions?.italicChords}
+				on={formatOptions?.italic_chords}
 				onChange={onItalicsToggled}
 			/>
 		</>

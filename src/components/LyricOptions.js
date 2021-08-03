@@ -35,7 +35,7 @@ export default function LyricOptions({
 			</div>
 
 			<div className="px-3 relative w-24">
-				<FontSizesListBox selectedFontSize={formatOptions.fontSize} onChange={onFontSizeChange} />
+				<FontSizesListBox selectedFontSize={formatOptions.font_size} onChange={onFontSizeChange} />
 			</div>
 		</div>
 	);

@@ -18,8 +18,8 @@ export default function EditorDrawer({ open, onClose, formatOptions, onFormatCha
 					</div>
 					<div className="mb-1">Size</div>
 					<FontSizesListBox
-						selectedFontSize={formatOptions.fontSize}
-						onChange={(newFontSize) => onFormatChange("fontSize", newFontSize)}
+						selectedFontSize={formatOptions.font_size}
+						onChange={(newFontSize) => onFormatChange("font_size", newFontSize)}
 					/>
 				</div>
 			</section>
@@ -31,15 +31,15 @@ export default function EditorDrawer({ open, onClose, formatOptions, onFormatCha
 						<Toggle
 							label="Bold"
 							spacing="between"
-							enabled={formatOptions.boldChords}
-							onChange={(newEnabledValue) => onFormatChange("boldChords", newEnabledValue)}
+							enabled={formatOptions.bold_chords}
+							onChange={(newEnabledValue) => onFormatChange("bold_chords", newEnabledValue)}
 						/>
 					</div>
 					<Toggle
 						label="Italic"
 						spacing="between"
-						enabled={formatOptions.italicChords}
-						onChange={(newEnabledValue) => onFormatChange("italicChords", newEnabledValue)}
+						enabled={formatOptions.italic_chords}
+						onChange={(newEnabledValue) => onFormatChange("italic_chords", newEnabledValue)}
 					/>
 				</div>
 			</section>
