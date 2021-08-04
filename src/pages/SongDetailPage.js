@@ -84,7 +84,7 @@ export default function SongDetailPage() {
 		setSaving(true);
 		try {
 			let result = await SongApi.updateOneById(id, pendingUpdates);
-			setSong(result.data);
+			setSong((currentSong) => ({ ...currentSong, ...result.data }));
 			setPendingUpdates({});
 		} catch (error) {
 			console.log(error);
@@ -251,7 +251,7 @@ export default function SongDetailPage() {
 			<div className="md:col-span-1 md:pl-5 pl-2 col-span-4">
 				<div className="border-b py-6 mt-1">
 					<SongKeyField
-						songKey={song.key}
+						songKey={song.original_key}
 						onChange={(editedKey) => handleUpdate("key", editedKey)}
 					/>
 					<ArtistField

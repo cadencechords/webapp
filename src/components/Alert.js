@@ -3,7 +3,7 @@ import Button from "./Button";
 
 export default function Alert({ dismissable, color, onDismiss, children }) {
 	return (
-		<div className={`rounded ${COLOR_CLASSES[color]}  flex-between`}>
+		<div className={`rounded ${COLOR_CLASSES[color]}  flex-between p-2`}>
 			{children}
 			{dismissable && (
 				<Button size="xs" variant="open" color="black" onClick={onDismiss}>
@@ -23,7 +23,7 @@ const COLOR_CLASSES = {
 	red: "bg-red-100 text-red-800",
 	blue: "bg-blue-100 text-blue-800",
 	gray: "bg-gray-100 text-gray-800",
-	yellow: "bg-yellow-100, text-gray-800",
+	yellow: "bg-yellow-100 text-gray-800",
 	green: "bg-green-100 text-gray-800",
 	indigo: "bg-indigo-100 text-indigo-800",
 	purple: "bg-purple-100 text-purple-800",

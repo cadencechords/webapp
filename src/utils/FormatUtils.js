@@ -1,14 +1,4 @@
-export const FONTS = [
-	"Arial",
-	"Verdana",
-	"Helvetica",
-	"Tahoma",
-	"Trebuchet",
-	"Times New Roman",
-	"Georgia",
-	"Garamond",
-	"Courier New",
-];
+export const FONTS = ["Roboto Mono", "Open Sans"];
 
 export const FONT_SIZES = [
 	"14",

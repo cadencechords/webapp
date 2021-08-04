@@ -10,6 +10,18 @@ export function toShortDate(dateToConvert) {
 	return `${dayOfWeek} ${monthName} ${date}`;
 }
 
+export function toMonthYearDate(dateToConvert) {
+	if (dateToConvert instanceof String || typeof dateToConvert === "string") {
+		dateToConvert = new Date(dateToConvert);
+		dateToConvert.setDate(dateToConvert.getDate() + 1);
+	}
+
+	let year = dateToConvert.getFullYear();
+	let monthName = MONTH[dateToConvert.getMonth()];
+
+	return `${monthName} ${year}`;
+}
+
 const DAY_OF_WEEK = {
 	0: "Sun",
 	1: "Mon",

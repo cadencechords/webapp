@@ -24,6 +24,12 @@ export default class UserApi {
 		});
 	}
 
+	static getMember(id) {
+		return axios.get(`${USERS_URL}/${id}/memberships/${getTeamId()}`, {
+			headers: constructAuthHeaders(),
+		});
+	}
+
 	static updateMembership(userId, updates) {
 		if (updates && userId) {
 			let allowedParams = {};

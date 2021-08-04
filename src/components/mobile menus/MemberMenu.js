@@ -67,12 +67,16 @@ export default function MemberMenu({
 		);
 	}
 
+	const hasName = () => {
+		return member.first_name && member.last_name;
+	};
+
 	if (member) {
 		return (
 			<StyledDialog
 				onCloseDialog={onCloseDialog}
 				open={open}
-				title={member.first_name + " " + member.last_name}
+				title={hasName() ? member.first_name + " " + member.last_name : member.email}
 				fullscreen={false}
 			>
 				{adminButton}
