@@ -39,12 +39,9 @@ export default class SongApi {
 		if (updates.bpm) allowedParams.bpm = updates.bpm;
 		if (updates.artist) allowedParams.artist = updates.artist;
 		if (updates.meter) allowedParams.meter = updates.meter;
-		if (updates.key) allowedParams.key = updates.key;
+		if (updates.original_key) allowedParams.original_key = updates.original_key;
+		if (updates.transposed_key) allowedParams.transposed_key = updates.transposed_key;
 		if (updates.content) allowedParams.content = updates.content;
-		if (updates.font) allowedParams.font = updates.font;
-		if (updates.fontSize) allowedParams.font_size = Number.parseInt(updates.fontSize);
-		if ("boldChords" in updates) allowedParams.bold_chords = updates.boldChords;
-		if ("italicChords" in updates) allowedParams.italic_chords = updates.italicChords;
 
 		return axios.put(SONGS_URL + `/${songId}?team_id=${getTeamId()}`, allowedParams, {
 			headers: constructAuthHeaders(),

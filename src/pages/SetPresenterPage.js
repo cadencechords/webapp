@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectSetlistBeingPresented } from "../store/presenterSlice";
 import SetlistNavigation from "../components/SetlistNavigation";
-import { toHtml } from "../utils/SongUtils";
+import { toHtml, transpose } from "../utils/SongUtils";
 import IconButton from "../components/buttons/IconButton";
 import XIcon from "@heroicons/react/outline/XIcon";
 import { useHistory, useParams } from "react-router-dom";
@@ -54,7 +54,7 @@ export default function SetPresenter() {
 						{autosizing ? (
 							<Textfit mode="single" onReady={(e) => console.log(e)}>
 								{toHtml(
-									songBeingViewed.content,
+									transpose(songBeingViewed),
 									{
 										boldChords: songBeingViewed.format?.bold_chords,
 										italicChords: songBeingViewed.format?.italic_chords,
@@ -64,7 +64,7 @@ export default function SetPresenter() {
 								)}
 							</Textfit>
 						) : (
-							toHtml(songBeingViewed.content, {
+							toHtml(transpose(songBeingViewed), {
 								boldChords: songBeingViewed.format?.bold_chords,
 								italicChords: songBeingViewed.format?.italic_chords,
 								showChordsDisabled: songBeingViewed.showChordsDisabled,

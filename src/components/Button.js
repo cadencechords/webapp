@@ -71,7 +71,7 @@ Button.defaultProps = {
 };
 
 const sizePaddings = {
-	xs: " px-2 h-7",
+	xs: " px-2 min-h-7 h-7",
 	sm: " px-3 h-9 ",
 	small: " px-3 h-9 ",
 	md: " w-20 h-14 ",

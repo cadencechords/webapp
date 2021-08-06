@@ -23,6 +23,7 @@ import PlayIcon from "@heroicons/react/solid/PlayIcon";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import EyeOffIcon from "@heroicons/react/outline/EyeOffIcon";
 import { setSongBeingPresented } from "../store/presenterSlice";
+import TransposedKeyField from "../components/TransposedKeyField";
 
 export default function SongDetailPage() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -31,6 +32,7 @@ export default function SongDetailPage() {
 	const [saving, setSaving] = useState(false);
 	const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
 	const [showAddGenreDialog, setShowGenreDialog] = useState(false);
+	const [isTransposing, setIsTransposing] = useState(false);
 	const dispatch = useDispatch();
 
 	useEffect(() => (document.title = song ? song.name : "Songs"));
@@ -48,6 +50,11 @@ export default function SongDetailPage() {
 				let result = await SongApi.getOneById(id);
 				result.data.showChordsDisabled =
 					localStorage.getItem(`show_chords_disabled_song_${id}`) === "true";
+
+				if (result.data.transposed_key) {
+					setIsTransposing(true);
+				}
+
 				setSong(result.data);
 			} catch (error) {
 				console.log(error);
@@ -142,9 +149,13 @@ export default function SongDetailPage() {
 		localStorage.setItem(`show_chords_disabled_song_${id}`, toggleValue);
 	};
 
+	const handleToggleTranspose = () => {
+		setIsTransposing((currentlyTransposing) => !currentlyTransposing);
+	};
+
 	return (
 		<div className="grid grid-cols-4">
-			<div className="md:border-r md:pr-4 col-span-4 md:col-span-3">
+			<div className="lg:border-r lg:pr-4 col-span-4 lg:col-span-3">
 				<div className="flex-between mb-2">
 					<PageTitle
 						title={song.name}
@@ -168,7 +179,7 @@ export default function SongDetailPage() {
 					onCloseDialog={() => setShowPrintDialog(false)}
 				/>
 				<div className="mb-3 justify-between items-center hidden sm:flex">
-					<span>
+					<span className="flex-center">
 						<Button variant="outlined" size="xs" color="black" onClick={handleOpenInEditor}>
 							<div className="flex flex-row items-center">
 								<span className="mr-1">
@@ -182,7 +193,7 @@ export default function SongDetailPage() {
 							variant="outlined"
 							size="xs"
 							color="black"
-							className="ml-3"
+							className="mx-3"
 							onClick={handlePresentSong}
 						>
 							<div className="flex flex-row items-center">
@@ -192,6 +203,17 @@ export default function SongDetailPage() {
 								Present Song
 							</div>
 						</Button>
+
+						{song?.transposed_key && (
+							<Button
+								size="xs"
+								color="purple"
+								onClick={handleToggleTranspose}
+								variant={isTransposing ? "open" : "filled"}
+							>
+								{isTransposing ? "Stop transposing" : "Transpose"}
+							</Button>
+						)}
 					</span>
 					<Button variant="open" onClick={() => handleShowChordsToggled(!showChordsDisabled)}>
 						{showChordsDisabled ? (
@@ -201,13 +223,14 @@ export default function SongDetailPage() {
 						)}
 					</Button>
 				</div>
-				<div className="flex sm:hidden justify-between mx-auto max-w-md mb-4">
+				<div className="flex sm:hidden justify-between mx-auto mb-4 gap-3">
 					<Button
 						variant="outlined"
 						size="medium"
 						color="black"
-						className="flex-center flex-col"
+						className="flex-center gap-3"
 						onClick={handleOpenInEditor}
+						full
 					>
 						<PencilIcon className="h-5 w-5 text-blue-700" /> Edit
 					</Button>
@@ -215,13 +238,14 @@ export default function SongDetailPage() {
 						variant="outlined"
 						size="medium"
 						color="black"
-						className="flex-center flex-col"
+						className="flex-center gap-3"
 						onClick={handlePresentSong}
+						full
 					>
 						<PlayIcon className="h-5 w-5 text-purple-700" /> Present
 					</Button>
 
-					<Button
+					{/* <Button
 						variant="outlined"
 						size="medium"
 						color="black"
@@ -244,15 +268,21 @@ export default function SongDetailPage() {
 							<EyeIcon className="h-5 text-blue-700" />
 						)}
 						Chords
-					</Button>
+					</Button> */}
 				</div>
-				<SongPreview song={song} />
+				<SongPreview song={song} transpose={isTransposing} />
 			</div>
-			<div className="md:col-span-1 md:pl-5 pl-2 col-span-4">
+			<div className="lg:col-span-1 lg:pl-5 pl-2 col-span-4">
 				<div className="border-b py-6 mt-1">
 					<SongKeyField
 						songKey={song.original_key}
-						onChange={(editedKey) => handleUpdate("key", editedKey)}
+						onChange={(editedKey) => handleUpdate("original_key", editedKey)}
+					/>
+					<TransposedKeyField
+						transposedKey={song.transposed_key}
+						originalKey={song.original_key}
+						onChange={(editedKey) => handleUpdate("transposed_key", editedKey)}
+						content={song.content}
 					/>
 					<ArtistField
 						artist={song.artist}

@@ -38,6 +38,7 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 					}
 				});
 
+				console.log(availableThemes);
 				setAvailableThemes(availableThemes);
 			} catch (error) {
 				console.log(error);

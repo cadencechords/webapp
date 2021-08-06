@@ -1,4 +1,5 @@
 import ReactDOMServer from "react-dom/server";
+import * as Transposer from "chord-transposer";
 
 export function isChordLine(line) {
 	if (line) {
@@ -201,11 +202,11 @@ export function parseQuality(key) {
 	if (key?.length > 0) {
 		return isMinor(key) ? "m" : "";
 	} else {
-		return key;
+		return "";
 	}
 }
 
-function isMinor(key) {
+export function isMinor(key) {
 	let lastChar = key.charAt(key.length - 1);
 	return lastChar === "m";
 }
@@ -220,5 +221,30 @@ export function parseNote(key) {
 		}
 	} else {
 		return key;
+	}
+}
+
+export function transpose(song) {
+	if (song?.original_key && song?.transposed_key && song?.content) {
+		let linesOfSong = song.content.split(/\r\n|\r|\n/);
+
+		let transposedContent = "";
+
+		linesOfSong.forEach((line) => {
+			if (isChordLine(line)) {
+				let transposedLine = Transposer.transpose(line)
+					.fromKey(song.original_key)
+					.toKey(song.transposed_key)
+					.toString();
+
+				transposedContent += transposedLine + "\n";
+			} else {
+				transposedContent += line + "\n";
+			}
+		});
+
+		return transposedContent;
+	} else {
+		return song?.content ? song.content : "";
 	}
 }
