@@ -207,8 +207,12 @@ export function parseQuality(key) {
 }
 
 export function isMinor(key) {
-	let lastChar = key.charAt(key.length - 1);
-	return lastChar === "m";
+	if (key) {
+		let lastChar = key.charAt(key.length - 1);
+		return lastChar === "m";
+	} else {
+		return key;
+	}
 }
 
 export function parseNote(key) {
