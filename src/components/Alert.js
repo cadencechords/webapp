@@ -1,9 +1,9 @@
-import XIcon from "@heroicons/react/outline/XIcon";
 import Button from "./Button";
+import XIcon from "@heroicons/react/outline/XIcon";
 
-export default function Alert({ dismissable, color, onDismiss, children }) {
+export default function Alert({ dismissable, color, onDismiss, children, className }) {
 	return (
-		<div className={`rounded ${COLOR_CLASSES[color]}  flex-between p-2`}>
+		<div className={`rounded ${COLOR_CLASSES[color]} flex-between p-2 ${className}`}>
 			{children}
 			{dismissable && (
 				<Button size="xs" variant="open" color="black" onClick={onDismiss}>

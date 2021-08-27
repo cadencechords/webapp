@@ -1,34 +1,46 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
-import SetlistApi from "../api/SetlistApi";
-import { toShortDate } from "../utils/DateUtils";
-import PageLoading from "../components/PageLoading";
-import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
-import SetlistSongsList from "../components/SetlistSongsList";
-import SectionTitle from "../components/SectionTitle";
-import PageTitle from "../components/PageTitle";
-import _ from "lodash";
+
+import Alert from "../components/Alert";
 import Button from "../components/Button";
+import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
 import ChangeSetlistDateDialog from "../components/ChangeSetlistDateDialog";
-import { useDispatch } from "react-redux";
-import { setSetlistBeingPresented } from "../store/presenterSlice";
+import GlobeIcon from "@heroicons/react/outline/GlobeIcon";
+import PageLoading from "../components/PageLoading";
+import PageTitle from "../components/PageTitle";
 import PlayIcon from "@heroicons/react/solid/PlayIcon";
+import PublicSetlistApi from "../api/PublicSetlistApi";
+import PublicSetlistDetailsDialog from "../dialogs/PublicSetlistDetailsDialog";
+import PublishSetlistDialog from "../components/PublishSetlistDialog";
+import SectionTitle from "../components/SectionTitle";
+import SetlistApi from "../api/SetlistApi";
+import SetlistSongsList from "../components/SetlistSongsList";
+import _ from "lodash";
+import { setSetlistBeingPresented } from "../store/presenterSlice";
+import { toShortDate } from "../utils/DateUtils";
+import { useDispatch } from "react-redux";
 
 export default function SetlistDetailPage() {
 	const [setlist, setSetlist] = useState();
+	const [publicSetlist, setPublicSetlist] = useState();
 	const [loading, setLoading] = useState(true);
 	const [deleting, setDeleting] = useState(false);
 	const [showChangeDateDialog, setShowChangeDateDialog] = useState(false);
+	const [showPublishSetlistDialog, setShowPublishSetlistDialog] = useState(false);
+	const [showPublicSetlistDetailsDialog, setShowPublicSetlistDetailsDialog] = useState(false);
 	const router = useHistory();
 	const id = useParams().id;
 	const dispatch = useDispatch();
 
 	useEffect(() => (document.title = setlist ? setlist.name + " | Sets" : "Set"), [setlist]);
 	useEffect(() => {
-		async function fetchSetlist() {
+		async function fetchData() {
 			try {
-				let { data } = await SetlistApi.getOne(id);
-				setSetlist(data);
+				let result = await SetlistApi.getOne(id);
+				setSetlist(result.data);
+
+				result = await PublicSetlistApi.getOne(id);
+				setPublicSetlist(result.data);
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -36,7 +48,7 @@ export default function SetlistDetailPage() {
 			}
 		}
 
-		fetchSetlist();
+		fetchData();
 	}, [id]);
 
 	const handleSongsAdded = (songsAdded) => {
@@ -89,7 +101,19 @@ export default function SetlistDetailPage() {
 		return <PageLoading />;
 	} else {
 		return (
-			<>
+			<div className="mt-4">
+				{publicSetlist && (
+					<Alert className="mb-4">
+						This set is currently public{" "}
+						<Button
+							variant="open"
+							size="small"
+							onClick={() => setShowPublicSetlistDetailsDialog(true)}
+						>
+							View details
+						</Button>
+					</Alert>
+				)}
 				<div className="grid md:grid-cols-3 grid-cols-1 gap-5 w-full py-2">
 					<div className="col-span-1">
 						<PageTitle title={setlist.name} editable onChange={handleNameChange} />
@@ -104,11 +128,23 @@ export default function SetlistDetailPage() {
 							variant="outlined"
 							color="black"
 							onClick={handleOpenInPresenter}
-							className="flex-center"
+							className="flex-center mb-2"
 							size="xs"
 						>
 							<PlayIcon className="h-4 w-4 text-purple-700 mr-1" /> Present
 						</Button>
+						{!publicSetlist && (
+							<Button
+								variant="outlined"
+								color="black"
+								className="flex-center"
+								size="xs"
+								onClick={() => setShowPublishSetlistDialog(true)}
+							>
+								<GlobeIcon className="h-4 w-4 mr-1 text-blue-700" />
+								Publish
+							</Button>
+						)}
 					</div>
 					<div className="col-span-2">
 						<SetlistSongsList
@@ -133,7 +169,17 @@ export default function SetlistDetailPage() {
 						setSetlist({ ...setlist, scheduled_date: newScheduledDate })
 					}
 				/>
-			</>
+				<PublishSetlistDialog
+					open={showPublishSetlistDialog}
+					onCloseDialog={() => setShowPublishSetlistDialog(false)}
+				/>
+				<PublicSetlistDetailsDialog
+					open={showPublicSetlistDetailsDialog}
+					publicSetlist={publicSetlist}
+					onCloseDialog={() => setShowPublicSetlistDetailsDialog(false)}
+					onUnpublished={() => setPublicSetlist(null)}
+				/>
+			</div>
 		);
 	}
 }
