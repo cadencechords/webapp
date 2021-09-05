@@ -1,29 +1,31 @@
-import PageTitle from "../components/PageTitle";
-import PrinterIcon from "@heroicons/react/outline/PrinterIcon";
-import PrintSongDialog from "../components/PrintSongDialog";
 import { useEffect, useState } from "react";
-import DetailSection from "../components/DetailSection";
-import ArtistField from "../components/ArtistField";
-import BpmField from "../components/BpmField";
-import MeterField from "../components/MeterField";
-import SongKeyField from "../components/SongKeyField";
-import SongPreview from "../components/SongPreview";
-import PencilIcon from "@heroicons/react/solid/PencilIcon";
 import { useHistory, useParams } from "react-router";
-import PulseLoader from "react-spinners/PulseLoader";
-import SongApi from "../api/SongApi";
-import { isEmpty } from "../utils/ObjectUtils";
-import AddThemeDialog from "../components/AddThemeDialog";
+
 import AddGenreDialog from "../components/AddGenreDialog";
+import AddThemeDialog from "../components/AddThemeDialog";
+import ArtistField from "../components/ArtistField";
 import BinderColor from "../components/BinderColor";
-import { setSongBeingEdited } from "../store/editorSlice";
-import { useDispatch } from "react-redux";
+import BpmField from "../components/BpmField";
 import Button from "../components/Button";
-import PlayIcon from "@heroicons/react/solid/PlayIcon";
+import DetailSection from "../components/DetailSection";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import EyeOffIcon from "@heroicons/react/outline/EyeOffIcon";
-import { setSongBeingPresented } from "../store/presenterSlice";
+import MeterField from "../components/MeterField";
+import PageTitle from "../components/PageTitle";
+import PencilIcon from "@heroicons/react/solid/PencilIcon";
+import PlayIcon from "@heroicons/react/solid/PlayIcon";
+import PrintSongDialog from "../components/PrintSongDialog";
+import PrinterIcon from "@heroicons/react/outline/PrinterIcon";
+import PulseLoader from "react-spinners/PulseLoader";
+import SongApi from "../api/SongApi";
+import SongKeyField from "../components/SongKeyField";
+import SongOptionsPopover from "../components/SongOptionsPopover";
+import SongPreview from "../components/SongPreview";
 import TransposedKeyField from "../components/TransposedKeyField";
+import { isEmpty } from "../utils/ObjectUtils";
+import { setSongBeingEdited } from "../store/editorSlice";
+import { setSongBeingPresented } from "../store/presenterSlice";
+import { useDispatch } from "react-redux";
 
 export default function SongDetailPage() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -171,6 +173,7 @@ export default function SongDetailPage() {
 					>
 						<PrinterIcon className="text-gray-500 h-5 w-5" />
 					</Button>
+					<SongOptionsPopover />
 				</div>
 
 				<PrintSongDialog

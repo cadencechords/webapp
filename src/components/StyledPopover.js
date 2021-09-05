@@ -1,6 +1,6 @@
 import { Popover } from "@headlessui/react";
-import { useState } from "react";
 import { usePopper } from "react-popper";
+import { useState } from "react";
 
 export default function StyledPopover({ children, button, position }) {
 	let [referenceElement, setReferenceElement] = useState();

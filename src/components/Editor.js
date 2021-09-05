@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
-import { toHtmlString, getFormats } from "../utils/SongUtils";
+import { getFormats, toHtmlString } from "../utils/SongUtils";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const FORMATTABLE_KEY_CODE = {
 	40: "down arrow",
@@ -32,7 +32,7 @@ export default function Editor({ content, onContentChange, formatOptions }) {
 		handleFormatSong();
 	}, [formatOptions, handleFormatSong]);
 
-	const handleContentChange = () => {
+	const handleContentChange = (e) => {
 		if (editorRef?.current) {
 			let songInEditor = editorRef.current.getEditor().getText();
 			onContentChange(songInEditor);
@@ -58,6 +58,7 @@ export default function Editor({ content, onContentChange, formatOptions }) {
 				onBlur={handleFormatSong}
 				className={classes}
 				onKeyUp={handleKeyUp}
+				modules={{ clipboard: { matchVisual: false } }}
 			/>
 		</div>
 	);

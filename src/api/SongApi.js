@@ -1,6 +1,7 @@
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-import { combineParamValues } from "../utils/ObjectUtils";
+
 import axios from "axios";
+import { combineParamValues } from "../utils/ObjectUtils";
 
 const SONGS_URL = process.env.REACT_APP_API_URL + "/songs";
 
@@ -92,5 +93,11 @@ export default class SongApi {
 				{ headers: constructAuthHeaders() }
 			);
 		}
+	}
+
+	static deleteOneById(id) {
+		return axios.delete(`${SONGS_URL}/${id}?team_id=${getTeamId()}`, {
+			headers: constructAuthHeaders(),
+		});
 	}
 }
