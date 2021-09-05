@@ -1,12 +1,12 @@
+import Button from "./Button";
+import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
+import SearchSongsDialog from "./SearchSongsDialog";
 import SectionTitle from "./SectionTitle";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
-import { useState } from "react";
-import SearchSongsDialog from "./SearchSongsDialog";
-import { useHistory } from "react-router";
-import Button from "./Button";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
-import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
+import { useHistory } from "react-router";
+import { useState } from "react";
 
 export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songsBeingRemoved }) {
 	const [showSearchDialog, setShowSearchDialog] = useState(false);
@@ -31,46 +31,55 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 						Add Songs
 					</Button>
 				</div>
-				<table className="w-full">
-					<TableHead columns={["NAME", ""]} />
+				{boundSongs?.length > 0 ? (
+					<table className="w-full">
+						<TableHead columns={["NAME", ""]} />
 
-					<tbody>
-						{boundSongs?.map((song) => (
-							<TableRow
-								columns={[song.name]}
-								key={song.id}
-								onClick={() => handleOpenSong(song.id)}
-								removable
-								onRemove={() => onRemoveSong(song)}
-								removing={songsBeingRemoved.includes(song.id)}
-							/>
-						))}
-					</tbody>
-				</table>
+						<tbody>
+							{boundSongs?.map((song) => (
+								<TableRow
+									columns={[song.name]}
+									key={song.id}
+									onClick={() => handleOpenSong(song.id)}
+									removable
+									onRemove={() => onRemoveSong(song)}
+									removing={songsBeingRemoved.includes(song.id)}
+								/>
+							))}
+						</tbody>
+					</table>
+				) : (
+					"No songs in this binder yet"
+				)}
 			</div>
 
 			<div className="sm:hidden">
 				<SectionTitle title="Songs in this binder" />
-				{boundSongs.map((song) => (
-					<div
-						className="border-b py-2.5 flex-between px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
-						key={song.id}
-					>
-						<div onClick={() => handleOpenSong(song.id)} className="flex-grow">
-							<div className="overflow-hidden overflow-ellipsis whitespace-nowrap">{song.name}</div>
-						</div>
-						<Button
-							variant="open"
-							color="black"
-							size="xs"
-							onClick={() => onRemoveSong(song)}
-							removing={songsBeingRemoved.includes(song.id)}
-						>
-							<TrashIcon className="h-4 w-4" />
-						</Button>
-					</div>
-				))}
+				{boundSongs?.length > 0
+					? boundSongs.map((song) => (
+							<div
+								className="border-b py-2.5 flex-between px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
+								key={song.id}
+							>
+								<div onClick={() => handleOpenSong(song.id)} className="flex-grow">
+									<div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+										{song.name}
+									</div>
+								</div>
+								<Button
+									variant="open"
+									color="black"
+									size="xs"
+									onClick={() => onRemoveSong(song)}
+									removing={songsBeingRemoved.includes(song.id)}
+								>
+									<TrashIcon className="h-4 w-4" />
+								</Button>
+							</div>
+					  ))
+					: "No songs in this binder yet"}
 			</div>
+
 			<SearchSongsDialog
 				open={showSearchDialog}
 				onCloseDialog={() => setShowSearchDialog(false)}

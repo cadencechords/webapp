@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
+
+import BinderApi from "../api/BinderApi";
 import BinderColor from "../components/BinderColor";
+import BinderOptionsPopover from "../components/BinderOptionsPopover";
 import BinderSongsList from "../components/BinderSongsList";
+import Button from "../components/Button";
 import ColorDialog from "../components/ColorDialog";
+import EditableData from "../components/inputs/EditableData";
 import PageTitle from "../components/PageTitle";
 import PulseLoader from "react-spinners/PulseLoader";
-import BinderApi from "../api/BinderApi";
 import { isEmpty } from "../utils/ObjectUtils";
-import Button from "../components/Button";
-import EditableData from "../components/inputs/EditableData";
 
 export default function BinderDetailPage() {
 	const [showColorPicker, setShowColorPicker] = useState(false);
@@ -114,6 +116,7 @@ export default function BinderDetailPage() {
 					editable
 					onChange={(editedName) => handleUpdate("name", editedName)}
 				/>
+				<BinderOptionsPopover onChangeColorClick={() => setShowColorPicker(true)} />
 			</div>
 			<div>
 				<EditableData

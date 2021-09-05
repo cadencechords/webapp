@@ -1,6 +1,7 @@
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-import { combineParamValues } from "../utils/ObjectUtils";
+
 import axios from "axios";
+import { combineParamValues } from "../utils/ObjectUtils";
 
 const BINDERS_URL = process.env.REACT_APP_API_URL + "/binders";
 
@@ -65,5 +66,11 @@ export default class BinderApi {
 				{ headers: constructAuthHeaders() }
 			);
 		}
+	}
+
+	static deleteOneById(id) {
+		return axios.delete(`${BINDERS_URL}/${id}?team_id=${getTeamId()}`, {
+			headers: constructAuthHeaders(),
+		});
 	}
 }

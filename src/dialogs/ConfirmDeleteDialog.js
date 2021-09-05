@@ -2,7 +2,13 @@ import Button from "../components/Button";
 import StyledDialog from "../components/StyledDialog";
 import { useState } from "react";
 
-export default function ConfirmDeleteDialog({ onConfirm, onCancel, show, onCloseDialog, text }) {
+export default function ConfirmDeleteDialog({
+	onConfirm,
+	onCancel,
+	show,
+	onCloseDialog,
+	children,
+}) {
 	const [loading, setLoading] = useState(false);
 
 	const handleConfirm = () => {
@@ -18,7 +24,7 @@ export default function ConfirmDeleteDialog({ onConfirm, onCancel, show, onClose
 			fullscreen={false}
 			borderedTop={false}
 		>
-			<div className="mb-6">{text ? text : "Deleting this item is irreversible."}</div>
+			<div className="mb-6">{children ? children : "Deleting this item is irreversible."}</div>
 			<div className="flex gap-2">
 				<Button full color="red" onClick={onCancel}>
 					Cancel
