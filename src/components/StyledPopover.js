@@ -18,7 +18,7 @@ export default function StyledPopover({ children, button, position }) {
 				{button}
 			</Popover.Button>
 			<Popover.Panel
-				className="bg-white rounded-md shadow-xl"
+				className="bg-white rounded-md shadow-2xl"
 				ref={setPopperElement}
 				style={styles.popper}
 				{...attributes.popper}
