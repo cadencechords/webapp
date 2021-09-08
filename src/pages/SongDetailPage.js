@@ -10,6 +10,7 @@ import Button from "../components/Button";
 import DetailSection from "../components/DetailSection";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import EyeOffIcon from "@heroicons/react/outline/EyeOffIcon";
+import { Link } from "react-router-dom";
 import MeterField from "../components/MeterField";
 import PageTitle from "../components/PageTitle";
 import PencilIcon from "@heroicons/react/solid/PencilIcon";
@@ -138,10 +139,12 @@ export default function SongDetailPage() {
 	const bindersTags = song?.binders?.map((binder) => ({
 		id: binder.id,
 		name: (
-			<div className="flex items-center">
-				<BinderColor color={binder.color} size={3} />
-				<span className="ml-2">{binder.name}</span>
-			</div>
+			<Link to={`/binders/${binder.id}`}>
+				<div className="flex items-center">
+					<BinderColor color={binder.color} size={3} />
+					<span className="ml-2">{binder.name}</span>
+				</div>
+			</Link>
 		),
 	}));
 

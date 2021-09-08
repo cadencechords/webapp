@@ -1,6 +1,6 @@
 import { Popover } from "@headlessui/react";
-import { useState } from "react";
 import { usePopper } from "react-popper";
+import { useState } from "react";
 
 export default function MetronomePopover({ children }) {
 	const [referenceElement, setReferenceElement] = useState();
@@ -19,7 +19,7 @@ export default function MetronomePopover({ children }) {
 				ref={setPopperElement}
 				style={styles.popper}
 				{...attributes.popper}
-				className="rounded-md shadow-2xl p-10 px-7 py-4 "
+				className="rounded-md shadow-2xl p-10 px-7 py-4 bg-white"
 			>
 				{children}
 			</Popover.Panel>
