@@ -25,7 +25,7 @@ export default function PublicSetlistDetailsDialog({
 	};
 
 	return (
-		<StyledDialog open={open} onCloseDialog={onCloseDialog} borderedTop={false}>
+		<StyledDialog open={open} onCloseDialog={onCloseDialog} borderedTop={false} fullscreen={false}>
 			You can view this set at the following link:
 			<a href={publicSetlist?.link} className="underline text-blue-600 my-4 block">
 				{publicSetlist?.link}

@@ -172,6 +172,7 @@ export default function SetlistDetailPage() {
 				<PublishSetlistDialog
 					open={showPublishSetlistDialog}
 					onCloseDialog={() => setShowPublishSetlistDialog(false)}
+					onSetlistPublished={setPublicSetlist}
 				/>
 				<PublicSetlistDetailsDialog
 					open={showPublicSetlistDetailsDialog}

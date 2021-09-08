@@ -13,6 +13,7 @@ export default class PublicSetlistApi {
 	}
 
 	static updateOne(code, updates) {
+		console.log(updates);
 		return axios.put(`${PUBLIC_SETLISTS_URL}/${code}`, updates, {
 			headers: constructAuthHeaders(),
 		});
