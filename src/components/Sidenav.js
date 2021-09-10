@@ -1,11 +1,12 @@
-import SidenavLink from "./SidenavLink";
 import FolderOpenIcon from "@heroicons/react/outline/FolderOpenIcon";
+import LockClosedIcon from "@heroicons/react/outline/LockClosedIcon";
 import MusicNoteIcon from "@heroicons/react/solid/MusicNoteIcon";
-import ViewGridAddIcon from "@heroicons/react/outline/ViewGridAddIcon";
-import UserGroupIcon from "@heroicons/react/solid/UserGroupIcon";
-import { useSelector } from "react-redux";
-import { selectCurrentTeam } from "../store/authSlice";
+import SidenavLink from "./SidenavLink";
 import TeamOptionsPopover from "./TeamOptionsPopover";
+import UserGroupIcon from "@heroicons/react/solid/UserGroupIcon";
+import ViewGridAddIcon from "@heroicons/react/outline/ViewGridAddIcon";
+import { selectCurrentTeam } from "../store/authSlice";
+import { useSelector } from "react-redux";
 
 export default function Sidenav() {
 	let iconClasses = "h-4 w-4";
@@ -33,6 +34,13 @@ export default function Sidenav() {
 						text="Team members"
 						to="/members"
 						icon={<UserGroupIcon className={iconClasses} />}
+						clas
+					/>
+					<hr className="my-4" />
+					<SidenavLink
+						to="/permissions"
+						text="Permissions"
+						icon={<LockClosedIcon className={iconClasses} />}
 					/>
 				</div>
 			</div>

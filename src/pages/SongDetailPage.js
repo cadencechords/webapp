@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 
@@ -8,6 +9,7 @@ import BinderColor from "../components/BinderColor";
 import BpmField from "../components/BpmField";
 import Button from "../components/Button";
 import DetailSection from "../components/DetailSection";
+import { EDIT_SONGS } from "../utils/constants";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import EyeOffIcon from "@heroicons/react/outline/EyeOffIcon";
 import { Link } from "react-router-dom";
@@ -24,9 +26,9 @@ import SongOptionsPopover from "../components/SongOptionsPopover";
 import SongPreview from "../components/SongPreview";
 import TransposedKeyField from "../components/TransposedKeyField";
 import { isEmpty } from "../utils/ObjectUtils";
+import { selectCurrentMember } from "../store/authSlice";
 import { setSongBeingEdited } from "../store/editorSlice";
 import { setSongBeingPresented } from "../store/presenterSlice";
-import { useDispatch } from "react-redux";
 
 export default function SongDetailPage() {
 	const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -37,6 +39,7 @@ export default function SongDetailPage() {
 	const [showAddGenreDialog, setShowGenreDialog] = useState(false);
 	const [isTransposing, setIsTransposing] = useState(false);
 	const dispatch = useDispatch();
+	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => (document.title = song ? song.name : "Songs"));
 
@@ -164,7 +167,7 @@ export default function SongDetailPage() {
 				<div className="flex-between mb-2">
 					<PageTitle
 						title={song.name}
-						editable
+						editable={currentMember.can(EDIT_SONGS)}
 						onChange={(editedName) => handleUpdate("name", editedName)}
 					/>
 					<Button
@@ -176,7 +179,7 @@ export default function SongDetailPage() {
 					>
 						<PrinterIcon className="text-gray-500 h-5 w-5" />
 					</Button>
-					<SongOptionsPopover />
+					<SongOptionsPopover onPrintClick={() => setShowPrintDialog(true)} />
 				</div>
 
 				<PrintSongDialog
@@ -186,14 +189,16 @@ export default function SongDetailPage() {
 				/>
 				<div className="mb-3 justify-between items-center hidden sm:flex">
 					<span className="flex-center">
-						<Button variant="outlined" size="xs" color="black" onClick={handleOpenInEditor}>
-							<div className="flex flex-row items-center">
-								<span className="mr-1">
-									<PencilIcon className="w-4 h-4 text-blue-700" />
-								</span>
-								Edit Song
-							</div>
-						</Button>
+						{currentMember.can(EDIT_SONGS) && (
+							<Button variant="outlined" size="xs" color="black" onClick={handleOpenInEditor}>
+								<div className="flex flex-row items-center">
+									<span className="mr-1">
+										<PencilIcon className="w-4 h-4 text-blue-700" />
+									</span>
+									Edit Song
+								</div>
+							</Button>
+						)}
 
 						<Button
 							variant="outlined"
@@ -230,16 +235,18 @@ export default function SongDetailPage() {
 					</Button>
 				</div>
 				<div className="flex sm:hidden justify-between mx-auto mb-4 gap-3">
-					<Button
-						variant="outlined"
-						size="medium"
-						color="black"
-						className="flex-center gap-3"
-						onClick={handleOpenInEditor}
-						full
-					>
-						<PencilIcon className="h-5 w-5 text-blue-700" /> Edit
-					</Button>
+					{currentMember.can(EDIT_SONGS) && (
+						<Button
+							variant="outlined"
+							size="medium"
+							color="black"
+							className="flex-center gap-3"
+							onClick={handleOpenInEditor}
+							full
+						>
+							<PencilIcon className="h-5 w-5 text-blue-700" /> Edit
+						</Button>
+					)}
 					<Button
 						variant="outlined"
 						size="medium"
@@ -283,21 +290,29 @@ export default function SongDetailPage() {
 					<SongKeyField
 						songKey={song.original_key}
 						onChange={(editedKey) => handleUpdate("original_key", editedKey)}
+						editable={currentMember.can(EDIT_SONGS)}
 					/>
 					<TransposedKeyField
 						transposedKey={song.transposed_key}
 						originalKey={song.original_key}
 						onChange={(editedKey) => handleUpdate("transposed_key", editedKey)}
 						content={song.content}
+						editable={currentMember.can(EDIT_SONGS)}
 					/>
 					<ArtistField
 						artist={song.artist}
 						onChange={(editedArtist) => handleUpdate("artist", editedArtist)}
+						editable={currentMember.can(EDIT_SONGS)}
 					/>
-					<BpmField bpm={song.bpm} onChange={(editedBpm) => handleUpdate("bpm", editedBpm)} />
+					<BpmField
+						bpm={song.bpm}
+						onChange={(editedBpm) => handleUpdate("bpm", editedBpm)}
+						editable={currentMember.can(EDIT_SONGS)}
+					/>
 					<MeterField
 						meter={song.meter}
 						onChange={(editedMeter) => handleUpdate("meter", editedMeter)}
+						editable={currentMember.can(EDIT_SONGS)}
 					/>
 				</div>
 				<div className="py-6">
@@ -307,12 +322,14 @@ export default function SongDetailPage() {
 						items={song.genres}
 						onAdd={() => setShowGenreDialog(true)}
 						onDelete={handleRemoveGenre}
+						canAdd={currentMember.can(EDIT_SONGS)}
 					/>
 					<DetailSection
 						title="Themes"
 						items={song.themes}
 						onAdd={() => setShowAddThemeDialog(true)}
 						onDelete={handleRemoveTheme}
+						canAdd={currentMember.can(EDIT_SONGS)}
 					/>
 				</div>
 			</div>

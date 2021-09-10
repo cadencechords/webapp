@@ -1,16 +1,16 @@
+import Button from "./Button";
 import DetailTag from "./DetailTag";
 import DetailTitle from "./DetailTitle";
+import NoDataMessage from "./NoDataMessage";
 import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import XIcon from "@heroicons/react/outline/XIcon";
-import NoDataMessage from "./NoDataMessage";
-import Button from "./Button";
 
-export default function DetailSection({ title, items, onAdd, onDelete }) {
+export default function DetailSection({ title, items, onAdd, onDelete, canEdit }) {
 	return (
 		<div className="mb-1">
 			<div className="mb-2 flex-between">
 				<DetailTitle>{title}</DetailTitle>
-				{onAdd && (
+				{canEdit && onAdd && (
 					<Button size="xs" variant="open" onClick={onAdd}>
 						<PlusIcon className="h-4 w-4 text-gray-700 " />
 					</Button>
@@ -22,7 +22,7 @@ export default function DetailSection({ title, items, onAdd, onDelete }) {
 						<span className="mr-2 mb-2" key={index}>
 							<DetailTag>
 								<span className="mx-1">{item.name}</span>
-								{onDelete && (
+								{canEdit && onDelete && (
 									<XIcon
 										className="h-3 w-3 text-gray-700 cursor-pointer"
 										onClick={() => onDelete(item.id)}

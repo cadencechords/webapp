@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 const initialState = {
 	accessToken: localStorage.getItem("access-token"),
 	client: localStorage.getItem("client"),
@@ -73,6 +74,17 @@ export const selectCredentials = (state) => {
 export const selectTeamId = (state) => state?.auth.teamId;
 export const selectCurrentUser = (state) => state.auth.currentUser;
 export const selectCurrentTeam = (state) => state.auth.currentTeam;
+export const selectCurrentMember = (state) => {
+	let permissions = state.auth.currentUser.role?.permissions?.map((permission) => permission.name);
+	return {
+		permissions,
+		...state.auth.currentUser,
+		can: (permission) => {
+			console.log("Checking if ", permission, " is in ", permissions);
+			return permissions?.includes(permission);
+		},
+	};
+};
 
 export const selectHasCredentials = (state) =>
 	state.auth.accessToken && state.auth.client && state.auth.uid;

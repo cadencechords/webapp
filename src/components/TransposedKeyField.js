@@ -1,9 +1,15 @@
-import { useState } from "react";
 import DetailTitle from "./DetailTitle";
 import EditableData from "./inputs/EditableData";
 import KeyTransposerDialog from "./KeyTransposerDialog";
+import { useState } from "react";
 
-export default function TransposedKeyField({ transposedKey, originalKey, onChange, content }) {
+export default function TransposedKeyField({
+	transposedKey,
+	originalKey,
+	onChange,
+	content,
+	editable,
+}) {
 	const [showKeyTransposerDialog, setShowKeyTransposerDialog] = useState(false);
 
 	const handleKeyChange = (newKey) => {
@@ -19,6 +25,7 @@ export default function TransposedKeyField({ transposedKey, originalKey, onChang
 				onChange={() => null}
 				placeholder="Click to transpose"
 				onClick={() => setShowKeyTransposerDialog(true)}
+				editable={editable}
 			/>
 
 			<KeyTransposerDialog

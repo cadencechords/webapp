@@ -1,9 +1,9 @@
-import { useState } from "react";
 import DetailTitle from "./DetailTitle";
 import EditableData from "./inputs/EditableData";
 import KeyChooserDialog from "./KeyChooserDialog";
+import { useState } from "react";
 
-export default function SongKeyField({ songKey, onChange }) {
+export default function SongKeyField({ songKey, onChange, editable }) {
 	const [showKeyChooserDialog, setShowKeyChooserDialog] = useState(false);
 
 	const handleKeyChange = (newKey) => {
@@ -19,6 +19,7 @@ export default function SongKeyField({ songKey, onChange }) {
 				onChange={() => null}
 				placeholder="Add the key"
 				onClick={() => setShowKeyChooserDialog(true)}
+				editable={editable}
 			/>
 
 			<KeyChooserDialog

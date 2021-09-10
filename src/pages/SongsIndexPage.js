@@ -1,14 +1,17 @@
-import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import CreateSongDialog from "../components/CreateSongDialog";
-import PageTitle from "../components/PageTitle";
-import QuickAdd from "../components/QuickAdd";
-import SongsList from "../components/SongsList";
-import NoDataMessage from "../components/NoDataMessage";
-import SongApi from "../api/SongApi";
-import MobileHeader from "../components/MobileHeader";
+import { ADD_SONGS } from "../utils/constants";
 import Button from "../components/Button";
+import CreateSongDialog from "../components/CreateSongDialog";
+import MobileHeader from "../components/MobileHeader";
+import NoDataMessage from "../components/NoDataMessage";
+import PageTitle from "../components/PageTitle";
+import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
+import QuickAdd from "../components/QuickAdd";
+import SongApi from "../api/SongApi";
+import SongsList from "../components/SongsList";
+import { selectCurrentMember } from "../store/authSlice";
+import { useSelector } from "react-redux";
 
 export default function SongsIndexPage() {
 	useEffect(() => (document.title = "Songs"));
@@ -16,6 +19,7 @@ export default function SongsIndexPage() {
 	const [isCreating, setIsCreating] = useState(false);
 	const [songs, setSongs] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => {
 		async function fetchSongs() {
@@ -55,29 +59,38 @@ export default function SongsIndexPage() {
 				<PageTitle title="Songs" />
 			</div>
 			<div className="h-14 mb-4 sm:hidden">
-				<MobileHeader title="Songs" className="shadow-inner" onAdd={() => setIsCreating(true)} />
+				<MobileHeader
+					title="Songs"
+					className="shadow-inner"
+					onAdd={() => setIsCreating(true)}
+					canAdd={currentMember.can(ADD_SONGS)}
+				/>
 			</div>
 
 			{content}
 
-			<div className="hidden sm:block">
-				<QuickAdd onAdd={() => setIsCreating(true)} />
-			</div>
-			<CreateSongDialog
-				open={isCreating}
-				onCloseDialog={() => setIsCreating(false)}
-				onCreate={handleSongCreated}
-			/>
-			<Button
-				variant="open"
-				className="bg-white fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
-				full
-				style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
-				onClick={() => setIsCreating(true)}
-			>
-				<PlusCircleIcon className="h-4 w-4 mr-2 text-blue-700" />
-				Add new song
-			</Button>
+			{currentMember.can(ADD_SONGS) && (
+				<>
+					<div className="hidden sm:block">
+						<QuickAdd onAdd={() => setIsCreating(true)} />
+					</div>
+					<CreateSongDialog
+						open={isCreating}
+						onCloseDialog={() => setIsCreating(false)}
+						onCreate={handleSongCreated}
+					/>
+					<Button
+						variant="open"
+						className="bg-white fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
+						full
+						style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
+						onClick={() => setIsCreating(true)}
+					>
+						<PlusCircleIcon className="h-4 w-4 mr-2 text-blue-700" />
+						Add new song
+					</Button>
+				</>
+			)}
 		</>
 	);
 }

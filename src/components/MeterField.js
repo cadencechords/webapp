@@ -1,9 +1,9 @@
-import { useState } from "react";
 import DetailTitle from "./DetailTitle";
 import EditableData from "./inputs/EditableData";
 import MeterDialog from "./MeterDialog";
+import { useState } from "react";
 
-export default function MeterField({ meter, onChange }) {
+export default function MeterField({ meter, onChange, editable }) {
 	const [showDialog, setShowDialog] = useState(false);
 
 	return (
@@ -14,6 +14,7 @@ export default function MeterField({ meter, onChange }) {
 					value={meter ? meter : ""}
 					onClick={() => setShowDialog(true)}
 					placeholder="ex: 4/4"
+					editable={editable}
 				/>
 			</div>
 			<MeterDialog
