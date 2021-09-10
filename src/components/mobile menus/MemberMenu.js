@@ -1,11 +1,13 @@
-import StyledDialog from "../StyledDialog";
+import { selectCurrentMember, selectCurrentUser } from "../../store/authSlice";
+
 import MobileMenuButton from "../buttons/MobileMenuButton";
-import UserRemoveIcon from "@heroicons/react/outline/UserRemoveIcon";
+import { REMOVE_MEMBERS } from "../../utils/constants";
 import ShieldCheckIcon from "@heroicons/react/outline/ShieldCheckIcon";
 import ShieldExclamationIcon from "@heroicons/react/outline/ShieldExclamationIcon";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../store/authSlice";
+import StyledDialog from "../StyledDialog";
 import UserApi from "../../api/UserApi";
+import UserRemoveIcon from "@heroicons/react/outline/UserRemoveIcon";
+import { useSelector } from "react-redux";
 
 export default function MemberMenu({
 	onCloseDialog,
@@ -15,6 +17,7 @@ export default function MemberMenu({
 	onRemoved,
 }) {
 	const currentUser = useSelector(selectCurrentUser);
+	const currentMember = useSelector(selectCurrentMember);
 
 	const handleChangeAdminStatus = async (isAdmin) => {
 		try {
@@ -35,37 +38,32 @@ export default function MemberMenu({
 		}
 	};
 
-	let adminButton = null;
-	let removeFromTeamButton = null;
+	let adminButton = currentUser.is_admin && (
+		<MobileMenuButton full onClick={() => handleChangeAdminStatus(!member.is_admin)}>
+			<div className="flex items-center">
+				{member?.is_admin ? (
+					<>
+						<ShieldExclamationIcon className="mr-4 h-5" />
+						Remove admin
+					</>
+				) : (
+					<>
+						<ShieldCheckIcon className="mr-4 h-5" />
+						Make admin
+					</>
+				)}
+			</div>
+		</MobileMenuButton>
+	);
 
-	if (currentUser.is_admin && member) {
-		adminButton = (
-			<MobileMenuButton full onClick={() => handleChangeAdminStatus(!member.is_admin)}>
-				<div className="flex items-center">
-					{member.is_admin ? (
-						<>
-							<ShieldExclamationIcon className="mr-4 h-5" />
-							Remove admin
-						</>
-					) : (
-						<>
-							<ShieldCheckIcon className="mr-4 h-5" />
-							Make admin
-						</>
-					)}
-				</div>
-			</MobileMenuButton>
-		);
-
-		removeFromTeamButton = (
-			<MobileMenuButton full color="red" onClick={handleRemoveFromTeam}>
-				<div className="flex items-center">
-					<UserRemoveIcon className="mr-4 h-5" />
-					Remove from team
-				</div>
-			</MobileMenuButton>
-		);
-	}
+	let removeFromTeamButton = currentMember.can(REMOVE_MEMBERS) && (
+		<MobileMenuButton full color="red" onClick={handleRemoveFromTeam}>
+			<div className="flex items-center">
+				<UserRemoveIcon className="mr-4 h-5" />
+				Remove from team
+			</div>
+		</MobileMenuButton>
+	);
 
 	const hasName = () => {
 		return member.first_name && member.last_name;

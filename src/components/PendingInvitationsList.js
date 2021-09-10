@@ -1,12 +1,16 @@
+import { ADD_MEMBERS } from "../utils/constants";
+import Button from "./Button";
+import InvitationApi from "../api/InvitationApi";
+import NoDataMessage from "./NoDataMessage";
 import SectionTitle from "./SectionTitle";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
 import XIcon from "@heroicons/react/outline/XIcon";
-import NoDataMessage from "./NoDataMessage";
-import InvitationApi from "../api/InvitationApi";
-import Button from "./Button";
+import { selectCurrentMember } from "../store/authSlice";
+import { useSelector } from "react-redux";
 
 export default function PendingInvitationsList({ invitations, loading, onInvitationDeleted }) {
+	const currentMember = useSelector(selectCurrentMember);
 	const handleDeleteInvitation = async (invitationId) => {
 		try {
 			await InvitationApi.deleteOne(invitationId);
@@ -34,7 +38,7 @@ export default function PendingInvitationsList({ invitations, loading, onInvitat
 					<TableHead columns={["EMAIL", "SENT", ""]} />
 					<tbody>
 						{invitations?.map((invitation) => {
-							let actions = (
+							let actions = currentMember.can(ADD_MEMBERS) && (
 								<div className="flex items-center">
 									<span className="mr-2">
 										<Button

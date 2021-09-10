@@ -80,7 +80,6 @@ export const selectCurrentMember = (state) => {
 		permissions,
 		...state.auth.currentUser,
 		can: (permission) => {
-			console.log("Checking if ", permission, " is in ", permissions);
 			return permissions?.includes(permission);
 		},
 	};

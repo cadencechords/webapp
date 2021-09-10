@@ -7,10 +7,13 @@ import BinderOptionsPopover from "../components/BinderOptionsPopover";
 import BinderSongsList from "../components/BinderSongsList";
 import Button from "../components/Button";
 import ColorDialog from "../components/ColorDialog";
+import { EDIT_BINDERS } from "../utils/constants";
 import EditableData from "../components/inputs/EditableData";
 import PageTitle from "../components/PageTitle";
 import PulseLoader from "react-spinners/PulseLoader";
 import { isEmpty } from "../utils/ObjectUtils";
+import { selectCurrentMember } from "../store/authSlice";
+import { useSelector } from "react-redux";
 
 export default function BinderDetailPage() {
 	const [showColorPicker, setShowColorPicker] = useState(false);
@@ -20,6 +23,7 @@ export default function BinderDetailPage() {
 	const [songIdsBeingRemoved, setSongIdsBeingRemoved] = useState([]);
 	const { id } = useParams();
 	const router = useHistory();
+	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => {
 		async function fetchBinder() {
@@ -103,7 +107,11 @@ export default function BinderDetailPage() {
 		<div className="mb-10">
 			<div className="flex-center">
 				<span className="mr-2 cursor-pointer">
-					<BinderColor color={binder.color} onClick={() => setShowColorPicker(true)} />
+					<BinderColor
+						color={binder.color}
+						onClick={() => setShowColorPicker(true)}
+						editable={currentMember.can(EDIT_BINDERS)}
+					/>
 					<ColorDialog
 						open={showColorPicker}
 						onCloseDialog={() => setShowColorPicker(false)}
@@ -113,16 +121,19 @@ export default function BinderDetailPage() {
 				</span>
 				<PageTitle
 					title={binder.name}
-					editable
+					editable={currentMember.can(EDIT_BINDERS)}
 					onChange={(editedName) => handleUpdate("name", editedName)}
 				/>
-				<BinderOptionsPopover onChangeColorClick={() => setShowColorPicker(true)} />
+				{currentMember.can(EDIT_BINDERS) && (
+					<BinderOptionsPopover onChangeColorClick={() => setShowColorPicker(true)} />
+				)}
 			</div>
 			<div>
 				<EditableData
 					placeholder="Add a description for this binder"
 					value={binder.description}
 					onChange={(editedDescription) => handleUpdate("description", editedDescription)}
+					editable={currentMember.can(EDIT_BINDERS)}
 				/>
 			</div>
 			<BinderSongsList
@@ -132,7 +143,7 @@ export default function BinderDetailPage() {
 				songsBeingRemoved={songIdsBeingRemoved}
 			/>
 
-			{!isEmpty(pendingUpdates) && (
+			{currentMember.can(EDIT_BINDERS) && !isEmpty(pendingUpdates) && (
 				<div className="fixed bottom-8 right-8 shadow-md">
 					<Button onClick={handleSaveChanges} loading={saving}>
 						Save Changes

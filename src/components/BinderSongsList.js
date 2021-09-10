@@ -1,16 +1,20 @@
 import Button from "./Button";
+import { EDIT_BINDERS } from "../utils/constants";
 import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import SearchSongsDialog from "./SearchSongsDialog";
 import SectionTitle from "./SectionTitle";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
+import { selectCurrentMember } from "../store/authSlice";
 import { useHistory } from "react-router";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 
 export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songsBeingRemoved }) {
 	const [showSearchDialog, setShowSearchDialog] = useState(false);
 	const router = useHistory();
+	const currentMember = useSelector(selectCurrentMember);
 
 	const handleOpenSong = (songId) => {
 		router.push(`/songs/${songId}`);
@@ -21,15 +25,17 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 			<div className="sm:block hidden">
 				<div className="flex-between mb-2">
 					<SectionTitle title="Songs in this binder" />
-					<Button
-						variant="open"
-						size="xs"
-						onClick={() => setShowSearchDialog(true)}
-						bold
-						color="blue"
-					>
-						Add Songs
-					</Button>
+					{currentMember.can(EDIT_BINDERS) && (
+						<Button
+							variant="open"
+							size="xs"
+							onClick={() => setShowSearchDialog(true)}
+							bold
+							color="blue"
+						>
+							Add Songs
+						</Button>
+					)}
 				</div>
 				{boundSongs?.length > 0 ? (
 					<table className="w-full">
@@ -41,7 +47,7 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 									columns={[song.name]}
 									key={song.id}
 									onClick={() => handleOpenSong(song.id)}
-									removable
+									removable={currentMember.can(EDIT_BINDERS)}
 									onRemove={() => onRemoveSong(song)}
 									removing={songsBeingRemoved.includes(song.id)}
 								/>
@@ -66,15 +72,17 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 										{song.name}
 									</div>
 								</div>
-								<Button
-									variant="open"
-									color="black"
-									size="xs"
-									onClick={() => onRemoveSong(song)}
-									removing={songsBeingRemoved.includes(song.id)}
-								>
-									<TrashIcon className="h-4 w-4" />
-								</Button>
+								{currentMember.can(EDIT_BINDERS) && (
+									<Button
+										variant="open"
+										color="black"
+										size="xs"
+										onClick={() => onRemoveSong(song)}
+										removing={songsBeingRemoved.includes(song.id)}
+									>
+										<TrashIcon className="h-4 w-4" />
+									</Button>
+								)}
 							</div>
 					  ))
 					: "No songs in this binder yet"}

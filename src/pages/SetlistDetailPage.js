@@ -1,4 +1,6 @@
+import { DELETE_SETLISTS, EDIT_SETLISTS, EDIT_SONGS, PUBLISH_SETLISTS } from "../utils/constants";
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 
 import Alert from "../components/Alert";
@@ -16,9 +18,9 @@ import SectionTitle from "../components/SectionTitle";
 import SetlistApi from "../api/SetlistApi";
 import SetlistSongsList from "../components/SetlistSongsList";
 import _ from "lodash";
+import { selectCurrentMember } from "../store/authSlice";
 import { setSetlistBeingPresented } from "../store/presenterSlice";
 import { toShortDate } from "../utils/DateUtils";
-import { useDispatch } from "react-redux";
 
 export default function SetlistDetailPage() {
 	const [setlist, setSetlist] = useState();
@@ -31,6 +33,7 @@ export default function SetlistDetailPage() {
 	const router = useHistory();
 	const id = useParams().id;
 	const dispatch = useDispatch();
+	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => (document.title = setlist ? setlist.name + " | Sets" : "Set"), [setlist]);
 	useEffect(() => {
@@ -97,6 +100,12 @@ export default function SetlistDetailPage() {
 		}
 	};
 
+	const handleClickDateDialog = () => {
+		if (currentMember.can(EDIT_SONGS)) {
+			setShowChangeDateDialog(true);
+		}
+	};
+
 	if (loading) {
 		return <PageLoading />;
 	} else {
@@ -104,7 +113,7 @@ export default function SetlistDetailPage() {
 			<div className="mt-4">
 				{publicSetlist && (
 					<Alert className="mb-4">
-						This set is currently public{" "}
+						This set is currently public
 						<Button
 							variant="open"
 							size="small"
@@ -116,10 +125,14 @@ export default function SetlistDetailPage() {
 				)}
 				<div className="grid md:grid-cols-3 grid-cols-1 gap-5 w-full py-2">
 					<div className="col-span-1">
-						<PageTitle title={setlist.name} editable onChange={handleNameChange} />
+						<PageTitle
+							title={setlist.name}
+							editable={currentMember.can(EDIT_SETLISTS)}
+							onChange={handleNameChange}
+						/>
 						<div
 							className="text-gray-500 flex items-center cursor-pointer mb-4"
-							onClick={() => setShowChangeDateDialog(true)}
+							onClick={handleClickDateDialog}
 						>
 							<CalendarIcon className="h-4 w-4 mr-2" />
 							<span className="leading-6 h-6">{toShortDate(setlist.scheduled_date)}</span>
@@ -133,7 +146,7 @@ export default function SetlistDetailPage() {
 						>
 							<PlayIcon className="h-4 w-4 text-purple-700 mr-1" /> Present
 						</Button>
-						{!publicSetlist && (
+						{!publicSetlist && currentMember.can(PUBLISH_SETLISTS) && (
 							<Button
 								variant="outlined"
 								color="black"
@@ -155,12 +168,14 @@ export default function SetlistDetailPage() {
 						/>
 					</div>
 				</div>
-				<div>
-					<SectionTitle title="Delete" underline />
-					<Button color="red" loading={deleting} onClick={handleDelete}>
-						Delete this set
-					</Button>
-				</div>
+				{currentMember.can(DELETE_SETLISTS) && (
+					<div>
+						<SectionTitle title="Delete" underline />
+						<Button color="red" loading={deleting} onClick={handleDelete}>
+							Delete this set
+						</Button>
+					</div>
+				)}
 				<ChangeSetlistDateDialog
 					open={showChangeDateDialog}
 					onCloseDialog={() => setShowChangeDateDialog(false)}

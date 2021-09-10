@@ -322,18 +322,18 @@ export default function SongDetailPage() {
 						items={song.genres}
 						onAdd={() => setShowGenreDialog(true)}
 						onDelete={handleRemoveGenre}
-						canAdd={currentMember.can(EDIT_SONGS)}
+						canEdit={currentMember.can(EDIT_SONGS)}
 					/>
 					<DetailSection
 						title="Themes"
 						items={song.themes}
 						onAdd={() => setShowAddThemeDialog(true)}
 						onDelete={handleRemoveTheme}
-						canAdd={currentMember.can(EDIT_SONGS)}
+						canEdit={currentMember.can(EDIT_SONGS)}
 					/>
 				</div>
 			</div>
-			{!isEmpty(pendingUpdates) && (
+			{currentMember.can(EDIT_SONGS) && !isEmpty(pendingUpdates) && (
 				<Button
 					bold
 					onClick={handleSaveChanges}

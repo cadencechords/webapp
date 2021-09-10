@@ -1,15 +1,17 @@
+import { selectCurrentMember, selectCurrentTeam, selectCurrentUser } from "../store/authSlice";
+import { useEffect, useState } from "react";
+
+import { ADD_MEMBERS } from "../utils/constants";
+import Button from "../components/Button";
+import InvitationApi from "../api/InvitationApi";
 import MemberCard from "../components/MemberCard";
+import MemberMenu from "../components/mobile menus/MemberMenu";
+import PageTitle from "../components/PageTitle";
 import PendingInvitationsList from "../components/PendingInvitationsList";
 import SectionTitle from "../components/SectionTitle";
-import { useEffect, useState } from "react";
 import SendInvitesDialog from "../components/SendInvitesDialog";
-import InvitationApi from "../api/InvitationApi";
 import TeamApi from "../api/TeamApi";
 import { useSelector } from "react-redux";
-import { selectCurrentTeam, selectCurrentUser } from "../store/authSlice";
-import Button from "../components/Button";
-import PageTitle from "../components/PageTitle";
-import MemberMenu from "../components/mobile menus/MemberMenu";
 
 export default function MembersIndexPage() {
 	useEffect(() => (document.title = "Members"), []);
@@ -20,6 +22,7 @@ export default function MembersIndexPage() {
 	const currentUser = useSelector(selectCurrentUser);
 	const currentTeam = useSelector(selectCurrentTeam);
 	const [memberBeingViewed, setMemberBeingViewed] = useState(null);
+	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => {
 		async function fetchInvitations() {
@@ -100,7 +103,9 @@ export default function MembersIndexPage() {
 
 					<div className="flex-between">
 						<SectionTitle title="Current members" />
-						<Button onClick={() => setShowInvitationDialog(true)}>Send an invite</Button>
+						{currentMember.can(ADD_MEMBERS) && (
+							<Button onClick={() => setShowInvitationDialog(true)}>Send an invite</Button>
+						)}
 					</div>
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 my-5">
 						{memberCards}

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 
-import SetlistApi from "../api/SetlistApi";
-import QuickAdd from "../components/QuickAdd";
+import { ADD_SETLISTS } from "../utils/constants";
 import CreateSetlistDialog from "../components/CreateSetlistDialog";
 import MobileHeaderAndBottomButton from "../components/MobileHeaderAndBottomButton";
 import NoDataMessage from "../components/NoDataMessage";
-import SetlistsList from "./SetlistsList";
 import PageTitle from "../components/PageTitle";
+import QuickAdd from "../components/QuickAdd";
+import SetlistApi from "../api/SetlistApi";
+import SetlistsList from "./SetlistsList";
+import { selectCurrentMember } from "../store/authSlice";
+import { useSelector } from "react-redux";
 
 export default function SetlistsIndexPage() {
 	useEffect(() => (document.title = "Sets"));
@@ -15,6 +18,7 @@ export default function SetlistsIndexPage() {
 	const [pastSetlists, setPastSetlists] = useState([]);
 	const [showCreateSetlistDialog, setShowCreateSetlistDialog] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => {
 		async function fetchSetlists() {
@@ -88,6 +92,7 @@ export default function SetlistsIndexPage() {
 					buttonText="Add a set"
 					onAdd={() => setShowCreateSetlistDialog(true)}
 					pageTitle="Sets"
+					canAdd={currentMember.can(ADD_SETLISTS)}
 				/>
 			</div>
 			<div className="hidden sm:block">
@@ -96,14 +101,18 @@ export default function SetlistsIndexPage() {
 
 			{content}
 
-			<div className="hidden sm:block">
-				<QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
-			</div>
-			<CreateSetlistDialog
-				open={showCreateSetlistDialog}
-				onCloseDialog={() => setShowCreateSetlistDialog(false)}
-				onCreated={handleSetlistCreated}
-			/>
+			{currentMember.can(ADD_SETLISTS) && (
+				<>
+					<div className="hidden sm:block">
+						<QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
+					</div>
+					<CreateSetlistDialog
+						open={showCreateSetlistDialog}
+						onCloseDialog={() => setShowCreateSetlistDialog(false)}
+						onCreated={handleSetlistCreated}
+					/>
+				</>
+			)}
 		</>
 	);
 }

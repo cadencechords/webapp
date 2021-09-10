@@ -1,15 +1,18 @@
-import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router";
 
-import CreateBinderDialog from "../components/CreateBinderDialog";
-import NoDataMessage from "../components/NoDataMessage";
-import QuickAdd from "../components/QuickAdd";
-import PageTitle from "../components/PageTitle";
-import BindersList from "../components/BindersList";
+import { ADD_BINDERS } from "../utils/constants";
 import BinderApi from "../api/BinderApi";
-import MobileHeader from "../components/MobileHeader";
+import BindersList from "../components/BindersList";
 import Button from "../components/Button";
+import CreateBinderDialog from "../components/CreateBinderDialog";
+import MobileHeader from "../components/MobileHeader";
+import NoDataMessage from "../components/NoDataMessage";
+import PageTitle from "../components/PageTitle";
+import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
+import QuickAdd from "../components/QuickAdd";
+import { selectCurrentMember } from "../store/authSlice";
+import { useHistory } from "react-router";
+import { useSelector } from "react-redux";
 
 export default function BindersIndexPage() {
 	useEffect(() => (document.title = "Binders"));
@@ -17,6 +20,7 @@ export default function BindersIndexPage() {
 	const [binders, setBinders] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const router = useHistory();
+	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => {
 		async function fetchBinders() {
@@ -62,29 +66,34 @@ export default function BindersIndexPage() {
 					title="Binders"
 					className="shadow-inner"
 					onAdd={() => setShowCreateDialog(true)}
+					canAdd={currentMember.can(ADD_BINDERS)}
 				/>
 			</div>
 
 			{content}
 
-			<CreateBinderDialog
-				open={showCreateDialog}
-				onCloseDialog={() => setShowCreateDialog(false)}
-				onCreated={handleBinderCreated}
-			/>
-			<Button
-				variant="open"
-				className="bg-white fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
-				full
-				style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
-				onClick={() => setShowCreateDialog(true)}
-			>
-				<PlusCircleIcon className="h-4 w-4 mr-2 text-blue-700" />
-				Add new binder
-			</Button>
-			<div className="hidden sm:block">
-				<QuickAdd onAdd={() => setShowCreateDialog(true)} />
-			</div>
+			{currentMember.can(ADD_BINDERS) && (
+				<>
+					<CreateBinderDialog
+						open={showCreateDialog}
+						onCloseDialog={() => setShowCreateDialog(false)}
+						onCreated={handleBinderCreated}
+					/>
+					<Button
+						variant="open"
+						className="bg-white fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
+						full
+						style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
+						onClick={() => setShowCreateDialog(true)}
+					>
+						<PlusCircleIcon className="h-4 w-4 mr-2 text-blue-700" />
+						Add new binder
+					</Button>
+					<div className="hidden sm:block">
+						<QuickAdd onAdd={() => setShowCreateDialog(true)} />
+					</div>
+				</>
+			)}
 		</>
 	);
 }

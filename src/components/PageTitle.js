@@ -12,7 +12,7 @@ export default function PageTitle({ title, editable, onChange, align }) {
 		);
 	} else {
 		return (
-			<h1 className={`my-4 font-bold flex items-center w-full ${ALIGNMENTS[align]} text-2xl`}>
+			<h1 className={`p-2  font-bold flex items-center w-full ${ALIGNMENTS[align]} text-2xl`}>
 				{title}
 			</h1>
 		);

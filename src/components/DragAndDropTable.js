@@ -1,9 +1,17 @@
-import TrashIcon from "@heroicons/react/outline/TrashIcon";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
 import Button from "./Button";
 import KeyBadge from "./KeyBadge";
+import TrashIcon from "@heroicons/react/outline/TrashIcon";
 
-export default function DragAndDropTable({ onReorder, items, removeable, onRemove, onClick }) {
+export default function DragAndDropTable({
+	onReorder,
+	items,
+	removeable,
+	onRemove,
+	onClick,
+	rearrangeable,
+}) {
 	const reorder = (list, startIndex, endIndex) => {
 		const result = Array.from(list);
 		const [removed] = result.splice(startIndex, 1);
@@ -33,54 +41,76 @@ export default function DragAndDropTable({ onReorder, items, removeable, onRemov
 		...draggableStyle,
 	});
 
-	return (
-		<DragDropContext onDragEnd={onDragEnd}>
-			<Droppable droppableId="droppable">
-				{(provided, snapshot) => (
-					<div {...provided.droppableProps} ref={provided.innerRef}>
-						{items.map((item, index) => {
-							return (
-								<Draggable key={item.id} draggableId={`${item.id}`} index={index}>
-									{(provided, snapshot) => (
-										<div
-											ref={provided.innerRef}
-											{...provided.draggableProps}
-											{...provided.dragHandleProps}
-											className="border-b hover:bg-gray-50 py-2 px-2 bg-white flex-between"
-											style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-										>
-											<span
-												onClick={() => onClick(item.id)}
-												className="cursor-pointer hover:text-blue-600 flex items-center gap-2"
+	if (rearrangeable) {
+		return (
+			<DragDropContext onDragEnd={onDragEnd}>
+				<Droppable droppableId="droppable">
+					{(provided, snapshot) => (
+						<div {...provided.droppableProps} ref={provided.innerRef}>
+							{items.map((item, index) => {
+								return (
+									<Draggable key={item.id} draggableId={`${item.id}`} index={index}>
+										{(provided, snapshot) => (
+											<div
+												ref={provided.innerRef}
+												{...provided.draggableProps}
+												{...provided.dragHandleProps}
+												className="border-b hover:bg-gray-50 py-2 px-2 bg-white flex-between"
+												style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
 											>
-												{item.name}
-												<KeyBadge songKey={item.key} />
-											</span>
-
-											{removeable && (
-												<Button
-													color="grey"
-													size="xs"
-													variant="open"
-													onClick={() => onRemove(item.id)}
+												<span
+													onClick={() => onClick(item.id)}
+													className="cursor-pointer hover:text-blue-600 flex items-center gap-2"
 												>
-													<TrashIcon className="h-4 w-4 text-gray-600" />
-												</Button>
-											)}
-										</div>
-									)}
-								</Draggable>
-							);
-						})}
-						{provided.placeholder}
-					</div>
+													{item.name}
+													<KeyBadge songKey={item.key} />
+												</span>
+
+												{removeable && (
+													<Button
+														color="grey"
+														size="xs"
+														variant="open"
+														onClick={() => onRemove(item.id)}
+													>
+														<TrashIcon className="h-4 w-4 text-gray-600" />
+													</Button>
+												)}
+											</div>
+										)}
+									</Draggable>
+								);
+							})}
+							{provided.placeholder}
+						</div>
+					)}
+				</Droppable>
+			</DragDropContext>
+		);
+	} else {
+		return items.map((item) => (
+			<div
+				className="border-b hover:bg-gray-50 py-2 px-2 bg-white flex-between"
+				key={item.id}
+				onClick={() => onClick(item.id)}
+			>
+				<span className="cursor-pointer hover:text-blue-600 flex items-center gap-2">
+					{item.name}
+					<KeyBadge songKey={item.key} />
+				</span>
+
+				{removeable && (
+					<Button color="grey" size="xs" variant="open" onClick={() => onRemove(item.id)}>
+						<TrashIcon className="h-4 w-4 text-gray-600" />
+					</Button>
 				)}
-			</Droppable>
-		</DragDropContext>
-	);
+			</div>
+		));
+	}
 }
 
 DragAndDropTable.defaultProps = {
 	items: [],
 	removeable: false,
+	rearrangeable: true,
 };

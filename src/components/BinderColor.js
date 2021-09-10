@@ -1,8 +1,8 @@
 import XIcon from "@heroicons/react/solid/XIcon";
 
-export default function BinderColor({ color, onClick, block, size }) {
+export default function BinderColor({ color, onClick, block, size, editable }) {
 	const handleClick = () => {
-		if (onClick) {
+		if (onClick && editable) {
 			onClick(color);
 		}
 	};
@@ -25,6 +25,7 @@ export default function BinderColor({ color, onClick, block, size }) {
 BinderColor.defaultProps = {
 	color: "white",
 	size: "4",
+	editable: true,
 };
 
 const HEIGHT_SIZES = {
