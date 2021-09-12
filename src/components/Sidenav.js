@@ -39,13 +39,15 @@ export default function Sidenav() {
 						icon={<UserGroupIcon className={iconClasses} />}
 						clas
 					/>
-					<hr className="my-4" />
 					{currentMember.can(VIEW_ROLES) && (
-						<SidenavLink
-							to="/permissions"
-							text="Permissions"
-							icon={<LockClosedIcon className={iconClasses} />}
-						/>
+						<>
+							<hr className="my-4" />
+							<SidenavLink
+								to="/permissions"
+								text="Permissions"
+								icon={<LockClosedIcon className={iconClasses} />}
+							/>
+						</>
 					)}
 				</div>
 			</div>
