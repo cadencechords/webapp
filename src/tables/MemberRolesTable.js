@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 
+import { ASSIGN_ROLES } from "../utils/constants";
 import MembershipsApi from "../api/membershipsApi";
 import SectionTitle from "../components/SectionTitle";
 import StyledListBox from "../components/StyledListBox";
 import Table from "../components/Table";
+import { selectCurrentMember } from "../store/authSlice";
+import { useSelector } from "react-redux";
 
 export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
 	const headers = ["Name", ""];
 	const [roleOptions, setRoleOptions] = useState([]);
 	const rows = members ? members.map((member) => convertToRow(member, roles)) : [];
+	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => {
 		if (roles) {
@@ -20,11 +24,15 @@ export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
 	function convertToRow(member) {
 		return [
 			member.user.email,
-			<StyledListBox
-				options={roleOptions}
-				selectedOption={{ value: member.role.name, template: member.role.name }}
-				onChange={(option) => handleAssignRole(member, option)}
-			/>,
+			currentMember.can(ASSIGN_ROLES) ? (
+				<StyledListBox
+					options={roleOptions}
+					selectedOption={{ value: member.role.name, template: member.role.name }}
+					onChange={(option) => handleAssignRole(member, option)}
+				/>
+			) : (
+				member.role.name
+			),
 		];
 	}
 
