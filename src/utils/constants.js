@@ -16,3 +16,9 @@ export const DELETE_TEAM = "Delete team";
 
 export const ADD_MEMBERS = "Add members";
 export const REMOVE_MEMBERS = "Remove members";
+
+export const VIEW_ROLES = "View roles";
+export const ADD_ROLES = "Add roles";
+export const EDIT_ROLES = "Edit roles";
+export const DELETE_ROLES = "Delete roles";
+export const ASSIGN_ROLES = "Assign roles";

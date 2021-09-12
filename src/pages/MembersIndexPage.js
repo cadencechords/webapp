@@ -65,13 +65,6 @@ export default function MembersIndexPage() {
 		setInvitations(updatedInvitesList);
 	};
 
-	const handleAdminChanged = (memberId, isAdmin) => {
-		let membersCopy = Array.from(members);
-		let memberChanged = membersCopy.find((member) => member.id === memberId);
-		memberChanged.is_admin = isAdmin;
-		setMembers(membersCopy);
-	};
-
 	const handleMemberRemoved = (memberIdToRemove) => {
 		let filteredMembers = members.filter((member) => member.id !== memberIdToRemove);
 		setMembers(filteredMembers);
@@ -130,7 +123,6 @@ export default function MembersIndexPage() {
 					onCloseDialog={() => setMemberBeingViewed(null)}
 					member={memberBeingViewed}
 					onRemoved={handleMemberRemoved}
-					onAdminStatusChanged={handleAdminChanged}
 				/>
 			</>
 		);

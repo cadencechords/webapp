@@ -1,8 +1,4 @@
 import { Route, Switch } from "react-router-dom";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
-
 import {
 	selectCurrentTeam,
 	selectCurrentUser,
@@ -12,15 +8,18 @@ import {
 	setCurrentUser,
 	setMembership,
 } from "../store/authSlice";
-import TeamApi from "../api/TeamApi";
-import PageLoading from "./PageLoading";
-import Content from "./Content";
-import UserApi from "../api/UserApi";
-import CenteredPage from "./CenteredPage";
+import { useDispatch, useSelector } from "react-redux";
 
+import CenteredPage from "./CenteredPage";
+import Content from "./Content";
 import EditorWorkbenchPage from "../pages/EditorWorkbenchPage";
-import SongPresenterPage from "../pages/SongPresenterPage";
+import PageLoading from "./PageLoading";
 import SetPresenterPage from "../pages/SetPresenterPage";
+import SongPresenterPage from "../pages/SongPresenterPage";
+import TeamApi from "../api/TeamApi";
+import UserApi from "../api/UserApi";
+import { useEffect } from "react";
+import { useHistory } from "react-router";
 
 export default function SecuredRoutes() {
 	const dispatch = useDispatch();
@@ -60,7 +59,6 @@ export default function SecuredRoutes() {
 				let membershipResponse = await UserApi.getTeamMembership();
 				dispatch(
 					setMembership({
-						is_admin: membershipResponse.data.is_admin,
 						role: membershipResponse.data.role,
 					})
 				);

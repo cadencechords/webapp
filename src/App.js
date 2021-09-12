@@ -1,14 +1,13 @@
-import "./App.css";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import SecuredRoutes from "./components/SecuredRoutes";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import ClaimInvitationPage from "./pages/ClaimInvitationPage";
-import InvitationSignUpPage from "./pages/InvitationSignUpPage";
-import EmailConfirmedPage from "./pages/EmailConfirmedPage";
 import CreateNewTeamPage from "./pages/CreateNewTeamPage";
-import TeamLoginPage from "./pages/TeamLoginPage";
+import EmailConfirmedPage from "./pages/EmailConfirmedPage";
+import InvitationSignUpPage from "./pages/InvitationSignUpPage";
 import LoginPage from "./pages/LoginPage";
+import SecuredRoutes from "./components/SecuredRoutes";
 import SignUpPage from "./pages/SignUpPage";
+import TeamLoginPage from "./pages/TeamLoginPage";
 
 function App() {
 	return (

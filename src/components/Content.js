@@ -1,25 +1,24 @@
-import TeamDetailPage from "../pages/TeamDetailPage";
-import SetlistDetailPage from "../pages/SetlistDetailPage";
 import AccountDetailPage from "../pages/AccountDetailPage";
 import BinderDetailPage from "../pages/BinderDetailPage";
-import SongDetailPage from "../pages/SongDetailPage";
-import MemberDetailPage from "../pages/MemberDetailPage";
-
 import BindersIndexPage from "../pages/BindersIndexPage";
-import SetlistsIndexPage from "../pages/SetlistsIndexPage";
-import SongsIndexPage from "../pages/SongsIndexPage";
+import MemberDetailPage from "../pages/MemberDetailPage";
 import MembersIndexPage from "../pages/MembersIndexPage";
-import PcoSongsIndexPage from "../pages/PcoSongsIndexPage";
-import SongImportSourcesIndexPage from "../pages/SongImportSourcesIndexPage";
-
-import PcoRedirectPage from "../pages/PcoRedirectPage";
-import PersonalDetails from "./PersonalDetails";
-import SearchPage from "./SearchPage";
-
-import { Route } from "react-router-dom";
-import Sidenav from "./Sidenav";
-import Navbar from "./Navbar";
 import MobileNav from "./MobileNav";
+import Navbar from "./Navbar";
+import PcoRedirectPage from "../pages/PcoRedirectPage";
+import PcoSongsIndexPage from "../pages/PcoSongsIndexPage";
+import PersonalDetails from "./PersonalDetails";
+import RoleDetailPage from "../pages/RoleDetailPage";
+import RolesIndexPage from "../pages/RolesIndexPage";
+import { Route } from "react-router-dom";
+import SearchPage from "./SearchPage";
+import SetlistDetailPage from "../pages/SetlistDetailPage";
+import SetlistsIndexPage from "../pages/SetlistsIndexPage";
+import Sidenav from "./Sidenav";
+import SongDetailPage from "../pages/SongDetailPage";
+import SongImportSourcesIndexPage from "../pages/SongImportSourcesIndexPage";
+import SongsIndexPage from "../pages/SongsIndexPage";
+import TeamDetailPage from "../pages/TeamDetailPage";
 
 export default function Content() {
 	return (
@@ -73,6 +72,12 @@ export default function Content() {
 					</Route>
 					<Route path="/search">
 						<SearchPage />
+					</Route>
+					<Route path="/permissions/:id" exact>
+						<RoleDetailPage />
+					</Route>
+					<Route path="/permissions" exact>
+						<RolesIndexPage />
 					</Route>
 				</div>
 				<div className="h-12 md:h-0"></div>

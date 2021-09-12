@@ -1,4 +1,4 @@
-export default function PageTitle({ title, editable, onChange, align }) {
+export default function PageTitle({ title, editable, onChange, align, placeholder }) {
 	if (editable) {
 		return (
 			<input
@@ -8,6 +8,7 @@ export default function PageTitle({ title, editable, onChange, align }) {
 				}
 				defaultValue={title}
 				onChange={(e) => onChange(e.target.value)}
+				placeholder={placeholder}
 			/>
 		);
 	} else {

@@ -1,5 +1,6 @@
-import axios from "axios";
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
+
+import axios from "axios";
 
 const TEAMS_URL = process.env.REACT_APP_API_URL + "/teams";
 export default class TeamApi {
@@ -19,6 +20,12 @@ export default class TeamApi {
 
 	static getCurrentTeam() {
 		return axios.get(`${TEAMS_URL}/${getTeamId()}`, {
+			headers: constructAuthHeaders(),
+		});
+	}
+
+	static getMemberships() {
+		return axios.get(`${TEAMS_URL}/${getTeamId()}/memberships`, {
 			headers: constructAuthHeaders(),
 		});
 	}

@@ -1,11 +1,11 @@
-import ProfilePicture from "./ProfilePicture";
 import Button from "./Button";
-import { useCallback } from "react";
-import UserApi from "../api/UserApi";
-import EditableData from "./inputs/EditableData";
 import DotsVerticalIcon from "@heroicons/react/outline/DotsVerticalIcon";
-import _ from "lodash";
+import EditableData from "./inputs/EditableData";
 import { Link } from "react-router-dom";
+import ProfilePicture from "./ProfilePicture";
+import UserApi from "../api/UserApi";
+import _ from "lodash";
+import { useCallback } from "react";
 
 export default function MemberCard({ member, isCurrentUser, onPositionChanged, onShowMemberMenu }) {
 	const handlePositionChange = (newPosition) => {
@@ -26,15 +26,6 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 	);
 
 	if (member) {
-		let adminStatusBubble;
-		if (member.is_admin) {
-			adminStatusBubble = (
-				<span className="rounded-full px-3 py-0.5 bg-blue-600 text-white text-xs mb-1 inline-block">
-					Admin
-				</span>
-			);
-		}
-
 		let currentUserBubble;
 		if (isCurrentUser) {
 			currentUserBubble = (
@@ -65,7 +56,7 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 				<div className="m-auto w-20 h-20 flex-center">
 					<ProfilePicture url={member.image_url} />
 				</div>
-				{adminStatusBubble} {currentUserBubble}
+				{currentUserBubble}
 				<div className="font-semibold">
 					{member.first_name ? member.first_name + " " + member.last_name : member.email}
 				</div>

@@ -38,7 +38,6 @@ export const authSlice = createSlice({
 		},
 
 		setMembership: (state, action) => {
-			state.currentUser.is_admin = action.payload.is_admin;
 			state.currentUser.role = action.payload.role;
 		},
 

@@ -1,6 +1,7 @@
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-import axios from "axios";
+
 import FileApi from "./FileApi";
+import axios from "axios";
 
 const USERS_URL = process.env.REACT_APP_API_URL + "/users";
 
@@ -34,10 +35,7 @@ export default class UserApi {
 		if (updates && userId) {
 			let allowedParams = {};
 
-			if ("isAdmin" in updates) allowedParams.is_admin = updates.isAdmin;
 			if ("position" in updates) allowedParams.position = updates.position;
-
-			console.log(updates, allowedParams);
 
 			return axios.put(`${USERS_URL}/${userId}/memberships/${getTeamId()}`, allowedParams, {
 				headers: constructAuthHeaders(),

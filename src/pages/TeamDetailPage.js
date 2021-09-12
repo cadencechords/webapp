@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { selectCurrentMember, selectCurrentTeam, setCurrentTeam } from "../store/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+
+import { EDIT_TEAM } from "../utils/constants";
 import FileApi from "../api/FileApi";
-import { selectCurrentTeam, setCurrentTeam } from "../store/authSlice";
+import MobileProfilePictureMenu from "../components/mobile menus/MobileProfilePictureMenu";
 import PageTitle from "../components/PageTitle";
 import ProfilePicture from "../components/ProfilePicture";
-import MobileProfilePictureMenu from "../components/mobile menus/MobileProfilePictureMenu";
 
 export default function TeamDetailPage() {
 	const currentTeam = useSelector(selectCurrentTeam);
@@ -12,6 +14,7 @@ export default function TeamDetailPage() {
 	const inputRef = useRef();
 	const [showImageDialog, setShowImageDialog] = useState(false);
 	const dispatch = useDispatch();
+	const currentMember = useSelector(selectCurrentMember);
 
 	const handleOpenFileDialog = () => {
 		inputRef.current.click();
@@ -37,6 +40,12 @@ export default function TeamDetailPage() {
 		}
 	};
 
+	const handleTeamImageClick = () => {
+		if (currentMember.can(EDIT_TEAM)) {
+			setShowImageDialog(true);
+		}
+	};
+
 	const handleDeleteImage = async () => {
 		try {
 			dispatch(setCurrentTeam({ ...currentTeam, image_url: null }));
@@ -49,25 +58,25 @@ export default function TeamDetailPage() {
 	if (currentTeam) {
 		return (
 			<div className="flex items-center flex-col pt-4">
-				<ProfilePicture
-					url={currentTeam.image_url}
-					size="lg"
-					onClick={() => setShowImageDialog(true)}
-				/>
+				<ProfilePicture url={currentTeam.image_url} size="lg" onClick={handleTeamImageClick} />
 				<PageTitle title={currentTeam.name} align="center" />
-				<input
-					type="file"
-					accept="image/*"
-					onChange={handleImageSelected}
-					className="hidden"
-					ref={inputRef}
-				/>
-				<MobileProfilePictureMenu
-					open={showImageDialog}
-					onCloseDialog={() => setShowImageDialog(false)}
-					onOpenFileDialog={handleOpenFileDialog}
-					onDeleteImage={handleDeleteImage}
-				/>
+				{currentMember.can(EDIT_TEAM) && (
+					<>
+						<input
+							type="file"
+							accept="image/*"
+							onChange={handleImageSelected}
+							className="hidden"
+							ref={inputRef}
+						/>
+						<MobileProfilePictureMenu
+							open={showImageDialog}
+							onCloseDialog={() => setShowImageDialog(false)}
+							onOpenFileDialog={handleOpenFileDialog}
+							onDeleteImage={handleDeleteImage}
+						/>
+					</>
+				)}
 			</div>
 		);
 	} else {
