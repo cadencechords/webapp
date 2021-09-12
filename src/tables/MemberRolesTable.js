@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
 	const headers = ["Name", ""];
 	const [roleOptions, setRoleOptions] = useState([]);
-	const rows = members ? members.map((member) => convertToRow(member, roles)) : [];
 	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => {
@@ -21,7 +20,7 @@ export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
 		}
 	}, [roles]);
 
-	function convertToRow(member) {
+	const convertToRow = (member) => {
 		return [
 			member.user.email,
 			currentMember.can(ASSIGN_ROLES) ? (
@@ -34,7 +33,8 @@ export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
 				member.role.name
 			),
 		];
-	}
+	};
+	const rows = members ? members.map((member) => convertToRow(member, roles)) : [];
 
 	async function handleAssignRole(member, role) {
 		try {
