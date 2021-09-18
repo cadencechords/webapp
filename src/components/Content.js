@@ -5,6 +5,7 @@ import MemberDetailPage from "../pages/MemberDetailPage";
 import MembersIndexPage from "../pages/MembersIndexPage";
 import MobileNav from "./MobileNav";
 import Navbar from "./Navbar";
+import OnsongImportPage from "../pages/OnsongImportPage";
 import PcoRedirectPage from "../pages/PcoRedirectPage";
 import PcoSongsIndexPage from "../pages/PcoSongsIndexPage";
 import PersonalDetails from "./PersonalDetails";
@@ -33,6 +34,9 @@ export default function Content() {
 					</Route>
 					<Route path="/binders" exact>
 						<BindersIndexPage />
+					</Route>
+					<Route path="/import/onsong" exact>
+						<OnsongImportPage />
 					</Route>
 					<Route path="/import/pco/songs" exact>
 						<PcoSongsIndexPage />

@@ -1,14 +1,14 @@
 import CheckIcon from "@heroicons/react/solid/CheckIcon";
 import PropTypes from "prop-types";
 
-export default function Checkbox({ color, checked, onChange }) {
+export default function Checkbox({ color, checked, onChange, className }) {
 	return (
 		<>
 			<input type="checkbox" className="hidden" readOnly checked={checked} />
 			<button
 				className={`w-5 h-5 ${RING_COLORS[color]}
 				shadow-sm focus:outline-none focus:ring-2 outline-none rounded-md cursor-pointer flex-center
-				${checked ? BACKGROUND_COLORS[color] : " border border-gray-300 "}`}
+				${checked ? BACKGROUND_COLORS[color] : " border border-gray-300 "} ${className}`}
 				onClick={() => onChange(!checked)}
 			>
 				{checked && <CheckIcon className="text-white font-semibold h-4 w-4" />}
@@ -24,6 +24,7 @@ Checkbox.propTypes = {
 
 Checkbox.defaultProps = {
 	color: "blue",
+	className: "",
 };
 
 const RING_COLORS = {
