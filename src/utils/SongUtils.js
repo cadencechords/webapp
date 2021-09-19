@@ -1,5 +1,6 @@
-import ReactDOMServer from "react-dom/server";
 import * as Transposer from "chord-transposer";
+
+import ReactDOMServer from "react-dom/server";
 
 export function isChordLine(line) {
 	if (line) {
@@ -102,6 +103,19 @@ export function toHtml(songText, formatOptions, whitespacePreWrap = true) {
 							<br />
 						</p>
 					);
+				} else if (isChordLine(line)) {
+					if (formatOptions.showChordsDisabled) {
+						return null;
+					} else {
+						return (
+							<p
+								key={index}
+								className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}
+							>
+								{line}
+							</p>
+						);
+					}
 				} else {
 					return (
 						<p key={index} className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}>
