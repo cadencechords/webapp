@@ -34,7 +34,7 @@ export default function OnsongImportStatus({ importing, errors, onReset }) {
 		return (
 			<div>
 				<h2 className="text-2xl font-semibold text-center mb-4">
-					You're songs have finished importing!
+					Your songs have finished importing!
 				</h2>
 				<Link to="/songs">
 					<Button variant="outlined" full bold>

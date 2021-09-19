@@ -12,7 +12,7 @@ export default class OnsongApi {
 		});
 	}
 
-	static import(songs, binderId) {
+	static import(songs, binderId, importId) {
 		let importParams = {
 			songs,
 		};
@@ -21,7 +21,7 @@ export default class OnsongApi {
 			importParams.binder_id = binderId;
 		}
 
-		return axios.post(`${ONSONG_URL}/import?team_id=${getTeamId()}`, importParams, {
+		return axios.post(`${ONSONG_URL}/import/${importId}?team_id=${getTeamId()}`, importParams, {
 			headers: constructAuthHeaders(),
 		});
 	}

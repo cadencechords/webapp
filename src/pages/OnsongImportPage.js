@@ -1,3 +1,4 @@
+import { ADD_SONGS } from "../utils/constants";
 import OnsongApi from "../api/onsongApi";
 import OnsongChooseBackupFile from "../components/OnsongChooseBackupFile";
 import OnsongChooseBinderForSongs from "../components/OnsongChooseBinderForSongs";
@@ -5,7 +6,9 @@ import OnsongChooseSongsFromBackup from "../components/OnsongChooseSongsFromBack
 import OnsongImportStatus from "../components/OnsongImportStatus";
 import OnsongReviewImport from "../components/OnsongReviewImport";
 import PageTitle from "../components/PageTitle";
+import { selectCurrentMember } from "../store/authSlice";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 
 export default function OnsongImportPage() {
@@ -17,8 +20,14 @@ export default function OnsongImportPage() {
 	const [errors, setErrors] = useState();
 	const [wizardStep, setWizardStep] = useState(0);
 	const [binders, setBinders] = useState();
+	const [importId, setImportId] = useState();
 	const [selectedBinder, setSelectedBinder] = useState();
 	const router = useHistory();
+	const currentMember = useSelector(selectCurrentMember);
+
+	if (!currentMember.can(ADD_SONGS)) {
+		router.push("/songs");
+	}
 
 	const handleBackupFileChosen = async (backup) => {
 		setBackup(backup);
@@ -26,7 +35,8 @@ export default function OnsongImportPage() {
 			setUploading(true);
 			handleNextStep();
 			let { data } = await OnsongApi.unzip(backup);
-			setUnzippedFiles(data);
+			setUnzippedFiles(data.files);
+			setImportId(data.id);
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -40,6 +50,7 @@ export default function OnsongImportPage() {
 		setSelectedSongs([]);
 		setWizardStep(0);
 		setSelectedBinder(null);
+		setImportId(null);
 	};
 
 	const handleSongToggled = (selected, toggledSong) => {
@@ -56,7 +67,7 @@ export default function OnsongImportPage() {
 		try {
 			handleNextStep();
 			setImporting(true);
-			await OnsongApi.import(selectedSongs, selectedBinder?.id);
+			await OnsongApi.import(selectedSongs, selectedBinder?.id), importId;
 		} catch (error) {
 			console.log(error);
 			setErrors(error.response.data?.errors);
