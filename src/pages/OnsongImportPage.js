@@ -67,7 +67,7 @@ export default function OnsongImportPage() {
 		try {
 			handleNextStep();
 			setImporting(true);
-			await OnsongApi.import(selectedSongs, selectedBinder?.id), importId;
+			await OnsongApi.import(selectedSongs, selectedBinder?.id, importId);
 		} catch (error) {
 			console.log(error);
 			setErrors(error.response.data?.errors);
