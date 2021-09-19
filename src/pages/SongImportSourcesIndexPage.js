@@ -2,7 +2,6 @@ import { Link, useHistory } from "react-router-dom";
 
 import { ADD_SONGS } from "../utils/constants";
 import OnsongLogo from "../images/onsong.svg";
-import PageLoading from "../components/PageLoading";
 import PlanningCenterButton from "../components/buttons/PlanningCenterButton";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
