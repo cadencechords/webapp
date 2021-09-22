@@ -1,6 +1,11 @@
+import { getHalfStepHigher, getHalfStepLower } from "../utils/SongUtils";
+
+import Button from "./Button";
 import DetailTitle from "./DetailTitle";
 import EditableData from "./inputs/EditableData";
 import KeyTransposerDialog from "./KeyTransposerDialog";
+import MinusIcon from "@heroicons/react/outline/MinusIcon";
+import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import { useState } from "react";
 
 export default function TransposedKeyField({
@@ -17,6 +22,14 @@ export default function TransposedKeyField({
 		setShowKeyTransposerDialog(false);
 	};
 
+	const handleTransposeUpHalfKey = () => {
+		onChange(getHalfStepHigher(transposedKey || originalKey));
+	};
+
+	const handleTransposeDownHalfKey = () => {
+		onChange(getHalfStepLower(transposedKey || originalKey));
+	};
+
 	return (
 		<div className="flex flex-row items-center mb-1">
 			<DetailTitle>Transposed:</DetailTitle>
@@ -27,7 +40,12 @@ export default function TransposedKeyField({
 				onClick={() => setShowKeyTransposerDialog(true)}
 				editable={editable}
 			/>
-
+			<Button size="xs" variant="open" disabled={!originalKey} onClick={handleTransposeUpHalfKey}>
+				<PlusIcon className="w-4 h-4" />
+			</Button>
+			<Button size="xs" variant="open" disabled={!originalKey} onClick={handleTransposeDownHalfKey}>
+				<MinusIcon className="w-4 h-4" />
+			</Button>
 			<KeyTransposerDialog
 				open={showKeyTransposerDialog}
 				onCloseDialog={() => setShowKeyTransposerDialog(false)}

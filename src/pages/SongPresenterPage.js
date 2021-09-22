@@ -1,15 +1,15 @@
-import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
-import { Textfit } from "react-textfit";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-import { selectSongBeingPresented, adjustSongBeingPresented } from "../store/presenterSlice";
+import { adjustSongBeingPresented, selectSongBeingPresented } from "../store/presenterSlice";
 import { toHtml, transpose } from "../utils/SongUtils";
-import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
-import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
-import Metronome from "../components/Metronome";
-import Button from "../components/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+
+import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
+import Button from "../components/Button";
+import Metronome from "../components/Metronome";
+import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
+import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
+import { Textfit } from "react-textfit";
 
 export default function SongPresenterPage() {
 	const router = useHistory();

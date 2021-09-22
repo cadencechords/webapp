@@ -8,7 +8,6 @@ export default function SongPreview({ song, transpose }) {
 	if (song.transposed_key && song.original_key && transpose) {
 		content = transposeSong(song);
 	}
-	console.log(`Show chords disabled: ${song.showChordsDisabled}`);
 
 	return (
 		<div

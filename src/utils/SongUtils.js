@@ -266,3 +266,15 @@ export function transpose(song) {
 		return song?.content ? song.content : "";
 	}
 }
+
+export function getHalfStepHigher(key) {
+	return Transposer.transpose(key).up(1).toString();
+}
+
+export function getHalfStepLower(key) {
+	return Transposer.transpose(key).down(1).toString();
+}
+
+export function hasAnyKeysSet(song) {
+	return song.original_key || song.transposed_key;
+}
