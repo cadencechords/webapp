@@ -1,14 +1,15 @@
+import { useEffect, useState } from "react";
+
 import Button from "./Button";
 import EditableData from "./inputs/EditableData";
-import PlayIcon from "@heroicons/react/solid/PlayIcon";
-import PauseIcon from "@heroicons/react/outline/PauseIcon";
-import MinusIcon from "@heroicons/react/outline/MinusIcon";
-import PlusIcon from "@heroicons/react/outline/PlusIcon";
-import MetronomeTool from "../tools/metronome";
-import TapTempo from "./TapTempo";
-import { useEffect, useState } from "react";
-import MetronomePopover from "./MetronomePopover";
 import MetronomeDialog from "./MetronomeDialog";
+import MetronomePopover from "./MetronomePopover";
+import MetronomeTool from "../tools/metronome";
+import MinusIcon from "@heroicons/react/outline/MinusIcon";
+import PauseIcon from "@heroicons/react/outline/PauseIcon";
+import PlayIcon from "@heroicons/react/solid/PlayIcon";
+import PlusIcon from "@heroicons/react/outline/PlusIcon";
+import TapTempo from "./TapTempo";
 
 export default function Metronome({ bpm, onBpmChange }) {
 	const [isOn, setIsOn] = useState(false);
@@ -67,6 +68,7 @@ export default function Metronome({ bpm, onBpmChange }) {
 					className="sm:text-xl text-xl"
 					type="number"
 					onChange={handleBpmEdited}
+					placeholder="0"
 				/>
 				<Button
 					variant="open"
