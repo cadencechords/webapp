@@ -1,5 +1,5 @@
-import PropTypes from "prop-types";
 import Label from "../Label";
+import PropTypes from "prop-types";
 import PulseLoader from "react-spinners/PulseLoader";
 
 export default function OutlinedInput({
@@ -14,8 +14,16 @@ export default function OutlinedInput({
 	onButtonClick,
 	buttonLoading,
 	className,
+	onEnter,
 }) {
 	let roundedClasses = button ? " rounded-l-md " : " rounded-md ";
+
+	const handleOnKeyUp = (e) => {
+		if (e.keyCode === 13) {
+			onEnter?.();
+		}
+	};
+
 	return (
 		<>
 			{label && <Label>{label}</Label>}
@@ -31,6 +39,7 @@ export default function OutlinedInput({
 					value={value}
 					autoCapitalize="off"
 					pattern={type.toLowerCase() === "date" ? "d{4}-d{2}-d{2}" : ""}
+					onKeyUp={handleOnKeyUp}
 				/>
 
 				{button && (

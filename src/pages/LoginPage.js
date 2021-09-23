@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import AuthApi from "../api/AuthApi";
+import { useEffect, useState } from "react";
+
 import Alert from "../components/Alert";
-import { useDispatch } from "react-redux";
-import { setAuth } from "../store/authSlice";
+import AuthApi from "../api/AuthApi";
 import Button from "../components/Button";
+import { setAuth } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
 export default function LoginPage() {
 	useEffect(() => (document.title = "Login"));
@@ -72,7 +73,7 @@ export default function LoginPage() {
 						sign up for one!
 					</Link>
 				</div>
-				<div className="py-5">
+				<div className="pt-5 pb-3">
 					<input
 						className="appearance-none px-3 py-2 border-gray-300 focus:outline-none outline-none w-full border rounded-t-md focus:ring-inset focus:ring-2 focus:ring-blue-400 "
 						placeholder="email"
@@ -92,6 +93,9 @@ export default function LoginPage() {
 						onChange={(e) => handlePasswordChange(e.target.value)}
 						value={password}
 					/>
+				</div>
+				<div className="mb-4 text-right font-semibold text-blue-600">
+					<Link to="/forgot_password">Forgot password?</Link>
 				</div>
 				{alertMessage && (
 					<div className="mb-6">

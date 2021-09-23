@@ -1,34 +1,38 @@
-import { setAuth, setTeamId } from "../store/authSlice";
 import { useEffect, useState } from "react";
 
 import Alert from "../components/Alert";
+import AuthApi from "../api/AuthApi";
 import Button from "../components/Button";
 import CenteredPage from "../components/CenteredPage";
-import InvitationApi from "../api/InvitationApi";
 import OutlinedInput from "../components/inputs/OutlinedInput";
+import PageTitle from "../components/PageTitle";
 import PasswordRequirements from "../components/PasswordRequirements";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { useQuery } from "./ClaimInvitationPage";
 
-export default function InvitationSignUpPage() {
+export default function ResetPasswordage() {
 	const [password, setPassword] = useState("");
 	const [passwordConfirmation, setPasswordConfirmation] = useState("");
-	const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 	const [isLongEnough, setIsLongEnough] = useState(false);
 	const [isUncommon, setIsUncommon] = useState(false);
 	const [alertMessage, setAlertMessage] = useState(null);
 	const [loading, setLoading] = useState(false);
-	const dispatch = useDispatch();
 	const router = useHistory();
 
 	const MIN_PASSWORD_LENGTH = 8;
-	const token = useQuery().get("token");
 
-	const canSignUp = isUncommon && isLongEnough && token && password === passwordConfirmation;
+	const authConfig = {
+		token: useQuery().get("token"),
+		"access-token": useQuery().get("access-token"),
+		uid: useQuery().get("uid"),
+		client: useQuery().get("client"),
+	};
+
+	const canSignUp =
+		isUncommon && isLongEnough && hasAuthConfig() && password === passwordConfirmation;
 
 	useEffect(() => {
-		document.title = "Sign Up";
+		document.title = "Reset Password";
 		const script = document.createElement("script");
 
 		script.src = process.env.REACT_APP_URL + "/scripts/passwords.js";
@@ -51,29 +55,31 @@ export default function InvitationSignUpPage() {
 		setIsUncommon(score >= 3);
 	};
 
-	const handleSignUp = async () => {
-		setLoading(true);
+	const handleConfirmPasswordChange = async () => {
 		try {
-			let result = await InvitationApi.signUpThroughToken(token, password, passwordConfirmation);
-			let accessToken = result.headers["access-token"];
-			let client = result.headers["client"];
-			let uid = result.headers["uid"];
-			dispatch(setAuth({ accessToken, client, uid }));
-			dispatch(setTeamId(result.data.team_id));
-
-			router.push("/");
+			setLoading(true);
+			await AuthApi.resetPassword({ password, passwordConfirmation, ...authConfig });
+			router.push("/login");
 		} catch (error) {
-			setAlertMessage(error?.response?.data?.message);
+			setAlertMessage(error?.response?.data?.errors);
 			setLoading(false);
 		}
 	};
 
-	if (token) {
+	function hasAuthConfig() {
+		return (
+			authConfig &&
+			authConfig["access-token"] &&
+			authConfig.client &&
+			authConfig.token &&
+			authConfig.uid
+		);
+	}
+
+	if (hasAuthConfig()) {
 		return (
 			<CenteredPage>
-				<h1 className="font-bold text-3xl text-center mb-2">
-					Create a password for your new account
-				</h1>
+				<PageTitle title="New Password" align="center" className="mb-4" />
 
 				<div className="mb-2">Password</div>
 				<div className="mb-4">
@@ -81,15 +87,12 @@ export default function InvitationSignUpPage() {
 						value={password}
 						placeholder="password"
 						type="password"
-						onFocus={() => setIsPasswordFocused(true)}
 						onChange={handlePasswordChange}
 					/>
 
-					{isPasswordFocused && (
-						<div className="mt-4">
-							<PasswordRequirements isUncommon={isUncommon} isLongEnough={isLongEnough} />
-						</div>
-					)}
+					<div className="mt-4">
+						<PasswordRequirements isUncommon={isUncommon} isLongEnough={isLongEnough} />
+					</div>
 				</div>
 
 				<div className="mb-2">Confirm Password</div>
@@ -110,15 +113,15 @@ export default function InvitationSignUpPage() {
 					</div>
 				)}
 
-				<Button full disabled={!canSignUp} loading={loading} onClick={handleSignUp}>
-					Sign Up
+				<Button full disabled={!canSignUp} loading={loading} onClick={handleConfirmPasswordChange}>
+					Set password
 				</Button>
 			</CenteredPage>
 		);
 	} else {
 		return (
 			<CenteredPage>
-				<Alert color="red">Invalid invitation</Alert>
+				<Alert color="red">Invalid reset password link</Alert>
 			</CenteredPage>
 		);
 	}
