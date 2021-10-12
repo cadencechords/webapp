@@ -1,8 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
+
+import Button from "./Button";
 import { Fragment } from "react";
 import PropTypes from "prop-types";
 import XIcon from "@heroicons/react/outline/XIcon";
-import Button from "./Button";
 
 export default function StyledDialog({
 	open,
@@ -26,7 +27,7 @@ export default function StyledDialog({
 		<Transition show={open} as={Fragment}>
 			<Dialog
 				as="div"
-				className={`fixed inset-0 z-10 max-h-full ${fullscreen ? "mx-0" : "mx-3"}`}
+				className={`fixed inset-0 z-50 max-h-full ${fullscreen ? "mx-0" : "mx-3"}`}
 				static
 				open={open}
 				onClose={onCloseDialog}
@@ -75,7 +76,7 @@ export default function StyledDialog({
 									{title}
 								</div>
 							</Dialog.Title>
-							<div className={`my-2 px-5 ${borderedTop ? " py-6 " : " py-6 pt-0 "}`}>
+							<div className={`my-2 px-5 ${borderedTop ? " py-4 " : " pb-6 pt-0 "}`}>
 								{children}
 							</div>
 						</div>
@@ -103,6 +104,8 @@ const MAX_WIDTHS = {
 	md: "max-w-md",
 	lg: "max-w-lg",
 	xl: "max-w-xl",
+	"2xl": "max-w-2xl",
+	"3xl": "max-w-3xl",
 };
 
 const SM_MAX_WIDTHS = {
@@ -110,4 +113,6 @@ const SM_MAX_WIDTHS = {
 	md: "sm:max-w-md",
 	lg: "sm:max-w-lg",
 	xl: "sm:max-w-xl",
+	"2xl": "sm:max-w-2xl",
+	"3xl": "sm:max-w-3xl",
 };

@@ -1,7 +1,7 @@
 import { Listbox } from "@headlessui/react";
 import SelectorIcon from "@heroicons/react/solid/SelectorIcon";
 
-export default function StyledListBox({ options, onChange, selectedOption, background }) {
+export default function StyledListBox({ options, onChange, selectedOption, background, relative }) {
 	return (
 		<Listbox value={selectedOption.value} onChange={onChange}>
 			<div className="relative">
@@ -15,7 +15,12 @@ export default function StyledListBox({ options, onChange, selectedOption, backg
 					{selectedOption.template}
 					<SelectorIcon className="w-4 h-4 text-gray-500" />
 				</Listbox.Button>
-				<Listbox.Options className="overflow-auto bg-white shadow-xl w-full rounded-md mt-1 py-2 absolute z-50 max-h-28">
+				<Listbox.Options
+					className={
+						`overflow-auto bg-white shadow-xl w-full rounded-md mt-1 py-2 ` +
+						`${relative ? "" : "absolute"} z-50 max-h-40`
+					}
+				>
 					{options?.map((option, index) => (
 						<Listbox.Option
 							key={index}

@@ -1,6 +1,7 @@
 import AccountDetailPage from "../pages/AccountDetailPage";
 import BinderDetailPage from "../pages/BinderDetailPage";
 import BindersIndexPage from "../pages/BindersIndexPage";
+import CalendarPage from "../pages/CalendarPage";
 import MemberDetailPage from "../pages/MemberDetailPage";
 import MembersIndexPage from "../pages/MembersIndexPage";
 import MobileNav from "./MobileNav";
@@ -82,6 +83,9 @@ export default function Content() {
 					</Route>
 					<Route path="/permissions" exact>
 						<RolesIndexPage />
+					</Route>
+					<Route path="/calendar" exact>
+						<CalendarPage />
 					</Route>
 				</div>
 				<div className="h-12 md:h-0"></div>

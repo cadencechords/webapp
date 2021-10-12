@@ -49,7 +49,6 @@ export default function RoleDetailPage() {
 			let permission = permissions.find((permission) => permission.name === permissionName);
 			updatedRolePermissions.push(permission);
 		} else {
-			console.log("Removing permission");
 			updatedRolePermissions = updatedRolePermissions.filter(
 				(permission) => permission.name !== permissionName
 			);

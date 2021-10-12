@@ -14,7 +14,7 @@
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
     "chord-transposer": "^3.0.1",
-    "dayjs": "^1.10.5",
+    "dayjs": "^1.10.7",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",

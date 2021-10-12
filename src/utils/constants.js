@@ -22,3 +22,8 @@ export const ADD_ROLES = "Add roles";
 export const EDIT_ROLES = "Edit roles";
 export const DELETE_ROLES = "Delete roles";
 export const ASSIGN_ROLES = "Assign roles";
+
+export const VIEW_EVENTS = "View events";
+export const EDIT_EVENTS = "Edit events";
+export const ADD_EVENTS = "Add events";
+export const DELETE_EVENTS = "Delete events";

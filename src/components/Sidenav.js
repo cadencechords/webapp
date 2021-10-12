@@ -1,13 +1,15 @@
+import { VIEW_EVENTS, VIEW_ROLES } from "../utils/constants";
 import { selectCurrentMember, selectCurrentTeam } from "../store/authSlice";
 
+import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
 import FolderOpenIcon from "@heroicons/react/outline/FolderOpenIcon";
 import LockClosedIcon from "@heroicons/react/outline/LockClosedIcon";
 import MusicNoteIcon from "@heroicons/react/solid/MusicNoteIcon";
 import SidenavLink from "./SidenavLink";
 import TeamOptionsPopover from "./TeamOptionsPopover";
 import UserGroupIcon from "@heroicons/react/solid/UserGroupIcon";
-import { VIEW_ROLES } from "../utils/constants";
 import ViewGridAddIcon from "@heroicons/react/outline/ViewGridAddIcon";
+import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useSelector } from "react-redux";
 
 export default function Sidenav() {
@@ -15,6 +17,7 @@ export default function Sidenav() {
 
 	const currentTeam = useSelector(selectCurrentTeam);
 	const currentMember = useSelector(selectCurrentMember);
+	const currentSubscription = useSelector(selectCurrentSubscription);
 
 	let currentTeamCard = null;
 	if (currentTeam) {
@@ -37,8 +40,14 @@ export default function Sidenav() {
 						text="Team members"
 						to="/members"
 						icon={<UserGroupIcon className={iconClasses} />}
-						clas
 					/>
+					{currentSubscription?.isPro && currentMember?.can(VIEW_EVENTS) && (
+						<SidenavLink
+							text="Calendar"
+							to="/calendar"
+							icon={<CalendarIcon className={iconClasses} />}
+						/>
+					)}
 					{currentMember.can(VIEW_ROLES) && (
 						<>
 							<hr className="my-4" />

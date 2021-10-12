@@ -11,7 +11,7 @@ export default class TeamApi {
 	}
 
 	static createOne(newTeam) {
-		let teamParams = { name: newTeam.name };
+		let teamParams = { name: newTeam.name, plan: newTeam.plan };
 
 		return axios.post(process.env.REACT_APP_API_URL + "/teams", teamParams, {
 			headers: constructAuthHeaders(),

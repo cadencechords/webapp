@@ -12,12 +12,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 import CenteredPage from "./CenteredPage";
 import Content from "./Content";
+import CustomerPortalSessionGeneratorPage from "../pages/CustomerPortalSessionGeneratorPage";
 import EditorWorkbenchPage from "../pages/EditorWorkbenchPage";
 import PageLoading from "./PageLoading";
 import SetPresenterPage from "../pages/SetPresenterPage";
 import SongPresenterPage from "../pages/SongPresenterPage";
 import TeamApi from "../api/TeamApi";
 import UserApi from "../api/UserApi";
+import { setSubscription } from "../store/subscriptionSlice";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
 
@@ -55,6 +57,7 @@ export default function SecuredRoutes() {
 			try {
 				let { data } = await TeamApi.getCurrentTeam();
 				dispatch(setCurrentTeam(data.team));
+				dispatch(setSubscription(data.subscription));
 
 				let membershipResponse = await UserApi.getTeamMembership();
 				dispatch(
@@ -81,6 +84,9 @@ export default function SecuredRoutes() {
 					</Route>
 					<Route path="/sets/:id/present" exact>
 						<SetPresenterPage />
+					</Route>
+					<Route path="/customer_portal_session" exact>
+						<CustomerPortalSessionGeneratorPage />
 					</Route>
 					<Route path="/">
 						<Content />

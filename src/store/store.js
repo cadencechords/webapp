@@ -1,8 +1,9 @@
-import { configureStore } from "@reduxjs/toolkit";
 import alertReducer from "./alertSlice";
 import authReducer from "./authSlice";
+import { configureStore } from "@reduxjs/toolkit";
 import editorReducer from "./editorSlice";
 import presenterReducer from "./presenterSlice";
+import subscriptionReducer from "./subscriptionSlice";
 
 export default configureStore({
 	reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
 		editor: editorReducer,
 		alert: alertReducer,
 		presenter: presenterReducer,
+		subscription: subscriptionReducer,
 	},
 });

@@ -14,6 +14,8 @@ export default function Button({
 	onKeyUp,
 	style,
 	tabIndex,
+	onFocus,
+	onBlur,
 }) {
 	let defaultClasses = ` outline-none focus:outline-none transition-colors text-sm ${
 		className ? className : ""
@@ -54,6 +56,8 @@ export default function Button({
 			onKeyUp={onKeyUp}
 			style={style}
 			tabIndex={tabIndex}
+			onFocus={onFocus?.()}
+			onBlur={onBlur?.()}
 		>
 			{loading ? <PulseLoader color={loadingColor} size={8} /> : children}
 		</button>
@@ -95,10 +99,10 @@ export const BACKGROUND_COLORS = {
 	red: "bg-red-600 hover:bg-red-800 focus:bg-red-800",
 	blue: "bg-blue-600 hover:bg-blue-800 focus:bg-blue-800",
 	green: "bg-green-600 hover:bg-green-800 focus:bg-green-800",
-	yellow: "bg-yellow-600 hover:bg-yellow-800 focus:bg-yellow-800",
+	yellow: "bg-yellow-400 hover:bg-yellow-600 focus:bg-yellow-600",
 	indigo: "bg-indigo-600 hover:bg-indigo-800 focus:bg-indigo-800",
 	purple: "bg-purple-600 hover:bg-purple-800 focus:bg-purple-800",
-	pink: "bg-pink-600 hover:bg-pink-800 focus:bg-pink-800",
+	pink: "bg-pink-500 hover:bg-pink-700 focus:bg-pink-700",
 	gray: "bg-gray-600 hover:bg-gray-800 focus:bg-gray-800",
 	black: "bg-black",
 	white: "bg-white",

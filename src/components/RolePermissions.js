@@ -190,6 +190,38 @@ export default function RolePermissions({ role, permissions, onPermissionToggled
 					onChange={(checkedValue) => handlePermissionToggled("Remove members", checkedValue)}
 				/>
 			</div>
+
+			<SectionTitle title="Event permissions" />
+			<div>
+				<Permission
+					checkable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+					checked={isPermissionEnabled("Add events")}
+					name="Add events"
+					description="User can add events to the calendar"
+					onChange={(checkedValue) => handlePermissionToggled("Add events", checkedValue)}
+				/>
+				<Permission
+					checkable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+					checked={isPermissionEnabled("Edit events")}
+					name="Edit events"
+					description="User can edit existing events on the calendar"
+					onChange={(checkedValue) => handlePermissionToggled("Edit events", checkedValue)}
+				/>
+				<Permission
+					checkable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+					checked={isPermissionEnabled("Delete events")}
+					name="Delete events"
+					description="User can delete/cancel events on the calendar"
+					onChange={(checkedValue) => handlePermissionToggled("Delete events", checkedValue)}
+				/>
+				<Permission
+					checkable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+					checked={isPermissionEnabled("View events")}
+					name="View events"
+					description="User can view events on the calendar"
+					onChange={(checkedValue) => handlePermissionToggled("View events", checkedValue)}
+				/>
+			</div>
 		</div>
 	);
 }
