@@ -39,6 +39,9 @@ export default function SecuredRoutes() {
 				try {
 					let { data } = await UserApi.getCurrentUser();
 					dispatch(setCurrentUser(data));
+
+					if (!data.timezone) saveTimeZone();
+
 					if (!teamId) {
 						router.push("/login/teams");
 					} else {
@@ -71,6 +74,13 @@ export default function SecuredRoutes() {
 			}
 		}
 	}, [hasCredentials, router, teamId, dispatch]);
+
+	async function saveTimeZone() {
+		let currentTimeZone = Intl?.DateTimeFormat().resolvedOptions().timeZone;
+		if (currentTimeZone) {
+			await UserApi.updateCurrentUser({ timezone: currentTimeZone });
+		}
+	}
 
 	if (currentUser && currentTeam) {
 		return (

@@ -1,4 +1,8 @@
+import AccountBillingPage from "../pages/AccountBillingPage";
 import AccountDetailPage from "../pages/AccountDetailPage";
+import AccountGeneralSettingsPage from "../pages/AccountGeneralSettingsPage";
+import AccountNotificationSettingsPage from "../pages/AccountNotificationSettingsPage";
+import AccountProfilePage from "../pages/AccountProfilePage";
 import BinderDetailPage from "../pages/BinderDetailPage";
 import BindersIndexPage from "../pages/BindersIndexPage";
 import CalendarPage from "../pages/CalendarPage";
@@ -9,7 +13,6 @@ import Navbar from "./Navbar";
 import OnsongImportPage from "../pages/OnsongImportPage";
 import PcoRedirectPage from "../pages/PcoRedirectPage";
 import PcoSongsIndexPage from "../pages/PcoSongsIndexPage";
-import PersonalDetails from "./PersonalDetails";
 import RoleDetailPage from "../pages/RoleDetailPage";
 import RolesIndexPage from "../pages/RolesIndexPage";
 import { Route } from "react-router-dom";
@@ -60,11 +63,20 @@ export default function Content() {
 					<Route path="/sets/:id" exact>
 						<SetlistDetailPage />
 					</Route>
-					<Route path="/account/personal" exact>
-						<PersonalDetails />
-					</Route>
 					<Route path="/account" exact>
 						<AccountDetailPage />
+					</Route>
+					<Route path="/account/settings" exact>
+						<AccountGeneralSettingsPage />
+					</Route>
+					<Route path="/account/profile" exact>
+						<AccountProfilePage />
+					</Route>
+					<Route path="/account/notifications" exact>
+						<AccountNotificationSettingsPage />
+					</Route>
+					<Route path="/account/billing" exact>
+						<AccountBillingPage />
 					</Route>
 					<Route path="/members/:id" exact>
 						<MemberDetailPage />

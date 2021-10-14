@@ -1,10 +1,11 @@
-import { useDispatch } from "react-redux";
-import StyledPopover from "./StyledPopover";
 import { logOut, selectCurrentUser } from "../store/authSlice";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
+
 import Button from "./Button";
+import { Link } from "react-router-dom";
 import ProfilePicture from "./ProfilePicture";
+import StyledPopover from "./StyledPopover";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
 
 export default function AccountOptionsPopover() {
@@ -23,9 +24,14 @@ export default function AccountOptionsPopover() {
 		<div className="mr-5">
 			<StyledPopover button={button} position="bottom-start">
 				<div className="w-60">
-					<Link to="/account">
+					<Link to="/account/settings" className="hidden lg:block">
 						<Button variant="open" color="black" full>
-							<div className="h-8 flex-center">Settings</div>
+							<div className="h-8 flex-center">Account</div>
+						</Button>
+					</Link>
+					<Link to="/account" className="lg:hidden">
+						<Button variant="open" color="black" full>
+							<div className="h-8 flex-center">Account</div>
 						</Button>
 					</Link>
 					<hr />

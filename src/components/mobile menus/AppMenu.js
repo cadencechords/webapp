@@ -19,7 +19,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 			<Link to="/binders">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">
-						<FolderOpenIcon className="mr-4 h-5" />
+						<FolderOpenIcon className="mr-4 w-5 h-5" />
 						Binders
 					</div>
 				</MobileMenuButton>
@@ -28,7 +28,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 			<Link to="/songs">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">
-						<MusicNoteIcon className="mr-4 h-5" />
+						<MusicNoteIcon className="mr-4 w-5 h-5" />
 						Songs
 					</div>
 				</MobileMenuButton>
@@ -37,7 +37,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 			<Link to="/sets">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">
-						<ViewGridAddIcon className="mr-4 h-5" />
+						<ViewGridAddIcon className="mr-4 w-5 h-5" />
 						Sets
 					</div>
 				</MobileMenuButton>
@@ -46,7 +46,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 			<Link to="/members">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">
-						<UserGroupIcon className="mr-4 h-5" />
+						<UserGroupIcon className="mr-4 w-5 h-5" />
 						Team members
 					</div>
 				</MobileMenuButton>

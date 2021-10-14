@@ -11,12 +11,7 @@ export default class UserApi {
 	}
 
 	static updateCurrentUser(updates) {
-		let allowedParams = {};
-
-		if (updates.firstName) allowedParams.first_name = updates.firstName;
-		if (updates.lastName) allowedParams.last_name = updates.lastName;
-
-		return axios.put(`${USERS_URL}/me`, allowedParams, { headers: constructAuthHeaders() });
+		return axios.put(`${USERS_URL}/me`, updates, { headers: constructAuthHeaders() });
 	}
 
 	static getTeamMembership() {
