@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
-import ArrowNarrowRightIcon from "@heroicons/react/outline/ArrowNarrowRightIcon";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
 import PageLoading from "../components/PageLoading";
@@ -10,14 +8,7 @@ import TeamApi from "../api/TeamApi";
 import WellInput from "../components/inputs/WellInput";
 import { hasName } from "../utils/model";
 
-export default function EventMembers({
-	event,
-	onMembersLoaded,
-	members,
-	onFieldChange,
-	onPreviousClick,
-	onNextClick,
-}) {
+export default function EventMembers({ event, onMembersLoaded, members, onFieldChange }) {
 	const [loading, setLoading] = useState(false);
 	const [query, setQuery] = useState("");
 	const [filteredMembers, setFilteredMembers] = useState(members);
@@ -115,21 +106,6 @@ export default function EventMembers({
 							</div>
 						</div>
 					))}
-				</div>
-				<div className="flex-between">
-					<Button
-						variant="open"
-						color="gray"
-						className="flex items-center gap-2"
-						onClick={onPreviousClick}
-					>
-						<ArrowNarrowLeftIcon className="w-4 h-4" />
-						Details
-					</Button>
-					<Button className="flex items-center gap-2" onClick={onNextClick}>
-						Notifications
-						<ArrowNarrowRightIcon className="w-4 h-4" />
-					</Button>
 				</div>
 			</div>
 		);
