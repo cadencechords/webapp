@@ -1,13 +1,13 @@
-import { useHistory } from "react-router-dom";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
-import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import Button from "./Button";
+import PencilIcon from "@heroicons/react/outline/PencilIcon";
+import { useHistory } from "react-router-dom";
 
 export default function EditorMobileTopNav({ song, onShowEditorDrawer }) {
 	const router = useHistory();
 
 	const handleGoBack = () => {
-		router.push(`/songs/${song.id}`);
+		router.goBack();
 	};
 
 	if (song) {

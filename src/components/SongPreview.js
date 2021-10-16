@@ -1,6 +1,6 @@
 import { toHtml, transpose as transposeSong } from "../utils/SongUtils";
 
-export default function SongPreview({ song, transpose }) {
+export default function SongPreview({ song, transpose, onDoubleClick }) {
 	let formatStyles = { fontFamily: song.format.font, fontSize: song.format.font_size };
 
 	let content = song.content;
@@ -13,6 +13,7 @@ export default function SongPreview({ song, transpose }) {
 		<div
 			className="rounded-md whitespace-pre-wrap resize-none shadow-md p-4 border border-gray-300"
 			style={formatStyles}
+			onDoubleClick={onDoubleClick}
 		>
 			{toHtml(content, {
 				boldChords: song.format.bold_chords,

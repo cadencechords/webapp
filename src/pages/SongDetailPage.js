@@ -79,8 +79,10 @@ export default function SongDetailPage() {
 	}
 
 	const handleOpenInEditor = () => {
-		dispatch(setSongBeingEdited(song));
-		router.push("/editor");
+		if (currentMember.can(EDIT_SONGS)) {
+			dispatch(setSongBeingEdited(song));
+			router.push("/editor");
+		}
 	};
 
 	const handleUpdate = (field, value) => {
@@ -283,7 +285,7 @@ export default function SongDetailPage() {
 						Chords
 					</Button> */}
 				</div>
-				<SongPreview song={song} transpose={isTransposing} />
+				<SongPreview song={song} transpose={isTransposing} onDoubleClick={handleOpenInEditor} />
 			</div>
 			<div className="lg:col-span-1 lg:pl-5 pl-2 col-span-4">
 				<div className="border-b py-6 mt-1">

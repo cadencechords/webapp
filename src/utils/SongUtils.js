@@ -1,5 +1,6 @@
 import * as Transposer from "chord-transposer";
 
+import ChordSheetJS from "chordsheetjs";
 import ReactDOMServer from "react-dom/server";
 import TextAutosize from "../components/TextAutosize";
 
@@ -66,7 +67,7 @@ export function toHtmlString(songText) {
 
 export function toHtml(songText, formatOptions, whitespacePreWrap = true) {
 	if (songText) {
-		let linesOfSong = songText.split(/\r\n|\r|\n/);
+		let linesOfSong = formatChordPro(songText).split(/\r\n|\r|\n/);
 
 		if (!formatOptions.boldChords && !formatOptions.italicChords) {
 			return linesOfSong.map((line, index) => {
@@ -253,8 +254,10 @@ export function hasAnyKeysSet(song) {
 }
 
 export function html(song) {
+	let songCopy = { ...song };
 	if (song?.content && song?.format) {
-		let content = song.show_transposed ? transpose(song) : song.content;
+		songCopy.content = formatChordPro(songCopy.content);
+		let content = songCopy.show_transposed ? transpose(songCopy) : songCopy.content;
 		let linesOfSong = content.split(/\r\n|\r|\n/);
 
 		let htmlLines = linesOfSong.map((line, index) => {
@@ -304,4 +307,20 @@ function determineClassesForChordLine(format) {
 
 function determineClassesForLyricLine(format) {
 	return "";
+}
+
+export function pro(content) {
+	const parser = new ChordSheetJS.ChordProParser();
+	const song = parser.parse(content);
+
+	const formatter = new ChordSheetJS.TextFormatter();
+	console.log(formatter.format(song));
+}
+
+function formatChordPro(content) {
+	const parser = new ChordSheetJS.ChordProParser();
+	const song = parser.parse(content);
+
+	const formatter = new ChordSheetJS.TextFormatter();
+	return formatter.format(song);
 }

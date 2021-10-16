@@ -1,11 +1,17 @@
 import { getHalfStepHigher, getHalfStepLower, hasAnyKeysSet } from "../utils/SongUtils";
+import { useDispatch, useSelector } from "react-redux";
 
 import AdjustmentsIcon from "@heroicons/react/outline/AdjustmentsIcon";
 import Button from "./Button";
 import Drawer from "./Drawer";
+import { EDIT_SONGS } from "../utils/constants";
 import MinusIcon from "@heroicons/react/outline/MinusIcon";
+import PencilIcon from "@heroicons/react/solid/PencilIcon";
 import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import Toggle from "./Toggle";
+import { selectCurrentMember } from "../store/authSlice";
+import { setSongBeingEdited } from "../store/editorSlice";
+import { useHistory } from "react-router-dom";
 import { useState } from "react";
 
 export default function PerformSetlistSongAdjustmentsDrawer({
@@ -14,6 +20,9 @@ export default function PerformSetlistSongAdjustmentsDrawer({
 	onSongUpdate,
 }) {
 	const [open, setOpen] = useState(false);
+	const currentMember = useSelector(selectCurrentMember);
+	const dispatch = useDispatch();
+	const router = useHistory();
 
 	function handleTransposeUpHalfStep() {
 		onSongUpdate("transposed_key", getHalfStepHigher(song.transposed_key || song.original_key));
@@ -21,6 +30,11 @@ export default function PerformSetlistSongAdjustmentsDrawer({
 
 	function handleTransposeDownHalfStep() {
 		onSongUpdate("transposed_key", getHalfStepLower(song.transposed_key || song.original_key));
+	}
+
+	function handleOpenInEditor() {
+		dispatch(setSongBeingEdited(song));
+		router.push("/editor");
 	}
 
 	return (
@@ -69,6 +83,21 @@ export default function PerformSetlistSongAdjustmentsDrawer({
 								<MinusIcon className="w-5 h-5" />
 							</Button>
 						</div>
+					)}
+					{currentMember.can(EDIT_SONGS) && (
+						<>
+							<hr className="my-8" />
+							<Button
+								variant="outlined"
+								color="black"
+								full
+								className="flex-center"
+								onClick={handleOpenInEditor}
+							>
+								<PencilIcon className="w-4 h-4 text-blue-600 mr-2" />
+								Edit
+							</Button>
+						</>
 					)}
 				</div>
 			</Drawer>
