@@ -1,7 +1,7 @@
-import { Switch } from "@headlessui/react";
 import { BACKGROUND_COLORS } from "./Button";
+import { Switch } from "@headlessui/react";
 
-export default function Toggle({ enabled, onChange, label, color, spacing, disabled }) {
+export default function Toggle({ enabled, onChange, label, color, spacing }) {
 	return (
 		<Switch.Group>
 			<div className={`flex items-center ${SPACING[spacing]}`}>

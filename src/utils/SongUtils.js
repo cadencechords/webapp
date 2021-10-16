@@ -1,6 +1,7 @@
 import * as Transposer from "chord-transposer";
 
 import ReactDOMServer from "react-dom/server";
+import TextAutosize from "../components/TextAutosize";
 
 export function isChordLine(line) {
 	if (line) {
@@ -249,4 +250,58 @@ export function getHalfStepLower(key) {
 
 export function hasAnyKeysSet(song) {
 	return song.original_key || song.transposed_key;
+}
+
+export function html(song) {
+	if (song?.content && song?.format) {
+		let content = song.show_transposed ? transpose(song) : song.content;
+		let linesOfSong = content.split(/\r\n|\r|\n/);
+
+		let htmlLines = linesOfSong.map((line, index) => {
+			if (isNewLine(line)) return <br key={index} />;
+			else {
+				let lineClasses = determineClassesForLine(line, song.format);
+				return (
+					<p key={index} className={lineClasses}>
+						{line}
+					</p>
+				);
+			}
+		});
+		return (
+			<div style={{ fontFamily: song.format.font }}>
+				<TextAutosize autosize={song.format.autosize} fontSize={song.format.font_size}>
+					{htmlLines}
+				</TextAutosize>
+			</div>
+		);
+	}
+
+	return "";
+}
+
+function determineClassesForLine(line, format) {
+	let baseClasses = format.autosize ? "whitespace-pre" : "whitespace-pre-wrap";
+	if (isChordLine(line)) {
+		return `${baseClasses} ${determineClassesForChordLine(format)}`;
+	} else {
+		return `${baseClasses} ${determineClassesForLyricLine(format)}`;
+	}
+}
+
+function determineClassesForChordLine(format) {
+	if (format.chords_hidden) {
+		return "hidden";
+	}
+
+	let classes = "";
+
+	if (format.bold_chords) classes += " font-semibold";
+	if (format.italic_chords) classes += " italic";
+
+	return classes;
+}
+
+function determineClassesForLyricLine(format) {
+	return "";
 }

@@ -123,7 +123,7 @@ export default function SetlistDetailPage() {
 						</Button>
 					</Alert>
 				)}
-				<div className="grid md:grid-cols-3 grid-cols-1 gap-5 w-full py-2">
+				<div className="grid md:grid-cols-3 grid-cols-1 gap-y-5 md:gap-5 w-full py-2">
 					<div className="col-span-1">
 						<PageTitle
 							title={setlist.name}
@@ -137,27 +137,52 @@ export default function SetlistDetailPage() {
 							<CalendarIcon className="h-4 w-4 mr-2" />
 							<span className="leading-6 h-6">{toShortDate(setlist.scheduled_date)}</span>
 						</div>
-						<Button
-							variant="outlined"
-							color="black"
-							onClick={handleOpenInPresenter}
-							className="flex-center mb-2"
-							size="xs"
-						>
-							<PlayIcon className="h-4 w-4 text-purple-700 mr-1" /> Present
-						</Button>
-						{!publicSetlist && currentMember.can(PUBLISH_SETLISTS) && (
+						<div className="md:block flex gap-4 w-full">
 							<Button
 								variant="outlined"
 								color="black"
-								className="flex-center"
-								size="xs"
-								onClick={() => setShowPublishSetlistDialog(true)}
+								onClick={handleOpenInPresenter}
+								className="flex-center mb-2 md:hidden"
+								size="md"
+								full
 							>
-								<GlobeIcon className="h-4 w-4 mr-1 text-blue-700" />
-								Publish
+								<PlayIcon className="h-5 w-5  text-purple-700 mr-4" /> Perform
 							</Button>
-						)}
+							<Button
+								variant="outlined"
+								color="black"
+								onClick={handleOpenInPresenter}
+								className="mb-2 hidden md:flex justify-center items-center"
+								size="xs"
+							>
+								<PlayIcon className="h-4 w-4 text-purple-700 mr-1" /> Perform
+							</Button>
+							{!publicSetlist && currentMember.can(PUBLISH_SETLISTS) && (
+								<>
+									<Button
+										variant="outlined"
+										color="black"
+										className="mb-2 hidden md:flex justify-center items-center"
+										size="xs"
+										onClick={() => setShowPublishSetlistDialog(true)}
+									>
+										<GlobeIcon className="h-4 w-4 mr-1 text-blue-700" />
+										Publish
+									</Button>
+									<Button
+										variant="outlined"
+										color="black"
+										className="flex-center mb-2 md:hidden"
+										size="md"
+										full
+										onClick={() => setShowPublishSetlistDialog(true)}
+									>
+										<GlobeIcon className="h-5 w-5 mr-4 text-blue-700" />
+										Publish
+									</Button>
+								</>
+							)}
+						</div>
 					</div>
 					<div className="col-span-2">
 						<SetlistSongsList
