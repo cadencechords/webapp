@@ -5,7 +5,6 @@ import AccountNotificationSettingsPage from "../pages/AccountNotificationSetting
 import AccountProfilePage from "../pages/AccountProfilePage";
 import BinderDetailPage from "../pages/BinderDetailPage";
 import BindersIndexPage from "../pages/BindersIndexPage";
-import CalendarPage from "../pages/CalendarPage";
 import MemberDetailPage from "../pages/MemberDetailPage";
 import MembersIndexPage from "../pages/MembersIndexPage";
 import MobileNav from "./MobileNav";
@@ -24,6 +23,9 @@ import SongDetailPage from "../pages/SongDetailPage";
 import SongImportSourcesIndexPage from "../pages/SongImportSourcesIndexPage";
 import SongsIndexPage from "../pages/SongsIndexPage";
 import TeamDetailPage from "../pages/TeamDetailPage";
+import { lazy } from "react";
+
+const CalendarPage = lazy(() => import("../pages/CalendarPage"));
 
 export default function Content() {
 	return (
@@ -96,9 +98,7 @@ export default function Content() {
 					<Route path="/permissions" exact>
 						<RolesIndexPage />
 					</Route>
-					<Route path="/calendar" exact>
-						<CalendarPage />
-					</Route>
+					<Route path="/calendar" exact component={CalendarPage} />
 				</div>
 				<div className="h-12 md:h-0"></div>
 			</div>

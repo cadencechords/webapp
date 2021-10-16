@@ -1,4 +1,5 @@
 import { Route, Switch } from "react-router-dom";
+import { lazy, useEffect } from "react";
 import {
 	selectCurrentTeam,
 	selectCurrentUser,
@@ -12,16 +13,18 @@ import { useDispatch, useSelector } from "react-redux";
 
 import CenteredPage from "./CenteredPage";
 import Content from "./Content";
-import CustomerPortalSessionGeneratorPage from "../pages/CustomerPortalSessionGeneratorPage";
-import EditorWorkbenchPage from "../pages/EditorWorkbenchPage";
 import PageLoading from "./PageLoading";
-import SetPresenterPage from "../pages/SetPresenterPage";
-import SongPresenterPage from "../pages/SongPresenterPage";
 import TeamApi from "../api/TeamApi";
 import UserApi from "../api/UserApi";
 import { setSubscription } from "../store/subscriptionSlice";
-import { useEffect } from "react";
 import { useHistory } from "react-router";
+
+const EditorWorkbenchPage = lazy(() => import("../pages/EditorWorkbenchPage"));
+const CustomerPortalSessionGeneratorPage = lazy(() =>
+	import("../pages/CustomerPortalSessionGeneratorPage")
+);
+const SetPresenterPage = lazy(() => import("../pages/SetPresenterPage"));
+const SongPresenterPage = lazy(() => import("../pages/SongPresenterPage"));
 
 export default function SecuredRoutes() {
 	const dispatch = useDispatch();
@@ -84,25 +87,19 @@ export default function SecuredRoutes() {
 
 	if (currentUser && currentTeam) {
 		return (
-			<>
-				<Switch>
-					<Route path="/editor" exact>
-						<EditorWorkbenchPage />
-					</Route>
-					<Route path="/songs/:id/present" exact>
-						<SongPresenterPage />
-					</Route>
-					<Route path="/sets/:id/present" exact>
-						<SetPresenterPage />
-					</Route>
-					<Route path="/customer_portal_session" exact>
-						<CustomerPortalSessionGeneratorPage />
-					</Route>
-					<Route path="/">
-						<Content />
-					</Route>
-				</Switch>
-			</>
+			<Switch>
+				<Route path="/editor" exact component={EditorWorkbenchPage} />
+				<Route path="/songs/:id/present" exact component={SongPresenterPage} />
+				<Route path="/sets/:id/present" exact component={SetPresenterPage} />
+				<Route
+					path="/customer_portal_session"
+					exact
+					component={CustomerPortalSessionGeneratorPage}
+				/>
+				<Route path="/">
+					<Content />
+				</Route>
+			</Switch>
 		);
 	} else {
 		return (

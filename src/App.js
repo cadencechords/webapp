@@ -1,33 +1,37 @@
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Suspense, lazy } from "react";
 
-import ClaimInvitationPage from "./pages/ClaimInvitationPage";
+import CenteredPage from "./components/CenteredPage";
 import CreateNewTeamPage from "./pages/CreateNewTeamPage";
-import EmailConfirmedPage from "./pages/EmailConfirmedPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import InvitationSignUpPage from "./pages/InvitationSignUpPage";
-import LoginPage from "./pages/LoginPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
+import PageLoading from "./components/PageLoading";
 import SecuredRoutes from "./components/SecuredRoutes";
 import SignUpPage from "./pages/SignUpPage";
-import TeamLoginPage from "./pages/TeamLoginPage";
+
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const TeamLoginPage = lazy(() => import("./pages/TeamLoginPage"));
+const EmailConfirmedPage = lazy(() => import("./pages/EmailConfirmedPage"));
+const ClaimInvitationPage = lazy(() => import("./pages/ClaimInvitationPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const InvitationSignUpPage = lazy(() => import("./pages/InvitationSignUpPage"));
 
 function App() {
 	return (
-		<div>
+		<Suspense
+			fallback={
+				<CenteredPage>
+					<PageLoading>Please wait...</PageLoading>
+				</CenteredPage>
+			}
+		>
 			<Router>
 				<Switch>
-					<Route path="/login" exact>
-						<LoginPage />
-					</Route>
-					<Route path="/login/teams" exact>
-						<TeamLoginPage />
-					</Route>
+					<Route path="/login" exact component={LoginPage} />
+					<Route path="/login/teams" exact component={TeamLoginPage} />
 					<Route path="/login/teams/new" exact>
 						<CreateNewTeamPage />
 					</Route>
-					<Route path="/confirmation" exact>
-						<EmailConfirmedPage />
-					</Route>
+					<Route path="/confirmation" exact component={EmailConfirmedPage} />
 					<Route path="/signup" exact>
 						<SignUpPage />
 					</Route>
@@ -46,7 +50,7 @@ function App() {
 					<SecuredRoutes />
 				</Switch>
 			</Router>
-		</div>
+		</Suspense>
 	);
 }
 
