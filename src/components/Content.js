@@ -5,6 +5,7 @@ import AccountNotificationSettingsPage from "../pages/AccountNotificationSetting
 import AccountProfilePage from "../pages/AccountProfilePage";
 import BinderDetailPage from "../pages/BinderDetailPage";
 import BindersIndexPage from "../pages/BindersIndexPage";
+import DashboardPage from "../pages/DashboardPage";
 import MemberDetailPage from "../pages/MemberDetailPage";
 import MembersIndexPage from "../pages/MembersIndexPage";
 import MobileNav from "./MobileNav";
@@ -35,6 +36,9 @@ export default function Content() {
 			<MobileNav />
 			<div className="md:ml-56 md:px-10 px-2 py-3">
 				<div className="container mx-auto">
+					<Route path="/" exact>
+						<DashboardPage />
+					</Route>
 					<Route path="/binders/:id" exact>
 						<BinderDetailPage />
 					</Route>

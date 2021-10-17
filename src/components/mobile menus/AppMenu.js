@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import MobileMenuButton from "../buttons/MobileMenuButton";
 import MusicNoteIcon from "@heroicons/react/solid/MusicNoteIcon";
 import StyledDialog from "../StyledDialog";
+import TemplateIcon from "@heroicons/react/solid/TemplateIcon";
 import UserGroupIcon from "@heroicons/react/solid/UserGroupIcon";
 import { VIEW_EVENTS } from "../../utils/constants";
 import ViewGridAddIcon from "@heroicons/react/outline/ViewGridAddIcon";
@@ -16,6 +17,15 @@ export default function AppMenu({ onCloseDialog, open }) {
 	const currentMember = useSelector(selectCurrentMember);
 	return (
 		<StyledDialog onCloseDialog={onCloseDialog} open={open} title="Menu" fullscreen={false}>
+			<Link to="/">
+				<MobileMenuButton full onClick={onCloseDialog}>
+					<div className="flex items-center text-gray-700">
+						<TemplateIcon className="mr-4 w-5 h-5" />
+						Dashboard
+					</div>
+				</MobileMenuButton>
+			</Link>
+
 			<Link to="/binders">
 				<MobileMenuButton full onClick={onCloseDialog}>
 					<div className="flex items-center text-gray-700">

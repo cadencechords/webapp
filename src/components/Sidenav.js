@@ -7,6 +7,7 @@ import LockClosedIcon from "@heroicons/react/outline/LockClosedIcon";
 import MusicNoteIcon from "@heroicons/react/solid/MusicNoteIcon";
 import SidenavLink from "./SidenavLink";
 import TeamOptionsPopover from "./TeamOptionsPopover";
+import TemplateIcon from "@heroicons/react/solid/TemplateIcon";
 import UserGroupIcon from "@heroicons/react/solid/UserGroupIcon";
 import ViewGridAddIcon from "@heroicons/react/outline/ViewGridAddIcon";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
@@ -29,6 +30,12 @@ export default function Sidenav() {
 			<div className="hidden md:flex flex-col">
 				{currentTeamCard}
 				<div className="px-2 flex flex-col py-3 ">
+					<SidenavLink
+						text="Dashboard"
+						to="/"
+						icon={<TemplateIcon className={iconClasses} />}
+						exact
+					/>
 					<SidenavLink
 						text="Binders"
 						to="/binders"

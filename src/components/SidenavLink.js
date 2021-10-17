@@ -1,9 +1,11 @@
 import { Link, useRouteMatch } from "react-router-dom";
+
 import PropTypes from "prop-types";
 
-export default function SidenavLink({ text, to, icon }) {
+export default function SidenavLink({ text, to, icon, exact }) {
 	let isCurrentRoute = useRouteMatch({
 		path: to,
+		exact: exact,
 	});
 
 	return (
@@ -21,4 +23,8 @@ export default function SidenavLink({ text, to, icon }) {
 SidenavLink.propTypes = {
 	to: PropTypes.string.isRequired,
 	text: PropTypes.string.isRequired,
+};
+
+SidenavLink.defaultProps = {
+	exact: false,
 };
