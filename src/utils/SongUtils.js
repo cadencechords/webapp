@@ -317,7 +317,7 @@ export function pro(content) {
 	console.log(formatter.format(song));
 }
 
-function formatChordPro(content) {
+export function formatChordPro(content) {
 	const parser = new ChordSheetJS.ChordProParser();
 	const song = parser.parse(content);
 

@@ -1,13 +1,14 @@
-import { Page, Text, View, Document, Font } from "@react-pdf/renderer";
-import { isNewLine, isChordLine } from "./SongUtils";
-import RobotoRegular from "../fonts/RobotoMono-Regular.ttf";
-import RobotoBoldItalic from "../fonts/RobotoMono-BoldItalic.ttf";
-import RobotoBold from "../fonts/RobotoMono-Bold.ttf";
-import RobotoItalic from "../fonts/RobotoMono-Italic.ttf";
-import OpenSansRegular from "../fonts/OpenSans-Regular.ttf";
+import { Document, Font, Page, Text, View } from "@react-pdf/renderer";
+import { formatChordPro, isChordLine, isNewLine } from "./SongUtils";
+
 import OpenSansBold from "../fonts/OpenSans-Bold.ttf";
 import OpenSansBoldItalic from "../fonts/OpenSans-BoldItalic.ttf";
 import OpenSansItalic from "../fonts/OpenSans-Italic.ttf";
+import OpenSansRegular from "../fonts/OpenSans-Regular.ttf";
+import RobotoBold from "../fonts/RobotoMono-Bold.ttf";
+import RobotoBoldItalic from "../fonts/RobotoMono-BoldItalic.ttf";
+import RobotoItalic from "../fonts/RobotoMono-Italic.ttf";
+import RobotoRegular from "../fonts/RobotoMono-Regular.ttf";
 
 export function toPdf(song, showChords) {
 	let pdfLines = "";
@@ -103,7 +104,7 @@ function constructChordStyles(format) {
 
 function constructPdfLines(song, showChords) {
 	let chordStyles = constructChordStyles(song.format);
-	let linesOfSong = song.content.split(/\r\n|\r|\n/);
+	let linesOfSong = formatChordPro(song.content).split(/\r\n|\r|\n/);
 	let pdfLines = linesOfSong.map((line, index) => {
 		if (isNewLine(line)) {
 			return <Text key={index}> &nbsp;</Text>;
