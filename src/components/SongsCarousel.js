@@ -60,7 +60,7 @@ export default function SongsCarousel({ songs, index, onIndexChange }) {
 				items={buildTemplates()}
 				onSlideChanged={(e) => onIndexChange(e.slide)}
 				activeIndex={index}
-				swipeDelta="400px"
+				swipeDelta={400}
 			/>
 
 			<PerformSetlistSongAdjustmentsDrawer
