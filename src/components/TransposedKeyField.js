@@ -1,4 +1,4 @@
-import { getHalfStepHigher, getHalfStepLower } from "../utils/SongUtils";
+import { getHalfStepHigher, getHalfStepLower } from "../utils/songUtils";
 
 import Button from "./Button";
 import DetailTitle from "./DetailTitle";

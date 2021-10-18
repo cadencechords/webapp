@@ -1,6 +1,6 @@
+import AdjustmentsIcon from "@heroicons/react/outline/AdjustmentsIcon";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import Button from "./Button";
-import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import { useHistory } from "react-router-dom";
 
 export default function EditorMobileTopNav({ song, onShowEditorDrawer }) {
@@ -21,7 +21,7 @@ export default function EditorMobileTopNav({ song, onShowEditorDrawer }) {
 						{song.name}
 					</h1>
 					<Button variant="open" color="gray" onClick={onShowEditorDrawer}>
-						<PencilIcon className="h-5 w-5" />
+						<AdjustmentsIcon className="h-5 w-5" />
 					</Button>
 				</div>
 			</nav>

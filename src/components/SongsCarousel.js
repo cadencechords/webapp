@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import AliceCarousel from "react-alice-carousel";
 import PageTitle from "./PageTitle";
 import PerformSetlistSongAdjustmentsDrawer from "./PerformSetlistSongAdjustmentsDrawer";
-import { html } from "../utils/SongUtils";
+import { html } from "../utils/songUtils";
 
 export default function SongsCarousel({ songs, index, onIndexChange }) {
 	const [enrichedSongs, setEnrichedSongs] = useState(songs);
@@ -60,7 +60,10 @@ export default function SongsCarousel({ songs, index, onIndexChange }) {
 				items={buildTemplates()}
 				onSlideChanged={(e) => onIndexChange(e.slide)}
 				activeIndex={index}
-				swipeDelta={40}
+				swipeDelta={50}
+				autoHeight
+				animationDuration={400}
+				keyboardNavigation
 			/>
 
 			<PerformSetlistSongAdjustmentsDrawer

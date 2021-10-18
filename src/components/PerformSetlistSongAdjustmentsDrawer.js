@@ -1,4 +1,4 @@
-import { getHalfStepHigher, getHalfStepLower, hasAnyKeysSet } from "../utils/SongUtils";
+import { getHalfStepHigher, getHalfStepLower, hasAnyKeysSet } from "../utils/songUtils";
 import { useDispatch, useSelector } from "react-redux";
 
 import AdjustmentsIcon from "@heroicons/react/outline/AdjustmentsIcon";

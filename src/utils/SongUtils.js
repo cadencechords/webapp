@@ -265,7 +265,11 @@ export function html(song) {
 			else {
 				let lineClasses = determineClassesForLine(line, song.format);
 				return (
-					<p key={index} className={lineClasses}>
+					<p
+						key={index}
+						className={lineClasses}
+						onDoubleClick={() => console.log("DOUBLE CLICKED")}
+					>
 						{line}
 					</p>
 				);
@@ -285,6 +289,7 @@ export function html(song) {
 
 function determineClassesForLine(line, format) {
 	let baseClasses = format.autosize ? "whitespace-pre" : "whitespace-pre-wrap";
+	baseClasses += " hover:bg-gray-100 cursor-pointer";
 	if (isChordLine(line)) {
 		return `${baseClasses} ${determineClassesForChordLine(format)}`;
 	} else {
@@ -323,4 +328,8 @@ export function formatChordPro(content) {
 
 	const formatter = new ChordSheetJS.TextFormatter();
 	return formatter.format(song);
+}
+
+export function countLines(content) {
+	return content ? content.split(/\r\n|\r|\n/).length : 0;
 }

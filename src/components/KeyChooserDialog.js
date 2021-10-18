@@ -1,9 +1,10 @@
-import StyledDialog from "./StyledDialog";
-import SongKeyButton from "./buttons/SongKeyButton";
+import { parseNote, parseQuality } from "../utils/songUtils";
 import { useEffect, useState } from "react";
-import ButtonSwitch from "./buttons/ButtonSwitch";
+
 import Button from "./Button";
-import { parseNote, parseQuality } from "../utils/SongUtils";
+import ButtonSwitch from "./buttons/ButtonSwitch";
+import SongKeyButton from "./buttons/SongKeyButton";
+import StyledDialog from "./StyledDialog";
 
 export default function KeyChooserDialog({ open, onCloseDialog, currentSongKey, onChange }) {
 	const [keyNote, setKeyNote] = useState(() => {

@@ -1,4 +1,4 @@
-import { getHalfStepHigher, getHalfStepLower, hasAnyKeysSet } from "../utils/SongUtils";
+import { getHalfStepHigher, getHalfStepLower, hasAnyKeysSet } from "../utils/songUtils";
 
 import Button from "./Button";
 import Drawer from "./Drawer";

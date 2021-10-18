@@ -1,65 +1,18 @@
-import ReactQuill from "react-quill";
-import { getFormats, toHtmlString } from "../utils/SongUtils";
-import { useCallback, useEffect, useRef, useState } from "react";
-
-const FORMATTABLE_KEY_CODE = {
-	40: "down arrow",
-	38: "up arrow",
-	13: "enter",
-};
+import { countLines } from "../utils/songUtils";
 
 export default function Editor({ content, onContentChange, formatOptions }) {
-	const [classes] = useState("my-4");
-	const editorRef = useRef();
-
-	const handleFormatSong = useCallback(() => {
-		let songInEditor = editorRef.current.getEditor().getText();
-		let formats = getFormats(songInEditor, formatOptions);
-
-		formats.forEach((format) => {
-			editorRef.current
-				.getEditor()
-				.formatText(format.start, format.length, format.format, format.value);
-		});
-
-		let elements = document.getElementsByClassName("ql-editor");
-
-		elements[0].style.fontFamily = formatOptions.font;
-		elements[0].style.fontSize = formatOptions.font_size + "px";
-	}, [formatOptions]);
-
-	useEffect(() => {
-		handleFormatSong();
-	}, [formatOptions, handleFormatSong]);
-
-	const handleContentChange = (e) => {
-		if (editorRef?.current) {
-			let songInEditor = editorRef.current.getEditor().getText();
-			onContentChange(songInEditor);
-		}
-	};
-
-	const handleKeyUp = (e) => {
-		let keyCode = e.keyCode;
-		if (FORMATTABLE_KEY_CODE[keyCode]) {
-			handleFormatSong();
-		}
-	};
+	const styles = { fontFamily: formatOptions.font, fontSize: `${formatOptions.font_size}px` };
 
 	return (
-		<div className="overflow-x-auto">
-			<ReactQuill
-				theme={null}
-				defaultValue={toHtmlString(content)}
-				ref={editorRef}
-				placeholder="Start typing here"
-				preserveWhitespace
-				onChange={handleContentChange}
-				onBlur={handleFormatSong}
-				className={classes}
-				onKeyUp={handleKeyUp}
-				modules={{ clipboard: { matchVisual: false } }}
-			/>
+		<div className="overflow-x-auto overflow-y-hidden">
+			<textarea
+				className="w-full resize-none outline-none focus:outline-none my-3 overflow-y-hidden"
+				value={content}
+				onChange={(e) => onContentChange(e.target.value)}
+				style={styles}
+				rows={countLines(content) + 3}
+				placeholder="Type your song here"
+			></textarea>
 		</div>
 	);
 }

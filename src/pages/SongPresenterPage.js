@@ -1,5 +1,5 @@
 import { adjustSongBeingPresented, selectSongBeingPresented } from "../store/presenterSlice";
-import { toHtml, transpose } from "../utils/SongUtils";
+import { toHtml, transpose } from "../utils/songUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";

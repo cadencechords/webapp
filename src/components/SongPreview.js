@@ -1,4 +1,4 @@
-import { toHtml, transpose as transposeSong } from "../utils/SongUtils";
+import { toHtml, transpose as transposeSong } from "../utils/songUtils";
 
 export default function SongPreview({ song, transpose, onDoubleClick }) {
 	let formatStyles = { fontFamily: song.format.font, fontSize: song.format.font_size };

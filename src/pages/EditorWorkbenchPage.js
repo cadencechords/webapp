@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import Button from "../components/Button";
-import ChordOptions from "../components/ChordOptions";
 import Editor from "../components/Editor";
 import EditorDrawer from "../components/EditorDrawer";
 import EditorMobileTopNav from "../components/EditorMobileTopNav";
+import EditorOptionsBar from "../components/EditorOptionsBar";
+import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import FormatApi from "../api/FormatApi";
-import LyricOptions from "../components/LyricOptions";
 import PageTitle from "../components/PageTitle";
+import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import SongApi from "../api/SongApi";
+import { html } from "../utils/songUtils";
 import { isEmpty } from "../utils/ObjectUtils";
 import { selectSongBeingEdited } from "../store/editorSlice";
 import { useHistory } from "react-router";
@@ -21,6 +23,7 @@ export default function EditorWorkbenchPage() {
 	const [format, setFormat] = useState({});
 	const [savingUpdates, setSavingUpdates] = useState(false);
 	const [dirty, setDirty] = useState(false);
+	const [showEditor, setShowEditor] = useState(true);
 
 	const [changes, setChanges] = useState({ content: null, format: {} });
 
@@ -80,10 +83,8 @@ export default function EditorWorkbenchPage() {
 	};
 
 	const handleContentChange = (newContent) => {
-		if (newContent !== songBeingEdited.content) {
-			setChanges((currentChanges) => ({ ...currentChanges, content: newContent }));
-			setDirty(true);
-		}
+		setChanges((currentChanges) => ({ ...currentChanges, content: newContent }));
+		setDirty(true);
 	};
 
 	return (
@@ -122,29 +123,52 @@ export default function EditorWorkbenchPage() {
 					</span>
 				</div>
 				<div className="bg-gray-50 py-3 px-5 border-t border-gray-200 border-b sticky top-0">
-					<LyricOptions
-						onAlignmentChange={(newAlignment) => handleFormatChange("alignment", newAlignment)}
-						onFontChange={(newFont) => handleFormatChange("font", newFont)}
-						onFontSizeChange={(newFontSize) => handleFormatChange("font_size", newFontSize)}
-						formatOptions={format}
-					/>
+					<EditorOptionsBar formatOptions={format} onFormatChange={handleFormatChange} />
 				</div>
 			</div>
-			<div className="grid grid-cols-4">
-				<div className="col-span-4 sm:col-span-3 container mx-auto px-10 mb-12 sm:mb-0 ">
+			<div className="hidden 2xl:grid grid-cols-2 ">
+				<div className="col-span-2 2xl:col-span-1 container mx-auto px-10 mb-12 sm:mb-0 ">
 					<Editor
-						content={songBeingEdited.content}
+						content={changes.content ? changes.content : songBeingEdited.content}
 						formatOptions={format}
 						onContentChange={handleContentChange}
 					/>
 				</div>
-				<div className="hidden sm:block col-span-1 border-gray-300 border-l px-3">
-					<ChordOptions
-						onBoldToggled={(toggleValue) => handleFormatChange("bold_chords", toggleValue)}
-						onItalicsToggled={(toggleValue) => handleFormatChange("italic_chords", toggleValue)}
-						formatOptions={format}
-					/>
+				<div className="my-3 hidden 2xl:block">
+					<PageTitle title="Preview" className="mb-4" />
+					{html({ content: changes.content || songBeingEdited.content, format: format })}
 				</div>
+			</div>
+			<div className="2xl:hidden px-2 md:px-10 mb-28">
+				{showEditor ? (
+					<Editor
+						content={changes.content ? changes.content : songBeingEdited.content}
+						formatOptions={format}
+						onContentChange={handleContentChange}
+					/>
+				) : (
+					<div>
+						<PageTitle title="Preview" className="my-4" />
+						{html({ content: changes.content || songBeingEdited.content, format: format })}
+					</div>
+				)}
+				{showEditor ? (
+					<Button
+						onClick={() => setShowEditor(false)}
+						variant="open"
+						className="fixed bottom-16 right-4 sm:bottom-7 sm:right-7"
+					>
+						<EyeIcon className="h-6 w-6" />
+					</Button>
+				) : (
+					<Button
+						onClick={() => setShowEditor(true)}
+						variant="open"
+						className="fixed bottom-16 right-4 sm:bottom-7 sm:right-7"
+					>
+						<PencilIcon className="h-6 w-6" />
+					</Button>
+				)}
 			</div>
 		</>
 	);
