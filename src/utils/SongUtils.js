@@ -253,7 +253,7 @@ export function hasAnyKeysSet(song) {
 	return song.original_key || song.transposed_key;
 }
 
-export function html(song) {
+export function html(song, lineHoveredOver) {
 	let songCopy = { ...song };
 	if (song?.content && song?.format) {
 		songCopy.content = formatChordPro(songCopy.content);
@@ -264,12 +264,11 @@ export function html(song) {
 			if (isNewLine(line)) return <br key={index} />;
 			else {
 				let lineClasses = determineClassesForLine(line, song.format);
+
+				if (lineHoveredOver === index) lineClasses += " bg-gray-100";
+
 				return (
-					<p
-						key={index}
-						className={lineClasses}
-						onDoubleClick={() => console.log("DOUBLE CLICKED")}
-					>
+					<p key={index} className={lineClasses}>
 						{line}
 					</p>
 				);
@@ -288,8 +287,9 @@ export function html(song) {
 }
 
 function determineClassesForLine(line, format) {
-	let baseClasses = format.autosize ? "whitespace-pre" : "whitespace-pre-wrap";
-	baseClasses += " hover:bg-gray-100 cursor-pointer";
+	let baseClasses = format.autosize
+		? "whitespace-pre transition-colors"
+		: "whitespace-pre-wrap transition-colors";
 	if (isChordLine(line)) {
 		return `${baseClasses} ${determineClassesForChordLine(format)}`;
 	} else {

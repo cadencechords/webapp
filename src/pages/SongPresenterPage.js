@@ -1,5 +1,5 @@
 import { adjustSongBeingPresented, selectSongBeingPresented } from "../store/presenterSlice";
-import { toHtml, transpose } from "../utils/songUtils";
+import { html, toHtml, transpose } from "../utils/songUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
@@ -7,6 +7,7 @@ import { useHistory, useParams } from "react-router-dom";
 import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
 import Button from "../components/Button";
 import Metronome from "../components/Metronome";
+import NotesDragDropContext from "../components/NotesDragDropContext";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
 import { Textfit } from "react-textfit";
@@ -29,6 +30,7 @@ export default function SongPresenterPage() {
 	const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
 	const [autosizing, setAutosizing] = useState(false);
 	const [transposing, setTransposing] = useState(true);
+	const [lineHoveredOver, setLineHoveredOver] = useState();
 
 	useEffect(() => {
 		if (song?.transposed_key && song?.original_key && transposing) {
@@ -58,8 +60,8 @@ export default function SongPresenterPage() {
 					onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
 				/>
 
-				<div className="mx-auto max-w-2xl p-3" style={formatStyles}>
-					{autosizing ? (
+				<div className="mx-auto max-w-6xl p-3 flex items-start" style={formatStyles}>
+					{/* {autosizing ? (
 						<Textfit mode="single">
 							<div>
 								{toHtml(
@@ -79,7 +81,13 @@ export default function SongPresenterPage() {
 							italicChords: song?.format?.italic_chords,
 							showChordsDisabled: song.showChordsDisabled,
 						})
-					)}
+					)} */}
+					<div className="">{html(song, lineHoveredOver)}</div>
+					<div className="ml-4 flex-grow">
+						<div className="w-52">
+							<NotesDragDropContext song={song} onLineHover={setLineHoveredOver} />
+						</div>
+					</div>
 				</div>
 
 				<Button
