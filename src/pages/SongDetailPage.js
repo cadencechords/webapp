@@ -37,7 +37,6 @@ export default function SongDetailPage() {
 	const [saving, setSaving] = useState(false);
 	const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
 	const [showAddGenreDialog, setShowGenreDialog] = useState(false);
-	const [isTransposing, setIsTransposing] = useState(false);
 	const dispatch = useDispatch();
 	const currentMember = useSelector(selectCurrentMember);
 
@@ -46,22 +45,12 @@ export default function SongDetailPage() {
 	const router = useHistory();
 	const { id } = useParams();
 
-	const [showChordsDisabled, setShowChordsDisabled] = useState(() => {
-		return localStorage.getItem(`show_chords_disabled_song_${id}`) === "true";
-	});
-
 	useEffect(() => {
 		async function fetchSong() {
 			try {
-				let result = await SongApi.getOneById(id);
-				result.data.showChordsDisabled =
-					localStorage.getItem(`show_chords_disabled_song_${id}`) === "true";
+				let { data } = await SongApi.getOneById(id);
 
-				if (result.data.transposed_key) {
-					setIsTransposing(true);
-				}
-
-				setSong(result.data);
+				setSong({ ...data, show_transposed: Boolean(data.transposed_key) });
 			} catch (error) {
 				console.log(error);
 			}
@@ -153,15 +142,17 @@ export default function SongDetailPage() {
 		),
 	}));
 
-	const handleShowChordsToggled = (toggleValue) => {
-		setShowChordsDisabled(toggleValue);
-		setSong({ ...song, showChordsDisabled: toggleValue });
-		localStorage.setItem(`show_chords_disabled_song_${id}`, toggleValue);
-	};
+	function handleUpdateSong(field, value) {
+		setSong((currentSong) => ({ ...currentSong, [field]: value }));
+	}
 
-	const handleToggleTranspose = () => {
-		setIsTransposing((currentlyTransposing) => !currentlyTransposing);
-	};
+	function handleUpdateFormat(field, value) {
+		setSong((currentSong) => {
+			let updatedFormat = { ...currentSong.format };
+			updatedFormat[field] = value;
+			return { ...currentSong, format: updatedFormat };
+		});
+	}
 
 	return (
 		<div className="grid grid-cols-4">
@@ -221,15 +212,18 @@ export default function SongDetailPage() {
 							<Button
 								size="xs"
 								color="purple"
-								onClick={handleToggleTranspose}
-								variant={isTransposing ? "open" : "filled"}
+								onClick={() => handleUpdateSong("show_transposed", !song.show_transposed)}
+								variant={song.show_transposed ? "open" : "filled"}
 							>
-								{isTransposing ? "Stop transposing" : "Transpose"}
+								{song.show_transposed ? "Stop transposing" : "Transpose"}
 							</Button>
 						)}
 					</span>
-					<Button variant="open" onClick={() => handleShowChordsToggled(!showChordsDisabled)}>
-						{showChordsDisabled ? (
+					<Button
+						variant="open"
+						onClick={() => handleUpdateFormat("chords_hidden", !song?.format?.chords_hidden)}
+					>
+						{song?.format?.chords_hidden ? (
 							<EyeOffIcon className="h-5 text-gray-600" />
 						) : (
 							<EyeIcon className="h-5" />
@@ -259,33 +253,8 @@ export default function SongDetailPage() {
 					>
 						<PlayIcon className="h-5 w-5 text-purple-700" /> Present
 					</Button>
-
-					{/* <Button
-						variant="outlined"
-						size="medium"
-						color="black"
-						className="flex-center flex-col"
-						onClick={() => setShowPrintDialog(true)}
-					>
-						<PrinterIcon className="h-5 w-5 text-gray-600" /> Print
-					</Button>
-
-					<Button
-						className="flex-center flex-col"
-						variant="outlined"
-						color="black"
-						size="medium"
-						onClick={() => handleShowChordsToggled(!showChordsDisabled)}
-					>
-						{showChordsDisabled ? (
-							<EyeOffIcon className="h-5 text-gray-600" />
-						) : (
-							<EyeIcon className="h-5 text-blue-700" />
-						)}
-						Chords
-					</Button> */}
 				</div>
-				<SongPreview song={song} transpose={isTransposing} onDoubleClick={handleOpenInEditor} />
+				<SongPreview song={song} onDoubleClick={handleOpenInEditor} />
 			</div>
 			<div className="lg:col-span-1 lg:pl-5 pl-2 col-span-4">
 				<div className="border-b py-6 mt-1">

@@ -1,3 +1,5 @@
+import { selectSongBeingEdited, updateSongContent } from "../store/editorSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
@@ -13,9 +15,7 @@ import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import SongApi from "../api/SongApi";
 import { html } from "../utils/songUtils";
 import { isEmpty } from "../utils/ObjectUtils";
-import { selectSongBeingEdited } from "../store/editorSlice";
 import { useHistory } from "react-router";
-import { useSelector } from "react-redux";
 
 export default function EditorWorkbenchPage() {
 	const songBeingEdited = useSelector(selectSongBeingEdited);
@@ -28,6 +28,9 @@ export default function EditorWorkbenchPage() {
 	const [changes, setChanges] = useState({ content: null, format: {} });
 
 	const router = useHistory();
+	const dispatch = useDispatch();
+
+	console.log(songBeingEdited);
 
 	if (!songBeingEdited || isEmpty(songBeingEdited)) {
 		router.push("/");
@@ -61,6 +64,7 @@ export default function EditorWorkbenchPage() {
 				await SongApi.updateOneById(songBeingEdited.id, {
 					content: changes.content,
 				});
+				dispatch(updateSongContent(changes.content));
 			}
 
 			if (!isEmpty(changes.format)) {
@@ -127,19 +131,19 @@ export default function EditorWorkbenchPage() {
 				</div>
 			</div>
 			<div className="hidden 2xl:grid grid-cols-2 ">
-				<div className="col-span-2 2xl:col-span-1 container mx-auto px-10 mb-12 sm:mb-0 ">
+				<div className="col-span-2 2xl:col-span-1 container mx-auto px-5 mb-12 sm:mb-0 border-r">
 					<Editor
 						content={changes.content ? changes.content : songBeingEdited.content}
 						formatOptions={format}
 						onContentChange={handleContentChange}
 					/>
 				</div>
-				<div className="my-3 hidden 2xl:block">
+				<div className="px-5 my-3 hidden 2xl:block">
 					<PageTitle title="Preview" className="mb-4" />
 					{html({ content: changes.content || songBeingEdited.content, format: format })}
 				</div>
 			</div>
-			<div className="2xl:hidden px-2 md:px-10 mb-28">
+			<div className="2xl:hidden px-2 md:px-10 mb-28 ">
 				{showEditor ? (
 					<Editor
 						content={changes.content ? changes.content : songBeingEdited.content}

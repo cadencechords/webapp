@@ -1,56 +1,67 @@
 import { adjustSongBeingPresented, selectSongBeingPresented } from "../store/presenterSlice";
-import { html, toHtml, transpose } from "../utils/songUtils";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
 import Button from "../components/Button";
 import Metronome from "../components/Metronome";
-import NotesDragDropContext from "../components/NotesDragDropContext";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
-import { Textfit } from "react-textfit";
+import { html } from "../utils/songUtils";
+import { selectCurrentSubscription } from "../store/subscriptionSlice";
+import { useState } from "react";
+
+// import NotesDragDropContext from "../components/NotesDragDropContext";
 
 export default function SongPresenterPage() {
 	const router = useHistory();
 	const id = useParams().id;
 	const song = useSelector(selectSongBeingPresented);
-	const [content, setContent] = useState(() => {
-		let content = song.content;
-
-		if (song.transposed_key && song.original_key) {
-			content = transpose(song);
-		}
-
-		return content;
-	});
 	const dispatch = useDispatch();
+	const currentSubscription = useSelector(selectCurrentSubscription);
 
 	const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
-	const [autosizing, setAutosizing] = useState(false);
-	const [transposing, setTransposing] = useState(true);
-	const [lineHoveredOver, setLineHoveredOver] = useState();
 
-	useEffect(() => {
-		if (song?.transposed_key && song?.original_key && transposing) {
-			let transposedContent = transpose(song);
+	function handleFormatChange(field, value) {
+		let updatedFormat = { ...song.format, [field]: value };
+		dispatch(adjustSongBeingPresented({ format: updatedFormat }));
+	}
 
-			setContent(transposedContent);
-		} else {
-			setContent(song.content);
-		}
-	}, [transposing, song]);
+	function handleSongChange(field, value) {
+		dispatch(adjustSongBeingPresented({ [field]: value }));
+	}
 
-	let formatStyles = { fontFamily: song?.format?.font, fontSize: song?.format?.font_size };
+	function handleLineDoubleClick(line, index) {
+		console.log(index, line);
+	}
 
-	const handleAdjustmentMade = (adjustmentField, adjustmentValue) => {
-		dispatch(adjustSongBeingPresented({ [adjustmentField]: adjustmentValue }));
-	};
+	// function handleAddTempNote(tempNote) {
+	// 	dispatch(adjustSongBeingPresented({ notes: [...song.notes, tempNote] }));
+	// }
 
-	const handleToggleAutosize = () => {
-		setAutosizing((autosizing) => !autosizing);
-	};
+	// function handleReplaceTempNote(tempId, realNote) {
+	// 	let index = song.notes.findIndex((note) => note.id === tempId);
+	// 	let notes = [...song.notes];
+	// 	if (index > -1) {
+	// 		notes = song.notes?.map((note) => (note.id === tempId ? realNote : note));
+	// 	} else {
+	// 		notes.push(realNote);
+	// 	}
+
+	// 	dispatch(adjustSongBeingPresented({ notes }));
+	// }
+
+	// function handleUpdateNote(noteId, updates) {
+	// 	let notesCopy = [...song.notes];
+	// 	notesCopy = notesCopy.map((note) => (note.id === noteId ? { ...note, ...updates } : note));
+
+	// 	dispatch(adjustSongBeingPresented({ notes: notesCopy }));
+	// }
+
+	// function handleDeleteNote(noteIdToDelete) {
+	// 	let filteredNotes = song.notes.filter((note) => note.id !== noteIdToDelete);
+	// 	dispatch(adjustSongBeingPresented({ notes: filteredNotes }));
+	// }
 
 	if (song && song.format) {
 		return (
@@ -60,41 +71,28 @@ export default function SongPresenterPage() {
 					onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
 				/>
 
-				<div className="mx-auto max-w-6xl p-3 flex items-start" style={formatStyles}>
-					{/* {autosizing ? (
-						<Textfit mode="single">
-							<div>
-								{toHtml(
-									content,
-									{
-										boldChords: song.format.bold_chords,
-										italicChords: song.format.italic_chords,
-										showChordsDisabled: song.showChordsDisabled,
-									},
-									false
-								)}
+				<div className="mx-auto max-w-6xl p-3 flex items-start">
+					<div className="">{html(song, handleLineDoubleClick)}</div>
+					<div className="fixed md:relative right-0 flex md:ml-20 md:flex-grow">
+						{currentSubscription?.isPro && (
+							<div className="md:w-64">
+								{/* <NotesDragDropContext
+									song={song}
+									onAddTempNote={handleAddTempNote}
+									onReplaceTempNote={handleReplaceTempNote}
+									onUpdateNote={handleUpdateNote}
+									onDeleteNote={handleDeleteNote}
+								/> */}
 							</div>
-						</Textfit>
-					) : (
-						toHtml(content, {
-							boldChords: song?.format?.bold_chords,
-							italicChords: song?.format?.italic_chords,
-							showChordsDisabled: song.showChordsDisabled,
-						})
-					)} */}
-					<div className="">{html(song, lineHoveredOver)}</div>
-					<div className="ml-4 flex-grow">
-						<div className="w-52">
-							<NotesDragDropContext song={song} onLineHover={setLineHoveredOver} />
-						</div>
+						)}
 					</div>
 				</div>
 
 				<Button
 					variant="open"
-					className="fixed bottom-16 right-6"
-					onClick={handleToggleAutosize}
-					color={autosizing ? "blue" : "gray"}
+					className="fixed bottom-16 right-6 md:mr-0"
+					onClick={() => handleFormatChange("autosize", !song?.format?.autosize)}
+					color={song?.format?.autosize ? "blue" : "gray"}
 				>
 					<ArrowsExpandIcon className="h-5 w-5" />
 				</Button>
@@ -102,9 +100,8 @@ export default function SongPresenterPage() {
 					open={showOptionsDrawer}
 					onClose={() => setShowOptionsDrawer(false)}
 					song={song}
-					onAdjustmentMade={handleAdjustmentMade}
-					onToggleTranspose={() => setTransposing((currentlyTransposing) => !currentlyTransposing)}
-					transposing={transposing}
+					onFormatChange={handleFormatChange}
+					onSongChange={handleSongChange}
 				/>
 
 				<Metronome

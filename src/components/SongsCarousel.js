@@ -43,7 +43,7 @@ export default function SongsCarousel({ songs, index, onIndexChange }) {
 
 	function buildTemplates() {
 		return enrichedSongs?.map((song) => (
-			<div key={song?.id}>
+			<div key={song?.id} className="mb-4">
 				<PageTitle title={song?.name} className="my-4" />
 				{html(song)}
 			</div>

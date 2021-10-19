@@ -16,33 +16,25 @@ export default function SongAdjustmentsDrawer({
 	open,
 	onClose,
 	song,
-	onAdjustmentMade,
-	onToggleTranspose,
-	transposing,
+	onFormatChange,
+	onSongChange,
 }) {
 	const [updates, setUpdates] = useState();
 	const [saving, setSaving] = useState(false);
 	const currentMember = useSelector(selectCurrentMember);
 	const id = useParams().id;
-	const handleAdjustmentMade = (adjustmentField, adjustmentValue) => {
-		if (adjustmentField === "showChordsDisabled") {
-			localStorage.setItem(`show_chords_disabled_song_${song.id}`, adjustmentValue);
-		}
 
-		onAdjustmentMade(adjustmentField, adjustmentValue);
-	};
-
-	const handleTransposeUpHalfStep = () => {
+	function handleTransposeUpHalfStep() {
 		let updatedKey = getHalfStepHigher(song.transposed_key || song.original_key);
 		setUpdates((currentUpdates) => ({ ...currentUpdates, transposed_key: updatedKey }));
-		onAdjustmentMade("transposed_key", updatedKey);
-	};
+		onSongChange("transposed_key", updatedKey);
+	}
 
-	const handleTransposeDownHalfStep = () => {
+	function handleTransposeDownHalfStep() {
 		let updatedKey = getHalfStepLower(song.transposed_key || song.original_key);
 		setUpdates((currentUpdates) => ({ ...currentUpdates, transposed_key: updatedKey }));
-		onAdjustmentMade("transposed_key", updatedKey);
-	};
+		onSongChange("transposed_key", updatedKey);
+	}
 
 	const handleSaveUpdates = async () => {
 		try {
@@ -61,19 +53,19 @@ export default function SongAdjustmentsDrawer({
 			<Drawer open={open} onClose={onClose}>
 				<div className="flex flex-col px-3 pt-5 gap-3">
 					<Toggle
-						enabled={!song.showChordsDisabled}
+						enabled={!song.format.chords_hidden}
 						label="Show chords"
-						onChange={(enabled) => handleAdjustmentMade("showChordsDisabled", !enabled)}
+						onChange={(enabled) => onFormatChange("chords_hidden", !enabled)}
 						spacing="between"
 					/>
 
 					<Toggle
-						enabled={transposing}
+						enabled={song?.show_transposed}
 						label="Transpose"
-						onChange={onToggleTranspose}
+						onChange={() => onSongChange("show_transposed", !song?.show_transposed)}
 						spacing="between"
 					/>
-					{transposing && hasAnyKeysSet(song) && (
+					{song?.show_transposed && hasAnyKeysSet(song) && (
 						<div className="flex-between p-2 rounded-md bg-gray-100">
 							<Button variant="open" color="gray" onClick={handleTransposeUpHalfStep}>
 								<PlusIcon className="w-5 h-5" />

@@ -1,7 +1,6 @@
 import * as Transposer from "chord-transposer";
 
 import ChordSheetJS from "chordsheetjs";
-import ReactDOMServer from "react-dom/server";
 import TextAutosize from "../components/TextAutosize";
 
 export function isChordLine(line) {
@@ -34,156 +33,6 @@ function isChord(potentialChord) {
 
 export function isNewLine(line) {
 	return line === "";
-}
-
-export function parseAlignment(alignment) {
-	if (alignment === "left" || alignment === "center" || alignment === "right") {
-		return "text-" + alignment;
-	} else {
-		return "text-left";
-	}
-}
-
-export function toPdf(song, showChords) {}
-
-export function toHtmlString(songText) {
-	if (songText) {
-		let linesOfSong = songText.split(/\r\n|\r|\n/);
-		let html = linesOfSong.map((line, index) => {
-			if (isNewLine(line)) {
-				return (
-					<p key={index}>
-						<br />
-					</p>
-				);
-			} else {
-				return <p key={index}>{line}</p>;
-			}
-		});
-
-		return ReactDOMServer.renderToStaticMarkup(html);
-	}
-}
-
-export function toHtml(songText, formatOptions, whitespacePreWrap = true) {
-	if (songText) {
-		let linesOfSong = formatChordPro(songText).split(/\r\n|\r|\n/);
-
-		if (!formatOptions.boldChords && !formatOptions.italicChords) {
-			return linesOfSong.map((line, index) => {
-				if (isNewLine(line)) {
-					return (
-						<p key={index}>
-							<br />
-						</p>
-					);
-				} else if (isChordLine(line)) {
-					if (formatOptions.showChordsDisabled) {
-						return null;
-					} else {
-						return (
-							<p
-								key={index}
-								className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}
-							>
-								{line}
-							</p>
-						);
-					}
-				} else {
-					return (
-						<p key={index} className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}>
-							{line}
-						</p>
-					);
-				}
-			});
-		} else {
-			return linesOfSong.map((line, index) => {
-				if (isChordLine(line)) {
-					if (formatOptions.showChordsDisabled) {
-						return null;
-					} else {
-						if (formatOptions.boldChords && formatOptions.italicChords) {
-							return (
-								<p
-									key={index}
-									className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}
-								>
-									<i>
-										<strong>{line}</strong>
-									</i>
-								</p>
-							);
-						} else if (formatOptions.boldChords) {
-							return (
-								<p
-									key={index}
-									className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}
-								>
-									<strong>{line}</strong>
-								</p>
-							);
-						} else {
-							return (
-								<p
-									key={index}
-									className={whitespacePreWrap ? "whitespace-pre-wrap" : "whitespace-pre"}
-								>
-									<i>{line}</i>
-								</p>
-							);
-						}
-					}
-				} else if (isNewLine(line)) {
-					return (
-						<p key={index}>
-							<br />
-						</p>
-					);
-				} else {
-					return <p key={index}>{line}</p>;
-				}
-			});
-		}
-	} else {
-		return <i>No content yet</i>;
-	}
-}
-
-export function getFormats(songText, formatOptions) {
-	let linesOfSong = songText.split(/\r\n|\r|\n/);
-	let formats = [];
-
-	if (formatOptions.bold_chords || formatOptions.italic_chords) {
-		let characterPosition = 0;
-		linesOfSong.forEach((line) => {
-			formats.push({
-				start: characterPosition,
-				length: line.length,
-				format: "bold",
-				value: isChordLine(line) && formatOptions.bold_chords,
-			});
-
-			formats.push({
-				start: characterPosition,
-				length: line.length,
-				format: "italic",
-				value: isChordLine(line) && formatOptions.italic_chords,
-			});
-
-			characterPosition += line.length + 1;
-		});
-	} else {
-		let format = { start: 0, length: songText.length, format: "bold", value: false };
-		formats.push(format);
-		format = { start: 0, length: songText.length, format: "italic", value: false };
-		formats.push(format);
-	}
-
-	formats.push({ start: 0, length: songText.length, format: "font", value: formatOptions.font });
-
-	return formats;
 }
 
 export function parseQuality(key) {
@@ -222,16 +71,20 @@ export function transpose(song) {
 
 		let transposedContent = "";
 
-		linesOfSong.forEach((line) => {
+		linesOfSong.forEach((line, index) => {
 			if (isChordLine(line)) {
 				let transposedLine = Transposer.transpose(line)
 					.fromKey(song.original_key)
 					.toKey(song.transposed_key)
 					.toString();
 
-				transposedContent += transposedLine + "\n";
+				transposedContent += transposedLine;
 			} else {
-				transposedContent += line + "\n";
+				transposedContent += line;
+			}
+
+			if (index < linesOfSong.length - 1) {
+				transposedContent += "\n";
 			}
 		});
 
@@ -253,7 +106,7 @@ export function hasAnyKeysSet(song) {
 	return song.original_key || song.transposed_key;
 }
 
-export function html(song, lineHoveredOver) {
+export function html(song, onLineDoubleClick) {
 	let songCopy = { ...song };
 	if (song?.content && song?.format) {
 		songCopy.content = formatChordPro(songCopy.content);
@@ -261,14 +114,17 @@ export function html(song, lineHoveredOver) {
 		let linesOfSong = content.split(/\r\n|\r|\n/);
 
 		let htmlLines = linesOfSong.map((line, index) => {
-			if (isNewLine(line)) return <br key={index} />;
+			if (isNewLine(line))
+				return <br key={index} onDoubleClick={() => onLineDoubleClick?.(line, index)} />;
 			else {
 				let lineClasses = determineClassesForLine(line, song.format);
 
-				if (lineHoveredOver === index) lineClasses += " bg-gray-100";
-
 				return (
-					<p key={index} className={lineClasses}>
+					<p
+						key={index}
+						className={lineClasses}
+						onDoubleClick={() => onLineDoubleClick?.(line, index)}
+					>
 						{line}
 					</p>
 				);
@@ -287,13 +143,11 @@ export function html(song, lineHoveredOver) {
 }
 
 function determineClassesForLine(line, format) {
-	let baseClasses = format.autosize
-		? "whitespace-pre transition-colors"
-		: "whitespace-pre-wrap transition-colors";
+	let baseClasses = format.autosize ? "whitespace-pre" : "whitespace-pre-wrap";
 	if (isChordLine(line)) {
 		return `${baseClasses} ${determineClassesForChordLine(format)}`;
 	} else {
-		return `${baseClasses} ${determineClassesForLyricLine(format)}`;
+		return `${baseClasses}`;
 	}
 }
 
@@ -310,18 +164,6 @@ function determineClassesForChordLine(format) {
 	return classes;
 }
 
-function determineClassesForLyricLine(format) {
-	return "";
-}
-
-export function pro(content) {
-	const parser = new ChordSheetJS.ChordProParser();
-	const song = parser.parse(content);
-
-	const formatter = new ChordSheetJS.TextFormatter();
-	console.log(formatter.format(song));
-}
-
 export function formatChordPro(content) {
 	const parser = new ChordSheetJS.ChordProParser();
 	const song = parser.parse(content);
@@ -331,5 +173,9 @@ export function formatChordPro(content) {
 }
 
 export function countLines(content) {
-	return content ? content.split(/\r\n|\r|\n/).length : 0;
+	if (content) {
+		return formatChordPro(content).split(/\r\n|\r|\n/).length;
+	} else {
+		return 0;
+	}
 }
