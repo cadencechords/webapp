@@ -1,4 +1,4 @@
-import { parseNote, parseQuality } from "../utils/songUtils";
+import { parseNote, parseQuality } from "../utils/SongUtils";
 import { useEffect, useState } from "react";
 
 import Button from "./Button";

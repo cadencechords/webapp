@@ -1,4 +1,4 @@
-import { countLines } from "../utils/songUtils";
+import { countLines } from "../utils/SongUtils";
 
 export default function Editor({ content, onContentChange, formatOptions }) {
 	const styles = { fontFamily: formatOptions.font, fontSize: `${formatOptions.font_size}px` };

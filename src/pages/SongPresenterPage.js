@@ -8,7 +8,7 @@ import Metronome from "../components/Metronome";
 import NotesDragDropContext from "../components/NotesDragDropContext";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
-import { html } from "../utils/songUtils";
+import { html } from "../utils/SongUtils";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useState } from "react";
 

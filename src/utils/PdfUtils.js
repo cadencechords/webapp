@@ -1,5 +1,5 @@
 import { Document, Font, Page, Text, View } from "@react-pdf/renderer";
-import { formatChordPro, isChordLine, isNewLine } from "./songUtils";
+import { formatChordPro, isChordLine, isNewLine } from "./SongUtils";
 
 import OpenSansBold from "../fonts/OpenSans-Bold.ttf";
 import OpenSansBoldItalic from "../fonts/OpenSans-BoldItalic.ttf";

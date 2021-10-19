@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import AliceCarousel from "react-alice-carousel";
 import PageTitle from "./PageTitle";
 import PerformSetlistSongAdjustmentsDrawer from "./PerformSetlistSongAdjustmentsDrawer";
-import { html } from "../utils/songUtils";
+import { html } from "../utils/SongUtils";
 
 export default function SongsCarousel({ songs, index, onIndexChange }) {
 	const [enrichedSongs, setEnrichedSongs] = useState(songs);

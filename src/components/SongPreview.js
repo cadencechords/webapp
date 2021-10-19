@@ -1,4 +1,4 @@
-import { html } from "../utils/songUtils";
+import { html } from "../utils/SongUtils";
 
 export default function SongPreview({ song, onDoubleClick }) {
 	return (

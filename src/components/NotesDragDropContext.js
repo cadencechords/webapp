@@ -2,7 +2,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import Note from "./Note";
 import _ from "lodash";
-import { countLines } from "../utils/songUtils";
+import { countLines } from "../utils/SongUtils";
 import notesApi from "../api/notesApi";
 import { useCallback } from "react";
 import { useEffect } from "react";

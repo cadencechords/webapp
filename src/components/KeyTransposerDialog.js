@@ -1,4 +1,4 @@
-import { isMinor, parseNote } from "../utils/songUtils";
+import { isMinor, parseNote } from "../utils/SongUtils";
 import { useEffect, useState } from "react";
 
 import ArrowNarrowRightIcon from "@heroicons/react/outline/ArrowNarrowRightIcon";

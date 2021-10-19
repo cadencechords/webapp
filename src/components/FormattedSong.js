@@ -1,4 +1,4 @@
-import { isChordLine, isNewLine, parseAlignment } from "../utils/songUtils";
+import { isChordLine, isNewLine, parseAlignment } from "../utils/SongUtils";
 
 export default function FormattedSong({ song, formatOptions }) {
 	let linesOfSong = song.split(/\r\n|\r|\n/);
