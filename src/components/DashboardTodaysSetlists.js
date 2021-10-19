@@ -26,7 +26,7 @@ export default function DashboardTodaysSetlists({ setlists }) {
 				<div className="flex-center">
 					<Link to={`/sets/${setlist.id}/present`}>
 						<Button className="mr-2 flex-center" size="xs" variant="outlined" color="purple">
-							Perform
+							Present
 						</Button>
 					</Link>
 					<Link to={`/sets/${setlist.id}`}>
