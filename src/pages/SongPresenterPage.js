@@ -35,33 +35,33 @@ export default function SongPresenterPage() {
 		console.log(index, line);
 	}
 
-	// function handleAddTempNote(tempNote) {
-	// 	dispatch(adjustSongBeingPresented({ notes: [...song.notes, tempNote] }));
-	// }
+	function handleAddTempNote(tempNote) {
+		dispatch(adjustSongBeingPresented({ notes: [...song.notes, tempNote] }));
+	}
 
-	// function handleReplaceTempNote(tempId, realNote) {
-	// 	let index = song.notes.findIndex((note) => note.id === tempId);
-	// 	let notes = [...song.notes];
-	// 	if (index > -1) {
-	// 		notes = song.notes?.map((note) => (note.id === tempId ? realNote : note));
-	// 	} else {
-	// 		notes.push(realNote);
-	// 	}
+	function handleReplaceTempNote(tempId, realNote) {
+		let index = song.notes.findIndex((note) => note.id === tempId);
+		let notes = [...song.notes];
+		if (index > -1) {
+			notes = song.notes?.map((note) => (note.id === tempId ? realNote : note));
+		} else {
+			notes.push(realNote);
+		}
 
-	// 	dispatch(adjustSongBeingPresented({ notes }));
-	// }
+		dispatch(adjustSongBeingPresented({ notes }));
+	}
 
-	// function handleUpdateNote(noteId, updates) {
-	// 	let notesCopy = [...song.notes];
-	// 	notesCopy = notesCopy.map((note) => (note.id === noteId ? { ...note, ...updates } : note));
+	function handleUpdateNote(noteId, updates) {
+		let notesCopy = [...song.notes];
+		notesCopy = notesCopy.map((note) => (note.id === noteId ? { ...note, ...updates } : note));
 
-	// 	dispatch(adjustSongBeingPresented({ notes: notesCopy }));
-	// }
+		dispatch(adjustSongBeingPresented({ notes: notesCopy }));
+	}
 
-	// function handleDeleteNote(noteIdToDelete) {
-	// 	let filteredNotes = song.notes.filter((note) => note.id !== noteIdToDelete);
-	// 	dispatch(adjustSongBeingPresented({ notes: filteredNotes }));
-	// }
+	function handleDeleteNote(noteIdToDelete) {
+		let filteredNotes = song.notes.filter((note) => note.id !== noteIdToDelete);
+		dispatch(adjustSongBeingPresented({ notes: filteredNotes }));
+	}
 
 	if (song && song.format) {
 		return (
@@ -76,13 +76,13 @@ export default function SongPresenterPage() {
 					<div className="fixed md:relative right-0 flex md:ml-20 md:flex-grow">
 						{currentSubscription?.isPro && (
 							<div className="md:w-64">
-								{/* <NotesDragDropContext
+								<NotesDragDropContext
 									song={song}
 									onAddTempNote={handleAddTempNote}
 									onReplaceTempNote={handleReplaceTempNote}
 									onUpdateNote={handleUpdateNote}
 									onDeleteNote={handleDeleteNote}
-								/> */}
+								/>
 							</div>
 						)}
 					</div>
