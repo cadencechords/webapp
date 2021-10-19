@@ -5,13 +5,12 @@ import { useHistory, useParams } from "react-router-dom";
 import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
 import Button from "../components/Button";
 import Metronome from "../components/Metronome";
+import NotesDragDropContext from "../components/NotesDragDropContext";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
 import { html } from "../utils/songUtils";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useState } from "react";
-
-// import NotesDragDropContext from "../components/NotesDragDropContext";
 
 export default function SongPresenterPage() {
 	const router = useHistory();
