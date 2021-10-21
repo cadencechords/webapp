@@ -28,7 +28,7 @@ export default function EventBasicDetails({ event, onFieldChange }) {
 						value={event.date}
 						onChange={(value) => onFieldChange("date", value)}
 						placeholder="Date"
-						className="mb-2"
+						className="mb-2 h-10"
 						type="date"
 					/>
 				</div>
