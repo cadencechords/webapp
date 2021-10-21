@@ -1,20 +1,20 @@
 import { VIEW_EVENTS, VIEW_ROLES } from "../utils/constants";
 import { selectCurrentMember, selectCurrentTeam } from "../store/authSlice";
 
+import BinderIcon from "../icons/BinderIcon";
 import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
-import FolderOpenIcon from "@heroicons/react/outline/FolderOpenIcon";
+import DashboardIcon from "../icons/DashboardIcon";
 import LockClosedIcon from "@heroicons/react/outline/LockClosedIcon";
 import MusicNoteIcon from "@heroicons/react/solid/MusicNoteIcon";
+import PlaylistIcon from "../icons/PlaylistIcon";
 import SidenavLink from "./SidenavLink";
 import TeamOptionsPopover from "./TeamOptionsPopover";
-import TemplateIcon from "@heroicons/react/solid/TemplateIcon";
 import UserGroupIcon from "@heroicons/react/solid/UserGroupIcon";
-import ViewGridAddIcon from "@heroicons/react/outline/ViewGridAddIcon";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useSelector } from "react-redux";
 
 export default function Sidenav() {
-	let iconClasses = "h-4 w-4";
+	let iconClasses = "h-5 w-5";
 
 	const currentTeam = useSelector(selectCurrentTeam);
 	const currentMember = useSelector(selectCurrentMember);
@@ -26,23 +26,19 @@ export default function Sidenav() {
 	}
 
 	return (
-		<div className="fixed h-full  bg-gray-50 md:w-56 w-0 transition-all border-r shadow-inner">
+		<div className="fixed h-full bg-gray-50 lg:w-52 md:w-14 w-0 transition-all border-r shadow-inner">
 			<div className="hidden md:flex flex-col">
 				{currentTeamCard}
-				<div className="px-2 flex flex-col py-3 ">
+				<div className="flex flex-col py-3 ">
 					<SidenavLink
 						text="Dashboard"
 						to="/"
-						icon={<TemplateIcon className={iconClasses} />}
+						icon={<DashboardIcon className={iconClasses} />}
 						exact
 					/>
-					<SidenavLink
-						text="Binders"
-						to="/binders"
-						icon={<FolderOpenIcon className={iconClasses} />}
-					/>
+					<SidenavLink text="Binders" to="/binders" icon={<BinderIcon className={iconClasses} />} />
 					<SidenavLink text="Songs" to="/songs" icon={<MusicNoteIcon className={iconClasses} />} />
-					<SidenavLink text="Sets" to="/sets" icon={<ViewGridAddIcon className={iconClasses} />} />
+					<SidenavLink text="Sets" to="/sets" icon={<PlaylistIcon className="h-6 w-6" />} />
 					<SidenavLink
 						text="Team members"
 						to="/members"

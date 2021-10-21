@@ -34,7 +34,7 @@ export default function Content() {
 			<Sidenav />
 			<Navbar />
 			<MobileNav />
-			<div className="md:ml-56 md:px-10 px-2 py-3">
+			<div className="md:ml-14 lg:ml-52 md:px-10 px-2 py-3">
 				<div className="container mx-auto">
 					<Route path="/" exact>
 						<DashboardPage />

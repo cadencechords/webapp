@@ -1,9 +1,9 @@
-import StyledPopover from "./StyledPopover";
-import ProfilePicture from "./ProfilePicture";
-import SwitchHorizontalIcon from "@heroicons/react/outline/SwitchHorizontalIcon";
+import Button from "./Button";
 import InformationCircleIcon from "@heroicons/react/outline/InformationCircleIcon";
 import { Link } from "react-router-dom";
-import Button from "./Button";
+import ProfilePicture from "./ProfilePicture";
+import StyledPopover from "./StyledPopover";
+import SwitchHorizontalIcon from "@heroicons/react/outline/SwitchHorizontalIcon";
 
 export default function TeamOptionsPopover({ team }) {
 	let button = (
@@ -11,7 +11,7 @@ export default function TeamOptionsPopover({ team }) {
 			<span className="w-8 mr-3">
 				<ProfilePicture url={team.image_url} size="xs" />
 			</span>
-			{team.name}
+			<span className="hidden lg:inline">{team.name}</span>
 		</div>
 	);
 	return (
