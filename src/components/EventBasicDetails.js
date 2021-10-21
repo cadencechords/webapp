@@ -33,8 +33,8 @@ export default function EventBasicDetails({ event, onFieldChange }) {
 					/>
 				</div>
 
-				<div className="flex gap-4">
-					<div className="w-full">
+				<div className="flex">
+					<div className="w-full mr-4">
 						<Label>Time</Label>
 						<TimeInput onChange={(value) => onFieldChange("start_time", value)} />
 					</div>
