@@ -112,7 +112,6 @@ export default function SongsCarousel({ songs, index, onIndexChange }) {
 				swipeDelta={70}
 				autoHeight
 				animationDuration={400}
-				keyboardNavigation
 			/>
 
 			<PerformSetlistSongAdjustmentsDrawer
