@@ -1,8 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom";
 import "./index.css";
+
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
 import App from "./App";
 import { Provider } from "react-redux";
+import React from "react";
+import ReactDOM from "react-dom";
 import store from "./store/store";
 
 ReactDOM.render(
@@ -13,3 +16,5 @@ ReactDOM.render(
 	</React.StrictMode>,
 	document.getElementById("root")
 );
+
+serviceWorkerRegistration.register();
