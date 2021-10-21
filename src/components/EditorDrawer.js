@@ -1,9 +1,15 @@
+import Button from "./Button";
 import Drawer from "./Drawer";
-import FontsListBox from "./FontsListBox";
 import FontSizesListBox from "./FontSizesListBox";
+import FontsListBox from "./FontsListBox";
+import PencilAltIcon from "@heroicons/react/outline/PencilAltIcon";
 import Toggle from "./Toggle";
+import { selectCurrentSubscription } from "../store/subscriptionSlice";
+import { useSelector } from "react-redux";
 
-export default function EditorDrawer({ open, onClose, formatOptions, onFormatChange }) {
+export default function EditorDrawer({ open, onClose, formatOptions, onFormatChange, onAddNote }) {
+	const currentSubscription = useSelector(selectCurrentSubscription);
+
 	return (
 		<Drawer open={open} onClose={onClose}>
 			<section>
@@ -43,6 +49,23 @@ export default function EditorDrawer({ open, onClose, formatOptions, onFormatCha
 					/>
 				</div>
 			</section>
+			{currentSubscription.isPro && (
+				<section>
+					<h2 className="border-b border-t p-3 font-semibold bg-gray-50">More Options</h2>
+					<div className="px-3 py-6">
+						<Button
+							full
+							variant="outlined"
+							color="black"
+							className="flex-center"
+							onClick={onAddNote}
+						>
+							<PencilAltIcon className="h-5 w-5 text-blue-600 mr-2" />
+							Add note
+						</Button>
+					</div>
+				</section>
+			)}
 		</Drawer>
 	);
 }

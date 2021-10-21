@@ -3,12 +3,16 @@ import "react-alice-carousel/lib/alice-carousel.css";
 import { useEffect, useState } from "react";
 
 import AliceCarousel from "react-alice-carousel";
+import NotesDragDropContext from "./NotesDragDropContext";
 import PageTitle from "./PageTitle";
 import PerformSetlistSongAdjustmentsDrawer from "./PerformSetlistSongAdjustmentsDrawer";
 import { html } from "../utils/SongUtils";
+import { selectCurrentSubscription } from "../store/subscriptionSlice";
+import { useSelector } from "react-redux";
 
 export default function SongsCarousel({ songs, index, onIndexChange }) {
 	const [enrichedSongs, setEnrichedSongs] = useState(songs);
+	const currentSubscription = useSelector(selectCurrentSubscription);
 
 	useEffect(() => {
 		setEnrichedSongs(
@@ -45,9 +49,54 @@ export default function SongsCarousel({ songs, index, onIndexChange }) {
 		return enrichedSongs?.map((song) => (
 			<div key={song?.id} className="mb-4">
 				<PageTitle title={song?.name} className="my-4" />
-				{html(song)}
+				<div className="flex">
+					<div>{html(song)}</div>
+					{currentSubscription.isPro && (
+						<div className="ml-4">
+							<NotesDragDropContext
+								song={song}
+								onUpdateNote={(noteId, updates) => handleUpdateNote(song, noteId, updates)}
+								rearrangable={false}
+								onDeleteNote={(noteId) => handleDeleteNote(song, noteId)}
+							/>
+						</div>
+					)}
+				</div>
 			</div>
 		));
+	}
+
+	function handleUpdateNote(song, noteId, updates) {
+		setEnrichedSongs((currentEnrichedSongs) => {
+			return currentEnrichedSongs.map((enrichedSong) => {
+				if (enrichedSong.id === song.id) {
+					let updatedNotes = enrichedSong.notes?.map((note) => {
+						if (note.id === noteId) {
+							return { ...note, ...updates };
+						} else {
+							return note;
+						}
+					});
+
+					return { ...enrichedSong, notes: updatedNotes };
+				} else {
+					return enrichedSong;
+				}
+			});
+		});
+	}
+
+	function handleDeleteNote(song, noteId) {
+		setEnrichedSongs((currentEnrichedSongs) => {
+			return currentEnrichedSongs.map((enrichedSong) => {
+				if (enrichedSong.id === song.id) {
+					let updatedNotes = enrichedSong.notes?.filter((note) => note.id !== noteId);
+					return { ...enrichedSong, notes: updatedNotes };
+				} else {
+					return enrichedSong;
+				}
+			});
+		});
 	}
 
 	return (

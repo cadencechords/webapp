@@ -4,10 +4,12 @@ import Button from "./Button";
 import Drawer from "./Drawer";
 import { EDIT_SONGS } from "../utils/constants";
 import MinusIcon from "@heroicons/react/outline/MinusIcon";
+import PencilAltIcon from "@heroicons/react/outline/PencilAltIcon";
 import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import SongApi from "../api/SongApi";
 import Toggle from "./Toggle";
 import { selectCurrentMember } from "../store/authSlice";
+import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -18,11 +20,13 @@ export default function SongAdjustmentsDrawer({
 	song,
 	onFormatChange,
 	onSongChange,
+	onAddNote,
 }) {
 	const [updates, setUpdates] = useState();
 	const [saving, setSaving] = useState(false);
 	const currentMember = useSelector(selectCurrentMember);
 	const id = useParams().id;
+	const currentSubscription = useSelector(selectCurrentSubscription);
 
 	function handleTransposeUpHalfStep() {
 		let updatedKey = getHalfStepHigher(song.transposed_key || song.original_key);
@@ -77,6 +81,17 @@ export default function SongAdjustmentsDrawer({
 								<MinusIcon className="w-5 h-5" />
 							</Button>
 						</div>
+					)}
+					{currentSubscription.isPro && (
+						<>
+							<hr className="my-4" />
+							<Button variant="open" onClick={onAddNote}>
+								<div className="flex-center gap-2">
+									<PencilAltIcon className="h-4 w-4" />
+									Add a note
+								</div>
+							</Button>
+						</>
 					)}
 					{currentMember.can(EDIT_SONGS) && (
 						<div className="fixed bottom-0 border-t left-0 w-full px-2 py-3">

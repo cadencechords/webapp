@@ -1,4 +1,9 @@
-import { selectSongBeingEdited, updateSongContent } from "../store/editorSlice";
+import { countLines, html } from "../utils/SongUtils";
+import {
+	selectSongBeingEdited,
+	updateSongBeingEdited,
+	updateSongContent,
+} from "../store/editorSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
@@ -10,11 +15,15 @@ import EditorMobileTopNav from "../components/EditorMobileTopNav";
 import EditorOptionsBar from "../components/EditorOptionsBar";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import FormatApi from "../api/FormatApi";
+import NotesApi from "../api/notesApi";
+import NotesDragDropContext from "../components/NotesDragDropContext";
 import PageTitle from "../components/PageTitle";
 import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import SongApi from "../api/SongApi";
-import { html } from "../utils/SongUtils";
 import { isEmpty } from "../utils/ObjectUtils";
+import { max } from "../utils/numberUtils";
+import { selectCurrentSubscription } from "../store/subscriptionSlice";
+import { setSetlistBeingPresented } from "../store/presenterSlice";
 import { useHistory } from "react-router";
 
 export default function EditorWorkbenchPage() {
@@ -29,10 +38,10 @@ export default function EditorWorkbenchPage() {
 
 	const router = useHistory();
 	const dispatch = useDispatch();
-
-	console.log(songBeingEdited);
+	const currentSubscription = useSelector(selectCurrentSubscription);
 
 	if (!songBeingEdited || isEmpty(songBeingEdited)) {
+		dispatch(setSetlistBeingPresented({}));
 		router.push("/");
 	}
 
@@ -91,6 +100,61 @@ export default function EditorWorkbenchPage() {
 		setDirty(true);
 	};
 
+	function handleUpdateNote(noteId, updates) {
+		let updatedNotes = songBeingEdited.notes?.map((note) => {
+			if (noteId === note.id) {
+				return { ...note, ...updates };
+			} else {
+				return note;
+			}
+		});
+
+		dispatch(updateSongBeingEdited({ notes: updatedNotes }));
+	}
+
+	function handleDeleteNote(noteId) {
+		let updatedNotes = songBeingEdited.notes?.filter((note) => note.id !== noteId);
+		dispatch(updateSongBeingEdited({ notes: updatedNotes }));
+	}
+
+	function handleAddTempNote(tempNote) {
+		dispatch(updateSongBeingEdited({ notes: [...songBeingEdited.notes, tempNote] }));
+	}
+
+	function handleReplaceTempNote(tempId, realNote) {
+		let index = songBeingEdited.notes.findIndex((note) => note.id === tempId);
+		let notes = [...songBeingEdited.notes];
+		if (index > -1) {
+			notes = songBeingEdited.notes?.map((note) => (note.id === tempId ? realNote : note));
+		} else {
+			notes.push(realNote);
+		}
+
+		dispatch(updateSongBeingEdited({ notes }));
+	}
+
+	async function handleAddNote() {
+		try {
+			let { data } = await NotesApi.create(findNextAvailableLine(), songBeingEdited.id);
+			setShowEditor(false);
+			dispatch(updateSongBeingEdited({ notes: [...songBeingEdited.notes, data] }));
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	function findNextAvailableLine() {
+		let highestLineNumber = 0;
+		songBeingEdited.notes.forEach((note) => {
+			if (note.line_number > highestLineNumber) highestLineNumber = note.line_number;
+		});
+
+		let lines = new Array(max(highestLineNumber, countLines(songBeingEdited.content))).fill(null);
+
+		songBeingEdited.notes?.forEach((note) => (lines[note.line_number] = note));
+		return lines.findIndex((line) => line === null);
+	}
+
 	return (
 		<>
 			<div className="sm:hidden">
@@ -103,6 +167,7 @@ export default function EditorWorkbenchPage() {
 					open={showEditorDrawer}
 					onClose={() => setShowEditorDrawer(false)}
 					onFormatChange={handleFormatChange}
+					onAddNote={handleAddNote}
 				/>
 				<div className="fixed w-full bottom-0 p-3 z-20">
 					<Button full disabled={!dirty} onClick={handleSaveChanges} loading={savingUpdates}>
@@ -127,7 +192,11 @@ export default function EditorWorkbenchPage() {
 					</span>
 				</div>
 				<div className="bg-gray-50 py-3 px-5 border-t border-gray-200 border-b sticky top-0">
-					<EditorOptionsBar formatOptions={format} onFormatChange={handleFormatChange} />
+					<EditorOptionsBar
+						formatOptions={format}
+						onFormatChange={handleFormatChange}
+						onAddNote={handleAddNote}
+					/>
 				</div>
 			</div>
 			<div className="hidden 2xl:grid grid-cols-2 ">
@@ -140,7 +209,22 @@ export default function EditorWorkbenchPage() {
 				</div>
 				<div className="px-5 my-3 hidden 2xl:block">
 					<PageTitle title="Preview" className="mb-4" />
-					{html({ content: changes.content || songBeingEdited.content, format: format })}
+					<div className="grid grid-cols-2 gap-4">
+						<div>
+							{html({ content: changes.content || songBeingEdited.content, format: format })}
+						</div>
+						{currentSubscription.isPro && (
+							<div>
+								<NotesDragDropContext
+									song={songBeingEdited}
+									onDeleteNote={handleDeleteNote}
+									onUpdateNote={handleUpdateNote}
+									onAddTempNote={handleAddTempNote}
+									onReplaceTempNote={handleReplaceTempNote}
+								/>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 			<div className="2xl:hidden px-2 md:px-10 mb-28 ">
@@ -153,7 +237,22 @@ export default function EditorWorkbenchPage() {
 				) : (
 					<div>
 						<PageTitle title="Preview" className="my-4" />
-						{html({ content: changes.content || songBeingEdited.content, format: format })}
+						<div className="flex">
+							<div>
+								{html({ content: changes.content || songBeingEdited.content, format: format })}
+							</div>
+							{currentSubscription.isPro && (
+								<div className="ml-4">
+									<NotesDragDropContext
+										song={songBeingEdited}
+										onDeleteNote={handleDeleteNote}
+										onUpdateNote={handleUpdateNote}
+										onAddTempNote={handleAddTempNote}
+										onReplaceTempNote={handleReplaceTempNote}
+									/>
+								</div>
+							)}
+						</div>
 					</div>
 				)}
 				{showEditor ? (

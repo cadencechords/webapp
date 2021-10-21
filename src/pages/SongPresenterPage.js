@@ -1,4 +1,5 @@
 import { adjustSongBeingPresented, selectSongBeingPresented } from "../store/presenterSlice";
+import { countLines, html } from "../utils/SongUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 
@@ -8,7 +9,8 @@ import Metronome from "../components/Metronome";
 import NotesDragDropContext from "../components/NotesDragDropContext";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
-import { html } from "../utils/SongUtils";
+import { max } from "../utils/numberUtils";
+import notesApi from "../api/notesApi";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useState } from "react";
 
@@ -62,6 +64,26 @@ export default function SongPresenterPage() {
 		dispatch(adjustSongBeingPresented({ notes: filteredNotes }));
 	}
 
+	async function handleAddNote() {
+		try {
+			let { data } = await notesApi.create(findNextAvailableLine(), song.id);
+			dispatch(adjustSongBeingPresented({ notes: [...song.notes, data] }));
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	function findNextAvailableLine() {
+		let highestLineNumber = 0;
+		song.notes.forEach((note) => {
+			if (note.line_number > highestLineNumber) highestLineNumber = note.line_number;
+		});
+
+		let lines = new Array(max(highestLineNumber, countLines(song.content))).fill(null);
+		song.notes?.forEach((note) => (lines[note.line_number] = note));
+		return lines.findIndex((line) => line === null);
+	}
+
 	if (song && song.format) {
 		return (
 			<>
@@ -101,6 +123,7 @@ export default function SongPresenterPage() {
 					song={song}
 					onFormatChange={handleFormatChange}
 					onSongChange={handleSongChange}
+					onAddNote={handleAddNote}
 				/>
 
 				<Metronome

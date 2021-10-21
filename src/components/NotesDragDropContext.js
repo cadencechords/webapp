@@ -3,6 +3,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import Note from "./Note";
 import _ from "lodash";
 import { countLines } from "../utils/SongUtils";
+import { max } from "../utils/numberUtils";
 import notesApi from "../api/notesApi";
 import { useCallback } from "react";
 import { useEffect } from "react";
@@ -14,26 +15,30 @@ export default function NotesDragDropContext({
 	onReplaceTempNote,
 	onUpdateNote,
 	onDeleteNote,
+	rearrangable,
 }) {
-	const [lines, setLines] = useState(new Array(countLines(song.content)).fill(null));
+	const [lineCount] = useState(() => {
+		let highestLineNumber = 0;
+		song.notes.forEach((note) => {
+			if (note.line_number > highestLineNumber) highestLineNumber = note.line_number;
+		});
+
+		return max(highestLineNumber, countLines(song.content));
+	});
+
+	const [lines, setLines] = useState(new Array(lineCount).fill(null));
 
 	useEffect(() => {
-		let newLines = new Array(countLines(song.content)).fill(null);
-		song.notes?.forEach((note) => {
-			if (note.line_number < newLines.length && newLines[note.line_number] != null) {
-				newLines[note.line_number] = note;
-			} else {
-				// find the next available line number
-			}
-		});
+		let newLines = new Array(lineCount).fill(null);
+		song.notes?.forEach((note) => (newLines[note.line_number] = note));
 		setLines(newLines);
-	}, [song]);
+	}, [song, lineCount]);
 
 	function handleDragEnd({ source, destination }) {
 		if (!destination) return;
 
 		let noteBeingUpdated = lines[source.index];
-		handleUpdateNote(noteBeingUpdated.id, { line_number: destination.index });
+		handleUpdateNote(noteBeingUpdated, { line_number: destination.index });
 		setLines((currentLines) => reorder(currentLines, source.index, destination.index));
 	}
 
@@ -63,9 +68,15 @@ export default function NotesDragDropContext({
 		return snapshot.isDraggingOver ? "bg-gray-100" : "bg-white";
 	}
 
-	function handleUpdateNote(noteId, updates) {
-		onUpdateNote(noteId, updates);
-		debounce(noteId, updates);
+	function handleUpdateNote(note, updates) {
+		setLines((currentLines) => {
+			let updatedLines = currentLines.map((line, index) =>
+				index === note.line_number ? { ...note, ...updates } : line
+			);
+			return updatedLines;
+		});
+		onUpdateNote(note.id, updates);
+		debounce(note.id, updates);
 	}
 
 	// eslint-disable-next-line
@@ -78,7 +89,7 @@ export default function NotesDragDropContext({
 					console.log(error);
 				}
 			},
-			[800]
+			[1500]
 		),
 		[]
 	);
@@ -109,6 +120,7 @@ export default function NotesDragDropContext({
 									key={index}
 									onUpdate={handleUpdateNote}
 									onDelete={handleDelete}
+									isDragDisabled={!rearrangable}
 								/>
 							) : (
 								<Draggable key={index} draggableId={`${index}`} index={index} isDragDisabled>
@@ -140,3 +152,7 @@ export default function NotesDragDropContext({
 		</DragDropContext>
 	);
 }
+
+NotesDragDropContext.defaultProps = {
+	rearrangable: true,
+};

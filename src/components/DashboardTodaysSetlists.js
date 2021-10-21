@@ -11,7 +11,7 @@ export default function DashboardTodaysSetlists({ setlists }) {
 		return setlists?.map((setlist) => (
 			<div className="border-b last:border-0 py-2.5 px-2 flex-between" key={setlist.id}>
 				<div>
-					<div className="font-semibold mb-2">Sunday morning</div>
+					<div className="font-semibold mb-2">{setlist.name}</div>
 					<div className="text-sm text-gray-600 flex items-center">
 						<div className="flex items-center">
 							<CalendarIcon className="w-4 h-4 mr-2" />

@@ -3,10 +3,10 @@ import { Draggable } from "react-beautiful-dnd";
 import NoteDialog from "../dialogs/NoteDialog";
 import { useState } from "react";
 
-export default function Note({ note, inde, onUpdate, onDelete }) {
+export default function Note({ note, inde, onUpdate, onDelete, isDragDisabled }) {
 	const [showDialog, setShowDialog] = useState(false);
 	return (
-		<Draggable draggableId={`${note.id}`} index={inde}>
+		<Draggable draggableId={`${note.id}`} index={inde} isDragDisabled={isDragDisabled}>
 			{(provided) => (
 				<>
 					<div
@@ -19,7 +19,7 @@ export default function Note({ note, inde, onUpdate, onDelete }) {
 								NOTE_COLORS[note.color].main
 							}`}
 							value={note.content || ""}
-							onChange={(e) => onUpdate(note.id, { content: e.target.value })}
+							onChange={(e) => onUpdate(note, { content: e.target.value })}
 							rows={3}
 							placeholder="Type here"
 						></textarea>
@@ -46,7 +46,7 @@ export default function Note({ note, inde, onUpdate, onDelete }) {
 						open={showDialog}
 						onCloseDialog={() => setShowDialog(false)}
 						note={note}
-						onUpdate={(updates) => onUpdate(note.id, updates)}
+						onUpdate={(updates) => onUpdate(note, updates)}
 						onDelete={() => onDelete(note.id)}
 					/>
 				</>

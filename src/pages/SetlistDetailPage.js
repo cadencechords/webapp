@@ -1,6 +1,5 @@
 import { DELETE_SETLISTS, EDIT_SETLISTS, EDIT_SONGS, PUBLISH_SETLISTS } from "../utils/constants";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 
 import Alert from "../components/Alert";
@@ -19,8 +18,8 @@ import SetlistApi from "../api/SetlistApi";
 import SetlistSongsList from "../components/SetlistSongsList";
 import _ from "lodash";
 import { selectCurrentMember } from "../store/authSlice";
-import { setSetlistBeingPresented } from "../store/presenterSlice";
 import { toShortDate } from "../utils/DateUtils";
+import { useSelector } from "react-redux";
 
 export default function SetlistDetailPage() {
 	const [setlist, setSetlist] = useState();
@@ -32,7 +31,6 @@ export default function SetlistDetailPage() {
 	const [showPublicSetlistDetailsDialog, setShowPublicSetlistDetailsDialog] = useState(false);
 	const router = useHistory();
 	const id = useParams().id;
-	const dispatch = useDispatch();
 	const currentMember = useSelector(selectCurrentMember);
 
 	useEffect(() => (document.title = setlist ? setlist.name + " | Sets" : "Set"), [setlist]);
@@ -73,7 +71,6 @@ export default function SetlistDetailPage() {
 	};
 
 	const handleOpenInPresenter = () => {
-		dispatch(setSetlistBeingPresented(setlist));
 		router.push(`/sets/${id}/present`);
 	};
 

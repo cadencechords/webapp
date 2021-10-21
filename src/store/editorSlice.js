@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 export const editorSlice = createSlice({
 	name: "editor",
 	initialState: {
@@ -18,10 +19,13 @@ export const editorSlice = createSlice({
 		updateSongContent: (state, action) => {
 			state.songBeingEdited.content = action.payload;
 		},
+		updateSongBeingEdited: (state, action) => {
+			state.songBeingEdited = { ...state.songBeingEdited, ...action.payload };
+		},
 	},
 });
 
-export const { setSongBeingEdited, updateSongContent } = editorSlice.actions;
+export const { setSongBeingEdited, updateSongContent, updateSongBeingEdited } = editorSlice.actions;
 
 export default editorSlice.reducer;
 
