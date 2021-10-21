@@ -11,7 +11,7 @@ export default function FeedbackPopover() {
 	const [loading, setLoading] = useState(false);
 	const teamId = useSelector(selectTeamId);
 
-	let button = <AnnouncementIcon className="w-7 h-7 transform -rotate-3 text-gray-600" />;
+	let button = <AnnouncementIcon className="w-7 h-7 transform -rotate-3 text-gray-600 mr-8" />;
 
 	const handleSubmit = async () => {
 		try {

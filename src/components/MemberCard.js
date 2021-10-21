@@ -29,7 +29,7 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 		let currentUserBubble;
 		if (isCurrentUser) {
 			currentUserBubble = (
-				<span className="rounded-full px-3 py-0.5 bg-purple-600 text-white text-xs mb-1 inline-block">
+				<span className="rounded-full px-3 py-0.5 bg-purple-600 text-white text-xs mb-1 inline">
 					Me
 				</span>
 			);
@@ -49,18 +49,19 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 			teamPosition = <div className="text-sm">{member.position}</div>;
 		}
 		return (
-			<div className="rounded-md bg-gray-50 py-3 px-5 text-center relative">
+			<div className="rounded-md bg-gray-50 py-3 px-5 text-center flex flex-col relative">
 				<Button variant="open" className="absolute right-2 top-2" onClick={onShowMemberMenu}>
 					<DotsVerticalIcon className="text-gray-600 h-5" />
 				</Button>
 				<div className="m-auto w-20 h-20 flex-center">
 					<ProfilePicture url={member.image_url} />
 				</div>
-				{currentUserBubble}
+				<div>{currentUserBubble}</div>
 				<div className="font-semibold">
 					{member.first_name ? member.first_name + " " + member.last_name : member.email}
 				</div>
 				{teamPosition}
+				<div className="flex-grow"></div>
 				<Link to={`/members/${member.id}`}>
 					<Button variant="outlined" size="xs" full className="mt-2">
 						View profile

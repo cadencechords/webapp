@@ -15,9 +15,10 @@ export default function Note({ note, inde, onUpdate, onDelete, isDragDisabled })
 						className="hidden md:flex shadow-md"
 					>
 						<textarea
-							className={`w-full p-2 resize-none h-full outline-none focus:outline-none text-base md:text-sm ${
-								NOTE_COLORS[note.color].main
-							}`}
+							className={
+								`w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm ` +
+								`${NOTE_COLORS[note.color].main}`
+							}
 							value={note.content || ""}
 							onChange={(e) => onUpdate(note, { content: e.target.value })}
 							rows={3}
