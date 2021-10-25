@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
+import Alert from "../components/Alert";
+import AuthApi from "../api/AuthApi";
+import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import OutlinedInput from "../components/inputs/OutlinedInput";
 import PasswordRequirements from "../components/PasswordRequirements";
-import AuthApi from "../api/AuthApi";
-import Alert from "../components/Alert";
-import Button from "../components/Button";
+import useQuery from "../hooks/useQuery";
 
 export default function SignUpPage() {
 	const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-	const [email, setEmail] = useState("");
+	const [email, setEmail] = useState(useQuery().get("email") || "");
 	const [password, setPassword] = useState("");
 	const [passwordConfirmation, setPasswordConfirmation] = useState("");
 	const [isLongEnough, setIsLongEnough] = useState(false);
