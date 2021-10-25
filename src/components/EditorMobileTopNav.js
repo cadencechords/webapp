@@ -1,20 +1,13 @@
 import AdjustmentsIcon from "@heroicons/react/outline/AdjustmentsIcon";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import Button from "./Button";
-import { useHistory } from "react-router-dom";
 
-export default function EditorMobileTopNav({ song, onShowEditorDrawer }) {
-	const router = useHistory();
-
-	const handleGoBack = () => {
-		router.goBack();
-	};
-
+export default function EditorMobileTopNav({ song, onShowEditorDrawer, onGoBack }) {
 	if (song) {
 		return (
 			<nav className="py-2 px-1 border-b bg-gray-50">
 				<div className="flex-between max-w-3xl mx-auto">
-					<Button variant="open" color="gray" onClick={handleGoBack}>
+					<Button variant="open" color="gray" onClick={onGoBack}>
 						<ArrowNarrowLeftIcon className="h-6 w-6" />
 					</Button>
 					<h1 className="font-semibold w-1/3 text-center overflow-ellipsis whitespace-nowrap overflow-hidden">

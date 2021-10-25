@@ -56,7 +56,11 @@ export default function CreateNewTeamPage() {
 				onClick={setSelectedPlan}
 				selected={"Pro" === selectedPlan}
 				className="mb-8"
-				pricing="$20.00"
+				pricing={
+					<div>
+						$10.00<span className="text-sm"> / month</span>
+					</div>
+				}
 				trialMessage="30 Day Free Trial"
 			/>
 			<div className="mb-1 font-semibold text-left">Your team's name</div>

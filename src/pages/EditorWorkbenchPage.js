@@ -41,7 +41,6 @@ export default function EditorWorkbenchPage() {
 	const currentSubscription = useSelector(selectCurrentSubscription);
 
 	if (!songBeingEdited || isEmpty(songBeingEdited)) {
-		dispatch(setSetlistBeingPresented({}));
 		router.push("/");
 	}
 
@@ -52,6 +51,7 @@ export default function EditorWorkbenchPage() {
 	}, [songBeingEdited]);
 
 	const handleGoBack = () => {
+		dispatch(setSetlistBeingPresented({}));
 		router.goBack();
 	};
 
@@ -161,6 +161,7 @@ export default function EditorWorkbenchPage() {
 				<EditorMobileTopNav
 					song={songBeingEdited}
 					onShowEditorDrawer={() => setShowEditorDrawer(true)}
+					onGoBack={handleGoBack}
 				/>
 				<EditorDrawer
 					formatOptions={format}
