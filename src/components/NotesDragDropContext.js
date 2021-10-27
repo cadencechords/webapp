@@ -19,7 +19,7 @@ export default function NotesDragDropContext({
 }) {
 	const [lineCount] = useState(() => {
 		let highestLineNumber = 0;
-		song.notes.forEach((note) => {
+		song.notes?.forEach((note) => {
 			if (note.line_number > highestLineNumber) highestLineNumber = note.line_number;
 		});
 

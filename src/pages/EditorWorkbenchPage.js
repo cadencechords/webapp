@@ -37,6 +37,9 @@ export default function EditorWorkbenchPage() {
 	const [changes, setChanges] = useState({ content: null, format: {} });
 
 	const router = useHistory();
+
+	if (!songBeingEdited) router.push("/");
+
 	const dispatch = useDispatch();
 	const currentSubscription = useSelector(selectCurrentSubscription);
 
