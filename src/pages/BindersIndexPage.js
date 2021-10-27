@@ -43,7 +43,7 @@ export default function BindersIndexPage() {
 
 	let content = null;
 	if (binders.length === 0) {
-		content = <NoDataMessage type="binder" loading={loading} />;
+		content = <NoDataMessage type="binders" loading={loading} />;
 	} else {
 		content = (
 			<div className="mb-10">
