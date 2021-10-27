@@ -1,7 +1,7 @@
-import { useState } from "react";
 import BinderColor from "./BinderColor";
-import StyledListBox from "./StyledListBox";
 import { COLORS } from "../utils/BinderUtils";
+import StyledListBox from "./StyledListBox";
+import { useState } from "react";
 
 export default function ColorsList({ color, onChange }) {
 	const [options] = useState(() => {
@@ -26,5 +26,7 @@ export default function ColorsList({ color, onChange }) {
 			</div>
 		),
 	};
-	return <StyledListBox options={options} selectedOption={selectedColor} onChange={onChange} />;
+	return (
+		<StyledListBox options={options} selectedOption={selectedColor} onChange={onChange} relative />
+	);
 }

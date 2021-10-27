@@ -11,12 +11,8 @@ import ReactDOM from "react-dom";
 import store from "./store/store";
 
 Sentry.init({
-	dsn: "https://269f87bd6f1940f895b2887712bdee5b@o486136.ingest.sentry.io/6033250",
+	dsn: process.env.REACT_APP_SENTRY_URL,
 	integrations: [new Integrations.BrowserTracing()],
-
-	// Set tracesSampleRate to 1.0 to capture 100%
-	// of transactions for performance monitoring.
-	// We recommend adjusting this value in production
 	tracesSampleRate: 1.0,
 });
 

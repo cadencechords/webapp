@@ -1,14 +1,15 @@
-import StyledDialog from "./StyledDialog";
-import OpenInput from "./inputs/OpenInput";
-import Checkbox from "./Checkbox";
 import { useEffect, useState } from "react";
-import StackedList from "./StackedList";
-import SongApi from "../api/SongApi";
-import PulseLoader from "react-spinners/PulseLoader";
+
 import BinderApi from "../api/BinderApi";
-import { useParams } from "react-router";
 import Button from "./Button";
+import Checkbox from "./Checkbox";
+import OpenInput from "./inputs/OpenInput";
+import PulseLoader from "react-spinners/PulseLoader";
+import SongApi from "../api/SongApi";
+import StackedList from "./StackedList";
+import StyledDialog from "./StyledDialog";
 import { useHistory } from "react-router";
+import { useParams } from "react-router";
 
 export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onAdd }) {
 	const [songs, setSongs] = useState([]);
@@ -94,7 +95,9 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 					<PulseLoader color="blue" />
 				</div>
 			) : (
-				<StackedList items={songListItems} />
+				<div className="max-h-96">
+					<StackedList items={songListItems} />
+				</div>
 			)}
 
 			<div className="flex justify-between mt-6 items-center">
