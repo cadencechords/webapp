@@ -166,9 +166,14 @@ function determineClassesForChordLine(format) {
 
 export function formatChordPro(content) {
 	const parser = new ChordSheetJS.ChordProParser();
-	const song = parser.parse(content);
-	const formatter = new ChordSheetJS.TextFormatter();
-	return formatter.format(song);
+	try {
+		const song = parser.parse(content);
+		const formatter = new ChordSheetJS.TextFormatter();
+		return formatter.format(song);
+	} catch (error) {
+		console.log(error);
+		return content;
+	}
 }
 
 export function countLines(content) {
