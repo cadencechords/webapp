@@ -3,6 +3,8 @@ import * as Transposer from "chord-transposer";
 import ChordSheetJS from "chordsheetjs";
 import TextAutosize from "../components/TextAutosize";
 
+const CHORD_PRO_REGEX = new RegExp(/[[].*[\]]/);
+
 export function isChordLine(line) {
 	if (line) {
 		let parts = line.split(" ");
@@ -109,7 +111,9 @@ export function hasAnyKeysSet(song) {
 export function html(song, onLineDoubleClick) {
 	let songCopy = { ...song };
 	if (song?.content && song?.format) {
-		songCopy.content = formatChordPro(songCopy.content);
+		if (isChordPro(songCopy.content)) {
+			songCopy.content = formatChordPro(songCopy.content);
+		}
 		let content = songCopy.show_transposed ? transpose(songCopy) : songCopy.content;
 		let linesOfSong = content.split(/\r\n|\r|\n/);
 
@@ -142,6 +146,10 @@ export function html(song, onLineDoubleClick) {
 	return "";
 }
 
+function isChordPro(content) {
+	return CHORD_PRO_REGEX.test(content);
+}
+
 function determineClassesForLine(line, format) {
 	let baseClasses = format.autosize ? "whitespace-pre" : "whitespace-pre-wrap";
 	if (isChordLine(line)) {
@@ -171,7 +179,6 @@ export function formatChordPro(content) {
 		const formatter = new ChordSheetJS.TextFormatter();
 		return formatter.format(song);
 	} catch (error) {
-		console.log(error);
 		return content;
 	}
 }
