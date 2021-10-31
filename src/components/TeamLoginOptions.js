@@ -1,8 +1,9 @@
 import { Link, useHistory } from "react-router-dom";
-import TeamLoginOption from "./TeamLoginOption";
-import { useDispatch } from "react-redux";
-import { setTeamId } from "../store/authSlice";
+
 import Button from "./Button";
+import TeamLoginOption from "./TeamLoginOption";
+import { setTeamId } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
 export default function TeamLoginOptions({ teams }) {
 	const router = useHistory();
@@ -25,7 +26,7 @@ export default function TeamLoginOptions({ teams }) {
 			<div className="mt-6 flex flex-col">
 				<span className="mb-4">Or create a new team</span>
 				<Link to="/login/teams/new">
-					<Button variant="open" full>
+					<Button variant="outlined" size="md" full>
 						Create
 					</Button>
 				</Link>
