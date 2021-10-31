@@ -15,7 +15,7 @@ export default function SongKeyField({ songKey, onChange, editable }) {
 		<div className="flex flex-row items-center mb-1">
 			<DetailTitle>Key:</DetailTitle>
 			<EditableData
-				value={songKey ? songKey : ""}
+				value={songKey || ""}
 				onChange={() => null}
 				placeholder="Add the key"
 				onClick={() => setShowKeyChooserDialog(true)}

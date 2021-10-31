@@ -216,7 +216,7 @@ export default function EditorWorkbenchPage() {
 							{html({ content: changes.content || songBeingEdited.content, format: format })}
 						</div>
 						{currentSubscription.isPro && (
-							<div>
+							<div className="w-64">
 								<NotesDragDropContext
 									song={songBeingEdited}
 									onDeleteNote={handleDeleteNote}
@@ -244,7 +244,7 @@ export default function EditorWorkbenchPage() {
 								{html({ content: changes.content || songBeingEdited.content, format: format })}
 							</div>
 							{currentSubscription.isPro && (
-								<div className="ml-4">
+								<div className="ml-10 w-64">
 									<NotesDragDropContext
 										song={songBeingEdited}
 										onDeleteNote={handleDeleteNote}

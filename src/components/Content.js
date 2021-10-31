@@ -6,6 +6,7 @@ import AccountProfilePage from "../pages/AccountProfilePage";
 import BinderDetailPage from "../pages/BinderDetailPage";
 import BindersIndexPage from "../pages/BindersIndexPage";
 import DashboardPage from "../pages/DashboardPage";
+import ImportFilesPage from "../pages/ImportFilesPage";
 import MemberDetailPage from "../pages/MemberDetailPage";
 import MembersIndexPage from "../pages/MembersIndexPage";
 import MobileNav from "./MobileNav";
@@ -44,6 +45,9 @@ export default function Content() {
 					</Route>
 					<Route path="/binders" exact>
 						<BindersIndexPage />
+					</Route>
+					<Route path="/import/files" exact>
+						<ImportFilesPage />
 					</Route>
 					<Route path="/import/onsong" exact>
 						<OnsongImportPage />

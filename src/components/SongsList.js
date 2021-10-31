@@ -1,9 +1,8 @@
-import { useHistory } from "react-router-dom";
 import ExclamationIcon from "@heroicons/react/outline/ExclamationIcon";
-
+import KeyBadge from "./KeyBadge";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
-import KeyBadge from "./KeyBadge";
+import { useHistory } from "react-router-dom";
 
 export default function SongsList({ songs }) {
 	const router = useHistory();
@@ -22,7 +21,7 @@ export default function SongsList({ songs }) {
 						{songs?.map((song) => {
 							let binders = song.binders?.length > 0 ? concatBinderNames(song.binders) : "-";
 							let songNameAndKey = (
-								<div className="flex items-center gap-2">
+								<div className="flex items-center">
 									{song.name}
 									<KeyBadge songKey={song.original_key} />
 								</div>

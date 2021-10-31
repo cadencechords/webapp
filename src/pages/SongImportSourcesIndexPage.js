@@ -1,6 +1,8 @@
 import { Link, useHistory } from "react-router-dom";
 
 import { ADD_SONGS } from "../utils/constants";
+import Button from "../components/Button";
+import DocumentAddIcon from "@heroicons/react/outline/DocumentAddIcon";
 import OnsongLogo from "../images/onsong.svg";
 import PlanningCenterButton from "../components/buttons/PlanningCenterButton";
 import { selectCurrentMember } from "../store/authSlice";
@@ -28,6 +30,12 @@ export default function SongImportSourcesIndexPage() {
 						</button>
 					</Link>
 					<PlanningCenterButton />
+					<Link to="/import/files">
+						<Button full variant="outlined" className="shadow-md flex-center" color="black">
+							<DocumentAddIcon className="w-5 h-5 mr-2 text-blue-600" />
+							Import Files (Word, PDF or text)
+						</Button>
+					</Link>
 				</div>
 			</>
 		);
