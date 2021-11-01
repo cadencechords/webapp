@@ -12,7 +12,7 @@ export default function Roles({ roles }) {
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
 
 	return (
-		<div className="grid grid=cols-1 sm:grid-cols-2  lg:grid-cols-3 gap-4 my-4">
+		<div className="grid grid=cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
 			{roles?.map((role) => (
 				<RoleCard key={role.id} role={role} />
 			))}
@@ -20,9 +20,9 @@ export default function Roles({ roles }) {
 				<>
 					<Card
 						onClick={() => setShowCreateDialog(true)}
-						className="cursor-pointer flex-center text-gray-500 font-semibold text-lg hover:bg-gray-200 focus:bg-gray-200 transition-colors"
+						className="cursor-pointer flex-center text-gray-600 font-medium hover:bg-gray-200 focus:bg-gray-200 transition-colors"
 					>
-						<PlusCircleIcon className="w-5 h-5 mr-2" />
+						<PlusCircleIcon className="w-4 h-4 mr-2" />
 						New role
 					</Card>
 					<CreateRoleDialog

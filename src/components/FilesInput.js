@@ -35,7 +35,7 @@ export default function FilesInput({ onChange, onRemove, accept, buttonText }) {
 			)}
 			<div className="grid grid-cols-2 lg:grid-cols-3 gap-4 my-8">
 				{files.map((file, index) => (
-					<div key={index} className="p-3 border rounded-md flex-between">
+					<div key={index} className="p-3 border rounded-md flex-between text-sm">
 						{file.name}
 						<Button variant="open" size="xs" className="ml-3" onClick={() => handleRemove(file)}>
 							<TrashIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />

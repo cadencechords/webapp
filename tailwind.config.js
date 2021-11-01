@@ -13,6 +13,7 @@ module.exports = {
 			borderColor: ["checked"],
 			borderWidth: ["last"],
 			display: ["group-hover"],
+			borderRadius: ["last", "first"],
 		},
 	},
 	plugins: [],

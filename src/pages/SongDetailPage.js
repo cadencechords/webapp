@@ -24,6 +24,7 @@ import SongApi from "../api/SongApi";
 import SongKeyField from "../components/SongKeyField";
 import SongOptionsPopover from "../components/SongOptionsPopover";
 import SongPreview from "../components/SongPreview";
+import SongTabs from "../components/SongTabs";
 import TransposedKeyField from "../components/TransposedKeyField";
 import { isEmpty } from "../utils/ObjectUtils";
 import { selectCurrentMember } from "../store/authSlice";
@@ -314,6 +315,7 @@ export default function SongDetailPage() {
 					Save Changes
 				</Button>
 			)}
+			<SongTabs />
 			<AddGenreDialog
 				open={showAddGenreDialog}
 				currentSong={song}

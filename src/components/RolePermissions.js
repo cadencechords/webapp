@@ -221,6 +221,38 @@ export default function RolePermissions({ role, permissions, onPermissionToggled
 					description="User can view events on the calendar"
 					onChange={(checkedValue) => handlePermissionToggled("View events", checkedValue)}
 				/>
+
+				<SectionTitle title="File permissions" />
+				<div>
+					<Permission
+						checkable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+						checked={isPermissionEnabled("Add files")}
+						name="Add files"
+						description="User can add or attach files to a song"
+						onChange={(checkedValue) => handlePermissionToggled("Add files", checkedValue)}
+					/>
+					<Permission
+						checkable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+						checked={isPermissionEnabled("Edit files")}
+						name="Edit files"
+						description="User can edit and change the name of existing file names"
+						onChange={(checkedValue) => handlePermissionToggled("Edit files", checkedValue)}
+					/>
+					<Permission
+						checkable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+						checked={isPermissionEnabled("Delete files")}
+						name="Delete files"
+						description="User can delete/unattach files from a song"
+						onChange={(checkedValue) => handlePermissionToggled("Delete files", checkedValue)}
+					/>
+					<Permission
+						checkable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+						checked={isPermissionEnabled("View files")}
+						name="View files"
+						description="User can view/download files attached to a song"
+						onChange={(checkedValue) => handlePermissionToggled("View files", checkedValue)}
+					/>
+				</div>
 			</div>
 		</div>
 	);

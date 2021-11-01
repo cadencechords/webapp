@@ -28,4 +28,9 @@ export const EDIT_EVENTS = "Edit events";
 export const ADD_EVENTS = "Add events";
 export const DELETE_EVENTS = "Delete events";
 
+export const VIEW_FILES = "View files";
+export const EDIT_FILES = "Edit files";
+export const ADD_FILES = "Add files";
+export const DELETE_FILES = "Delete files";
+
 export function noop() {}
