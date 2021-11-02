@@ -6,11 +6,9 @@ import Alert from "../components/Alert";
 import Button from "../components/Button";
 import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
 import ChangeSetlistDateDialog from "../components/ChangeSetlistDateDialog";
-import GlobeIcon from "@heroicons/react/outline/GlobeIcon";
 import PageLoading from "../components/PageLoading";
 import PageTitle from "../components/PageTitle";
 import PlayIcon from "@heroicons/react/solid/PlayIcon";
-import PublicSetlistApi from "../api/PublicSetlistApi";
 import PublicSetlistDetailsDialog from "../dialogs/PublicSetlistDetailsDialog";
 import PublishSetlistDialog from "../components/PublishSetlistDialog";
 import SectionTitle from "../components/SectionTitle";
@@ -20,6 +18,10 @@ import _ from "lodash";
 import { selectCurrentMember } from "../store/authSlice";
 import { toShortDate } from "../utils/DateUtils";
 import { useSelector } from "react-redux";
+
+// import GlobeIcon from "@heroicons/react/outline/GlobeIcon";
+
+// import PublicSetlistApi from "../api/PublicSetlistApi";
 
 export default function SetlistDetailPage() {
 	const [setlist, setSetlist] = useState();
@@ -40,8 +42,8 @@ export default function SetlistDetailPage() {
 				let result = await SetlistApi.getOne(id);
 				setSetlist(result.data);
 
-				result = await PublicSetlistApi.getOne(id);
-				setPublicSetlist(result.data);
+				// result = await PublicSetlistApi.getOne(id);
+				// setPublicSetlist(result.data);
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -156,7 +158,7 @@ export default function SetlistDetailPage() {
 							</Button>
 							{!publicSetlist && currentMember.can(PUBLISH_SETLISTS) && (
 								<>
-									<Button
+									{/* <Button
 										variant="outlined"
 										color="black"
 										className="mb-2 hidden md:flex justify-center items-center"
@@ -176,7 +178,7 @@ export default function SetlistDetailPage() {
 									>
 										<GlobeIcon className="h-5 w-5 mr-4 text-blue-700" />
 										Publish
-									</Button>
+									</Button> */}
 								</>
 							)}
 						</div>

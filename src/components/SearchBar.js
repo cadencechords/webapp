@@ -5,7 +5,6 @@ import { useState } from "react";
 export default function SearchBar() {
 	const [isSearching, setIsSearching] = useState(false);
 
-	console.log(isSearching);
 	return (
 		<div className="ml-5 flex items-center">
 			<SearchIcon className="h-4 w-4 text-gray-500" />
