@@ -1,12 +1,12 @@
-import _ from "lodash";
 import { useCallback, useState } from "react";
 
-import OpenInput from "./inputs/OpenInput";
-import StyledDialog from "./StyledDialog";
-import SetlistApi from "../api/SetlistApi";
 import BinderApi from "../api/BinderApi";
-import SongApi from "../api/SongApi";
+import OpenInput from "./inputs/OpenInput";
 import SearchResults from "./SearchResults";
+import SetlistApi from "../api/SetlistApi";
+import SongApi from "../api/SongApi";
+import StyledDialog from "./StyledDialog";
+import _ from "lodash";
 
 export default function SearchDialog({ open, onCloseDialog }) {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -52,7 +52,7 @@ export default function SearchDialog({ open, onCloseDialog }) {
 				/>
 			</div>
 
-			<SearchResults results={searchResults} />
+			<SearchResults results={searchResults} onCloseDialog={onCloseDialog} />
 		</StyledDialog>
 	);
 }

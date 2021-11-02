@@ -1,28 +1,35 @@
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
 import NoDataMessage from "./NoDataMessage";
 import SearchResult from "./SearchResult";
 
-export default function SearchResults({ results }) {
+export default function SearchResults({ results, onCloseDialog }) {
 	const router = useHistory();
 
 	if (results) {
 		let binders = results.binders?.map((binder) => (
-			<SearchResult key={binder.name} onClick={() => router.push(`/binders/${binder.id}`)}>
-				{binder.name}
-			</SearchResult>
+			<Link to={`/binders/${binder.id}`}>
+				<SearchResult key={binder.name} onClick={onCloseDialog}>
+					{binder.name}
+				</SearchResult>
+			</Link>
 		));
 		let songs = results.songs?.map((song) => (
-			<SearchResult key={song.id} onClick={() => router.push(`/songs/${song.id}`)}>
-				{song.name}
-			</SearchResult>
+			<Link to={`/songs/${song.id}`} className="border-b last:border-0">
+				<SearchResult key={song.id} onClick={onCloseDialog}>
+					{song.name}
+				</SearchResult>
+			</Link>
 		));
 		let setlists = results.setlists?.map((setlist) => (
-			<SearchResult key={setlist.id} onClick={() => router.push(`/sets/${setlist.id}`)}>
-				{setlist.name}
-			</SearchResult>
+			<Link to={`/sets/${setlist.id}`} className="border-b last:border-0">
+				<SearchResult key={setlist.id} onClick={onCloseDialog}>
+					{setlist.name}
+				</SearchResult>
+			</Link>
 		));
 		return (
-			<div className="mt-4 px-2">
+			<div className="mt-4 px-2 max-h-96 overflow-y-auto">
 				<section className="mb-4">
 					<h3 className="font-semibold mb-1">Binders</h3>
 					{binders.length === 0 ? <NoDataMessage>No binders found</NoDataMessage> : binders}
