@@ -1,4 +1,3 @@
-import OpenInput from "./inputs/OpenInput";
 import SearchDialog from "./SearchDialog";
 import SearchIcon from "@heroicons/react/outline/SearchIcon";
 import { useState } from "react";

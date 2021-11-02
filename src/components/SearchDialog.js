@@ -45,7 +45,7 @@ export default function SearchDialog({ open, onCloseDialog }) {
 		<StyledDialog open={open} onCloseDialog={onCloseDialog} borderedTop={false} showClose={false}>
 			<div className="border-b pb-4">
 				<OpenInput
-					placeholder="Search for binders, lyrics or sets"
+					placeholder="Search for binders, songs or sets"
 					onChange={handleSearchQueryChange}
 					value={searchQuery}
 					autoFocus={true}

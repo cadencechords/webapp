@@ -1,11 +1,8 @@
-import { Link, useHistory } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import NoDataMessage from "./NoDataMessage";
 import SearchResult from "./SearchResult";
 
 export default function SearchResults({ results, onCloseDialog }) {
-	const router = useHistory();
-
 	if (results) {
 		let binders = results.binders?.map((binder) => (
 			<Link to={`/binders/${binder.id}`}>

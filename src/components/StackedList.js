@@ -1,13 +1,15 @@
 import StackedListItem from "./StackedListItem";
 
-export default function StackedList({ items }) {
+export default function StackedList({ items, className }) {
 	return (
-		<div>
+		<div className={className}>
 			{items?.map((item, index) => (
-				<StackedListItem key={item.id ? item.id : index}>
-					{item}
-				</StackedListItem>
+				<StackedListItem key={item.id ? item.id : index}>{item}</StackedListItem>
 			))}
 		</div>
 	);
 }
+
+StackedList.defaultProps = {
+	className: "",
+};

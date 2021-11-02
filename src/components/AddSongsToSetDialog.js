@@ -1,11 +1,13 @@
-import StyledDialog from "./StyledDialog";
-import AddCancelActions from "./buttons/AddCancelActions";
-import WellInput from "./inputs/WellInput";
-import StackedList from "./StackedList";
 import { useEffect, useState } from "react";
-import SongApi from "../api/SongApi";
+
+import AddCancelActions from "./buttons/AddCancelActions";
 import Checkbox from "./Checkbox";
 import SetlistApi from "../api/SetlistApi";
+import SongApi from "../api/SongApi";
+import StackedList from "./StackedList";
+import StyledDialog from "./StyledDialog";
+import WellInput from "./inputs/WellInput";
+import { noop } from "../utils/constants";
 import { useParams } from "react-router";
 
 export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boundSongs }) {
@@ -61,16 +63,19 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 		onCloseDialog();
 	};
 
-	const songListItems = filteredSongs.map((song) => (
-		<div key={song.id} className="flex">
-			<Checkbox
-				checked={songsToAdd.includes(song)}
-				color="blue"
-				onChange={(value) => handleChecked(value, song)}
-			/>
-			<span className="ml-4">{song.name}</span>
-		</div>
-	));
+	const songListItems = filteredSongs.map((song) => {
+		const isChecked = songsToAdd.includes(song);
+		return (
+			<div
+				key={song.id}
+				className="flex cursor-pointer"
+				onClick={() => handleChecked(!isChecked, song)}
+			>
+				<Checkbox checked={isChecked} color="blue" onChange={noop} />
+				<span className="ml-4">{song.name}</span>
+			</div>
+		);
+	});
 
 	const handleSaveAdds = async () => {
 		setSavingAdds(true);
@@ -91,7 +96,7 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 			<div className="mb-4">
 				<WellInput onChange={setQuery} value={query} />
 			</div>
-			<StackedList items={songListItems} />
+			<StackedList className="max-h-96 overflow-y-auto mb-2" items={songListItems} />
 			<AddCancelActions
 				addText={songsToAdd.length !== 1 ? `Add ${songsToAdd.length} songs` : "Add 1 song"}
 				onCancel={handleCloseDialog}
