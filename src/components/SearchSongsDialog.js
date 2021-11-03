@@ -8,6 +8,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 import SongApi from "../api/SongApi";
 import StackedList from "./StackedList";
 import StyledDialog from "./StyledDialog";
+import { noop } from "../utils/constants";
 import { useHistory } from "react-router";
 import { useParams } from "react-router";
 
@@ -72,16 +73,19 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 		}
 	};
 
-	const songListItems = songs.map((song) => (
-		<div key={song.id} className="flex items-center">
-			<Checkbox
-				checked={songsToAdd.includes(song)}
-				color="blue"
-				onChange={(value) => handleChecked(value, song)}
-			/>
-			<span className="ml-4">{song.name}</span>
-		</div>
-	));
+	const songListItems = songs.map((song) => {
+		let checked = songsToAdd.includes(song);
+		return (
+			<div
+				key={song.id}
+				className="flex items-center cursor-pointer"
+				onClick={() => handleChecked(!checked, song)}
+			>
+				<Checkbox checked={checked} color="blue" onChange={noop} />
+				<span className="ml-4">{song.name}</span>
+			</div>
+		);
+	});
 
 	return (
 		<StyledDialog open={open} onCloseDialog={handleClose} borderedTop={false}>
@@ -95,7 +99,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 					<PulseLoader color="blue" />
 				</div>
 			) : (
-				<div className="max-h-96">
+				<div className="max-h-96 overflow-y-auto">
 					<StackedList items={songListItems} />
 				</div>
 			)}

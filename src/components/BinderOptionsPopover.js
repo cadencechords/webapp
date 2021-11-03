@@ -37,7 +37,7 @@ export default function BinderOptionsPopover({ onDeleteClick, onChangeColorClick
 				onCancel={() => setShowDeleteDialog(false)}
 				onConfirm={handleDelete}
 			>
-				Deleting this binder will NOT delete any songs in the binder. Deleting is irreversible.{" "}
+				Deleting this binder will NOT delete any songs in the binder. Deleting is irreversible.
 			</ConfirmDeleteDialog>
 			<StyledPopover button={button} position="bottom-start">
 				<div className="w-60">

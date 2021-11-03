@@ -39,7 +39,7 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 		if (isCurrentUser) {
 			teamPosition = (
 				<EditableData
-					value={member.position}
+					value={member.position || ""}
 					placeholder="What's your position on the team?"
 					centered
 					onChange={handlePositionChange}

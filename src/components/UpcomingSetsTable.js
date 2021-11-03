@@ -25,9 +25,11 @@ export default function UpcomingSetsTable({ setlists, onClick }) {
 								/>
 							))
 						) : (
-							<td colSpan={3} className="p-4">
-								<NoDataMessage type="sets" />
-							</td>
+							<tr>
+								<td colSpan={3} className="p-4">
+									<NoDataMessage type="sets" />
+								</td>
+							</tr>
 						)}
 					</tbody>
 				</table>
