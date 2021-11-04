@@ -31,10 +31,11 @@ export default function DashboardPage() {
 	}, []);
 
 	if (!currentMember) return <PageLoading />;
+	console.log(currentMember);
 
 	return (
 		<>
-			<PageTitle title={`Hi ${currentMember.first_name}!`} />
+			<PageTitle title={`Hi ${currentMember.first_name || currentMember.email}!`} />
 			{loading ? <PageLoading /> : <Dashboard data={data} />}
 		</>
 	);
