@@ -29,4 +29,8 @@ export default class TeamApi {
 			headers: constructAuthHeaders(),
 		});
 	}
+
+	static update(updates) {
+		return axios.put(`${TEAMS_URL}/${getTeamId()}`, updates, { headers: constructAuthHeaders() });
+	}
 }
