@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/react";
+
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
@@ -15,7 +17,7 @@ const ClaimInvitationPage = lazy(() => import("./pages/ClaimInvitationPage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const InvitationSignUpPage = lazy(() => import("./pages/InvitationSignUpPage"));
 
-function App() {
+function App({ handleWithSomething }) {
 	return (
 		<Suspense
 			fallback={
@@ -24,32 +26,35 @@ function App() {
 				</CenteredPage>
 			}
 		>
-			<Router>
-				<Switch>
-					<Route path="/login" exact component={LoginPage} />
-					<Route path="/login/teams" exact component={TeamLoginPage} />
-					<Route path="/login/teams/new" exact>
-						<CreateNewTeamPage />
-					</Route>
-					<Route path="/confirmation" exact component={EmailConfirmedPage} />
-					<Route path="/signup" exact>
-						<SignUpPage />
-					</Route>
-					<Route path="/invitations" exact>
-						<ClaimInvitationPage />
-					</Route>
-					<Route path="/invitations/signup" exact>
-						<InvitationSignUpPage />
-					</Route>
-					<Route path="/forgot_password" exact>
-						<ForgotPasswordPage />
-					</Route>
-					<Route path="/reset_password" exact>
-						<ResetPasswordPage />
-					</Route>
-					<SecuredRoutes />
-				</Switch>
-			</Router>
+			<Sentry.ErrorBoundary showDialog fallback={<div>Uh oh, looks like something went wrong</div>}>
+				<button onClick={() => handleWithSomething()}>hello</button>
+				<Router>
+					<Switch>
+						<Route path="/login" exact component={LoginPage} />
+						<Route path="/login/teams" exact component={TeamLoginPage} />
+						<Route path="/login/teams/new" exact>
+							<CreateNewTeamPage />
+						</Route>
+						<Route path="/confirmation" exact component={EmailConfirmedPage} />
+						<Route path="/signup" exact>
+							<SignUpPage />
+						</Route>
+						<Route path="/invitations" exact>
+							<ClaimInvitationPage />
+						</Route>
+						<Route path="/invitations/signup" exact>
+							<InvitationSignUpPage />
+						</Route>
+						<Route path="/forgot_password" exact>
+							<ForgotPasswordPage />
+						</Route>
+						<Route path="/reset_password" exact>
+							<ResetPasswordPage />
+						</Route>
+						<SecuredRoutes />
+					</Switch>
+				</Router>
+			</Sentry.ErrorBoundary>
 		</Suspense>
 	);
 }

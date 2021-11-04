@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 
 import AddCancelActions from "./buttons/AddCancelActions";
 import Checkbox from "./Checkbox";
+import KeyBadge from "./KeyBadge";
 import SetlistApi from "../api/SetlistApi";
 import SongApi from "../api/SongApi";
 import StackedList from "./StackedList";
 import StyledDialog from "./StyledDialog";
 import WellInput from "./inputs/WellInput";
+import { hasAnyKeysSet } from "../utils/SongUtils";
 import { noop } from "../utils/constants";
 import { useParams } from "react-router";
 
@@ -72,7 +74,10 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 				onClick={() => handleChecked(!isChecked, song)}
 			>
 				<Checkbox checked={isChecked} color="blue" onChange={noop} />
-				<span className="ml-4">{song.name}</span>
+				<span className="ml-4">
+					{song.name}{" "}
+					{hasAnyKeysSet(song) && <KeyBadge songKey={song.transposed_key || song.original_key} />}
+				</span>
 			</div>
 		);
 	});
@@ -96,7 +101,7 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 			<div className="mb-4">
 				<WellInput onChange={setQuery} value={query} />
 			</div>
-			<StackedList className="max-h-96 overflow-y-auto mb-2" items={songListItems} />
+			<StackedList className="max-h-80 md:max-h-96 overflow-y-auto mb-2" items={songListItems} />
 			<AddCancelActions
 				addText={songsToAdd.length !== 1 ? `Add ${songsToAdd.length} songs` : "Add 1 song"}
 				onCancel={handleCloseDialog}

@@ -211,8 +211,8 @@ export default function EditorWorkbenchPage() {
 				</div>
 				<div className="px-5 my-3 hidden 2xl:block">
 					<PageTitle title="Preview" className="mb-4" />
-					<div className="grid grid-cols-2 gap-4">
-						<div>
+					<div className="flex">
+						<div className="mr-2">
 							{html({ content: changes.content || songBeingEdited.content, format: format })}
 						</div>
 						{currentSubscription.isPro && (

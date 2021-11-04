@@ -9,3 +9,7 @@ export default function EventColorOption({ disabled, onClick, color, className }
 		></button>
 	);
 }
+
+EventColorOption.defaultProps = {
+	className: "",
+};

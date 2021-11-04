@@ -32,7 +32,7 @@ export default function EventDetailDialog({ open, event, onCloseDialog, onDelete
 		return (
 			<div className="grid grid-cols-10 gap-6">
 				<div className="flex items-center justify-end col-span-1">
-					<EventColorOption color={event?.color} />
+					<EventColorOption className="flex-shrink-0" color={event?.color} />
 				</div>
 				<div className="col-span-9">
 					<div className="text-2xl mb-1">{event?.title}</div>
@@ -67,9 +67,9 @@ export default function EventDetailDialog({ open, event, onCloseDialog, onDelete
 			{event && (
 				<div className="grid grid-cols-10 gap-6">
 					<div className="col-span-1 flex justify-end items-start">
-						<UsersIcon className="text-gray-600 w-5 h-5 my-1" />
+						<UsersIcon className="text-gray-600 w-5 h-5 my-1 flex-shrink-0" />
 					</div>
-					<div className="col-span-9 flex justify-start items-start">
+					<div className="col-span-9 flex flex-col justify-start items-start">
 						{event?.memberships?.length > 0 ? (
 							event.memberships.map((member) => (
 								<div key={member.id} className="my-1">
@@ -83,7 +83,7 @@ export default function EventDetailDialog({ open, event, onCloseDialog, onDelete
 						)}
 					</div>
 					<div className="col-span-1 flex justify-end items-start">
-						<BellIcon className="text-gray-600 w-5 h-5" />
+						<BellIcon className="text-gray-600 w-5 h-5 flex-shrink-0" />
 					</div>
 					<div className="col-span-9 flex justify-start items-start">
 						{event.reminders_enabled ? (
@@ -94,7 +94,7 @@ export default function EventDetailDialog({ open, event, onCloseDialog, onDelete
 					</div>
 
 					<div className="col-span-1 flex justify-end items-start">
-						<MenuAlt2Icon className="text-gray-600 w-5 h-5" />
+						<MenuAlt2Icon className="text-gray-600 w-5 h-5 flex-shrink-0" />
 					</div>
 					<div className="col-span-9 flex justify-start items-start">
 						{event.description ? (
