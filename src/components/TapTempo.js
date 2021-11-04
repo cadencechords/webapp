@@ -19,7 +19,7 @@ export default function TapTempo({ onBpmChange, onTap }) {
 	return (
 		<button
 			onClick={handleTap}
-			className="border border-purple-300 rounded-md flex-center flex-grow-0 px-2 py-1 focus:outline-none outline-none font-bold text-gray-700"
+			className="border border-purple-300 rounded-md flex-center flex-grow-0 px-2 py-1 focus:outline-none text-purple-700"
 		>
 			Tap
 		</button>

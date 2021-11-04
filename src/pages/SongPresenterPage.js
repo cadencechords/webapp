@@ -93,8 +93,8 @@ export default function SongPresenterPage() {
 				/>
 
 				<div className="mx-auto max-w-6xl p-3 flex items-start">
-					<div className="">{html(song, handleLineDoubleClick)}</div>
-					<div className="fixed md:relative right-0 flex md:ml-20 md:flex-grow">
+					<div className="flex-grow">{html(song, handleLineDoubleClick)}</div>
+					<div className="fixed md:relative right-0 flex md:ml-20 md:w-64">
 						{currentSubscription?.isPro && (
 							<div className="md:w-64">
 								<NotesDragDropContext
