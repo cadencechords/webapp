@@ -17,7 +17,7 @@ const ClaimInvitationPage = lazy(() => import("./pages/ClaimInvitationPage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const InvitationSignUpPage = lazy(() => import("./pages/InvitationSignUpPage"));
 
-function App({ handleWithSomething }) {
+function App() {
 	return (
 		<Suspense
 			fallback={
@@ -27,7 +27,6 @@ function App({ handleWithSomething }) {
 			}
 		>
 			<Sentry.ErrorBoundary showDialog fallback={<div>Uh oh, looks like something went wrong</div>}>
-				<button onClick={() => handleWithSomething()}>hello</button>
 				<Router>
 					<Switch>
 						<Route path="/login" exact component={LoginPage} />
