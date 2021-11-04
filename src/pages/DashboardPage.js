@@ -31,7 +31,6 @@ export default function DashboardPage() {
 	}, []);
 
 	if (!currentMember) return <PageLoading />;
-	console.log(currentMember);
 
 	return (
 		<>
