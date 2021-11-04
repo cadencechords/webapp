@@ -35,7 +35,7 @@ export default function SetPresenter() {
 					index={songBeingViewedIndex}
 				/>
 				<Link to={`/sets/${id}`}>
-					<IconButton className="fixed bottom-16 right-8" onClick={noop}>
+					<IconButton className="fixed bottom-16 right-4" onClick={noop}>
 						<XIcon className="h-6 w-6" />
 					</IconButton>
 				</Link>

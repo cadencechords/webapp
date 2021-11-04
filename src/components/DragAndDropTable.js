@@ -3,6 +3,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import Button from "./Button";
 import KeyBadge from "./KeyBadge";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
+import { hasAnyKeysSet } from "../utils/SongUtils";
 
 export default function DragAndDropTable({
 	onReorder,
@@ -60,10 +61,12 @@ export default function DragAndDropTable({
 											>
 												<span
 													onClick={() => onClick(item.id)}
-													className="cursor-pointer hover:text-blue-600 flex items-center gap-2"
+													className="cursor-pointer hover:text-blue-600 flex items-center"
 												>
 													{item.name}
-													<KeyBadge songKey={item.key} />
+													{hasAnyKeysSet(item) && (
+														<KeyBadge songKey={item.transposed_key || item.original_key} />
+													)}
 												</span>
 
 												{removeable && (

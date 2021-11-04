@@ -42,7 +42,7 @@ export default function PerformSetlistSongAdjustmentsDrawer({
 			<Button
 				variant="open"
 				color="gray"
-				className="fixed right-7 bottom-28"
+				className="fixed right-3 bottom-28"
 				onClick={() => setOpen(true)}
 			>
 				<AdjustmentsIcon className="w-6 h-6" />
