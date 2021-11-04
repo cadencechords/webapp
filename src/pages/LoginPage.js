@@ -37,7 +37,7 @@ export default function LoginPage() {
 			setAuthInLocalStorage(headers);
 			router.push("/login/teams");
 		} catch (error) {
-			console.log(error.response.data);
+			console.log(error?.response?.data);
 			setAlertColor("red");
 			setAlertMessage(error?.response?.data?.errors);
 			setLoading(false);

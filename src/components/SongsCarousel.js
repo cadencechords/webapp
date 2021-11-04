@@ -50,7 +50,7 @@ export default function SongsCarousel({ songs, index, onIndexChange }) {
 			<div key={song?.id} className="mb-4">
 				<PageTitle title={song?.name} className="my-4" />
 				<div className="flex">
-					<div>{html(song)}</div>
+					<div className="max-w-full">{html(song)}</div>
 					{currentSubscription.isPro && (
 						<div className="ml-4">
 							<NotesDragDropContext
