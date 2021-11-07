@@ -10,6 +10,7 @@ import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import QuickAdd from "../components/QuickAdd";
 import SongApi from "../api/SongApi";
 import SongsList from "../components/SongsList";
+import WellInput from "../components/inputs/WellInput";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
@@ -20,6 +21,7 @@ export default function SongsIndexPage() {
 	const [songs, setSongs] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const currentMember = useSelector(selectCurrentMember);
+	const [query, setQuery] = useState("");
 
 	useEffect(() => {
 		async function fetchSongs() {
@@ -48,9 +50,13 @@ export default function SongsIndexPage() {
 	} else {
 		content = (
 			<div className="mb-10">
-				<SongsList songs={songs} />
+				<SongsList songs={filteredSongs()} />
 			</div>
 		);
+	}
+
+	function filteredSongs() {
+		return songs?.filter((song) => song.name.toLowerCase().includes(query.toLowerCase()));
 	}
 
 	return (
@@ -66,7 +72,14 @@ export default function SongsIndexPage() {
 					canAdd={currentMember.can(ADD_SONGS)}
 				/>
 			</div>
-
+			{songs.length > 0 && (
+				<WellInput
+					placeholder="Search your songs"
+					className="mb-4 lg:text-sm"
+					value={query}
+					onChange={setQuery}
+				/>
+			)}
 			{content}
 
 			{currentMember.can(ADD_SONGS) && (

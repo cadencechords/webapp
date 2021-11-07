@@ -1,15 +1,15 @@
-import StyledDialog from "./StyledDialog";
-import OutlinedInput from "./inputs/OutlinedInput";
 import { useEffect, useState } from "react";
-import OrDivider from "./OrDivider";
+
+import AddCancelActions from "./buttons/AddCancelActions";
+import FixedBottomMobile from "./FixedBottomMobile";
 import Label from "./Label";
 import NoDataMessage from "./NoDataMessage";
-import AddCancelActions from "./buttons/AddCancelActions";
+import OrDivider from "./OrDivider";
+import OutlinedInput from "./inputs/OutlinedInput";
+import SongApi from "../api/SongApi";
+import StyledDialog from "./StyledDialog";
 import ThemeApi from "../api/ThemeApi";
 import ThemeOptions from "./ThemeOptions";
-import FixedBottomMobile from "./FixedBottomMobile";
-import SongApi from "../api/SongApi";
-import WellInput from "./inputs/WellInput";
 
 export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThemesAdded }) {
 	const [availableThemes, setAvailableThemes] = useState([]);
@@ -38,7 +38,6 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 					}
 				});
 
-				console.log(availableThemes);
 				setAvailableThemes(availableThemes);
 			} catch (error) {
 				console.log(error);
@@ -108,7 +107,7 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 	return (
 		<StyledDialog open={open} onCloseDialog={handleClose} title="Add themes" size="xl">
 			<Label>Add an existing theme</Label>
-			<WellInput value={searchTerm} onChange={setSearchTerm} />
+			<OutlinedInput placeholder="Search" value={searchTerm} onChange={setSearchTerm} />
 			{availableThemes.length === 0 ? (
 				<div className="py-4">
 					<NoDataMessage loading={loading}>You haven't created any themes yet</NoDataMessage>

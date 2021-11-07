@@ -1,6 +1,8 @@
+import KeyBadge from "./KeyBadge";
 import { Link } from "react-router-dom";
 import NoDataMessage from "./NoDataMessage";
 import SearchResult from "./SearchResult";
+import { hasAnyKeysSet } from "../utils/SongUtils";
 
 export default function SearchResults({ results, onCloseDialog }) {
 	if (results) {
@@ -15,6 +17,7 @@ export default function SearchResults({ results, onCloseDialog }) {
 			<Link to={`/songs/${song.id}`} className="border-b last:border-0">
 				<SearchResult key={song.id} onClick={onCloseDialog}>
 					{song.name}
+					{hasAnyKeysSet(song) && <KeyBadge songKey={song.transposed_key || song.original_key} />}
 				</SearchResult>
 			</Link>
 		));

@@ -7,7 +7,7 @@ export default function PageTitle({ title, editable, onChange, align, placeholde
 					` focus:outline-none focus:bg-gray-100 hover:bg-gray-100 rounded transition-colors` +
 					` ${className}`
 				}
-				defaultValue={title}
+				value={title || ""}
 				onChange={(e) => onChange(e.target.value)}
 				placeholder={placeholder}
 			/>

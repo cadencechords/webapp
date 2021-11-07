@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/react";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
+import AppFallback from "./components/AppFallback";
 import CenteredPage from "./components/CenteredPage";
 import CreateNewTeamPage from "./pages/CreateNewTeamPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -26,7 +27,7 @@ function App() {
 				</CenteredPage>
 			}
 		>
-			<Sentry.ErrorBoundary showDialog fallback={<div>Uh oh, looks like something went wrong</div>}>
+			<Sentry.ErrorBoundary showDialog fallback={<AppFallback />}>
 				<Router>
 					<Switch>
 						<Route path="/login" exact component={LoginPage} />

@@ -23,7 +23,7 @@ export default function SongsList({ songs }) {
 							let songNameAndKey = (
 								<div className="flex items-center">
 									{song.name}
-									<KeyBadge songKey={song.original_key} />
+									<KeyBadge songKey={song.transposed_key || song.original_key} />
 								</div>
 							);
 							return (
@@ -49,7 +49,7 @@ export default function SongsList({ songs }) {
 							onClick={() => router.push(`/songs/${song.id}`)}
 						>
 							{song.name}
-							<KeyBadge songKey={song.original_key} />
+							<KeyBadge songKey={song.transposed_key || song.original_key} />
 						</div>
 					</div>
 				))}

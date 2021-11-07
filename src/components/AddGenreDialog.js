@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import GenreApi from "../api/GenreApi";
-import StyledDialog from "./StyledDialog";
-import NoDataMessage from "./NoDataMessage";
-import GenreOptions from "./GenreOptions";
-import FixedBottomMobile from "./FixedBottomMobile";
+
 import AddCancelActions from "./buttons/AddCancelActions";
-import WellInput from "./inputs/WellInput";
+import FixedBottomMobile from "./FixedBottomMobile";
+import GenreApi from "../api/GenreApi";
+import GenreOptions from "./GenreOptions";
+import NoDataMessage from "./NoDataMessage";
+import OutlinedInput from "./inputs/OutlinedInput";
 import SongApi from "../api/SongApi";
+import StyledDialog from "./StyledDialog";
 
 export default function AddGenreDialog({ open, onCloseDialog, currentSong, onGenresAdded }) {
 	const [availableGenres, setAvailableGenres] = useState([]);
@@ -90,7 +91,7 @@ export default function AddGenreDialog({ open, onCloseDialog, currentSong, onGen
 
 	return (
 		<StyledDialog open={open} onCloseDialog={handleCloseDialog} title="Add genres" size="xl">
-			<WellInput
+			<OutlinedInput
 				value={searchTerm}
 				onChange={setSearchTerm}
 				placeholder="Search for a specific genre"

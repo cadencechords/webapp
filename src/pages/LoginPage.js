@@ -41,7 +41,8 @@ export default function LoginPage() {
 			setAlertColor("red");
 			setAlertMessage(error?.response?.data?.errors);
 			setLoading(false);
-			clearFormFields();
+			setPassword("");
+			setCanLogin(false);
 		}
 	};
 
@@ -55,12 +56,6 @@ export default function LoginPage() {
 		localStorage.setItem("access-token", headers["access-token"]);
 		localStorage.setItem("uid", headers["uid"]);
 		localStorage.setItem("client", headers["client"]);
-	};
-
-	const clearFormFields = () => {
-		setEmail("");
-		setPassword("");
-		setCanLogin(false);
 	};
 
 	return (

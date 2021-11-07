@@ -2,6 +2,7 @@ import { adjustSongBeingPresented, selectSongBeingPresented } from "../store/pre
 import { countLines, html } from "../utils/SongUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { useRef, useState } from "react";
 
 import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
 import Button from "../components/Button";
@@ -12,7 +13,6 @@ import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
 import { max } from "../utils/numberUtils";
 import notesApi from "../api/notesApi";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
-import { useState } from "react";
 
 export default function SongPresenterPage() {
 	const router = useHistory();
@@ -20,6 +20,9 @@ export default function SongPresenterPage() {
 	const song = useSelector(selectSongBeingPresented);
 	const dispatch = useDispatch();
 	const currentSubscription = useSelector(selectCurrentSubscription);
+	const pageRef = useRef();
+	const [autoScrollInterval, setAutoScrollInterval] = useState();
+	const [autoScrolling, setAutoScrolling] = useState(false);
 
 	const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
 
@@ -84,16 +87,59 @@ export default function SongPresenterPage() {
 		return lines.findIndex((line) => line === null);
 	}
 
+	function scroll() {
+		if (pageRef?.current) {
+			if (isAtBottom(pageRef.current)) {
+				clearInterval(autoScrollInterval);
+				setAutoScrolling(false);
+			} else {
+				let currentScrollPosition = pageRef.current.scrollTop;
+				console.log(song.scroll_speed);
+				pageRef.current.scroll({
+					top: currentScrollPosition + song.scroll_speed,
+					left: 0,
+					behavior: "smooth",
+				});
+			}
+		}
+	}
+
+	function isAtBottom(element) {
+		return Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) <= 13;
+	}
+
+	function handleToggleAutoScroll() {
+		if (autoScrollInterval) {
+			clearInterval(autoScrollInterval);
+			setAutoScrollInterval(null);
+			setAutoScrolling(false);
+		} else {
+			setAutoScrolling(true);
+			setTimeout(() => {
+				let interval = setInterval(() => {
+					scroll();
+				}, [100]);
+				setAutoScrollInterval(interval);
+			}, [5000]);
+		}
+	}
+
+	// function handleScrollSpeedChange(newSpeed) {
+	// 	handleSongChange("scroll_speed", newSpeed);
+	// }
+
 	if (song && song.format) {
 		return (
-			<>
+			<div ref={pageRef} id="page" className="overflow-y-auto max-h-screen">
 				<SongPresenterMobileTopNav
 					song={song}
 					onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
 				/>
 
 				<div className="mx-auto max-w-6xl p-3 flex items-start">
-					<div className="flex-grow">{html(song, handleLineDoubleClick)}</div>
+					<div className="flex-grow" id="song">
+						{html(song, handleLineDoubleClick)}
+					</div>
 					<div className="fixed md:relative right-0 flex md:ml-20 md:w-64">
 						{currentSubscription?.isPro && (
 							<div className="md:w-64">
@@ -124,13 +170,15 @@ export default function SongPresenterPage() {
 					onFormatChange={handleFormatChange}
 					onSongChange={handleSongChange}
 					onAddNote={handleAddNote}
+					autoScrolling={autoScrolling}
+					onToggleAutoScrolling={handleToggleAutoScroll}
 				/>
 
 				<Metronome
 					bpm={song.bpm}
 					onBpmChange={(newBpm) => dispatch(adjustSongBeingPresented({ bpm: newBpm }))}
 				/>
-			</>
+			</div>
 		);
 	} else {
 		router.push(`/songs/${id}`);
