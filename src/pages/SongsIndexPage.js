@@ -30,9 +30,8 @@ export default function SongsIndexPage() {
 			try {
 				let result = await SongApi.getAll();
 				setSongs(result.data);
-				reportError(result.data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}
