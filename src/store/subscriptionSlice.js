@@ -8,7 +8,7 @@ export const subscriptionSlice = createSlice({
 		setSubscription: (state, action) => {
 			state.subscription = action.payload;
 			state.subscription.isPro =
-				action.payload.stripe_price_id === process.env.REACT_APP_PRO_PRICE_ID;
+				action.payload?.stripe_price_id === process.env.REACT_APP_PRO_PRICE_ID;
 		},
 	},
 });

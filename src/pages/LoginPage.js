@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/react";
+
 import { Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -35,6 +37,7 @@ export default function LoginPage() {
 			let headers = result.headers;
 
 			setAuthInLocalStorage(headers);
+			Sentry.setUser({ email });
 			router.push("/login/teams");
 		} catch (error) {
 			console.log(error?.response?.data);

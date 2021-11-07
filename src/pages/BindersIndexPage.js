@@ -29,7 +29,7 @@ export default function BindersIndexPage() {
 				let result = await BinderApi.getAll();
 				setBinders(result.data);
 			} catch (error) {
-				if (error.response.status === 401) {
+				if (error?.response?.status === 401) {
 					router.push("/login");
 				}
 				console.log(error);

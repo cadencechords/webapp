@@ -41,8 +41,19 @@ export default function SearchDialog({ open, onCloseDialog }) {
 		debounce(newQuery);
 	};
 
+	const handleCloseDialog = () => {
+		setSearchQuery("");
+		setSearchResults(null);
+		onCloseDialog();
+	};
+
 	return (
-		<StyledDialog open={open} onCloseDialog={onCloseDialog} borderedTop={false} showClose={false}>
+		<StyledDialog
+			open={open}
+			onCloseDialog={handleCloseDialog}
+			borderedTop={false}
+			showClose={false}
+		>
 			<div className="border-b pb-4">
 				<OpenInput
 					placeholder="Search for binders, songs or sets"
@@ -52,7 +63,7 @@ export default function SearchDialog({ open, onCloseDialog }) {
 				/>
 			</div>
 
-			<SearchResults results={searchResults} onCloseDialog={onCloseDialog} />
+			<SearchResults results={searchResults} onCloseDialog={handleCloseDialog} />
 		</StyledDialog>
 	);
 }

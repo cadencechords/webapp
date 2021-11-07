@@ -11,6 +11,7 @@ import QuickAdd from "../components/QuickAdd";
 import SongApi from "../api/SongApi";
 import SongsList from "../components/SongsList";
 import WellInput from "../components/inputs/WellInput";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
@@ -29,6 +30,7 @@ export default function SongsIndexPage() {
 			try {
 				let result = await SongApi.getAll();
 				setSongs(result.data);
+				reportError(result.data);
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -73,12 +75,15 @@ export default function SongsIndexPage() {
 				/>
 			</div>
 			{songs.length > 0 && (
-				<WellInput
-					placeholder="Search your songs"
-					className="mb-4 lg:text-sm"
-					value={query}
-					onChange={setQuery}
-				/>
+				<>
+					<div className="pl-2 mb-2">{songs.length} total</div>
+					<WellInput
+						placeholder="Search your songs"
+						className="mb-4 lg:text-sm"
+						value={query}
+						onChange={setQuery}
+					/>
+				</>
 			)}
 			{content}
 

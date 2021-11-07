@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/react";
+
 import { Route, Switch } from "react-router-dom";
 import { lazy, useEffect } from "react";
 import {
@@ -41,6 +43,7 @@ export default function SecuredRoutes() {
 			async function fetchCurrentUser() {
 				try {
 					let { data } = await UserApi.getCurrentUser();
+					Sentry.setUser({ email: data.email });
 					dispatch(setCurrentUser(data));
 
 					if (!data.timezone) saveTimeZone();
