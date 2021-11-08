@@ -2,6 +2,7 @@ import Button from "../components/Button";
 import OutlinedInput from "../components/inputs/OutlinedInput";
 import RolesApi from "../api/rolesApi";
 import StyledDialog from "../components/StyledDialog";
+import { reportError } from "../utils/error";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
 
@@ -26,7 +27,7 @@ export default function CreateRoleDialog({ open, onCloseDialog }) {
 			let { data } = await RolesApi.createOne(role);
 			router.push(`/permissions/${data.id}`);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setCreating(false);
 		}
 	}

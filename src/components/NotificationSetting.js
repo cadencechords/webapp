@@ -3,6 +3,7 @@ import ChevronDownIcon from "@heroicons/react/outline/ChevronDownIcon";
 import MailIcon from "@heroicons/react/outline/MailIcon";
 import Toggle from "./Toggle";
 import { noop } from "../utils/constants";
+import { reportError } from "../utils/error";
 import settingsApi from "../api/settingsApi";
 import { useState } from "react";
 
@@ -29,7 +30,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
 		try {
 			await settingsApi.updateNotificationSetting(setting.id, updates);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	}
 

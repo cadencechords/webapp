@@ -10,6 +10,7 @@ import ProfilePicture from "../components/ProfilePicture";
 import TeamApi from "../api/TeamApi";
 import _ from "lodash";
 import { format } from "../utils/date";
+import { reportError } from "../utils/error";
 
 export default function TeamDetailPage() {
 	const currentTeam = useSelector(selectCurrentTeam);
@@ -33,13 +34,13 @@ export default function TeamDetailPage() {
 			try {
 				await FileApi.addImageToTeam(e.target.files[0]);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 				dispatch(setCurrentTeam({ ...currentTeam, image_url: null }));
 			} finally {
 				URL.revokeObjectURL(tempImageUrl);
 			}
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 
@@ -54,7 +55,7 @@ export default function TeamDetailPage() {
 			dispatch(setCurrentTeam({ ...currentTeam, image_url: null }));
 			await FileApi.deleteTeamImage();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 
@@ -69,7 +70,7 @@ export default function TeamDetailPage() {
 			try {
 				TeamApi.update({ name: newName });
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			}
 		}, 1000),
 		[]

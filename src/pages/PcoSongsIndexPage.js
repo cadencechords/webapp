@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import PlanningCenterApi from "../api/PlanningCenterApi";
+
+import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
 import PageTitle from "../components/PageTitle";
+import PlanningCenterApi from "../api/PlanningCenterApi";
 import PlanningCenterSongsTable from "../components/PlanningCenterSongsTable";
 import SectionTitle from "../components/SectionTitle";
 import SelectedPcoSongsTable from "../components/SelectedPcoSongsTable";
-import { pluralOrSingularize } from "../utils/FormatUtils";
 import _ from "lodash";
-import Button from "../components/Button";
+import { pluralOrSingularize } from "../utils/FormatUtils";
+import { reportError } from "../utils/error";
 
 const NUMBER_PER_PAGE = 25;
 
@@ -28,7 +30,7 @@ export default function PcoSongsIndexPage() {
 				let { data } = await PlanningCenterApi.getSongs(offset, debouncedQuery);
 				setSongs(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoadingSongs(false);
 			}
@@ -73,7 +75,7 @@ export default function PcoSongsIndexPage() {
 			await PlanningCenterApi.importSongs(songIdsToImport);
 			setSongsToImport([]);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setImporting(false);
 		}

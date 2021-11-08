@@ -1,8 +1,9 @@
-import StyledDialog from "./StyledDialog";
 import AddCancelActions from "./buttons/AddCancelActions";
-import { useState } from "react";
-import OutlinedInput from "./inputs/OutlinedInput";
 import InvitationApi from "../api/InvitationApi";
+import OutlinedInput from "./inputs/OutlinedInput";
+import StyledDialog from "./StyledDialog";
+import { reportError } from "../utils/error";
+import { useState } from "react";
 
 export default function SendInvitesDialog({ open, onCloseDialog, currentMembers, onInviteSent }) {
 	const [newMemberEmail, setNewMemberEmail] = useState("");
@@ -24,7 +25,7 @@ export default function SendInvitesDialog({ open, onCloseDialog, currentMembers,
 			onInviteSent(data);
 			handleCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setSendingInvitation(false);
 		}
 	};

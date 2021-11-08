@@ -12,6 +12,7 @@ import EditableData from "../components/inputs/EditableData";
 import PageTitle from "../components/PageTitle";
 import PulseLoader from "react-spinners/PulseLoader";
 import { isEmpty } from "../utils/ObjectUtils";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
@@ -31,7 +32,7 @@ export default function BinderDetailPage() {
 				let { data } = await BinderApi.getOneById(id);
 				setBinder(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 				if (error?.response?.status === 401) {
 					router.push("/login");
 				}
@@ -60,7 +61,7 @@ export default function BinderDetailPage() {
 				setPendingUpdates({});
 			}
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			if (error?.response?.status === 401) {
 				router.push("/login");
 			}
@@ -88,7 +89,7 @@ export default function BinderDetailPage() {
 			);
 			setSongIdsBeingRemoved(updatedIdsBeingRemoved);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			if (error?.response?.status === 401) {
 				router.push("/login");
 			}

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import ProfilePicture from "./ProfilePicture";
 import UserApi from "../api/UserApi";
 import _ from "lodash";
+import { reportError } from "../utils/error";
 import { useCallback } from "react";
 
 export default function MemberCard({ member, isCurrentUser, onPositionChanged, onShowMemberMenu }) {
@@ -19,7 +20,7 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 			try {
 				UserApi.updateMembership(member.id, { position: newPosition });
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			}
 		}, 1000),
 		[]

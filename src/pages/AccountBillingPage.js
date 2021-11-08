@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import PageLoading from "../components/PageLoading";
 import PageTitle from "../components/PageTitle";
 import SubscriptionsList from "../components/SubscriptionsList";
+import { reportError } from "../utils/error";
 import subscriptionsApi from "../api/subscriptionsApi";
 
 export default function AccountBillingPage() {
@@ -21,7 +22,7 @@ export default function AccountBillingPage() {
 				let { data } = await subscriptionsApi.getAll();
 				setSubscriptions(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

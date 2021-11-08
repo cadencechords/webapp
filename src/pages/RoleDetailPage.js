@@ -9,6 +9,7 @@ import RoleMembers from "../components/RoleMembers";
 import RolePermissions from "../components/RolePermissions";
 import RolesApi from "../api/rolesApi";
 import _ from "lodash";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
@@ -34,7 +35,7 @@ export default function RoleDetailPage() {
 				let permissionsResult = await PermissionsApi.getAll();
 				setPermissions(permissionsResult.data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}
@@ -93,7 +94,7 @@ export default function RoleDetailPage() {
 			try {
 				RolesApi.updateOne({ [field]: newValue }, id);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			}
 		}, 1000),
 		[]

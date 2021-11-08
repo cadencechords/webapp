@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import CenteredPage from "../components/CenteredPage";
 import OutlinedInput from "../components/inputs/OutlinedInput";
 import PageTitle from "../components/PageTitle";
+import { reportError } from "../utils/error";
 
 export default function ForgotPasswordPage() {
 	const [email, setEmail] = useState();
@@ -22,7 +23,7 @@ export default function ForgotPasswordPage() {
 			await AuthApi.sendResetPasswordInstructions(email);
 			setShowSuccess(true);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setSending(false);
 		}

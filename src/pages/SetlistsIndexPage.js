@@ -8,6 +8,7 @@ import PageTitle from "../components/PageTitle";
 import QuickAdd from "../components/QuickAdd";
 import SetlistApi from "../api/SetlistApi";
 import SetlistsList from "./SetlistsList";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
@@ -27,7 +28,7 @@ export default function SetlistsIndexPage() {
 				let { data } = await SetlistApi.getAll();
 				setSetlists(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

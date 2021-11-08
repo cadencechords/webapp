@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import Calendar from "../components/calendar/Calendar";
 import eventsApi from "../api/eventsApi";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useHistory } from "react-router-dom";
@@ -32,7 +33,7 @@ export default function CalendarPage() {
 			let { data } = await eventsApi.getAll();
 			setEvents(data);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	}
 

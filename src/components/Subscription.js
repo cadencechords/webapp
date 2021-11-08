@@ -1,6 +1,7 @@
 import Badge from "./Badge";
 import Button from "./Button";
 import billingApi from "../api/billingApi";
+import { reportError } from "../utils/error";
 import { useState } from "react";
 
 export default function Subscription({ subscription }) {
@@ -12,7 +13,7 @@ export default function Subscription({ subscription }) {
 			let { data } = await billingApi.createCustomerPortalSession(window.location.href);
 			window.location = data.url;
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setLoading(false);
 		}
 	}

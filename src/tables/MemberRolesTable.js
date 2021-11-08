@@ -5,6 +5,7 @@ import MembershipsApi from "../api/membershipsApi";
 import SectionTitle from "../components/SectionTitle";
 import StyledListBox from "../components/StyledListBox";
 import Table from "../components/Table";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
@@ -41,7 +42,7 @@ export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
 			onRoleAssigned(member, role);
 			await MembershipsApi.assignRole(member.id, role);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	}
 

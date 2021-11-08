@@ -5,6 +5,7 @@ import Button from "./Button";
 import DragAndDropTable from "./DragAndDropTable";
 import { EDIT_SETLISTS } from "../utils/constants";
 import SetlistApi from "../api/SetlistApi";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -25,7 +26,7 @@ export default function SetlistSongsList({ songs, onSongsAdded, onReordered, onS
 			let updates = { position: movedSong.newPosition };
 			await SetlistApi.updateScheduledSong(updates, Number.parseInt(movedSong.id), id);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 
@@ -34,7 +35,7 @@ export default function SetlistSongsList({ songs, onSongsAdded, onReordered, onS
 			await SetlistApi.removeSongs(id, [songIdToRemove]);
 			onSongRemoved(songIdToRemove);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 

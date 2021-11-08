@@ -6,6 +6,7 @@ import PageTitle from "../components/PageTitle";
 import Roles from "../components/Roles";
 import RolesApi from "../api/rolesApi";
 import TeamApi from "../api/TeamApi";
+import { reportError } from "../utils/error";
 
 export default function RolesIndexPage() {
 	const [roles, setRoles] = useState([]);
@@ -23,7 +24,7 @@ export default function RolesIndexPage() {
 				let membersResult = await TeamApi.getMemberships();
 				setMembers(membersResult.data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

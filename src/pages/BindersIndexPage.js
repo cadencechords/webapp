@@ -10,6 +10,7 @@ import NoDataMessage from "../components/NoDataMessage";
 import PageTitle from "../components/PageTitle";
 import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import QuickAdd from "../components/QuickAdd";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
@@ -32,7 +33,7 @@ export default function BindersIndexPage() {
 				if (error?.response?.status === 401) {
 					router.push("/login");
 				}
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

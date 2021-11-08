@@ -8,6 +8,7 @@ import MobileMenuButton from "./buttons/MobileMenuButton";
 import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import SongApi from "../api/SongApi";
 import Toggle from "./Toggle";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useParams } from "react-router";
@@ -48,7 +49,7 @@ export default function SongAdjustmentsDrawerMainSheet({
 			await SongApi.updateOneById(id, updates);
 			setUpdates(null);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setSaving(false);
 		}

@@ -7,6 +7,7 @@ import ProfilePicture from "../components/ProfilePicture";
 import TeamApi from "../api/TeamApi";
 import WellInput from "../components/inputs/WellInput";
 import { hasName } from "../utils/model";
+import { reportError } from "../utils/error";
 
 export default function EventMembers({ event, onMembersLoaded, members, onFieldChange }) {
 	const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export default function EventMembers({ event, onMembersLoaded, members, onFieldC
 				onMembersLoaded(data);
 				setFilteredMembers(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

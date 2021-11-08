@@ -9,6 +9,7 @@ import PrinterIcon from "@heroicons/react/outline/PrinterIcon";
 import SongApi from "../api/SongApi";
 import StyledPopover from "./StyledPopover";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -30,7 +31,7 @@ export default function SongOptionsPopover({ onDeleteClick, onPrintClick }) {
 			await SongApi.deleteOneById(id);
 			router.push("/songs");
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 

@@ -1,9 +1,10 @@
-import StyledDialog from "./StyledDialog";
 import AddCancelActions from "./buttons/AddCancelActions";
 import OutlinedInput from "./inputs/OutlinedInput";
-import { useState } from "react";
-import SetlistApi from "../api/SetlistApi";
 import PropTypes from "prop-types";
+import SetlistApi from "../api/SetlistApi";
+import StyledDialog from "./StyledDialog";
+import { reportError } from "../utils/error";
+import { useState } from "react";
 
 export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) {
 	const [name, setName] = useState("");
@@ -26,7 +27,7 @@ export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) 
 			onCreated(data);
 			handleCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setLoading(false);
 		}
 	};

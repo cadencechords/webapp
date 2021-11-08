@@ -6,6 +6,7 @@ import SectionTitle from "./SectionTitle";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
 import XIcon from "@heroicons/react/outline/XIcon";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
@@ -16,7 +17,7 @@ export default function PendingInvitationsList({ invitations, loading, onInvitat
 			await InvitationApi.deleteOne(invitationId);
 			onInvitationDeleted(invitationId);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 
@@ -24,7 +25,7 @@ export default function PendingInvitationsList({ invitations, loading, onInvitat
 		try {
 			await InvitationApi.resendOne(invitationId);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 

@@ -4,6 +4,7 @@ import BinderApi from "../api/BinderApi";
 import Button from "./Button";
 import Checkbox from "./Checkbox";
 import PageLoading from "./PageLoading";
+import { reportError } from "../utils/error";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -23,7 +24,7 @@ export default function OnsongChooseBinderForSongs({
 				let { data } = await BinderApi.getAll();
 				onBindersLoaded(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoadingBinders(false);
 			}

@@ -27,6 +27,7 @@ import SongPreview from "../components/SongPreview";
 import SongTabs from "../components/SongTabs";
 import TransposedKeyField from "../components/TransposedKeyField";
 import { isEmpty } from "../utils/ObjectUtils";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { setSongBeingEdited } from "../store/editorSlice";
 import { setSongBeingPresented } from "../store/presenterSlice";
@@ -53,7 +54,7 @@ export default function SongDetailPage() {
 
 				setSong({ ...data, show_transposed: Boolean(data.transposed_key) });
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			}
 		}
 
@@ -92,7 +93,7 @@ export default function SongDetailPage() {
 			setSong((currentSong) => ({ ...currentSong, ...result.data }));
 			setPendingUpdates({});
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setSaving(false);
 		}
@@ -117,7 +118,7 @@ export default function SongDetailPage() {
 			let newThemesList = song.themes.filter((themeInList) => themeInList.id !== themeIdToRemove);
 			setSong({ ...song, themes: newThemesList });
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 
@@ -127,7 +128,7 @@ export default function SongDetailPage() {
 			let newGenresList = song.genres.filter((genreInList) => genreInList.id !== genreIdToRemove);
 			setSong({ ...song, genres: newGenresList });
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 

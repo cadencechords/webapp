@@ -1,10 +1,12 @@
-import { useSelector, useDispatch } from "react-redux";
-import OutlinedInput from "./inputs/OutlinedInput";
 import { selectCurrentUser, setCurrentUser } from "../store/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import UserApi from "../api/UserApi";
-import ProfilePictureDetail from "./ProfilePictureDetail";
+
 import Button from "./Button";
+import OutlinedInput from "./inputs/OutlinedInput";
+import ProfilePictureDetail from "./ProfilePictureDetail";
+import UserApi from "../api/UserApi";
+import { reportError } from "../utils/error";
 
 export default function PersonalDetails() {
 	const currentUser = useSelector(selectCurrentUser);
@@ -42,7 +44,7 @@ export default function PersonalDetails() {
 			dispatch(setCurrentUser(data));
 			setUpdates({});
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setSavingChanges(false);
 		}

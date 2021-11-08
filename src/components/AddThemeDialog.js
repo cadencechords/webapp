@@ -10,6 +10,7 @@ import SongApi from "../api/SongApi";
 import StyledDialog from "./StyledDialog";
 import ThemeApi from "../api/ThemeApi";
 import ThemeOptions from "./ThemeOptions";
+import { reportError } from "../utils/error";
 
 export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThemesAdded }) {
 	const [availableThemes, setAvailableThemes] = useState([]);
@@ -40,7 +41,7 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 
 				setAvailableThemes(availableThemes);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}
@@ -58,7 +59,7 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 			setNewTheme("");
 			setAvailableThemes([...availableThemes, data]);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setCreating(false);
 		}
@@ -72,7 +73,7 @@ export default function AddThemeDialog({ open, onCloseDialog, currentSong, onThe
 			onThemesAdded(result.data);
 			handleClose();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setSavingAdditions(false);
 		}

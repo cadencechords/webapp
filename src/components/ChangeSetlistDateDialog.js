@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+
 import AddCancelActions from "./buttons/AddCancelActions";
 import OutlinedInput from "./inputs/OutlinedInput";
-import StyledDialog from "./StyledDialog";
 import SetlistApi from "../api/SetlistApi";
+import StyledDialog from "./StyledDialog";
+import { reportError } from "../utils/error";
 import { useParams } from "react-router";
 
 export default function ChangeSetlistDateDialog({
@@ -44,7 +46,7 @@ export default function ChangeSetlistDateDialog({
 			onDateChanged(editingScheduledDate);
 			handleCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setUpdating(false);
 		}
 	};

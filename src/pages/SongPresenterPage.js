@@ -12,6 +12,7 @@ import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
 import { max } from "../utils/numberUtils";
 import notesApi from "../api/notesApi";
+import { reportError } from "../utils/error";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 
 export default function SongPresenterPage() {
@@ -72,7 +73,7 @@ export default function SongPresenterPage() {
 			let { data } = await notesApi.create(findNextAvailableLine(), song.id);
 			dispatch(adjustSongBeingPresented({ notes: [...song.notes, data] }));
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	}
 

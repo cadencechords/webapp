@@ -1,12 +1,14 @@
-import Label from "./Label";
-import ProfilePicture from "./ProfilePicture";
+import { selectCurrentUser, setCurrentUser } from "../store/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useRef, useState } from "react";
-import PencilIcon from "@heroicons/react/outline/PencilIcon";
-import MobileProfilePictureMenu from "./mobile menus/MobileProfilePictureMenu";
+
 import Button from "./Button";
 import FileApi from "../api/FileApi";
-import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentUser, setCurrentUser } from "../store/authSlice";
+import Label from "./Label";
+import MobileProfilePictureMenu from "./mobile menus/MobileProfilePictureMenu";
+import PencilIcon from "@heroicons/react/outline/PencilIcon";
+import ProfilePicture from "./ProfilePicture";
+import { reportError } from "../utils/error";
 
 export default function ProfilePictureDetail({ url }) {
 	const [showMobileActionsDialog, setShowMobileActionsDialog] = useState(false);
@@ -29,7 +31,7 @@ export default function ProfilePictureDetail({ url }) {
 			setUploading(true);
 			await FileApi.addImageToUser(files[0]);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			dispatch(setCurrentUser({ ...currentUser, image_url: null }));
 		} finally {
 			setUploading(false);
@@ -43,7 +45,7 @@ export default function ProfilePictureDetail({ url }) {
 			await FileApi.deleteUserImage();
 			dispatch(setCurrentUser({ ...currentUser, image_url: null }));
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setRemoving(false);
 		}

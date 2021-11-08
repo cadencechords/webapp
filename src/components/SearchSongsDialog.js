@@ -9,6 +9,7 @@ import SongApi from "../api/SongApi";
 import StackedList from "./StackedList";
 import StyledDialog from "./StyledDialog";
 import { noop } from "../utils/constants";
+import { reportError } from "../utils/error";
 import { useHistory } from "react-router";
 import { useParams } from "react-router";
 
@@ -29,7 +30,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 				let unboundSongs = data.filter((song) => !boundSongIds.includes(song.id));
 				setSongs(unboundSongs);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 				if (error?.response?.status === 401) {
 					router.push("/login");
 				}
@@ -65,7 +66,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 			setSaving(false);
 			handleClose();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setSaving(false);
 			if (error?.response?.status === 401) {
 				router.push("/login");

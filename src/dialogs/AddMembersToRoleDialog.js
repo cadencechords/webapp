@@ -5,6 +5,7 @@ import Checkbox from "../components/Checkbox";
 import RolesApi from "../api/rolesApi";
 import StyledDialog from "../components/StyledDialog";
 import TeamApi from "../api/TeamApi";
+import { reportError } from "../utils/error";
 import { useParams } from "react-router";
 
 export default function AddMembersToRoleDialog({
@@ -24,7 +25,7 @@ export default function AddMembersToRoleDialog({
 				let { data } = await TeamApi.getMemberships();
 				setTeamMembers(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			}
 		}
 
@@ -53,7 +54,7 @@ export default function AddMembersToRoleDialog({
 			onMembersAdded(data);
 			handleClose();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setSaving(false);
 		}
 	}

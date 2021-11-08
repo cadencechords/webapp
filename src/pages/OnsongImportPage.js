@@ -6,6 +6,7 @@ import OnsongChooseSongsFromBackup from "../components/OnsongChooseSongsFromBack
 import OnsongImportStatus from "../components/OnsongImportStatus";
 import OnsongReviewImport from "../components/OnsongReviewImport";
 import PageTitle from "../components/PageTitle";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -38,7 +39,7 @@ export default function OnsongImportPage() {
 			setUnzippedFiles(data.files);
 			setImportId(data.id);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setUploading(false);
 		}
@@ -69,7 +70,7 @@ export default function OnsongImportPage() {
 			setImporting(true);
 			await OnsongApi.import(selectedSongs, selectedBinder?.id, importId);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setErrors(error.response.data?.errors);
 		} finally {
 			setImporting(false);

@@ -2,6 +2,7 @@ import { EDIT_ROLES } from "../utils/constants";
 import Permission from "./Permission";
 import RolesApi from "../api/rolesApi";
 import SectionTitle from "./SectionTitle";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
@@ -24,7 +25,7 @@ export default function RolePermissions({ role, permissions, onPermissionToggled
 				RolesApi.removePermission(id, permissionName);
 			}
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 		onPermissionToggled(permissionName, checkedValue);
 	}

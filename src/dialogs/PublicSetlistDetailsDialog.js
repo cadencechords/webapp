@@ -1,6 +1,7 @@
 import Button from "../components/Button";
 import PublicSetlistApi from "../api/PublicSetlistApi";
 import StyledDialog from "../components/StyledDialog";
+import { reportError } from "../utils/error";
 import { useState } from "react";
 
 export default function PublicSetlistDetailsDialog({
@@ -19,7 +20,7 @@ export default function PublicSetlistDetailsDialog({
 			onUnpublished();
 			onCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setLoading(false);
 		}
 	};

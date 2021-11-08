@@ -3,6 +3,7 @@ import { REMOVE_MEMBERS } from "../../utils/constants";
 import StyledDialog from "../StyledDialog";
 import UserApi from "../../api/UserApi";
 import UserRemoveIcon from "@heroicons/react/outline/UserRemoveIcon";
+import { reportError } from "../../utils/error";
 import { selectCurrentMember } from "../../store/authSlice";
 import { useSelector } from "react-redux";
 
@@ -14,7 +15,7 @@ export default function MemberMenu({ onCloseDialog, open, member, onRemoved }) {
 			await UserApi.deleteMembership(member.id);
 			onRemoved(member.id);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 

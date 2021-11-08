@@ -22,6 +22,7 @@ import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import SongApi from "../api/SongApi";
 import { isEmpty } from "../utils/ObjectUtils";
 import { max } from "../utils/numberUtils";
+import { reportError } from "../utils/error";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { setSetlistBeingPresented } from "../store/presenterSlice";
 import { useHistory } from "react-router";
@@ -88,7 +89,7 @@ export default function EditorWorkbenchPage() {
 				}
 			}
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setSavingUpdates(false);
 			setDirty(false);
@@ -140,7 +141,7 @@ export default function EditorWorkbenchPage() {
 			setShowEditor(false);
 			dispatch(updateSongBeingEdited({ notes: [...songBeingEdited.notes, data] }));
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	}
 

@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import _ from "lodash";
-import { useCallback } from "react";
-import BarLoader from "react-spinners/BarLoader";
 
-import SetlistApi from "../api/SetlistApi";
+import BarLoader from "react-spinners/BarLoader";
 import BinderApi from "../api/BinderApi";
-import SongApi from "../api/SongApi";
 import PageTitle from "./PageTitle";
 import SearchResults from "./SearchResults";
+import SetlistApi from "../api/SetlistApi";
+import SongApi from "../api/SongApi";
 import WellInput from "./inputs/WellInput";
+import _ from "lodash";
+import { reportError } from "../utils/error";
+import { useCallback } from "react";
 
 export default function SearchPage() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -37,7 +38,7 @@ export default function SearchPage() {
 
 					setSearchResults(results);
 				} catch (error) {
-					console.log(error);
+					reportError(error);
 				} finally {
 					setSearching(false);
 				}

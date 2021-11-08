@@ -6,6 +6,7 @@ import EventAdvancedOptions from "../components/EventAdvancedOptions";
 import EventBasicDetails from "../components/EventBasicDetails";
 import StyledDialog from "../components/StyledDialog";
 import eventsApi from "../api/eventsApi";
+import { reportError } from "../utils/error";
 
 export default function CreateEventDialog({ open, onCloseDialog, defaultDate, onEventCreated }) {
 	const [event, setEvent] = useState({
@@ -46,7 +47,7 @@ export default function CreateEventDialog({ open, onCloseDialog, defaultDate, on
 			onEventCreated(data);
 			handleCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setLoading(false);
 		}
 	};

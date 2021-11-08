@@ -6,6 +6,7 @@ import MemberMenu from "../components/mobile menus/MemberMenu";
 import PageLoading from "../components/PageLoading";
 import ProfilePicture from "../components/ProfilePicture";
 import UserApi from "../api/UserApi";
+import { reportError } from "../utils/error";
 import { toMonthYearDate } from "../utils/DateUtils";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router";
@@ -24,7 +25,7 @@ export default function MemberDetail() {
 				let { data } = await UserApi.getMember(id);
 				setMember(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoadingMember(false);
 			}

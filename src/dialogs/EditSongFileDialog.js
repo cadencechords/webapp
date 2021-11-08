@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import FilesApi from "../api/filesApi";
 import OutlinedInput from "../components/inputs/OutlinedInput";
 import StyledDialog from "../components/StyledDialog";
+import { reportError } from "../utils/error";
 import { useParams } from "react-router";
 import { useState } from "react";
 
@@ -25,7 +26,7 @@ export default function EditSongFileDialog({ open, onCloseDialog, file, onUpdate
 			onUpdated({ ...file, name: `${name}.${extension(file.name)}` });
 			handleClose();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setLoading(false);
 		}
 	}

@@ -4,6 +4,7 @@ import Dashboard from "../components/Dashboard";
 import PageLoading from "../components/PageLoading";
 import PageTitle from "../components/PageTitle";
 import dashboardApi from "../api/dashboardApi";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
@@ -21,7 +22,7 @@ export default function DashboardPage() {
 				let { data } = await dashboardApi.getDashboardData();
 				setData(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

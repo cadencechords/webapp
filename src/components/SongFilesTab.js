@@ -5,6 +5,7 @@ import FilesApi from "../api/filesApi";
 import NoDataMessage from "./NoDataMessage";
 import SongFile from "./SongFile";
 import SongFileUpload from "./SongFileUpload";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
@@ -21,7 +22,7 @@ export default function SongFilesTab({ onFilesChange, files }) {
 				let { data } = await FilesApi.getFilesForSong(songId);
 				onFilesChange(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

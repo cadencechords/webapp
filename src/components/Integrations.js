@@ -1,12 +1,12 @@
 import Button from "./Button";
-import SectionTitle from "./SectionTitle";
-import PcoApi from "../api/PlanningCenterApi";
-import { setCurrentUser } from "../store/authSlice";
-
 import CheckCircleIcon from "@heroicons/react/solid/CheckCircleIcon";
+import PcoApi from "../api/PlanningCenterApi";
+import SectionTitle from "./SectionTitle";
 import XCircleIcon from "@heroicons/react/solid/XCircleIcon";
-import { useState } from "react";
+import { reportError } from "../utils/error";
+import { setCurrentUser } from "../store/authSlice";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 export default function Integrations({ currentUser }) {
 	const [isDisconnectingPco, setIsDisconnectingPco] = useState(false);
@@ -18,7 +18,7 @@ export default function Integrations({ currentUser }) {
 			await PcoApi.disconnect();
 			dispatch(setCurrentUser({ ...currentUser, pco_connected: false }));
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setIsDisconnectingPco(false);
 		}

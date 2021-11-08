@@ -7,6 +7,7 @@ import MembershipsApi from "../api/membershipsApi";
 import SectionTitle from "./SectionTitle";
 import Table from "./Table";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -22,7 +23,7 @@ export default function RoleMembers({ role, members, onMemberRemoved, onMembersA
 				onMemberRemoved(member);
 				MembershipsApi.assignRole(member.id, "Member");
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			}
 		},
 		[onMemberRemoved]

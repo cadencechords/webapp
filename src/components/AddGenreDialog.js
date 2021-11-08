@@ -8,6 +8,7 @@ import NoDataMessage from "./NoDataMessage";
 import OutlinedInput from "./inputs/OutlinedInput";
 import SongApi from "../api/SongApi";
 import StyledDialog from "./StyledDialog";
+import { reportError } from "../utils/error";
 
 export default function AddGenreDialog({ open, onCloseDialog, currentSong, onGenresAdded }) {
 	const [availableGenres, setAvailableGenres] = useState([]);
@@ -37,7 +38,7 @@ export default function AddGenreDialog({ open, onCloseDialog, currentSong, onGen
 					setAvailableGenres(availableGenres);
 				}
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}
@@ -84,7 +85,7 @@ export default function AddGenreDialog({ open, onCloseDialog, currentSong, onGen
 			onGenresAdded(data);
 			handleCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setSaving(false);
 		}
 	};

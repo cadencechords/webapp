@@ -7,6 +7,7 @@ import DotsVerticalIcon from "@heroicons/react/outline/DotsVerticalIcon";
 import MobileMenuButton from "./buttons/MobileMenuButton";
 import StyledPopover from "./StyledPopover";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
+import { reportError } from "../utils/error";
 import { useState } from "react";
 
 export default function BinderOptionsPopover({ onDeleteClick, onChangeColorClick }) {
@@ -25,7 +26,7 @@ export default function BinderOptionsPopover({ onDeleteClick, onChangeColorClick
 			await BinderApi.deleteOneById(id);
 			router.push("/binders");
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	};
 

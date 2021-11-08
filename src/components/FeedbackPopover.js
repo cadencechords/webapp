@@ -2,6 +2,7 @@ import AnnouncementIcon from "../icons/AnnouncementIcon";
 import Button from "./Button";
 import FeedbackApi from "../api/FeedbackApi";
 import StyledPopover from "./StyledPopover";
+import { reportError } from "../utils/error";
 import { selectTeamId } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -19,7 +20,7 @@ export default function FeedbackPopover() {
 			await FeedbackApi.create({ team_id: teamId, text: feedback });
 			setFeedback("");
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setLoading(false);
 		}

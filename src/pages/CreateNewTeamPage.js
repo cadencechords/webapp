@@ -5,6 +5,7 @@ import CenteredPage from "../components/CenteredPage";
 import OutlinedInput from "../components/inputs/OutlinedInput";
 import TeamApi from "../api/TeamApi";
 import TeamPlanOption from "../components/TeamPlanOption";
+import { reportError } from "../utils/error";
 import { setTeamId } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
@@ -35,7 +36,7 @@ export default function CreateNewTeamPage() {
 			dispatch(setTeamId(data.id));
 			router.push("/");
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setLoading(false);
 		}
 	};

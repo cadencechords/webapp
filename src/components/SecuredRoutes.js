@@ -18,6 +18,7 @@ import Content from "./Content";
 import PageLoading from "./PageLoading";
 import TeamApi from "../api/TeamApi";
 import UserApi from "../api/UserApi";
+import { reportError } from "../utils/error";
 import { setSubscription } from "../store/subscriptionSlice";
 import { useHistory } from "react-router";
 
@@ -54,7 +55,7 @@ export default function SecuredRoutes() {
 						await fetchCurrentTeam();
 					}
 				} catch (error) {
-					console.log(error);
+					reportError(error);
 					router.push("/login");
 				}
 			}
@@ -75,7 +76,7 @@ export default function SecuredRoutes() {
 					})
 				);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 				router.push("/login/teams");
 			}
 		}

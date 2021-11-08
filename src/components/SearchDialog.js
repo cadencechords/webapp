@@ -7,6 +7,7 @@ import SetlistApi from "../api/SetlistApi";
 import SongApi from "../api/SongApi";
 import StyledDialog from "./StyledDialog";
 import _ from "lodash";
+import { reportError } from "../utils/error";
 
 export default function SearchDialog({ open, onCloseDialog }) {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -29,7 +30,7 @@ export default function SearchDialog({ open, onCloseDialog }) {
 
 					setSearchResults(results);
 				} catch (error) {
-					console.log(error);
+					reportError(error);
 				}
 			}
 		}, 300),

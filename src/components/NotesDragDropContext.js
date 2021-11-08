@@ -5,6 +5,7 @@ import _ from "lodash";
 import { countLines } from "../utils/SongUtils";
 import { max } from "../utils/numberUtils";
 import notesApi from "../api/notesApi";
+import { reportError } from "../utils/error";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -52,7 +53,7 @@ export default function NotesDragDropContext({
 			let { data } = await notesApi.create(lineNumber, song.id);
 			onReplaceTempNote(tempId, data);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	}
 
@@ -86,7 +87,7 @@ export default function NotesDragDropContext({
 				try {
 					notesApi.update(song.id, noteId, updates);
 				} catch (error) {
-					console.log(error);
+					reportError(error);
 				}
 			},
 			[1500]
@@ -94,12 +95,12 @@ export default function NotesDragDropContext({
 		[]
 	);
 
-	function handleDelete(noteId) {
+	async function handleDelete(noteId) {
 		onDeleteNote(noteId);
 		try {
-			notesApi.delete(song.id, noteId);
+			await notesApi.delete(song.id, noteId);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	}
 

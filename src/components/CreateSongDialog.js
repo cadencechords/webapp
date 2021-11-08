@@ -1,10 +1,11 @@
-import OutlinedInput from "./inputs/OutlinedInput";
-import StyledDialog from "./StyledDialog";
-import { useState } from "react";
-import SongApi from "../api/SongApi";
-import { useHistory } from "react-router";
-import OrDivider from "./OrDivider";
 import Button from "./Button";
+import OrDivider from "./OrDivider";
+import OutlinedInput from "./inputs/OutlinedInput";
+import SongApi from "../api/SongApi";
+import StyledDialog from "./StyledDialog";
+import { reportError } from "../utils/error";
+import { useHistory } from "react-router";
+import { useState } from "react";
 
 export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
 	const [name, setName] = useState("");
@@ -23,7 +24,7 @@ export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
 				onCloseDialog();
 			}
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setLoading(false);
 		}

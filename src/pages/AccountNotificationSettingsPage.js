@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import NotificationSettingsList from "../components/NotificationSettingsList";
 import PageLoading from "../components/PageLoading";
 import PageTitle from "../components/PageTitle";
+import { reportError } from "../utils/error";
 import settingsApi from "../api/settingsApi";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -20,7 +21,7 @@ export default function AccountNotificationSettingsPage() {
 				let { data } = await settingsApi.getNotificationSettings();
 				setSettings(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

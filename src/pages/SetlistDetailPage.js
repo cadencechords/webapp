@@ -15,6 +15,7 @@ import SectionTitle from "../components/SectionTitle";
 import SetlistApi from "../api/SetlistApi";
 import SetlistSongsList from "../components/SetlistSongsList";
 import _ from "lodash";
+import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { toShortDate } from "../utils/DateUtils";
 import { useSelector } from "react-redux";
@@ -45,7 +46,7 @@ export default function SetlistDetailPage() {
 				// result = await PublicSetlistApi.getOne(id);
 				// setPublicSetlist(result.data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}
@@ -82,7 +83,7 @@ export default function SetlistDetailPage() {
 			try {
 				SetlistApi.updateOne({ name: newName }, id);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			}
 		}, 1000),
 		[]
@@ -94,7 +95,7 @@ export default function SetlistDetailPage() {
 			await SetlistApi.deleteOne(id);
 			router.push("/sets");
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			setDeleting(false);
 		}
 	};

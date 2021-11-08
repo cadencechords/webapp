@@ -11,6 +11,7 @@ import PendingInvitationsList from "../components/PendingInvitationsList";
 import SectionTitle from "../components/SectionTitle";
 import SendInvitesDialog from "../components/SendInvitesDialog";
 import TeamApi from "../api/TeamApi";
+import { reportError } from "../utils/error";
 import { useSelector } from "react-redux";
 
 export default function MembersIndexPage() {
@@ -31,7 +32,7 @@ export default function MembersIndexPage() {
 				let { data } = await InvitationApi.getAll();
 				setInvitations(data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoadingInvitations(false);
 			}
@@ -46,7 +47,7 @@ export default function MembersIndexPage() {
 				let { data } = await TeamApi.getCurrentTeam();
 				setMembers(data.members);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			}
 		}
 

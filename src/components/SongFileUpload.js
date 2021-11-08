@@ -4,6 +4,7 @@ import BarLoader from "react-spinners/BarLoader";
 import Button from "./Button";
 import DocumentAddIcon from "@heroicons/react/outline/DocumentAddIcon";
 import FilesApi from "../api/filesApi";
+import { reportError } from "../utils/error";
 import { useParams } from "react-router";
 
 export default function SongFileUpload({ onFilesUploaded }) {
@@ -19,7 +20,7 @@ export default function SongFileUpload({ onFilesUploaded }) {
 			setFilesBeingUploaded([]);
 			onFilesUploaded?.(data);
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		}
 	}
 

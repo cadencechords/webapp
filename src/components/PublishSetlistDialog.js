@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Button from "./Button";
 import PublicSetlistApi from "../api/PublicSetlistApi";
 import StyledDialog from "./StyledDialog";
+import { reportError } from "../utils/error";
 import { useParams } from "react-router-dom";
 
 export default function PublishSetlistDialog({ open, onCloseDialog, onSetlistPublished }) {
@@ -23,7 +24,7 @@ export default function PublishSetlistDialog({ open, onCloseDialog, onSetlistPub
 			onSetlistPublished(data);
 			onCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setGenerating(false);
 		}

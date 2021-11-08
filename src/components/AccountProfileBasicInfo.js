@@ -1,5 +1,6 @@
 import Button from "./Button";
 import OutlinedInput from "./inputs/OutlinedInput";
+import { reportError } from "../utils/error";
 import { setCurrentUser } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
@@ -24,7 +25,7 @@ export default function AccountProfileBasicInfo({ user }) {
 			dispatch(setCurrentUser(data));
 			setUpdates({});
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setLoading(false);
 		}

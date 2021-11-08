@@ -1,10 +1,11 @@
-import { useState } from "react";
+import BinderApi from "../api/BinderApi";
+import Button from "./Button";
 import ColorsList from "./ColorsList";
 import OutlinedInput from "./inputs/OutlinedInput";
 import StyledDialog from "./StyledDialog";
-import Button from "./Button";
-import BinderApi from "../api/BinderApi";
+import { reportError } from "../utils/error";
 import { useHistory } from "react-router";
+import { useState } from "react";
 
 export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 	const [name, setName] = useState("");
@@ -28,7 +29,7 @@ export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 			onCreated(result.data);
 			handleCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 			if (error?.response?.status === 401) {
 				router.push("/login");
 			}

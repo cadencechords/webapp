@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import PulseLoader from "react-spinners/PulseLoader";
-import TeamApi from "../api/TeamApi";
+
 import CenteredPage from "../components/CenteredPage";
 import NoTeamYet from "../components/NoTeamYet";
+import PulseLoader from "react-spinners/PulseLoader";
+import TeamApi from "../api/TeamApi";
 import TeamLoginOptions from "../components/TeamLoginOptions";
+import { reportError } from "../utils/error";
 
 export default function TeamLoginPage() {
 	const [teams, setTeamIds] = useState([]);
@@ -17,7 +19,7 @@ export default function TeamLoginPage() {
 				let result = await TeamApi.getAll();
 				setTeamIds(result.data);
 			} catch (error) {
-				console.log(error);
+				reportError(error);
 			} finally {
 				setLoading(false);
 			}

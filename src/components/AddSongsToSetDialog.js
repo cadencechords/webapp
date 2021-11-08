@@ -10,6 +10,7 @@ import StyledDialog from "./StyledDialog";
 import WellInput from "./inputs/WellInput";
 import { hasAnyKeysSet } from "../utils/SongUtils";
 import { noop } from "../utils/constants";
+import { reportError } from "../utils/error";
 import { useParams } from "react-router";
 
 export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boundSongs }) {
@@ -30,7 +31,7 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 					let unboundSongs = data.filter((song) => !boundSongIds.includes(song.id));
 					setSongs(unboundSongs);
 				} catch (error) {
-					console.log(error);
+					reportError(error);
 				}
 			}
 		}
@@ -90,7 +91,7 @@ export default function AddSongsToSetDialog({ open, onCloseDialog, onAdded, boun
 			onAdded(data);
 			handleCloseDialog();
 		} catch (error) {
-			console.log(error);
+			reportError(error);
 		} finally {
 			setSavingAdds(false);
 		}
