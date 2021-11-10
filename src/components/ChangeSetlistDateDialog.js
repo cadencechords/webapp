@@ -19,8 +19,10 @@ export default function ChangeSetlistDateDialog({
 	const { id } = useParams();
 
 	useEffect(() => {
-		setEditingScheduledDate(scheduledDate);
-	}, [scheduledDate]);
+		if (open) {
+			setEditingScheduledDate(scheduledDate);
+		}
+	}, [scheduledDate, open]);
 
 	const handleDateChange = (newDate) => {
 		let dateToValidate = new Date(newDate);
@@ -29,7 +31,6 @@ export default function ChangeSetlistDateDialog({
 	};
 
 	const clearFields = () => {
-		setEditingScheduledDate("");
 		setDateValid(false);
 		setUpdating(false);
 	};

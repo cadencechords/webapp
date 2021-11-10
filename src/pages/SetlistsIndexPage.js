@@ -81,7 +81,7 @@ export default function SetlistsIndexPage() {
 	let content = null;
 
 	if (setlists.length === 0) {
-		content = <NoDataMessage loading={loading} type="set" />;
+		content = <NoDataMessage loading={loading} type="sets" />;
 	} else {
 		content = <SetlistsList upcomingSetlists={upcomingSetlists} pastSetlists={pastSetlists} />;
 	}

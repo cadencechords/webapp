@@ -1,17 +1,9 @@
-import ExclamationIcon from "@heroicons/react/outline/ExclamationIcon";
 import KeyBadge from "./KeyBadge";
+import { Link } from "react-router-dom";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
-import { useHistory } from "react-router-dom";
 
 export default function SongsList({ songs }) {
-	const router = useHistory();
-	const exclamationIcon = <ExclamationIcon className="h-4 w-4 text-gray-600 mr-2" />;
-
-	const handleOpenSong = (songId) => {
-		router.push(`/songs/${songId}`);
-	};
-
 	return (
 		<>
 			<div className="hidden sm:block">
@@ -21,16 +13,15 @@ export default function SongsList({ songs }) {
 						{songs?.map((song) => {
 							let binders = song.binders?.length > 0 ? concatBinderNames(song.binders) : "-";
 							let songNameAndKey = (
-								<div className="flex items-center">
+								<Link to={`/songs/${song.id}`} className="flex items-center">
 									{song.name}
 									<KeyBadge songKey={song.transposed_key || song.original_key} />
-								</div>
+								</Link>
 							);
 							return (
 								<TableRow
 									columns={[songNameAndKey, binders, new Date(song.created_at).toDateString()]}
 									key={song.id}
-									onClick={() => handleOpenSong(song.id)}
 								/>
 							);
 						})}
@@ -43,14 +34,13 @@ export default function SongsList({ songs }) {
 						key={song.id}
 						className="border-b py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
 					>
-						{!song?.content && exclamationIcon}
-						<div
+						<Link
 							className="overflow-hidden overflow-ellipsis whitespace-nowrap flex items-center gap-2"
-							onClick={() => router.push(`/songs/${song.id}`)}
+							to={`/songs/${song.id}`}
 						>
 							{song.name}
 							<KeyBadge songKey={song.transposed_key || song.original_key} />
-						</div>
+						</Link>
 					</div>
 				))}
 			</div>

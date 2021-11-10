@@ -1,7 +1,6 @@
 import Button from "./Button";
 import ChevronDownIcon from "@heroicons/react/outline/ChevronDownIcon";
 import EventColorOptions from "./EventColorOptions";
-import EventMembers from "./EventMembers";
 import EventReminders from "./EventReminders";
 import { useState } from "react";
 
@@ -29,13 +28,13 @@ export default function EventAdvancedOptions({ event, onFieldChange, onMembersLo
 					onClick={(value) => onFieldChange("color", value)}
 					selectedColor={event.color}
 				/>
-				<EventMembers
+
+				<EventReminders
 					event={event}
-					onMembersLoaded={onMembersLoaded}
-					members={members}
 					onFieldChange={onFieldChange}
+					members={members}
+					onMembersLoaded={onMembersLoaded}
 				/>
-				<EventReminders event={event} onFieldChange={onFieldChange} />
 			</div>
 		</div>
 	);

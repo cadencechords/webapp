@@ -206,7 +206,7 @@ export default function SongDetailPage() {
 								<span className="mr-1">
 									<PlayIcon className="w-4 h-4 text-purple-700" />
 								</span>
-								Present Song
+								Perform Song
 							</div>
 						</Button>
 
@@ -253,7 +253,7 @@ export default function SongDetailPage() {
 						onClick={handlePresentSong}
 						full
 					>
-						<PlayIcon className="h-5 w-5 text-purple-700" /> Present
+						<PlayIcon className="h-5 w-5 text-purple-700" /> Perform
 					</Button>
 				</div>
 				<SongPreview song={song} onDoubleClick={handleOpenInEditor} />

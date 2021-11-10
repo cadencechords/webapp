@@ -202,15 +202,15 @@ export default function EditorWorkbenchPage() {
 					/>
 				</div>
 			</div>
-			<div className="hidden 2xl:grid grid-cols-2 ">
-				<div className="col-span-2 2xl:col-span-1 container mx-auto px-5 mb-12 sm:mb-0 border-r">
+			<div className="hidden xl:grid grid-cols-2 ">
+				<div className="col-span-2 xl:col-span-1 container mx-auto px-5 mb-12 sm:mb-0 border-r">
 					<Editor
 						content={changes.content ? changes.content : songBeingEdited.content}
 						formatOptions={format}
 						onContentChange={handleContentChange}
 					/>
 				</div>
-				<div className="px-5 my-3 hidden 2xl:block">
+				<div className="px-5 my-3 hidden xl:block">
 					<PageTitle title="Preview" className="mb-4" />
 					<div className="flex">
 						<div className="mr-2">
@@ -230,7 +230,7 @@ export default function EditorWorkbenchPage() {
 					</div>
 				</div>
 			</div>
-			<div className="2xl:hidden px-2 md:px-10 mb-28 ">
+			<div className="xl:hidden px-2 md:px-10 mb-28 ">
 				{showEditor ? (
 					<Editor
 						content={changes.content ? changes.content : songBeingEdited.content}

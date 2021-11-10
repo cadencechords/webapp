@@ -1,8 +1,9 @@
+import EventMembers from "./EventMembers";
 import Label from "./Label";
 import ReminderTimesListBox from "../ReminderTimesListBox";
 import Toggle from "./Toggle";
 
-export default function EventReminders({ event, onFieldChange }) {
+export default function EventReminders({ event, onFieldChange, onMembersLoaded, members }) {
 	return (
 		<div>
 			<Label>Reminders</Label>
@@ -14,13 +15,21 @@ export default function EventReminders({ event, onFieldChange }) {
 				/>
 			</div>
 			{event.reminders_enabled && (
-				<div className="mb-4">
-					Send reminder
-					<ReminderTimesListBox
-						onChange={(value) => onFieldChange("reminder_date", value)}
-						selectedTime={event.reminder_date}
+				<>
+					<EventMembers
+						event={event}
+						onMembersLoaded={onMembersLoaded}
+						members={members}
+						onFieldChange={onFieldChange}
 					/>
-				</div>
+					<div className="mb-4">
+						Send reminder
+						<ReminderTimesListBox
+							onChange={(value) => onFieldChange("reminder_date", value)}
+							selectedTime={event.reminder_date}
+						/>
+					</div>
+				</>
 			)}
 		</div>
 	);

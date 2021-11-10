@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
 import PageLoading from "../components/PageLoading";
-import ProfilePicture from "../components/ProfilePicture";
 import TeamApi from "../api/TeamApi";
 import WellInput from "../components/inputs/WellInput";
 import { hasName } from "../utils/model";
@@ -96,14 +95,14 @@ export default function EventMembers({ event, onMembersLoaded, members, onFieldC
 							onClick={() => handleToggleMember(member)}
 						>
 							<Checkbox onChange={() => {}} checked={event.members?.includes(member)} />
-							<ProfilePicture url={member.user.image_url} size="xs" />
 							<div>
-								{hasName(member.user) && (
-									<div className="font-semibold text-lg">
+								{hasName(member.user) ? (
+									<>
 										{member.user.first_name} {member.user.last_name}
-									</div>
+									</>
+								) : (
+									member.user.email
 								)}
-								<div>{member.user.email}</div>
 							</div>
 						</div>
 					))}

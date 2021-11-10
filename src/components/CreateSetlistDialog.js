@@ -9,16 +9,16 @@ import { useState } from "react";
 export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) {
 	const [name, setName] = useState("");
 	const [scheduledDate, setScheduledDate] = useState("");
-	const [dateValid, setDateValid] = useState(false);
 	const [loading, setLoading] = useState(false);
 
-	const handleValidateDate = () => {
+	const isDateValid = () => {
 		let dateToValidate = new Date(scheduledDate);
-		setDateValid(!isNaN(dateToValidate));
+		return !isNaN(dateToValidate);
 	};
 
-	const canCreate = name && dateValid;
+	const canCreate = name && isDateValid();
 
+	console.log(name, scheduledDate);
 	const handleCreateSetlist = async () => {
 		setLoading(true);
 		try {
@@ -34,7 +34,6 @@ export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) 
 
 	const clearFields = () => {
 		setLoading(false);
-		setDateValid(false);
 		setName("");
 		setScheduledDate("");
 	};
@@ -61,7 +60,6 @@ export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) 
 					onChange={setScheduledDate}
 					value={scheduledDate}
 					label="Scheduled date"
-					onBlur={handleValidateDate}
 					className="h-10"
 				/>
 			</div>
