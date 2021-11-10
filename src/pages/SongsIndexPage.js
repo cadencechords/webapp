@@ -40,6 +40,23 @@ export default function SongsIndexPage() {
 		fetchSongs();
 	}, []);
 
+	useEffect(() => {
+		if (songs?.length > 0) {
+			animateFadeIn();
+		}
+	}, [songs]);
+
+	const animateFadeIn = () => {
+		setTimeout(() => {
+			document.getElementById("count")?.classList.toggle("translate-y-6");
+			document.getElementById("count")?.classList.toggle("opacity-0");
+			document.getElementById("search")?.classList.toggle("translate-y-6");
+			document.getElementById("search")?.classList.toggle("opacity-0");
+			document.getElementById("songs")?.classList.toggle("translate-y-6");
+			document.getElementById("songs")?.classList.toggle("opacity-0");
+		}, [1]);
+	};
+
 	const handleSongCreated = (newSong) => {
 		setSongs([...songs, newSong]);
 	};
@@ -50,7 +67,10 @@ export default function SongsIndexPage() {
 		content = <NoDataMessage type="songs" loading={loading} />;
 	} else {
 		content = (
-			<div className="mb-10">
+			<div
+				className="mb-10  translate-y-6 transform transition-all ease-out opacity-0 delay-150 duration-500"
+				id="songs"
+			>
 				<SongsList songs={filteredSongs()} />
 			</div>
 		);
@@ -75,12 +95,18 @@ export default function SongsIndexPage() {
 			</div>
 			{songs.length > 0 && (
 				<>
-					<div className="pl-2 mb-2">{songs.length} total</div>
+					<div
+						className="pl-2 mb-2 translate-y-6 transform transition-all ease-out opacity-0  duration-500"
+						id="count"
+					>
+						{songs.length} total
+					</div>
 					<WellInput
 						placeholder="Search your songs"
-						className="mb-4 lg:text-sm"
+						className="mb-4 lg:text-sm translate-y-6 transform transition-all ease-out opacity-0 delay-100  duration-500"
 						value={query}
 						onChange={setQuery}
+						id="search"
 					/>
 				</>
 			)}

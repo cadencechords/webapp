@@ -18,7 +18,6 @@ export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) 
 
 	const canCreate = name && isDateValid();
 
-	console.log(name, scheduledDate);
 	const handleCreateSetlist = async () => {
 		setLoading(true);
 		try {

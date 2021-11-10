@@ -16,6 +16,7 @@ export default function PageTitle({ title, editable, onChange, align, placeholde
 		return (
 			<h1
 				className={`p-2  font-bold flex items-center w-full ${ALIGNMENTS[align]} text-2xl ${className}`}
+				id="title"
 			>
 				{title}
 			</h1>
