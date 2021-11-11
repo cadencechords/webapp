@@ -1,3 +1,4 @@
+import FadeIn from "./FadeIn";
 import NoDataMessage from "./NoDataMessage";
 import SectionTitle from "./SectionTitle";
 import TableHead from "./TableHead";
@@ -7,8 +8,10 @@ import { toShortDate } from "../utils/DateUtils";
 export default function UpcomingSetsTable({ setlists, onClick }) {
 	return (
 		<>
-			<SectionTitle title="Upcoming" />
-			<div className="h-52 overflow-auto">
+			<FadeIn>
+				<SectionTitle title="Upcoming" />
+			</FadeIn>
+			<FadeIn className="h-52 overflow-auto delay-75">
 				<table className="w-full">
 					<TableHead columns={["NAME", "SCHEDULED", "SONGS"]} />
 					<tbody>
@@ -33,7 +36,7 @@ export default function UpcomingSetsTable({ setlists, onClick }) {
 						)}
 					</tbody>
 				</table>
-			</div>
+			</FadeIn>
 		</>
 	);
 }

@@ -5,6 +5,7 @@ import BinderApi from "../api/BinderApi";
 import BindersList from "../components/BindersList";
 import Button from "../components/Button";
 import CreateBinderDialog from "../components/CreateBinderDialog";
+import FadeIn from "../components/FadeIn";
 import MobileHeader from "../components/MobileHeader";
 import NoDataMessage from "../components/NoDataMessage";
 import PageTitle from "../components/PageTitle";
@@ -47,9 +48,9 @@ export default function BindersIndexPage() {
 		content = <NoDataMessage type="binders" loading={loading} />;
 	} else {
 		content = (
-			<div className="mb-10">
+			<FadeIn className="mb-10">
 				<BindersList binders={binders} />
-			</div>
+			</FadeIn>
 		);
 	}
 

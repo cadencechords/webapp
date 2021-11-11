@@ -135,7 +135,7 @@ export function html(song, onLineDoubleClick) {
 			}
 		});
 		return (
-			<div style={{ fontFamily: song.format.font }}>
+			<div style={{ fontFamily: song.format.font }} className="font-normal">
 				<TextAutosize autosize={song.format.autosize} fontSize={song.format.font_size}>
 					{htmlLines}
 				</TextAutosize>
@@ -166,7 +166,7 @@ function determineClassesForChordLine(format) {
 
 	let classes = "";
 
-	if (format.bold_chords) classes += " font-semibold";
+	if (format.bold_chords) classes += " font-bold";
 	if (format.italic_chords) classes += " italic";
 
 	return classes;

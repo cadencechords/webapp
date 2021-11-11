@@ -7,7 +7,7 @@ import NoDataMessage from "../components/NoDataMessage";
 import PageTitle from "../components/PageTitle";
 import QuickAdd from "../components/QuickAdd";
 import SetlistApi from "../api/SetlistApi";
-import SetlistsList from "./SetlistsList";
+import SetlistsList from "../components/SetlistsList";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
