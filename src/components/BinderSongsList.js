@@ -1,5 +1,6 @@
 import Button from "./Button";
 import { EDIT_BINDERS } from "../utils/constants";
+import NoDataMessage from "./NoDataMessage";
 import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import SearchSongsDialog from "./SearchSongsDialog";
 import SectionTitle from "./SectionTitle";
@@ -37,12 +38,11 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 						</Button>
 					)}
 				</div>
-				{boundSongs?.length > 0 ? (
-					<table className="w-full">
-						<TableHead columns={["NAME", ""]} />
-
-						<tbody>
-							{boundSongs?.map((song) => (
+				<table className="w-full">
+					<TableHead columns={["NAME", ""]} />
+					<tbody>
+						{boundSongs?.length > 0 ? (
+							boundSongs?.map((song) => (
 								<TableRow
 									columns={[song.name]}
 									key={song.id}
@@ -51,12 +51,16 @@ export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songs
 									onRemove={() => onRemoveSong(song)}
 									removing={songsBeingRemoved.includes(song.id)}
 								/>
-							))}
-						</tbody>
-					</table>
-				) : (
-					"No songs in this binder yet"
-				)}
+							))
+						) : (
+							<tr>
+								<td colSpan={2}>
+									<NoDataMessage type="songs" />
+								</td>
+							</tr>
+						)}
+					</tbody>
+				</table>
 			</div>
 
 			<div className="sm:hidden">
