@@ -18,6 +18,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 	const [songsToAdd, setSongsToAdd] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [saving, setSaving] = useState(false);
+	const [query, setQuery] = useState("");
 	const { id } = useParams();
 	const router = useHistory();
 
@@ -54,6 +55,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 
 	const handleClose = () => {
 		setSongsToAdd([]);
+		setQuery("");
 		onCloseDialog();
 	};
 
@@ -74,12 +76,21 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 		}
 	};
 
-	const songListItems = songs.map((song) => {
+	const filteredSongs = () => {
+		if (query !== "") {
+			let lowercasedQuery = query.toLowerCase();
+			return songs?.filter((song) => song.name.toLowerCase().includes(lowercasedQuery)) || [];
+		} else {
+			return songs;
+		}
+	};
+
+	const songListItems = filteredSongs().map((song) => {
 		let checked = songsToAdd.includes(song);
 		return (
 			<div
 				key={song.id}
-				className="flex items-center cursor-pointer"
+				className="flex items-center cursor-pointer px-1"
 				onClick={() => handleChecked(!checked, song)}
 			>
 				<Checkbox checked={checked} color="blue" onChange={noop} />
@@ -91,7 +102,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 	return (
 		<StyledDialog open={open} onCloseDialog={handleClose} borderedTop={false}>
 			<div className="border-b pb-2 mb-7">
-				<OpenInput placeholder="Search for a specific song" />
+				<OpenInput placeholder="Search for a specific song" value={query} onChange={setQuery} />
 			</div>
 			<div className="font-semibold mb-3">Your song library</div>
 
