@@ -8,8 +8,9 @@ import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
 import Button from "../components/Button";
 import Metronome from "../components/Metronome";
 import NotesDragDropContext from "../components/NotesDragDropContext";
+import PresenterKeyCapoDialog from "../dialogs/PresenterKeyCapoDialog";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
-import SongPresenterMobileTopNav from "../components/SongPresenterMobileTopNav";
+import SongPresenterTopBar from "../components/SongPresenterTopBar";
 import { max } from "../utils/numberUtils";
 import notesApi from "../api/notesApi";
 import { reportError } from "../utils/error";
@@ -24,6 +25,7 @@ export default function SongPresenterPage() {
 	const pageRef = useRef();
 	const [autoScrollInterval, setAutoScrollInterval] = useState();
 	const [autoScrolling, setAutoScrolling] = useState(false);
+	const [showKeysDialog, setShowKeysDialog] = useState(false);
 
 	const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
 
@@ -132,9 +134,10 @@ export default function SongPresenterPage() {
 	if (song && song.format) {
 		return (
 			<div ref={pageRef} id="page" className="overflow-y-auto max-h-screen">
-				<SongPresenterMobileTopNav
+				<SongPresenterTopBar
 					song={song}
 					onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
+					onShowKeysDialog={() => setShowKeysDialog(true)}
 				/>
 
 				<div className="mx-auto max-w-6xl p-3 flex items-start">
@@ -173,6 +176,12 @@ export default function SongPresenterPage() {
 					onAddNote={handleAddNote}
 					autoScrolling={autoScrolling}
 					onToggleAutoScrolling={handleToggleAutoScroll}
+				/>
+				<PresenterKeyCapoDialog
+					open={showKeysDialog}
+					onCloseDialog={() => setShowKeysDialog(false)}
+					song={song}
+					onSongChange={handleSongChange}
 				/>
 
 				<Metronome
