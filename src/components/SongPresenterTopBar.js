@@ -1,11 +1,12 @@
 import AdjustmentsIcon from "@heroicons/react/outline/AdjustmentsIcon";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import Button from "./Button";
+import KeyCapoOptionsPopover from "./KeyCapoOptionsPopover";
 import { hasAnyKeysSet } from "../utils/SongUtils";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
-export default function SongPresenterTopBar({ song, onShowOptionsDrawer, onShowKeysDialog }) {
+export default function SongPresenterTopBar({ song, onShowOptionsDrawer, onShowBottomSheet }) {
 	const router = useHistory();
 	const { id } = useParams();
 
@@ -25,9 +26,7 @@ export default function SongPresenterTopBar({ song, onShowOptionsDrawer, onShowK
 					</h1>
 					<div className="flex items-center">
 						{hasAnyKeysSet(song) && (
-							<Button className="mr-2" onClick={onShowKeysDialog}>
-								{(song.show_transposed && song.transposed_key) || song.original_key}
-							</Button>
+							<KeyCapoOptionsPopover onShowBottomSheet={onShowBottomSheet} song={song} />
 						)}
 						<Button variant="open" onClick={onShowOptionsDrawer} color="gray">
 							<AdjustmentsIcon className="h-6 w-6" />

@@ -10,6 +10,7 @@ import Metronome from "../components/Metronome";
 import NotesDragDropContext from "../components/NotesDragDropContext";
 import PresenterKeyCapoDialog from "../dialogs/PresenterKeyCapoDialog";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
+import SongPresenterBottomSheet from "../components/SongPresenterBottomSheet";
 import SongPresenterTopBar from "../components/SongPresenterTopBar";
 import { max } from "../utils/numberUtils";
 import notesApi from "../api/notesApi";
@@ -26,6 +27,8 @@ export default function SongPresenterPage() {
 	const [autoScrollInterval, setAutoScrollInterval] = useState();
 	const [autoScrolling, setAutoScrolling] = useState(false);
 	const [showKeysDialog, setShowKeysDialog] = useState(false);
+	const [bottomSheet, setBottomSheet] = useState();
+	const [showBottomSheet, setShowBottomSheet] = useState(false);
 
 	const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
 
@@ -131,13 +134,18 @@ export default function SongPresenterPage() {
 	// 	handleSongChange("scroll_speed", newSpeed);
 	// }
 
+	function handleShowBottomSheet(sheet) {
+		setShowBottomSheet(true);
+		setBottomSheet(sheet);
+	}
+
 	if (song && song.format) {
 		return (
 			<div ref={pageRef} id="page" className="overflow-y-auto max-h-screen">
 				<SongPresenterTopBar
 					song={song}
 					onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
-					onShowKeysDialog={() => setShowKeysDialog(true)}
+					onShowBottomSheet={handleShowBottomSheet}
 				/>
 
 				<div className="mx-auto max-w-6xl p-3 flex items-start">
@@ -187,6 +195,13 @@ export default function SongPresenterPage() {
 				<Metronome
 					bpm={song.bpm}
 					onBpmChange={(newBpm) => dispatch(adjustSongBeingPresented({ bpm: newBpm }))}
+				/>
+				<SongPresenterBottomSheet
+					sheet={bottomSheet}
+					open={showBottomSheet}
+					onClose={() => setShowBottomSheet(false)}
+					song={song}
+					onSongChange={handleSongChange}
 				/>
 			</div>
 		);

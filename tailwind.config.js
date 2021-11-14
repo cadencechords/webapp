@@ -16,5 +16,5 @@ module.exports = {
 			borderRadius: ["last", "first"],
 		},
 	},
-	plugins: [],
+	plugins: [require("tailwind-scrollbar")],
 };

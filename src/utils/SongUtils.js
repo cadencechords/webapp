@@ -68,17 +68,39 @@ export function parseNote(key) {
 }
 
 export function transpose(song) {
-	if (song?.original_key && song?.transposed_key && song?.content) {
+	if (
+		(song?.original_key && song?.transposed_key && song?.content) ||
+		(song?.original_key && song?.capo && song?.content)
+	) {
 		let linesOfSong = song.content.split(/\r\n|\r|\n/);
 
 		let transposedContent = "";
 
 		linesOfSong.forEach((line, index) => {
+			let transposedLine;
 			if (isChordLine(line)) {
-				let transposedLine = Transposer.transpose(line)
-					.fromKey(song.original_key)
-					.toKey(song.transposed_key)
-					.toString();
+				if (song.capo) {
+					if (song.show_transposed && song.transposed_key) {
+						transposedLine = Transposer.transpose(line)
+							.fromKey(song.original_key)
+							.toKey(song.transposed_key)
+							.toString();
+						transposedLine = Transposer.transpose(transposedLine)
+							.fromKey(song.transposed_key)
+							.toKey(song.capo.capo_key)
+							.toString();
+					} else {
+						transposedLine = Transposer.transpose(line)
+							.fromKey(song.original_key)
+							.toKey(song.capo.capo_key)
+							.toString();
+					}
+				} else {
+					transposedLine = Transposer.transpose(line)
+						.fromKey(song.original_key)
+						.toKey(song.transposed_key)
+						.toString();
+				}
 
 				transposedContent += transposedLine;
 			} else {
@@ -105,7 +127,7 @@ export function getHalfStepLower(key) {
 }
 
 export function hasAnyKeysSet(song) {
-	return song.original_key || song.transposed_key;
+	return song.original_key || song.transposed_key || song.capo?.capo_key;
 }
 
 export function html(song, onLineDoubleClick) {
@@ -114,7 +136,8 @@ export function html(song, onLineDoubleClick) {
 		if (isChordPro(songCopy.content)) {
 			songCopy.content = formatChordPro(songCopy.content);
 		}
-		let content = songCopy.show_transposed ? transpose(songCopy) : songCopy.content;
+		let content =
+			songCopy.show_transposed || songCopy.capo ? transpose(songCopy) : songCopy.content;
 		let linesOfSong = content.split(/\r\n|\r|\n/);
 
 		let htmlLines = linesOfSong.map((line, index) => {

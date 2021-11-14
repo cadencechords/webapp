@@ -75,6 +75,7 @@ Button.defaultProps = {
 };
 
 const sizePaddings = {
+	square: "",
 	xs: " px-2 min-h-7 h-7",
 	sm: " px-3 h-9 ",
 	small: " px-3 h-9 ",
@@ -96,9 +97,9 @@ export const TEXT_COLORS = {
 };
 
 export const BACKGROUND_COLORS = {
-	red: "bg-red-600 hover:bg-red-800 focus:bg-red-800",
+	red: "bg-red-500 hover:bg-red-700 focus:bg-red-700",
 	blue: "bg-blue-600 hover:bg-blue-800 focus:bg-blue-800",
-	green: "bg-green-600 hover:bg-green-800 focus:bg-green-800",
+	green: "bg-green-500 hover:bg-green-700 focus:bg-green-700",
 	yellow: "bg-yellow-400 hover:bg-yellow-600 focus:bg-yellow-600",
 	indigo: "bg-indigo-600 hover:bg-indigo-800 focus:bg-indigo-800",
 	purple: "bg-purple-600 hover:bg-purple-800 focus:bg-purple-800",
