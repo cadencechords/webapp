@@ -109,7 +109,7 @@ export default function SongsCarousel({ songs, index, onIndexChange }) {
 				items={buildTemplates()}
 				onSlideChanged={(e) => onIndexChange(e.slide)}
 				activeIndex={index}
-				swipeDelta={70}
+				swipeDelta={100}
 				autoHeight
 				animationDuration={400}
 			/>
