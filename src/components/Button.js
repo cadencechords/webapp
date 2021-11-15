@@ -59,7 +59,7 @@ export default function Button({
 			onFocus={onFocus?.()}
 			onBlur={onBlur?.()}
 		>
-			{loading ? <PulseLoader color={loadingColor} size={8} /> : children}
+			{loading ? <PulseLoader color={loadingColor} size={6} /> : children}
 		</button>
 	);
 }

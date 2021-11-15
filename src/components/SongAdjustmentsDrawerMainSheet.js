@@ -1,11 +1,8 @@
 import { EDIT_SONGS, noop } from "../utils/constants";
-import { getHalfStepHigher, getHalfStepLower, hasAnyKeysSet } from "../utils/SongUtils";
 
 import AddStickyNoteIcon from "../icons/AddStickyNoteIcon";
 import Button from "./Button";
-import MinusIcon from "@heroicons/react/outline/MinusIcon";
 import MobileMenuButton from "./buttons/MobileMenuButton";
-import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import SongApi from "../api/SongApi";
 import Toggle from "./Toggle";
 import { reportError } from "../utils/error";
@@ -31,18 +28,6 @@ export default function SongAdjustmentsDrawerMainSheet({
 	const currentSubscription = useSelector(selectCurrentSubscription);
 	const iconClasses = "w-5 h-5 mr-3 text-blue-600";
 
-	function handleTransposeUpHalfStep() {
-		let updatedKey = getHalfStepHigher(song.transposed_key || song.original_key);
-		setUpdates((currentUpdates) => ({ ...currentUpdates, transposed_key: updatedKey }));
-		onSongChange("transposed_key", updatedKey);
-	}
-
-	function handleTransposeDownHalfStep() {
-		let updatedKey = getHalfStepLower(song.transposed_key || song.original_key);
-		setUpdates((currentUpdates) => ({ ...currentUpdates, transposed_key: updatedKey }));
-		onSongChange("transposed_key", updatedKey);
-	}
-
 	const handleSaveUpdates = async () => {
 		try {
 			setSaving(true);
@@ -63,32 +48,12 @@ export default function SongAdjustmentsDrawerMainSheet({
 				Show chords
 				<Toggle enabled={!song.format.chords_hidden} onChange={noop} spacing="between" />
 			</MobileMenuButton>
-			<MobileMenuButton
-				className="flex-between"
-				onClick={() => onSongChange("show_transposed", !song?.show_transposed)}
-			>
-				Transpose
-				<Toggle enabled={song?.show_transposed} onChange={noop} spacing="between" />
-			</MobileMenuButton>
-			{song?.show_transposed && hasAnyKeysSet(song) && (
-				<div className="flex-between p-2  bg-gray-100">
-					<Button variant="open" color="gray" onClick={handleTransposeUpHalfStep}>
-						<PlusIcon className="w-5 h-5" />
-					</Button>
-					<div className="font-semibold text-xl">{song.transposed_key || song.original_key}</div>
-					<Button variant="open" color="gray" onClick={handleTransposeDownHalfStep}>
-						<MinusIcon className="w-5 h-5" />
-					</Button>
-				</div>
-			)}
+
 			{currentSubscription.isPro && (
-				<>
-					<hr />
-					<MobileMenuButton className="flex items-center" onClick={onAddNote}>
-						<AddStickyNoteIcon className={iconClasses} />
-						Add a note
-					</MobileMenuButton>
-				</>
+				<MobileMenuButton className="hidden sm:flex sm:items-center" onClick={onAddNote}>
+					<AddStickyNoteIcon className={iconClasses} />
+					Add a note
+				</MobileMenuButton>
 			)}
 			{/* <MobileMenuButton className="flex items-center" onClick={onShowAutoScrollSheet}>
 				<ScrollIcon className={iconClasses} /> Auto scroll

@@ -1,42 +1,75 @@
+import Button from "./Button";
 import CapoOptions from "./CapoOptions";
 import CaposApi from "../api/caposApi";
 import SectionTitle from "./SectionTitle";
 import { reportError } from "../utils/error";
+import { useState } from "react";
 
 export default function SongPresenterCapoSheet({ song, onCapoChange }) {
+	const [saving, setSaving] = useState(false);
+	const [updates, setUpdates] = useState();
+
 	async function handleCapoChange(newCapo) {
-		console.log();
-		try {
-			if (!song.capo) {
-				onCapoChange({ capo_key: newCapo });
-				let { data } = await CaposApi.create(newCapo, song.id);
-				onCapoChange(data);
-			} else {
-				if (song.capo.capo_key !== newCapo) {
-					onCapoChange({ ...song.capo, capo_key: newCapo });
-					let { data } = await CaposApi.update(song.capo.id, song.id, { capo_key: newCapo });
-					onCapoChange(data);
-				}
-			}
-		} catch (error) {
-			reportError(error);
-		}
+		setUpdates({ capo_key: newCapo });
+		onCapoChange({ ...song.capo, capo_key: newCapo });
 	}
 
 	function handleRemoveCapo() {
-		onCapoChange(null);
+		let updates = { capo_key: null };
+
 		if (song.capo) {
-			try {
-				CaposApi.delete(song.capo.id, song.id);
-			} catch (error) {
-				reportError(error);
+			updates.id = song.capo.id;
+		}
+
+		setUpdates(updates);
+		onCapoChange(null);
+	}
+
+	async function handleSaveChanges() {
+		try {
+			setSaving(true);
+			console.log(updates);
+
+			if (updates.capo_key === null && updates.id) {
+				await CaposApi.delete(updates.id, song.id);
+			} else if (updates.capo_key !== null && song.capo?.id) {
+				let { data } = await CaposApi.update(song.capo.id, song.id, updates);
+				onCapoChange(data);
+			} else if (updates.capo_key !== null && !song.capo?.id) {
+				let { data } = await CaposApi.create(updates.capo_key, song.id);
+				console.log(data);
+				onCapoChange(data);
 			}
+
+			setUpdates(null);
+		} catch (error) {
+			reportError(error);
+		} finally {
+			setSaving(false);
 		}
 	}
 
 	return (
 		<div>
-			<SectionTitle title="Capo" className="pb-2 pl-2" />
+			<SectionTitle
+				title={
+					<>
+						Capo{" "}
+						{updates && (
+							<Button
+								className="ml-4"
+								size="xs"
+								variant="open"
+								loading={saving}
+								onClick={handleSaveChanges}
+							>
+								Save changes
+							</Button>
+						)}
+					</>
+				}
+				className="pb-2 pl-2"
+			/>
 
 			<CapoOptions song={song} onCapoChange={handleCapoChange} onRemoveCapo={handleRemoveCapo} />
 		</div>

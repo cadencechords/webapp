@@ -9,7 +9,7 @@ export function determineCapos(currentKey) {
 
 	let capoedKeys = keys.map((key) => ({
 		capoKey: key,
-		capoNumber: semitonesAway(parseNote(currentKey), parseNote(key), chromaticScale),
+		capoNumber: 12 - semitonesAway(parseNote(currentKey), parseNote(key), chromaticScale),
 	}));
 
 	return splitByCommonKeys(capoedKeys);

@@ -1,21 +1,52 @@
 import { getHalfStepHigher, getHalfStepLower } from "../utils/music";
 
 import Button from "./Button";
+import { EDIT_SONGS } from "../utils/constants";
 import MinusIcon from "@heroicons/react/outline/MinusIcon";
 import OrDivider from "./OrDivider";
 import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import SectionTitle from "./SectionTitle";
+import SongApi from "../api/SongApi";
 import Toggle from "./Toggle";
 import TransposeOptions from "./TransposeOptions";
 import { hasAnyKeysSet } from "../utils/SongUtils";
+import { reportError } from "../utils/error";
+import { selectCurrentMember } from "../store/authSlice";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 export default function SongPresenterTransposeSheet({ song, onSongChange }) {
+	const [saving, setSaving] = useState(false);
+	const [updates, setUpdates] = useState();
+	const currentMember = useSelector(selectCurrentMember);
+
 	function handleTransposeUpHalfStep() {
-		onSongChange("transposed_key", getHalfStepHigher(song.transposed_key || song.original_key));
+		let halfStepHigher = getHalfStepHigher(song.transposed_key || song.original_key);
+		setUpdates({ transposed_key: halfStepHigher });
+		onSongChange("transposed_key", halfStepHigher);
 	}
 
 	function handleTransposeDownHalfStep() {
-		onSongChange("transposed_key", getHalfStepLower(song.transposed_key || song.original_key));
+		let halfStepLower = getHalfStepLower(song.transposed_key || song.original_key);
+		setUpdates({ transposed_key: halfStepLower });
+		onSongChange("transposed_key", halfStepLower);
+	}
+
+	function handleTranspose(keyToTransposeTo) {
+		setUpdates({ transposed_key: keyToTransposeTo });
+		onSongChange("transposed_key", keyToTransposeTo);
+	}
+
+	async function handleSaveUpdates() {
+		try {
+			setSaving(true);
+			await SongApi.updateOneById(song.id, updates);
+			setUpdates(null);
+		} catch (error) {
+			reportError(error);
+		} finally {
+			setSaving(false);
+		}
 	}
 
 	return (
@@ -28,6 +59,17 @@ export default function SongPresenterTransposeSheet({ song, onSongChange }) {
 							enabled={song.show_transposed}
 							onChange={(value) => onSongChange("show_transposed", value)}
 						/>
+						{currentMember?.can(EDIT_SONGS) && updates && song.show_transposed && (
+							<Button
+								size="xs"
+								className="ml-4"
+								variant="open"
+								onClick={handleSaveUpdates}
+								loading={saving}
+							>
+								Save changes
+							</Button>
+						)}
 					</>
 				}
 				className="pb-2 flex items-center"
@@ -45,10 +87,7 @@ export default function SongPresenterTransposeSheet({ song, onSongChange }) {
 						</Button>
 					</div>
 					<OrDivider />
-					<TransposeOptions
-						song={song}
-						onKeyChange={(newKey) => onSongChange("transposed_key", newKey)}
-					/>
+					<TransposeOptions song={song} onKeyChange={handleTranspose} />
 				</div>
 			)}
 		</div>

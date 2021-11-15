@@ -152,8 +152,9 @@ export default function SongPresenterPage() {
 					<div className="flex-grow" id="song">
 						{html(song, handleLineDoubleClick)}
 					</div>
-					<div className="fixed md:relative right-0 flex md:ml-20 md:w-64">
-						{currentSubscription?.isPro && (
+
+					{currentSubscription?.isPro && song.notes?.length > 0 && (
+						<div className="fixed md:relative right-0 flex md:ml-20 md:w-64">
 							<div className="md:w-64">
 								<NotesDragDropContext
 									song={song}
@@ -163,8 +164,8 @@ export default function SongPresenterPage() {
 									onDeleteNote={handleDeleteNote}
 								/>
 							</div>
-						)}
-					</div>
+						</div>
+					)}
 				</div>
 
 				<Button
