@@ -28,7 +28,6 @@ export default function SongPresenterCapoSheet({ song, onCapoChange }) {
 	async function handleSaveChanges() {
 		try {
 			setSaving(true);
-			console.log(updates);
 
 			if (updates.capo_key === null && updates.id) {
 				await CaposApi.delete(updates.id, song.id);
@@ -37,7 +36,6 @@ export default function SongPresenterCapoSheet({ song, onCapoChange }) {
 				onCapoChange(data);
 			} else if (updates.capo_key !== null && !song.capo?.id) {
 				let { data } = await CaposApi.create(updates.capo_key, song.id);
-				console.log(data);
 				onCapoChange(data);
 			}
 

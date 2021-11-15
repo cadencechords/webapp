@@ -141,7 +141,7 @@ export default function SongPresenterPage() {
 
 	if (song && song.format) {
 		return (
-			<div ref={pageRef} id="page" className="overflow-y-auto max-h-screen">
+			<div ref={pageRef} id="page">
 				<SongPresenterTopBar
 					song={song}
 					onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
