@@ -24,7 +24,7 @@ export default function SongAdjustmentsDrawerMainSheet({
 				onClick={() => onFormatChange("autosize", !song?.format?.autosize)}
 				className="flex-between"
 			>
-				Autosize <Toggle enabled={song?.format?.autosize} onChange={noop} />
+				Resize lyrics <Toggle enabled={song?.format?.autosize} onChange={noop} />
 			</MobileMenuButton>
 			<MobileMenuButton
 				className="flex-between"

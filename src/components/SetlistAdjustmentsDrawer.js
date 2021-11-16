@@ -1,11 +1,10 @@
+import { EDIT_SONGS, noop } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 
 import Drawer from "./Drawer";
-import { EDIT_SONGS } from "../utils/constants";
 import MobileMenuButton from "./buttons/MobileMenuButton";
 import PencilIcon from "@heroicons/react/solid/PencilIcon";
 import Toggle from "./Toggle";
-import { noop } from "lodash";
 import { selectCurrentMember } from "../store/authSlice";
 import { setSongBeingEdited } from "../store/editorSlice";
 import { useHistory } from "react-router-dom";
@@ -30,13 +29,14 @@ export default function SetlistAdjustmentsDrawer({ song, onSongUpdate, open, onC
 	return (
 		<Drawer open={open} onClose={onClose}>
 			<div className="pt-8">
-				{/* <div className="flex-between mb-2">
-					<div className="text-base font-semibold">Resize lyrics</div>
-					<Toggle
-						enabled={song?.format?.autosize}
-						onChange={(newValue) => onFormatUpdate("autosize", newValue)}
-					/>
-				</div> */}
+				<MobileMenuButton
+					full
+					className="flex-between"
+					onClick={() => handleFormatUpdate("autosize", !song?.format?.autosize)}
+				>
+					Resize lyrics
+					<Toggle enabled={song?.format?.autosize} onChange={noop} />
+				</MobileMenuButton>
 				<MobileMenuButton
 					full
 					className="flex-between"
