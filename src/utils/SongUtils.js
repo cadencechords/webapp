@@ -158,7 +158,7 @@ export function html(song, onLineDoubleClick) {
 			}
 		});
 		return (
-			<div style={{ fontFamily: song.format.font }} className="font-normal">
+			<div style={{ fontFamily: song.format.font, fontDisplay: "swap" }} className="font-normal">
 				<TextAutosize autosize={song.format.autosize} fontSize={song.format.font_size}>
 					{htmlLines}
 				</TextAutosize>

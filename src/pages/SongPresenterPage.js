@@ -12,6 +12,7 @@ import PresenterKeyCapoDialog from "../dialogs/PresenterKeyCapoDialog";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterBottomSheet from "../components/SongPresenterBottomSheet";
 import SongPresenterTopBar from "../components/SongPresenterTopBar";
+import { determineFret } from "../utils/capo";
 import { max } from "../utils/numberUtils";
 import notesApi from "../api/notesApi";
 import { reportError } from "../utils/error";
@@ -148,24 +149,37 @@ export default function SongPresenterPage() {
 					onShowBottomSheet={handleShowBottomSheet}
 				/>
 
-				<div className="mx-auto max-w-6xl p-3 flex items-start">
-					<div className="flex-grow" id="song">
-						{html(song, handleLineDoubleClick)}
-					</div>
-
-					{currentSubscription?.isPro && song.notes?.length > 0 && (
-						<div className="fixed md:relative right-0 flex md:ml-20 md:w-64">
-							<div className="md:w-64">
-								<NotesDragDropContext
-									song={song}
-									onAddTempNote={handleAddTempNote}
-									onReplaceTempNote={handleReplaceTempNote}
-									onUpdateNote={handleUpdateNote}
-									onDeleteNote={handleDeleteNote}
-								/>
-							</div>
-						</div>
+				<div className="mx-auto max-w-6xl p-3">
+					{song.capo && (
+						<p className="font-medium mb-4">
+							Capo:
+							<span className="ml-2">
+								{determineFret(
+									(song.show_transposed && song.transposed_key) || song.original_key,
+									song.capo.capo_key
+								)}
+							</span>
+						</p>
 					)}
+					<div className="flex items-center">
+						<div className="flex-grow" id="song">
+							{html(song, handleLineDoubleClick)}
+						</div>
+
+						{currentSubscription?.isPro && song.notes?.length > 0 && (
+							<div className="fixed md:relative right-0 flex md:ml-20 md:w-64">
+								<div className="md:w-64">
+									<NotesDragDropContext
+										song={song}
+										onAddTempNote={handleAddTempNote}
+										onReplaceTempNote={handleReplaceTempNote}
+										onUpdateNote={handleUpdateNote}
+										onDeleteNote={handleDeleteNote}
+									/>
+								</div>
+							</div>
+						)}
+					</div>
 				</div>
 
 				<Button

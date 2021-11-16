@@ -68,3 +68,7 @@ const COMMON_CAPOED_KEYS = {
 	A: "A",
 	"F#m": "F#m",
 };
+
+export function determineFret(regularKey, capoKey) {
+	return semitonesAway(parseNote(regularKey), parseNote(capoKey));
+}
