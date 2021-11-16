@@ -4,11 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { useRef, useState } from "react";
 
-import ArrowsExpandIcon from "@heroicons/react/outline/ArrowsExpandIcon";
-import Button from "../components/Button";
-import Metronome from "../components/Metronome";
 import NotesDragDropContext from "../components/NotesDragDropContext";
-import PresenterKeyCapoDialog from "../dialogs/PresenterKeyCapoDialog";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterBottomSheet from "../components/SongPresenterBottomSheet";
 import SongPresenterTopBar from "../components/SongPresenterTopBar";
@@ -27,7 +23,6 @@ export default function SongPresenterPage() {
 	const pageRef = useRef();
 	const [autoScrollInterval, setAutoScrollInterval] = useState();
 	const [autoScrolling, setAutoScrolling] = useState(false);
-	const [showKeysDialog, setShowKeysDialog] = useState(false);
 	const [bottomSheet, setBottomSheet] = useState();
 	const [showBottomSheet, setShowBottomSheet] = useState(false);
 
@@ -137,6 +132,7 @@ export default function SongPresenterPage() {
 
 	function handleShowBottomSheet(sheet) {
 		setShowBottomSheet(true);
+		setShowOptionsDrawer(false);
 		setBottomSheet(sheet);
 	}
 
@@ -161,13 +157,13 @@ export default function SongPresenterPage() {
 							</span>
 						</p>
 					)}
-					<div className="flex items-center">
-						<div className="flex-grow" id="song">
+					<div className={`relative ${song?.format?.autosize ? "" : "inline-block"}`}>
+						<div id="song" className={`mr-0 ${song?.notes?.length > 0 ? "md:mr-72" : ""}`}>
 							{html(song, handleLineDoubleClick)}
 						</div>
 
 						{currentSubscription?.isPro && song.notes?.length > 0 && (
-							<div className="fixed md:relative right-0 flex md:ml-20 md:w-64">
+							<div className="hidden md:absolute top-0 right-0 md:flex md:w-64">
 								<div className="md:w-64">
 									<NotesDragDropContext
 										song={song}
@@ -182,14 +178,6 @@ export default function SongPresenterPage() {
 					</div>
 				</div>
 
-				<Button
-					variant="open"
-					className="fixed bottom-16 right-6 md:mr-0"
-					onClick={() => handleFormatChange("autosize", !song?.format?.autosize)}
-					color={song?.format?.autosize ? "blue" : "gray"}
-				>
-					<ArrowsExpandIcon className="h-5 w-5" />
-				</Button>
 				<SongAdjustmentsDrawer
 					open={showOptionsDrawer}
 					onClose={() => setShowOptionsDrawer(false)}
@@ -199,18 +187,9 @@ export default function SongPresenterPage() {
 					onAddNote={handleAddNote}
 					autoScrolling={autoScrolling}
 					onToggleAutoScrolling={handleToggleAutoScroll}
-				/>
-				<PresenterKeyCapoDialog
-					open={showKeysDialog}
-					onCloseDialog={() => setShowKeysDialog(false)}
-					song={song}
-					onSongChange={handleSongChange}
+					onShowSheet={handleShowBottomSheet}
 				/>
 
-				<Metronome
-					bpm={song.bpm}
-					onBpmChange={(newBpm) => dispatch(adjustSongBeingPresented({ bpm: newBpm }))}
-				/>
 				<SongPresenterBottomSheet
 					sheet={bottomSheet}
 					open={showBottomSheet}

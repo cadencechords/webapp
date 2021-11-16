@@ -2,25 +2,22 @@ import AdjustmentsIcon from "@heroicons/react/outline/AdjustmentsIcon";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import Button from "./Button";
 import KeyCapoOptionsPopover from "./KeyCapoOptionsPopover";
+import { Link } from "react-router-dom";
 import { hasAnyKeysSet } from "../utils/SongUtils";
-import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 export default function SongPresenterTopBar({ song, onShowOptionsDrawer, onShowBottomSheet }) {
-	const router = useHistory();
 	const { id } = useParams();
-
-	const handleGoBack = () => {
-		router.push(`/songs/${id}`);
-	};
 
 	if (song) {
 		return (
 			<nav className="py-2 px-1 border-b bg-gray-50">
 				<div className="flex-between max-w-3xl mx-auto">
-					<Button variant="open" color="gray" onClick={handleGoBack}>
-						<ArrowNarrowLeftIcon className="h-6 w-6" />
-					</Button>
+					<Link to={`/songs/${id}`}>
+						<Button variant="open" color="gray">
+							<ArrowNarrowLeftIcon className="h-6 w-6" />
+						</Button>
+					</Link>
 					<h1 className="font-semibold w-1/3 text-center overflow-ellipsis whitespace-nowrap overflow-hidden">
 						{song.name}
 					</h1>

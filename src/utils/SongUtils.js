@@ -131,13 +131,16 @@ export function hasAnyKeysSet(song) {
 }
 
 export function html(song, onLineDoubleClick) {
-	let songCopy = { ...song };
-	if (song?.content && song?.format) {
-		if (isChordPro(songCopy.content)) {
-			songCopy.content = formatChordPro(songCopy.content);
+	let content = song?.content;
+	if (content && song?.format) {
+		if (isChordPro(content)) {
+			content = formatChordPro(content);
 		}
-		let content =
-			songCopy.show_transposed || songCopy.capo ? transpose(songCopy) : songCopy.content;
+
+		if (!song.format.chords_hidden && (song.show_transposed || song.capo)) {
+			content = transpose(song);
+		}
+
 		let linesOfSong = content.split(/\r\n|\r|\n/);
 
 		let htmlLines = linesOfSong.map((line, index) => {
@@ -158,7 +161,7 @@ export function html(song, onLineDoubleClick) {
 			}
 		});
 		return (
-			<div style={{ fontFamily: song.format.font, fontDisplay: "swap" }} className="font-normal">
+			<div style={{ fontFamily: song.format.font }} className="font-normal">
 				<TextAutosize autosize={song.format.autosize} fontSize={song.format.font_size}>
 					{htmlLines}
 				</TextAutosize>

@@ -4,6 +4,7 @@ import AddSongsToSetDialog from "./AddSongsToSetDialog";
 import Button from "./Button";
 import DragAndDropTable from "./DragAndDropTable";
 import { EDIT_SETLISTS } from "../utils/constants";
+import NoDataMessage from "./NoDataMessage";
 import SetlistApi from "../api/SetlistApi";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
@@ -54,14 +55,18 @@ export default function SetlistSongsList({ songs, onSongsAdded, onReordered, onS
 				)}
 			</div>
 
-			<DragAndDropTable
-				items={songs}
-				onReorder={handleReordered}
-				removeable={currentMember.can(EDIT_SETLISTS)}
-				onRemove={handleRemoveSong}
-				onClick={handleRouteToSongDetail}
-				rearrangeable={currentMember.can(EDIT_SETLISTS)}
-			/>
+			{songs?.length > 0 ? (
+				<DragAndDropTable
+					items={songs}
+					onReorder={handleReordered}
+					removeable={currentMember.can(EDIT_SETLISTS)}
+					onRemove={handleRemoveSong}
+					onClick={handleRouteToSongDetail}
+					rearrangeable={currentMember.can(EDIT_SETLISTS)}
+				/>
+			) : (
+				<NoDataMessage type="songs" />
+			)}
 
 			<AddSongsToSetDialog
 				open={showSongsDialog}

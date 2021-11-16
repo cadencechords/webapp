@@ -15,7 +15,7 @@ import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
-export default function SongPresenterTransposeSheet({ song, onSongChange }) {
+export default function TransposeSheet({ song, onSongChange }) {
 	const [saving, setSaving] = useState(false);
 	const [updates, setUpdates] = useState();
 	const currentMember = useSelector(selectCurrentMember);

@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 
 import Button from "./Button";
-import EditableData from "./inputs/EditableData";
-import MetronomeDialog from "./MetronomeDialog";
-import MetronomePopover from "./MetronomePopover";
 import MetronomeTool from "../tools/metronome";
 import MinusIcon from "@heroicons/react/outline/MinusIcon";
-import PauseIcon from "@heroicons/react/outline/PauseIcon";
+import OpenInput from "./inputs/OpenInput";
+import PauseIcon from "@heroicons/react/solid/PauseIcon";
 import PlayIcon from "@heroicons/react/solid/PlayIcon";
 import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import TapTempo from "./TapTempo";
@@ -14,7 +12,7 @@ import TapTempo from "./TapTempo";
 export default function Metronome({ bpm, onBpmChange }) {
 	const [isOn, setIsOn] = useState(false);
 	const [metronome] = useState(new MetronomeTool(bpm));
-	const iconClasses = "w-10 h-10";
+	const iconClasses = "w-14 h-14 text-blue-600";
 
 	const handleBpmEdited = (newBpm) => {
 		if (newBpm !== "") {
@@ -50,54 +48,29 @@ export default function Metronome({ bpm, onBpmChange }) {
 		setIsOn(false);
 	};
 
-	const content = (
+	return (
 		<>
-			<div className="flex-center gap-3 w-1/2 mx-auto sm:w-36 mb-2">
-				<Button
-					variant="open"
-					bold
-					className="text-2xl"
-					onClick={() => onBpmChange(bpm - 1)}
-					color="purple"
-				>
+			<div className="flex-center mx-auto mb-4">
+				<Button variant="open" bold className="text-2xl mr-2" onClick={() => onBpmChange(bpm - 1)}>
 					<MinusIcon className="h-4 w-4" />
 				</Button>
-				<EditableData
-					value={bpm ? bpm : ""}
-					centered
-					className="sm:text-xl text-xl"
-					type="number"
-					onChange={handleBpmEdited}
-					placeholder="0"
-				/>
-				<Button
-					variant="open"
-					bold
-					className="text-2xl"
-					onClick={() => onBpmChange(bpm + 1)}
-					color="purple"
-				>
+				<div className="w-20">
+					<OpenInput
+						value={bpm || ""}
+						className="text-4xl hover:bg-gray-100 focus:bg-gray-100 rounded-md text-center"
+						onChange={handleBpmEdited}
+						placeholder="0"
+					/>
+				</div>
+				<Button variant="open" bold className="text-2xl ml-2" onClick={() => onBpmChange(bpm + 1)}>
 					<PlusIcon className="h-4 w-4" />
 				</Button>
 			</div>
-			<div className="flex-between">
-				<button
-					className="outline-none focus:outline-none text-purple-600 hover:text-purple-800 focus:text-purple-800 transition-colors "
-					onClick={handleToggleMetronome}
-				>
+			<div className="flex-center relative">
+				<button className="outline-none focus:outline-none" onClick={handleToggleMetronome}>
 					{isOn ? <PauseIcon className={iconClasses} /> : <PlayIcon className={iconClasses} />}
 				</button>
 				<TapTempo onBpmChange={handleBpmEdited} onTap={handlePauseMetronome} />
-			</div>
-		</>
-	);
-	return (
-		<>
-			<div className="hidden sm:block">
-				<MetronomePopover>{content}</MetronomePopover>
-			</div>
-			<div className="sm:hidden">
-				<MetronomeDialog>{content}</MetronomeDialog>
 			</div>
 		</>
 	);

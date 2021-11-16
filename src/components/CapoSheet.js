@@ -5,7 +5,7 @@ import SectionTitle from "./SectionTitle";
 import { reportError } from "../utils/error";
 import { useState } from "react";
 
-export default function SongPresenterCapoSheet({ song, onCapoChange }) {
+export default function CapoSheet({ song, onCapoChange }) {
 	const [saving, setSaving] = useState(false);
 	const [updates, setUpdates] = useState();
 

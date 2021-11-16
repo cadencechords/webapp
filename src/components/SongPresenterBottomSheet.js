@@ -1,15 +1,16 @@
 import BottomSheet from "./BottomSheet";
-import SongPresenterCapoSheet from "./SongPresenterCapoSheet";
-import SongPresenterTransposeSheet from "./SongPresenterTransposeSheet";
+import CapoSheet from "./CapoSheet";
+import MetronomeSheet from "./MetronomeSheet";
+import TransposeSheet from "./TransposeSheet";
 
 export default function SongPresenterBottomSheet({ open, onClose, sheet, song, onSongChange }) {
 	function getSheetContent() {
 		if (sheet === "capo") {
-			return (
-				<SongPresenterCapoSheet song={song} onCapoChange={(capo) => onSongChange("capo", capo)} />
-			);
+			return <CapoSheet song={song} onCapoChange={(capo) => onSongChange("capo", capo)} />;
 		} else if (sheet === "transpose") {
-			return <SongPresenterTransposeSheet song={song} onSongChange={onSongChange} />;
+			return <TransposeSheet song={song} onSongChange={onSongChange} />;
+		} else if (sheet === "metronome") {
+			return <MetronomeSheet song={song} onSongChange={onSongChange} />;
 		}
 	}
 

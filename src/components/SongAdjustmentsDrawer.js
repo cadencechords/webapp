@@ -12,6 +12,7 @@ export default function SongAdjustmentsDrawer({
 	onAddNote,
 	autoScrolling,
 	onToggleAutoScrolling,
+	onShowSheet,
 }) {
 	const [sheetToShow, setSheetToShow] = useState("main");
 
@@ -25,6 +26,7 @@ export default function SongAdjustmentsDrawer({
 						onSongChange={onSongChange}
 						onAddNote={onAddNote}
 						onShowAutoScrollSheet={() => setSheetToShow("autoscroll")}
+						onShowBottomSheet={onShowSheet}
 					/>
 				);
 			case "autoscroll":
