@@ -15,7 +15,7 @@ export default function SetlistsList({ upcomingSetlists, pastSetlists }) {
 
 	return (
 		<>
-			<div className="sm:hidden">
+			<div className="sm:hidden mb-10">
 				<div className="mb-4">
 					<FadeIn className="text-lg font-semibold">Upcoming</FadeIn>
 					{upcomingSetlists?.map((setlist) => (
