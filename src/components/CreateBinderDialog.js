@@ -47,10 +47,7 @@ export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 
 			<div className="mb-4">
 				<div className="mb-2">Description</div>
-				<OutlinedInput
-					placeholder="ex: Common English hymns that Ukrainians like"
-					onChange={setDescription}
-				/>
+				<OutlinedInput placeholder="ex: Common hymns" onChange={setDescription} />
 			</div>
 
 			<div className="mb-6">
