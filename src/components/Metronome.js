@@ -38,6 +38,7 @@ export default function Metronome({ bpm, onBpmChange }) {
 			metronome.stop();
 			setIsOn(false);
 		} else {
+			onBpmChange(bpm);
 			metronome.start();
 			setIsOn(true);
 		}
