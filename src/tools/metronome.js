@@ -44,7 +44,7 @@ export default class Metronome {
 	}
 
 	scheduleNote(timeToSchedule) {
-		let bufferClone = [...this.buffer];
+		let bufferClone = this.buffer.slice(0);
 		this.audioContext
 			.decodeAudioData(bufferClone)
 			.then((decodedData) => {
