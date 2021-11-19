@@ -22,7 +22,7 @@ export default function Metronome({ bpm, onBpmChange }) {
 	};
 
 	useEffect(() => {
-		metronome?.changeBpm(bpm);
+		metronome.tempo = bpm;
 		if (isOn) {
 			metronome?.stop();
 			metronome?.start();
