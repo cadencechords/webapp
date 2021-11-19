@@ -1,6 +1,7 @@
+import lowClick from "../clicks/low.wav";
+
 export default class Metronome {
 	constructor(bpm = 120) {
-		this.audioContext = null;
 		this.metronomeInterval = null;
 		if (isNaN(bpm)) {
 			this.bpm = 0;
@@ -11,10 +12,21 @@ export default class Metronome {
 		this.DORMANT_DURATION = 25;
 		this.SCHEDULE_AHEAD_TIME = 0.1;
 		this.SECONDS_IN_MINUTE = 60.0;
+		this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+		let request = new XMLHttpRequest();
+		request.open("GET", lowClick, true);
+
+		request.responseType = "arraybuffer";
+
+		request.onload = () => {
+			this.buffer = request.response;
+		};
+
+		request.send();
 	}
 
 	start() {
-		this.audioContext = new window.AudioContext() || new window.webkitAudioContext();
 		this.nextNoteTime = this.audioContext.currentTime + 0.05;
 
 		this.metronomeInterval = setInterval(() => this.runScheduler(), this.DORMANT_DURATION);
@@ -32,12 +44,21 @@ export default class Metronome {
 	}
 
 	scheduleNote(timeToSchedule) {
-		const sound = this.audioContext.createOscillator();
-		sound.frequency.value = 800;
+		let bufferClone = [...this.buffer];
+		this.audioContext
+			.decodeAudioData(bufferClone)
+			.then((decodedData) => {
+				let sound = this.audioContext.createBufferSource();
+				sound.buffer = decodedData;
 
-		sound.connect(this.audioContext.destination);
-		sound.start(timeToSchedule);
-		sound.stop(timeToSchedule + 0.03);
+				sound.connect(this.audioContext.destination);
+				sound.start(timeToSchedule);
+				sound.stop(timeToSchedule + 0.03);
+			})
+			.catch((error) => console.error(error));
+
+		// const sound = this.audioContext.createOscillator();
+		// sound.frequency.value = 800;
 	}
 
 	determineNextNoteTime() {

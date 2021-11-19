@@ -11,7 +11,7 @@ import TapTempo from "./TapTempo";
 
 export default function Metronome({ bpm, onBpmChange }) {
 	const [isOn, setIsOn] = useState(false);
-	const [metronome] = useState(new MetronomeTool(bpm));
+	const [metronome] = useState(() => new MetronomeTool(bpm));
 	const iconClasses = "w-14 h-14 text-blue-600";
 
 	const handleBpmEdited = (newBpm) => {
@@ -38,7 +38,6 @@ export default function Metronome({ bpm, onBpmChange }) {
 			metronome.stop();
 			setIsOn(false);
 		} else {
-			onBpmChange(bpm);
 			metronome.start();
 			setIsOn(true);
 		}
