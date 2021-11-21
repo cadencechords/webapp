@@ -15,7 +15,7 @@ import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
-export default function TransposeSheet({ song, onSongChange }) {
+export default function TransposeSheet({ song, onSongChange, className }) {
 	const [saving, setSaving] = useState(false);
 	const [updates, setUpdates] = useState();
 	const currentMember = useSelector(selectCurrentMember);
@@ -50,11 +50,11 @@ export default function TransposeSheet({ song, onSongChange }) {
 	}
 
 	return (
-		<div className="p-1">
+		<div className={className}>
 			<SectionTitle
 				title={
 					<>
-						Transpose{" "}
+						Transpose
 						<Toggle
 							enabled={song.show_transposed}
 							onChange={(value) => onSongChange("show_transposed", value)}
@@ -93,3 +93,7 @@ export default function TransposeSheet({ song, onSongChange }) {
 		</div>
 	);
 }
+
+TransposeSheet.defaultProps = {
+	className: "",
+};

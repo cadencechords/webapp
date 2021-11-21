@@ -8,7 +8,6 @@ import NotesDragDropContext from "../components/NotesDragDropContext";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterBottomSheet from "../components/SongPresenterBottomSheet";
 import SongPresenterTopBar from "../components/SongPresenterTopBar";
-import { determineFret } from "../utils/capo";
 import { max } from "../utils/numberUtils";
 import notesApi from "../api/notesApi";
 import { reportError } from "../utils/error";
@@ -21,8 +20,6 @@ export default function SongPresenterPage() {
 	const dispatch = useDispatch();
 	const currentSubscription = useSelector(selectCurrentSubscription);
 	const pageRef = useRef();
-	const [autoScrollInterval, setAutoScrollInterval] = useState();
-	const [autoScrolling, setAutoScrolling] = useState(false);
 	const [bottomSheet, setBottomSheet] = useState();
 	const [showBottomSheet, setShowBottomSheet] = useState(false);
 
@@ -89,47 +86,6 @@ export default function SongPresenterPage() {
 		return lines.findIndex((line) => line === null);
 	}
 
-	function scroll() {
-		if (pageRef?.current) {
-			if (isAtBottom(pageRef.current)) {
-				clearInterval(autoScrollInterval);
-				setAutoScrolling(false);
-			} else {
-				let currentScrollPosition = pageRef.current.scrollTop;
-				console.log(song.scroll_speed);
-				pageRef.current.scroll({
-					top: currentScrollPosition + song.scroll_speed,
-					left: 0,
-					behavior: "smooth",
-				});
-			}
-		}
-	}
-
-	function isAtBottom(element) {
-		return Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) <= 13;
-	}
-
-	function handleToggleAutoScroll() {
-		if (autoScrollInterval) {
-			clearInterval(autoScrollInterval);
-			setAutoScrollInterval(null);
-			setAutoScrolling(false);
-		} else {
-			setAutoScrolling(true);
-			setTimeout(() => {
-				let interval = setInterval(() => {
-					scroll();
-				}, [100]);
-				setAutoScrollInterval(interval);
-			}, [5000]);
-		}
-	}
-
-	// function handleScrollSpeedChange(newSpeed) {
-	// 	handleSongChange("scroll_speed", newSpeed);
-	// }
-
 	function handleShowBottomSheet(sheet) {
 		setShowBottomSheet(true);
 		setShowOptionsDrawer(false);
@@ -146,17 +102,6 @@ export default function SongPresenterPage() {
 				/>
 
 				<div className="mx-auto max-w-6xl p-3">
-					{song.capo && (
-						<p className="font-medium mb-4">
-							Capo:
-							<span className="ml-2">
-								{determineFret(
-									(song.show_transposed && song.transposed_key) || song.original_key,
-									song.capo.capo_key
-								)}
-							</span>
-						</p>
-					)}
 					<div className={`relative ${song?.format?.autosize ? "" : "inline-block"}`}>
 						<div id="song" className={`mr-0 ${song?.notes?.length > 0 ? "md:mr-72" : ""}`}>
 							{html(song, handleLineDoubleClick)}
@@ -185,8 +130,6 @@ export default function SongPresenterPage() {
 					onFormatChange={handleFormatChange}
 					onSongChange={handleSongChange}
 					onAddNote={handleAddNote}
-					autoScrolling={autoScrolling}
-					onToggleAutoScrolling={handleToggleAutoScroll}
 					onShowSheet={handleShowBottomSheet}
 				/>
 

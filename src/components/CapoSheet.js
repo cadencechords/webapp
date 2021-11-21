@@ -5,7 +5,7 @@ import SectionTitle from "./SectionTitle";
 import { reportError } from "../utils/error";
 import { useState } from "react";
 
-export default function CapoSheet({ song, onCapoChange }) {
+export default function CapoSheet({ song, onCapoChange, className }) {
 	const [saving, setSaving] = useState(false);
 	const [updates, setUpdates] = useState();
 
@@ -48,7 +48,7 @@ export default function CapoSheet({ song, onCapoChange }) {
 	}
 
 	return (
-		<div>
+		<div className={className}>
 			<SectionTitle
 				title={
 					<>
@@ -73,3 +73,7 @@ export default function CapoSheet({ song, onCapoChange }) {
 		</div>
 	);
 }
+
+CapoSheet.defaultProps = {
+	className: "",
+};

@@ -1,18 +1,16 @@
 import AddStickyNoteIcon from "../icons/AddStickyNoteIcon";
 import MetronomeIcon from "../icons/MetronomeIcon";
 import MobileMenuButton from "./buttons/MobileMenuButton";
+import ScrollIcon from "../icons/ScrollIcon";
 import Toggle from "./Toggle";
 import { noop } from "../utils/constants";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { useSelector } from "react-redux";
 
-// import ScrollIcon from "../icons/ScrollIcon";
-
 export default function SongAdjustmentsDrawerMainSheet({
 	song,
 	onFormatChange,
 	onAddNote,
-	onShowAutoScrollSheet,
 	onShowBottomSheet,
 }) {
 	const currentSubscription = useSelector(selectCurrentSubscription);
@@ -40,9 +38,12 @@ export default function SongAdjustmentsDrawerMainSheet({
 					Add a note
 				</MobileMenuButton>
 			)}
-			{/* <MobileMenuButton className="flex items-center" onClick={onShowAutoScrollSheet}>
+			<MobileMenuButton
+				className="flex items-center"
+				onClick={() => onShowBottomSheet("autoscroll")}
+			>
 				<ScrollIcon className={iconClasses} /> Auto scroll
-			</MobileMenuButton> */}
+			</MobileMenuButton>
 			<MobileMenuButton
 				className="flex items-center"
 				onClick={() => onShowBottomSheet("metronome")}

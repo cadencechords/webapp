@@ -8,7 +8,7 @@ import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
-export default function MetronomeSheet({ song, onSongChange }) {
+export default function MetronomeSheet({ song, onSongChange, className }) {
 	const [updates, setUpdates] = useState();
 	const [loading, setLoading] = useState(false);
 	const currentMember = useSelector(selectCurrentMember);
@@ -34,11 +34,11 @@ export default function MetronomeSheet({ song, onSongChange }) {
 	}
 
 	return (
-		<div>
+		<div className={className}>
 			<SectionTitle
 				title={
 					<>
-						Metronome{" "}
+						Metronome
 						{updates && currentMember.can(EDIT_SONGS) && (
 							<Button
 								variant="open"
@@ -58,3 +58,7 @@ export default function MetronomeSheet({ song, onSongChange }) {
 		</div>
 	);
 }
+
+MetronomeSheet.defaultProps = {
+	className: "",
+};
