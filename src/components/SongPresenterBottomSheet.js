@@ -18,7 +18,12 @@ export default function SongPresenterBottomSheet({ open, onClose, sheet, song, o
 			/>
 			<TransposeSheet song={song} onSongChange={onSongChange} className={isHidden("transpose")} />
 			<MetronomeSheet song={song} onSongChange={onSongChange} className={isHidden("metronome")} />
-			<AutoscrollSheet song={song} onSongChange={onSongChange} className={isHidden("autoscroll")} />
+			<AutoscrollSheet
+				song={song}
+				onSongChange={onSongChange}
+				className={isHidden("autoscroll")}
+				bottomSheetOpen={open}
+			/>
 		</BottomSheet>
 	);
 }
