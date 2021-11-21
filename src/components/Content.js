@@ -16,9 +16,6 @@ import Navbar from "./Navbar";
 import OnsongImportPage from "../pages/OnsongImportPage";
 import PageLoading from "./PageLoading";
 import PcoRedirectPage from "../pages/PcoRedirectPage";
-import PcoSongsIndexPage from "../pages/PcoSongsIndexPage";
-import RoleDetailPage from "../pages/RoleDetailPage";
-import RolesIndexPage from "../pages/RolesIndexPage";
 import { Route } from "react-router-dom";
 import SearchPage from "./SearchPage";
 import SetlistDetailPage from "../pages/SetlistDetailPage";
@@ -29,6 +26,9 @@ import SongImportSourcesIndexPage from "../pages/SongImportSourcesIndexPage";
 import SongsIndexPage from "../pages/SongsIndexPage";
 import TeamDetailPage from "../pages/TeamDetailPage";
 
+const PcoSongsIndexPage = lazy(() => import("../pages/PcoSongsIndexPage"));
+const RoleDetailPage = lazy(() => import("../pages/RoleDetailPage"));
+const RolesIndexPage = lazy(() => import("../pages/RolesIndexPage"));
 const CalendarPage = lazy(() => import("../pages/CalendarPage"));
 
 export default function Content() {
@@ -54,9 +54,9 @@ export default function Content() {
 					<Route path="/import/onsong" exact>
 						<OnsongImportPage />
 					</Route>
-					<Route path="/import/pco/songs" exact>
-						<PcoSongsIndexPage />
-					</Route>
+					<Suspense fallback={<PageLoading />}>
+						<Route path="/import/pco/songs" exact component={PcoSongsIndexPage} />
+					</Suspense>
 					<Route path="/import/pco_redirect" exact>
 						<PcoRedirectPage />
 					</Route>
@@ -102,12 +102,12 @@ export default function Content() {
 					<Route path="/search">
 						<SearchPage />
 					</Route>
-					<Route path="/permissions/:id" exact>
-						<RoleDetailPage />
-					</Route>
-					<Route path="/permissions" exact>
-						<RolesIndexPage />
-					</Route>
+					<Suspense fallback={<PageLoading />}>
+						<Route path="/permissions/:id" exact component={RoleDetailPage} />
+					</Suspense>
+					<Suspense fallback={<PageLoading />}>
+						<Route path="/permissions" exact component={RolesIndexPage} />
+					</Suspense>
 					<Suspense fallback={<PageLoading>Loading your calendar</PageLoading>}>
 						<Route path="/calendar" exact component={CalendarPage} />
 					</Suspense>

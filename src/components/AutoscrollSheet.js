@@ -148,7 +148,6 @@ export default function AutoscrollSheet({ song, onSongChange, className, bottomS
 				/>
 			</div>
 			{showShortcut && !bottomSheetOpen && (
-				// <div className="relative z-10">
 				<div className="fixed right-4 bottom-4 sm:right-8 sm:bottom-8 flex-center z-10">
 					<button
 						onClick={() => (isScrolling ? handlePauseScrolling() : handleStartScrolling())}
@@ -164,7 +163,6 @@ export default function AutoscrollSheet({ song, onSongChange, className, bottomS
 						<XCircleIcon className="w-10 h-10 text-gray-500" />
 					</button>
 				</div>
-				// </div>
 			)}
 		</>
 	);
