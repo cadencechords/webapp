@@ -1,4 +1,5 @@
 import { getHalfStepHigher, getHalfStepLower } from "../utils/music";
+import { useEffect, useState } from "react";
 
 import Button from "./Button";
 import { EDIT_SONGS } from "../utils/constants";
@@ -13,12 +14,15 @@ import { hasAnyKeysSet } from "../utils/SongUtils";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
-import { useState } from "react";
 
 export default function TransposeSheet({ song, onSongChange, className }) {
 	const [saving, setSaving] = useState(false);
 	const [updates, setUpdates] = useState();
 	const currentMember = useSelector(selectCurrentMember);
+
+	useEffect(() => {
+		setUpdates(null);
+	}, [song.id]);
 
 	function handleTransposeUpHalfStep() {
 		let halfStepHigher = getHalfStepHigher(song.transposed_key || song.original_key);

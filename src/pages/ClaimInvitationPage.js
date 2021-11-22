@@ -54,7 +54,7 @@ export default function ClaimInvitationPage() {
 			<CenteredPage>
 				<div className="text-center">
 					Uh oh, looks like something went wrong.
-					<Link className="mt-3 inline-block" to="/login">
+					<Link className="mt-3 block" to="/login">
 						<Button>Take me home</Button>
 					</Link>
 				</div>

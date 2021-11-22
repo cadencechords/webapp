@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import Button from "./Button";
 import { EDIT_SONGS } from "../utils/constants";
 import Metronome from "./Metronome";
@@ -6,12 +8,15 @@ import SongApi from "../api/SongApi";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
-import { useState } from "react";
 
 export default function MetronomeSheet({ song, onSongChange, className }) {
 	const [updates, setUpdates] = useState();
 	const [loading, setLoading] = useState(false);
 	const currentMember = useSelector(selectCurrentMember);
+
+	useEffect(() => {
+		setUpdates(null);
+	}, [song.id]);
 
 	function handleBpmChange(bpm) {
 		if (currentMember.can(EDIT_SONGS)) {

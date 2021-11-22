@@ -41,6 +41,7 @@ export default function SongAdjustmentsDrawerMainSheet({
 			<MobileMenuButton
 				className="flex items-center"
 				onClick={() => onShowBottomSheet("autoscroll")}
+				full
 			>
 				<ScrollIcon className={iconClasses} /> Auto scroll
 			</MobileMenuButton>

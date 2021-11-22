@@ -55,6 +55,7 @@ export default function SetPresenter() {
 	}, [setlist]);
 
 	function handleBottomSheetChange(sheet) {
+		setShowDrawer(false);
 		setShowBottomSheet(true);
 		setBottomSheet(sheet);
 	}
@@ -105,6 +106,7 @@ export default function SetPresenter() {
 					open={showDrawer}
 					onClose={() => setShowDrawer(false)}
 					onSongUpdate={handleSongUpdate}
+					onShowBottomSheet={handleBottomSheetChange}
 				/>
 			</>
 		);

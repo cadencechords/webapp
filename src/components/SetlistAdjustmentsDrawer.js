@@ -4,12 +4,19 @@ import { useDispatch, useSelector } from "react-redux";
 import Drawer from "./Drawer";
 import MobileMenuButton from "./buttons/MobileMenuButton";
 import PencilIcon from "@heroicons/react/solid/PencilIcon";
+import ScrollIcon from "../icons/ScrollIcon";
 import Toggle from "./Toggle";
 import { selectCurrentMember } from "../store/authSlice";
 import { setSongBeingEdited } from "../store/editorSlice";
 import { useHistory } from "react-router-dom";
 
-export default function SetlistAdjustmentsDrawer({ song, onSongUpdate, open, onClose }) {
+export default function SetlistAdjustmentsDrawer({
+	song,
+	onSongUpdate,
+	open,
+	onClose,
+	onShowBottomSheet,
+}) {
 	const currentMember = useSelector(selectCurrentMember);
 	const dispatch = useDispatch();
 	const router = useHistory();
@@ -54,6 +61,13 @@ export default function SetlistAdjustmentsDrawer({ song, onSongUpdate, open, onC
 						</MobileMenuButton>
 					</>
 				)}
+				<MobileMenuButton
+					className="flex items-center"
+					onClick={() => onShowBottomSheet("autoscroll")}
+					full
+				>
+					<ScrollIcon className={iconClasses} /> Auto scroll
+				</MobileMenuButton>
 			</div>
 		</Drawer>
 	);

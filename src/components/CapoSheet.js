@@ -1,13 +1,18 @@
+import { useEffect, useState } from "react";
+
 import Button from "./Button";
 import CapoOptions from "./CapoOptions";
 import CaposApi from "../api/caposApi";
 import SectionTitle from "./SectionTitle";
 import { reportError } from "../utils/error";
-import { useState } from "react";
 
 export default function CapoSheet({ song, onCapoChange, className }) {
 	const [saving, setSaving] = useState(false);
 	const [updates, setUpdates] = useState();
+
+	useEffect(() => {
+		setUpdates(null);
+	}, [song.id]);
 
 	async function handleCapoChange(newCapo) {
 		setUpdates({ capo_key: newCapo });

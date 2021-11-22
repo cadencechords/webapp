@@ -12,7 +12,13 @@ import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
-export default function AutoscrollSheet({ song, onSongChange, className, bottomSheetOpen }) {
+export default function AutoscrollSheet({
+	song,
+	onSongChange,
+	className,
+	bottomSheetOpen,
+	shortcutClasses,
+}) {
 	const iconClasses = "w-14 h-14 text-blue-600";
 	const [isScrolling, setIsScrolling] = useState(false);
 	const [intervalId, setIntervalId] = useState();
@@ -20,6 +26,14 @@ export default function AutoscrollSheet({ song, onSongChange, className, bottomS
 	const [updates, setUpdates] = useState();
 	const currentMember = useSelector(selectCurrentMember);
 	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		clearInterval(intervalId);
+		setIsScrolling(false);
+		setUpdates(null);
+		setIntervalId(null);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [song.id]);
 
 	useEffect(() => {
 		return () => clearInterval(intervalId);
@@ -149,10 +163,10 @@ export default function AutoscrollSheet({ song, onSongChange, className, bottomS
 				/>
 			</div>
 			{showShortcut && !bottomSheetOpen && (
-				<div className="fixed right-4 bottom-4 sm:right-8 sm:bottom-8 flex-center z-10">
+				<div className={`fixed flex-center flex-col z-10 ${shortcutClasses}`}>
 					<button
 						onClick={() => (isScrolling ? handlePauseScrolling() : handleStartScrolling())}
-						className="focus:outline-none outline-none "
+						className="focus:outline-none outline-none"
 					>
 						{isScrolling ? (
 							<PauseIcon className={iconClasses} />
@@ -160,7 +174,7 @@ export default function AutoscrollSheet({ song, onSongChange, className, bottomS
 							<PlayIcon className={iconClasses} />
 						)}
 					</button>
-					<button className="ml-2 focus:outline-none outline-none" onClick={handleStopScrolling}>
+					<button className="focus:outline-none outline-none" onClick={handleStopScrolling}>
 						<XCircleIcon className="w-10 h-10 text-gray-500" />
 					</button>
 				</div>
@@ -171,6 +185,7 @@ export default function AutoscrollSheet({ song, onSongChange, className, bottomS
 
 AutoscrollSheet.defaultProps = {
 	className: "",
+	shortcutClasses: "",
 };
 
 const SPEEDS = {

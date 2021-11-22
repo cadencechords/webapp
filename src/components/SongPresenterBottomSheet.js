@@ -23,6 +23,7 @@ export default function SongPresenterBottomSheet({ open, onClose, sheet, song, o
 				onSongChange={onSongChange}
 				className={isHidden("autoscroll")}
 				bottomSheetOpen={open}
+				shortcutClasses="bottom-4 right-4"
 			/>
 		</BottomSheet>
 	);
