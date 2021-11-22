@@ -62,8 +62,9 @@ export default function AutoscrollSheet({ song, onSongChange, className, bottomS
 		} else {
 			let currentScrollPosition = page.scrollTop;
 			page.scroll({
-				top: currentScrollPosition + speed,
+				top: Math.ceil(currentScrollPosition + speed),
 				left: 0,
+				behavior: "smooth",
 			});
 		}
 	}
@@ -141,7 +142,7 @@ export default function AutoscrollSheet({ song, onSongChange, className, bottomS
 				</div>
 				<Range
 					value={song.scroll_speed || 1}
-					max={10}
+					max={7}
 					min={1}
 					step={1}
 					onChange={handleSpeedChange}
@@ -173,14 +174,11 @@ AutoscrollSheet.defaultProps = {
 };
 
 const SPEEDS = {
-	1: { px: 1, interval: 400 },
-	2: { px: 1, interval: 350 },
-	3: { px: 1, interval: 300 },
-	4: { px: 2, interval: 350 },
-	5: { px: 2, interval: 300 },
-	6: { px: 3, interval: 350 },
-	7: { px: 3, interval: 300 },
-	8: { px: 3, interval: 200 },
-	9: { px: 3, interval: 150 },
-	10: { px: 3, interval: 100 },
+	1: { px: 1, interval: 1000 },
+	2: { px: 1, interval: 500 },
+	3: { px: 1, interval: 120 },
+	4: { px: 1, interval: 100 },
+	5: { px: 1, interval: 80 },
+	6: { px: 1, interval: 50 },
+	7: { px: 2, interval: 50 },
 };
