@@ -21,23 +21,23 @@ export default function AutoscrollSheet({
 }) {
 	const iconClasses = "w-14 h-14 text-blue-600";
 	const [isScrolling, setIsScrolling] = useState(false);
-	const [intervalId, setIntervalId] = useState();
 	const [showShortcut, setShowShortcut] = useState(false);
 	const [updates, setUpdates] = useState();
 	const currentMember = useSelector(selectCurrentMember);
 	const [loading, setLoading] = useState(false);
+	const [animationFrameId, setAnimationFrameId] = useState();
 
 	useEffect(() => {
-		clearInterval(intervalId);
 		setIsScrolling(false);
 		setUpdates(null);
-		setIntervalId(null);
+		cancelAnimationFrame(animationFrameId);
+		setAnimationFrameId(null);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [song.id]);
 
 	useEffect(() => {
-		return () => clearInterval(intervalId);
-	}, [intervalId]);
+		return () => cancelAnimationFrame(animationFrameId);
+	}, [animationFrameId]);
 
 	function handleToggleScroll() {
 		if (isScrolling) {
@@ -45,42 +45,24 @@ export default function AutoscrollSheet({
 		} else {
 			setShowShortcut(true);
 			setIsScrolling(true);
-			let { px, interval } = SPEEDS[song?.scroll_speed || 1];
-			let newIntervalId = setInterval(() => scroll(px), [interval]);
-
-			setIntervalId(newIntervalId);
+			let { px, interval } = SPEEDS[song.scroll_speed || 1];
+			setAnimationFrameId(requestAnimationFrame(() => scroll(0, px, interval)));
 		}
 	}
 
 	function handleSpeedChange(newSpeed) {
-		clearInterval(intervalId);
-		setIntervalId(null);
+		cancelAnimationFrame(animationFrameId);
+		setAnimationFrameId(null);
+
 		if (currentMember.can(EDIT_SONGS)) {
 			setUpdates({ scroll_speed: newSpeed });
 		}
 
 		if (isScrolling) {
-			let { px, interval } = SPEEDS[newSpeed];
-			let newIntervalId = setInterval(() => scroll(px), [interval]);
-			setIntervalId(newIntervalId);
+			let { px, interval } = SPEEDS[newSpeed || 1];
+			setAnimationFrameId(requestAnimationFrame(() => scroll(0, px, interval)));
 		}
 		onSongChange("scroll_speed", newSpeed);
-	}
-
-	function scroll(speed) {
-		let page = document.querySelector("html");
-		if (isAtBottom(page)) {
-			clearInterval(intervalId);
-			setIntervalId(null);
-			setIsScrolling(false);
-		} else {
-			let currentScrollPosition = page.scrollTop;
-			page.scroll({
-				top: parseFloat(currentScrollPosition + speed),
-				left: page.scrollLeft,
-				behavior: "smooth",
-			});
-		}
 	}
 
 	function isAtBottom(element) {
@@ -88,24 +70,41 @@ export default function AutoscrollSheet({
 	}
 
 	function handleStopScrolling() {
-		clearInterval(intervalId);
+		cancelAnimationFrame(animationFrameId);
+		setAnimationFrameId(null);
 		setIsScrolling(false);
-		setIntervalId(null);
 		setShowShortcut(false);
 	}
 
 	function handlePauseScrolling() {
-		clearInterval(intervalId);
+		cancelAnimationFrame(animationFrameId);
 		setIsScrolling(false);
-		setIntervalId(null);
+		setAnimationFrameId(null);
 	}
 
 	function handleStartScrolling() {
 		setIsScrolling(true);
 		let { px, interval } = SPEEDS[song?.scroll_speed || 1];
-		let newIntervalId = setInterval(() => scroll(px), [interval]);
+		setAnimationFrameId(() => scroll(0, px, interval));
+	}
 
-		setIntervalId(newIntervalId);
+	function scroll(time, px, interval) {
+		let page = document.querySelector("html");
+		let currentScrollPosition = page.scrollTop;
+		if (isAtBottom(page)) {
+			cancelAnimationFrame(animationFrameId);
+			setAnimationFrameId(null);
+			setIsScrolling(false);
+		} else {
+			if (time % interval === 0) {
+				page.scroll({
+					top: currentScrollPosition + px,
+					left: page.scrollLeft,
+					behavior: "smooth",
+				});
+			}
+			setAnimationFrameId(requestAnimationFrame(() => scroll(time + 1, px, interval)));
+		}
 	}
 
 	async function handleSaveChanges() {
@@ -141,6 +140,7 @@ export default function AutoscrollSheet({
 						</>
 					}
 				/>
+				{/* <button onClick={start}>start</button> <button onClick={stop}>stop</button> */}
 				<div className="flex-center mb-4">
 					<button className="outline-none focus:outline-none" onClick={handleToggleScroll}>
 						{isScrolling ? (
@@ -156,7 +156,7 @@ export default function AutoscrollSheet({
 				</div>
 				<Range
 					value={song.scroll_speed || 1}
-					max={8}
+					max={10}
 					min={1}
 					step={1}
 					onChange={handleSpeedChange}
@@ -189,12 +189,14 @@ AutoscrollSheet.defaultProps = {
 };
 
 const SPEEDS = {
-	1: { px: 0.5, interval: 500 },
-	2: { px: 0.5, interval: 250 },
-	3: { px: 0.5, interval: 70 },
-	4: { px: 1, interval: 100 },
-	5: { px: 1, interval: 80 },
-	6: { px: 1, interval: 50 },
-	7: { px: 1.5, interval: 50 },
-	8: { px: 2, interval: 50 },
+	1: { px: 1, interval: 15 },
+	2: { px: 1, interval: 13 },
+	3: { px: 1, interval: 11 },
+	4: { px: 1, interval: 9 },
+	5: { px: 1, interval: 7 },
+	6: { px: 1, interval: 5 },
+	7: { px: 1, interval: 4 },
+	8: { px: 1, interval: 3 },
+	9: { px: 2, interval: 4 },
+	10: { px: 3, interval: 3 },
 };
