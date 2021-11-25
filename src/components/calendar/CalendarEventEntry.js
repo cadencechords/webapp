@@ -1,11 +1,18 @@
+import { useEffect, useState } from "react";
+
 import { BACKGROUND_COLORS } from "../Button";
 import { getTimeFromDate } from "../../utils/date";
-import { useState } from "react";
 
 export default function CalendarEventEntry({ event, onClick }) {
-	const [colors] = useState(() =>
+	const [colors, setColors] = useState(() =>
 		event.color ? `${BACKGROUND_COLORS[event.color]} text-white transition-colors` : "text-black"
 	);
+
+	useEffect(() => {
+		if (event?.color) {
+			setColors(`${BACKGROUND_COLORS[event.color]} text-white transition-colors`);
+		}
+	}, [event?.color]);
 
 	return (
 		<button
