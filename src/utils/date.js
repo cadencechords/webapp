@@ -115,7 +115,15 @@ export function isSameDay(date1, date2) {
 	return dayjs(date1).isSame(date2, "date");
 }
 
+export function isSameDate(date1, date2) {
+	if (!date1 && !date2) return true;
+	if (!date1 || !date2) return false;
+
+	return dayjs(date1).isSame(date2);
+}
+
 export function getTimeFromDate(date) {
+	if (!date) return "";
 	date = dayjs(date);
 	if (date.hour() !== 0 || date.minute() !== 0) {
 		return date.format("h:mma");
@@ -125,5 +133,28 @@ export function getTimeFromDate(date) {
 }
 
 export function format(date, format) {
+	if (!date || !format) return "";
+
 	return dayjs(date).format(format);
+}
+
+export function parseHours(date) {
+	if (!date) return "";
+
+	return dayjs(date).format("h");
+}
+
+export function parseMinutes(date) {
+	if (!date) return "";
+	return dayjs(date).format("mm");
+}
+
+export function parsePeriod(date) {
+	if (!date) return "";
+	return dayjs(date).format("A");
+}
+
+export function diffInHours(date1, date2) {
+	if (!date1 || !date2) return 0;
+	return dayjs(date1).diff(date2, "hour");
 }

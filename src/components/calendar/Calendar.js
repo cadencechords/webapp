@@ -7,7 +7,13 @@ import CreateEventDialog from "../../dialogs/CreateEventDialog";
 import EventDetailDialog from "../../dialogs/EventDetailDialog";
 import dayjs from "dayjs";
 
-export default function Calendar({ events, canCreateEvents, onEventCreated, onEventDeleted }) {
+export default function Calendar({
+	events,
+	canCreateEvents,
+	onEventCreated,
+	onEventDeleted,
+	onEventUpdated,
+}) {
 	const [month, setMonth] = useState(dayjs().month());
 	const [year, setYear] = useState(dayjs().year());
 	const [calendarWeeks, setCalendarWeeks] = useState();
@@ -53,6 +59,12 @@ export default function Calendar({ events, canCreateEvents, onEventCreated, onEv
 			defaultDate,
 		}));
 	};
+
+	const handleEventUpdated = (updatedEvent) => {
+		setEventToShow(updatedEvent);
+		onEventUpdated(updatedEvent);
+	};
+
 	return (
 		<div>
 			<CalendarHeader
@@ -77,6 +89,7 @@ export default function Calendar({ events, canCreateEvents, onEventCreated, onEv
 				event={eventToShow}
 				onCloseDialog={() => setEventToShow(null)}
 				onDeleted={onEventDeleted}
+				onUpdated={handleEventUpdated}
 			/>
 		</div>
 	);

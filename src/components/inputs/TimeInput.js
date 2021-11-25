@@ -8,10 +8,16 @@ import {
 
 import Button from "../Button";
 
-export default function TimeInput({ onChange, className }) {
-	const [hour, setHour] = useState("");
-	const [minute, setMinute] = useState("");
-	const [period, setPeriod] = useState("PM");
+export default function TimeInput({
+	onChange,
+	className,
+	defaultHours,
+	defaultMinutes,
+	defaultPeriod,
+}) {
+	const [hour, setHour] = useState(() => defaultHours || "");
+	const [minute, setMinute] = useState(() => defaultMinutes || "");
+	const [period, setPeriod] = useState(() => defaultPeriod || "PM");
 	const hourInput = createRef();
 	const minuteInput = createRef();
 	const [isFocused, setIsFocused] = useState(false);

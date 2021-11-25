@@ -27,4 +27,10 @@ export default class EventsApi {
 			headers: constructAuthHeaders(),
 		});
 	}
+
+	static update(updates, id) {
+		return api().put(`/events/${id}?team_id=${getTeamId()}`, updates, {
+			headers: constructAuthHeaders(),
+		});
+	}
 }

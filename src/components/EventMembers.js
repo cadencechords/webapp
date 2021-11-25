@@ -57,7 +57,7 @@ export default function EventMembers({ event, onMembersLoaded, members, onFieldC
 
 	function handleToggleMember(member) {
 		let updatedMembers = [];
-		if (event.members?.includes(member)) {
+		if (event.members?.find((memberInList) => member.id === memberInList.id)) {
 			updatedMembers = event.members.filter((memberInEvent) => memberInEvent.id !== member.id);
 		} else {
 			updatedMembers = [...event.members, member];
@@ -94,7 +94,10 @@ export default function EventMembers({ event, onMembersLoaded, members, onFieldC
 							className="p-2 last:border-0 border-b flex items-center gap-4 cursor-pointer"
 							onClick={() => handleToggleMember(member)}
 						>
-							<Checkbox onChange={() => {}} checked={event.members?.includes(member)} />
+							<Checkbox
+								onChange={() => {}}
+								checked={event.members.find((eventMember) => eventMember.id === member.id)}
+							/>
 							<div>
 								{hasName(member.user) ? (
 									<>

@@ -45,6 +45,14 @@ export default function CalendarPage() {
 		setEvents((currentEvents) => currentEvents.filter((event) => event.id !== eventId));
 	}
 
+	function handleEventUpdated(updatedEvent) {
+		setEvents((currentEvents) =>
+			currentEvents.map((eventInList) =>
+				eventInList.id === updatedEvent.id ? updatedEvent : eventInList
+			)
+		);
+	}
+
 	if (!currentSubscription || !currentMember) return null;
 	else {
 		return (
@@ -54,6 +62,7 @@ export default function CalendarPage() {
 					events={events}
 					onEventCreated={handleEventCreated}
 					onEventDeleted={handleEventDeleted}
+					onEventUpdated={handleEventUpdated}
 				/>
 			</div>
 		);
