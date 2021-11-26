@@ -20,14 +20,14 @@ export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
 	);
 	return (
 		<StyledPopover button={button}>
-			<div className="rounded-lg shadow-xl bg-white w-48">
+			<div className="rounded-lg shadow-xl bg-white dark:bg-dark-gray-700 w-48">
 				<a
 					href={file.url}
 					target="_blank"
 					rel="noreferrer"
-					className="border-gray-300 border-b first:rounded-t-lg last:rounded-b-lg block"
+					className="dark:border-dark-gray-400 border-gray-300 border-b block"
 				>
-					<MobileMenuButton full className="text-left " color="black">
+					<MobileMenuButton full className="text-left rounded-t-lg" color="black">
 						<div className="flex items-center">
 							<DownloadIcon className="w-4 h-4 mr-4" /> Download
 						</div>
@@ -36,7 +36,7 @@ export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
 				{currentMember.can(EDIT_FILES) && (
 					<MobileMenuButton
 						full
-						className="text-left border-gray-300 border-b last:border-0 first:rounded-t-lg last:rounded-b-lg"
+						className="text-left dark:border-dark-gray-400 border-gray-300 border-b last:border-0 first:rounded-t-lg last:rounded-b-lg"
 						color="black"
 						onClick={onEdit}
 					>

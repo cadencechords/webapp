@@ -21,8 +21,8 @@ export default function SongOptionsPopover({ onDeleteClick, onPrintClick }) {
 	const currentMember = useSelector(selectCurrentMember);
 
 	let button = (
-		<Button size="xs" variant="open">
-			<DotsVerticalIcon className="w-5 h-5 text-gray-500" />
+		<Button size="xs" variant="open" color="gray">
+			<DotsVerticalIcon className="w-5 h-5" />
 		</Button>
 	);
 
@@ -58,7 +58,7 @@ export default function SongOptionsPopover({ onDeleteClick, onPrintClick }) {
 						<MobileMenuButton
 							full
 							color="red"
-							className="flex items-center border-t rounded-b-md"
+							className="flex items-center border-t dark:border-dark-gray-400 rounded-b-md"
 							onClick={() => setShowDeleteDialog(true)}
 						>
 							<TrashIcon className="w-5 h-5 mr-3" />

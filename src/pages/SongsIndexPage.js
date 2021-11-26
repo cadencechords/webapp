@@ -96,12 +96,12 @@ export default function SongsIndexPage() {
 					/>
 					<Button
 						variant="open"
-						className="bg-white fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
+						className="bg-white dark:bg-dark-gray-700 fixed bottom-12 left-0 flex-center sm:hidden h-12"
 						full
 						style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
 						onClick={() => setIsCreating(true)}
 					>
-						<PlusCircleIcon className="h-4 w-4 mr-2 text-blue-700" />
+						<PlusCircleIcon className="h-4 w-4 mr-2" />
 						Add new song
 					</Button>
 				</>

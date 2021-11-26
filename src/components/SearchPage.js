@@ -72,7 +72,6 @@ export default function SearchPage() {
 			/>
 
 			<SearchResults results={searchResults} />
-			<div></div>
 		</>
 	);
 }

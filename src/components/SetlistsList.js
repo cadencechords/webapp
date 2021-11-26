@@ -23,11 +23,11 @@ export default function SetlistsList({ upcomingSetlists, pastSetlists }) {
 						upcomingSetlists?.map((setlist) => (
 							<FadeIn
 								key={setlist.id}
-								className="border-b last:border-0 py-2.5 px-2 hover:bg-gray-50 focus:bg-gray-50 cursor-pointer delay-75"
+								className="border-b dark:border-dark-gray-700 last:border-0 py-2.5 px-2 hover:bg-gray-50 focus:bg-gray-50 dark:hover:bg-dark-gray-800 dark:focus:bg-dark-gray-800 cursor-pointer delay-75"
 							>
 								<div onClick={() => handleRouteToSetlist(setlist.id)}>
 									<div>{setlist.name}</div>
-									<div className="text-sm text-gray-600 flex items-center">
+									<div className="text-sm text-gray-600 dark:text-dark-gray-200 flex items-center">
 										<div className="flex items-center">
 											<CalendarIcon className="w-4 h-4 mr-2" />
 											{toShortDate(setlist.scheduled_date)}
@@ -52,11 +52,11 @@ export default function SetlistsList({ upcomingSetlists, pastSetlists }) {
 						pastSetlists?.map((setlist) => (
 							<FadeIn
 								key={setlist.id}
-								className="border-b last:border-0 py-2.5 px-2 hover:bg-gray-50 focus:bg-gray-50 cursor-pointer delay-150"
+								className="border-b dark:border-dark-gray-700 last:border-0 py-2.5 px-2 hover:bg-gray-50 focus:bg-gray-50 dark:hover:bg-dark-gray-800 dark:focus:bg-dark-gray-800 cursor-pointer delay-150"
 							>
 								<div onClick={() => handleRouteToSetlist(setlist.id)}>
 									<div>{setlist.name}</div>
-									<div className="text-sm text-gray-600 flex items-center">
+									<div className="text-sm text-gray-600 dark:text-dark-gray-200 flex items-center">
 										<div className="flex items-center">
 											<CalendarIcon className="w-4 h-4 mr-2" />
 											{toShortDate(setlist.scheduled_date)}

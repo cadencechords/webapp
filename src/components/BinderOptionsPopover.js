@@ -16,7 +16,7 @@ export default function BinderOptionsPopover({ onDeleteClick, onChangeColorClick
 	const id = useParams().id;
 
 	let button = (
-		<Button size="xs" variant="open">
+		<Button size="xs" variant="open" color="gray">
 			<DotsVerticalIcon className="w-5 h-5 text-gray-500" />
 		</Button>
 	);
@@ -53,7 +53,7 @@ export default function BinderOptionsPopover({ onDeleteClick, onChangeColorClick
 					<MobileMenuButton
 						full
 						color="red"
-						className="flex items-center border-t"
+						className="flex items-center border-t dark:border-dark-gray-400"
 						onClick={() => setShowDeleteDialog(true)}
 					>
 						<TrashIcon className="w-5 h-5 mr-3" />

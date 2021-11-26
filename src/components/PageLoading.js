@@ -4,7 +4,7 @@ export default function PageLoading({ children }) {
 	return (
 		<div className="text-center py-4">
 			{children && <div className="mb-4">{children}</div>}
-			<PulseLoader color="blue" />
+			<PulseLoader color="#1f6feb" />
 		</div>
 	);
 }

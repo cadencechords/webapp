@@ -31,7 +31,7 @@ export default function TeamLoginPage() {
 	return (
 		<CenteredPage>
 			<div className="text-center">
-				{loading && <PulseLoader color="blue" />}
+				{loading && <PulseLoader color="#1f6feb" />}
 				{!loading && teams.length === 0 && <NoTeamYet />}
 				{!loading && teams.length > 0 && <TeamLoginOptions teams={teams} />}
 			</div>

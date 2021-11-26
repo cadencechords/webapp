@@ -7,10 +7,10 @@ export default function SearchBar() {
 
 	return (
 		<div className="ml-5 flex items-center">
-			<SearchIcon className="h-4 w-4 text-gray-500" />
+			<SearchIcon className="h-4 w-4 text-gray-500 dark:text-dark-gray-200" />
 			<span className="ml-4 w-60">
 				<button
-					className="outline-none focus:outline-none text-gray-500 w-full text-left p-2"
+					className="outline-none focus:outline-none text-gray-500 dark:text-dark-gray-200 w-full text-left p-2"
 					onClick={() => setIsSearching(true)}
 				>
 					Search library

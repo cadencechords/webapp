@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/react";
 
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 
 import AppFallback from "./components/AppFallback";
 import CenteredPage from "./components/CenteredPage";
@@ -19,6 +19,13 @@ const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const InvitationSignUpPage = lazy(() => import("./pages/InvitationSignUpPage"));
 
 function App() {
+	useEffect(() => {
+		let theme = localStorage.getItem("theme");
+
+		if (theme === "dark") {
+			document.querySelector("html").className += " dark";
+		}
+	}, []);
 	return (
 		<Suspense
 			fallback={

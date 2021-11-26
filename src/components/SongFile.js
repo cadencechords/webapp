@@ -15,10 +15,10 @@ export default function SongFile({ file, onDelete, onUpdate }) {
 	}
 
 	return (
-		<div className="rounded-md border border-gray-300 p-2 flex-between text-sm">
+		<div className="rounded-md border dark:border-dark-gray-700 border-gray-300 p-2 flex-between text-sm">
 			<div className="ml-2">
 				<a
-					className="font-medium hover:text-blue-600 block"
+					className="font-medium hover:text-blue-600 dark:hover:text-dark-blue block transition-colors"
 					href={file.url}
 					target="_blank"
 					rel="noreferrer"

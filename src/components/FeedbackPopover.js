@@ -12,7 +12,9 @@ export default function FeedbackPopover() {
 	const [loading, setLoading] = useState(false);
 	const teamId = useSelector(selectTeamId);
 
-	let button = <AnnouncementIcon className="w-7 h-7 transform -rotate-3 text-gray-600 mr-8" />;
+	let button = (
+		<AnnouncementIcon className="w-7 h-7 transform -rotate-3 text-gray-600 dark:text-dark-gray-200 mr-8" />
+	);
 
 	const handleSubmit = async () => {
 		try {
@@ -34,12 +36,12 @@ export default function FeedbackPopover() {
 		<>
 			<StyledPopover position="bottom-start" button={button}>
 				<textarea
-					className="resize-y outline-none focus:outline-none p-3 w-72"
+					className="resize-y outline-none focus:outline-none p-3 w-72 dark:bg-dark-gray-700 rounded-t-md"
 					placeholder="Submit feedback"
 					value={feedback}
 					onChange={(e) => setFeedback(e.target.value)}
 				/>
-				<div className="border-t text-right py-1.5 px-2 bg-gray-50 rounded-b-md">
+				<div className="border-t dark:border-dark-gray-400 text-right py-1.5 px-2 bg-gray-50 dark:bg-dark-gray-600 rounded-b-md">
 					<Button
 						onClick={handleSubmit}
 						color="blue"

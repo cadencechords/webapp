@@ -13,12 +13,16 @@ export default function SidenavLink({ text, to, icon, exact }) {
 			<Link
 				to={to}
 				className={`flex items-center rounded pl-4 pr-2.5 lg:px-4 py-2 w-full my-0.5 font-medium ${
-					isCurrentRoute ? " text-blue-700 rounded" : "text-gray-500"
+					isCurrentRoute
+						? " text-blue-700 dark:text-dark-blue rounded"
+						: "text-gray-500 dark:text-dark-gray-200"
 				}`}
 			>
 				<span className="lg:mr-3">{icon}</span> <span className="hidden lg:inline">{text}</span>
 			</Link>
-			{isCurrentRoute && <div className="w-1 my-1.5 rounded-lg bg-blue-600"></div>}
+			{isCurrentRoute && (
+				<div className="w-1 my-1.5 rounded-lg bg-blue-600 dark:bg-dark-blue"></div>
+			)}
 		</div>
 	);
 }

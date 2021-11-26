@@ -4,7 +4,7 @@ import ProfilePicture from "./ProfilePicture";
 export default function TeamLoginOption({ team, onLoginTeam }) {
 	return (
 		<MobileMenuButton
-			className="flex-between p-3 border-b last:border-0"
+			className="flex-between p-3 border-b last:border-0 dark:border-dark-gray-400"
 			onClick={() => onLoginTeam(team.id)}
 			full
 		>

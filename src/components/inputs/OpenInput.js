@@ -1,7 +1,7 @@
 export default function OpenInput({ placeholder, onFocus, value, onChange, autoFocus, className }) {
 	return (
 		<input
-			className={`appearance-none outline-none w-full focus:outline-none bg-transparent ${className}`}
+			className={`appearance-none outline-none w-full focus:outline-none bg-transparent ${className} dark:text-dark-gray-100`}
 			placeholder={placeholder}
 			value={value}
 			onChange={(e) => onChange(e.target.value)}

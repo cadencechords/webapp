@@ -99,7 +99,7 @@ export default function BinderDetailPage() {
 	if (!binder) {
 		return (
 			<div className="text-center py-4">
-				<PulseLoader color="blue" />
+				<PulseLoader color="#1f6feb" />
 			</div>
 		);
 	}

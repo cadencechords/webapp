@@ -31,22 +31,22 @@ export default function SearchResults({ results, onCloseDialog }) {
 		return (
 			<div className="mt-4 px-2 max-h-96 overflow-y-auto">
 				<section className="mb-4">
-					<h3 className="font-semibold mb-1">Binders</h3>
+					<h3 className="font-semibold mb-1 dark:text-dark-gray-100">Binders</h3>
 					{binders.length === 0 ? <NoDataMessage>No binders found</NoDataMessage> : binders}
 				</section>
 				<section className="mb-4">
-					<h3 className="font-semibold mb-1">Songs</h3>
+					<h3 className="font-semibold mb-1 dark:text-dark-gray-100">Songs</h3>
 					{songs.length === 0 ? <NoDataMessage>No songs found</NoDataMessage> : songs}
 				</section>
 				<section>
-					<h3 className="font-semibold mb-1">Sets</h3>
+					<h3 className="font-semibold mb-1 dark:text-dark-gray-100">Sets</h3>
 					{setlists.length === 0 ? <NoDataMessage>No sets found</NoDataMessage> : setlists}
 				</section>
 			</div>
 		);
 	} else {
 		return (
-			<div className="text-center px-4 text-gray-600 mt-10">
+			<div className="text-center px-4 text-gray-600 dark:text-dark-gray-200 mt-10">
 				Try typing in the search bar to find something in your library
 			</div>
 		);

@@ -50,7 +50,7 @@ export default function MemberCard({ member, isCurrentUser, onPositionChanged, o
 			teamPosition = <div className="text-sm">{member.position}</div>;
 		}
 		return (
-			<div className="rounded-md bg-gray-50 py-3 px-5 text-center flex flex-col relative z-10">
+			<div className="rounded-md bg-gray-50 dark:bg-dark-gray-800 py-3 px-5 text-center flex flex-col relative z-10">
 				<Button variant="open" className="absolute right-2 top-2" onClick={onShowMemberMenu}>
 					<DotsVerticalIcon className="text-gray-600 h-5" />
 				</Button>
