@@ -11,7 +11,7 @@ export default function SongPresenterTopBar({ song, onShowOptionsDrawer, onShowB
 
 	if (song) {
 		return (
-			<nav className="py-2 px-1 border-b bg-gray-50">
+			<nav className="py-2 px-1 border-b dark:border-dark-gray-600 bg-gray-50 dark:bg-dark-gray-800">
 				<div className="flex-between max-w-3xl mx-auto">
 					<Link to={`/songs/${id}`}>
 						<Button variant="open" color="gray">
@@ -33,6 +33,6 @@ export default function SongPresenterTopBar({ song, onShowOptionsDrawer, onShowB
 			</nav>
 		);
 	} else {
-		return <nav className="py-2 px-1 border-b bg-gray-50 flex-between"></nav>;
+		return <nav className="py-2 px-1 border-b bg-gray-50 dark:bg-dark-gray-800 flex-between"></nav>;
 	}
 }

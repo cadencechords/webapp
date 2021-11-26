@@ -7,7 +7,7 @@ export default function CapoOptions({ onCapoChange, song, onRemoveCapo }) {
 	);
 
 	return (
-		<div className="flex items-center overflow-x-auto scrollbar-thin pb-3 scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+		<div className="flex items-center overflow-x-auto scrollbar-thin pb-3 scrollbar-thumb-gray-300">
 			<CapoOption
 				capoKey="None"
 				capoNumber="0"

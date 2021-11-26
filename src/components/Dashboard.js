@@ -5,7 +5,7 @@ export default function Dashboard({ data }) {
 
 	return (
 		<div className="grid grid-cols-3">
-			<div className="col-span-3 lg:col-span-2 xl:col-span-1 border-b">
+			<div className="col-span-3 lg:col-span-2 xl:col-span-1 border-b dark:border-dark-gray-600 ">
 				<DashboardTodaysSetlists setlists={data.todays_setlists} />
 			</div>
 		</div>

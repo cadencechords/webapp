@@ -5,7 +5,7 @@ import Button from "./Button";
 export default function EditorMobileTopNav({ song, onShowEditorDrawer, onGoBack }) {
 	if (song) {
 		return (
-			<nav className="py-2 px-1 border-b bg-gray-50">
+			<nav className="py-2 px-1 border-b dark:border-dark-gray-600 bg-gray-50 dark:bg-dark-gray-800">
 				<div className="flex-between max-w-3xl mx-auto">
 					<Button variant="open" color="gray" onClick={onGoBack}>
 						<ArrowNarrowLeftIcon className="h-6 w-6" />

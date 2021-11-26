@@ -8,7 +8,7 @@ export default function Drawer({ open, onClose, children }) {
 				onClick={onClose}
 			></div>
 			<aside
-				className={`z-30 fixed top-0 bottom-0 right-0 h-full w-52 bg-white transform ${
+				className={`z-30 fixed top-0 bottom-0 right-0 h-full w-52 bg-white dark:bg-dark-gray-700 transform ${
 					open ? "translate-x-0" : "translate-x-52"
 				} transition-all`}
 			>

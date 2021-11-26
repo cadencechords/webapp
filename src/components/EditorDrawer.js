@@ -13,7 +13,9 @@ export default function EditorDrawer({ open, onClose, formatOptions, onFormatCha
 	return (
 		<Drawer open={open} onClose={onClose}>
 			<section>
-				<h2 className="border-b border-t p-3 font-semibold bg-gray-50">Lyric Options</h2>
+				<h2 className="border-b border-t dark:border-dark-gray-400 p-3 font-semibold bg-gray-50 dark:bg-dark-gray-600">
+					Lyric Options
+				</h2>
 				<div className="px-3 py-6">
 					<div className="mb-3">
 						<div className="mb-1">Font</div>
@@ -31,7 +33,9 @@ export default function EditorDrawer({ open, onClose, formatOptions, onFormatCha
 			</section>
 
 			<section>
-				<h2 className="border-b border-t p-3 font-semibold bg-gray-50">Chord Options</h2>
+				<h2 className="border-b border-t dark:border-dark-gray-400 p-3 font-semibold bg-gray-50 dark:bg-dark-gray-600">
+					Chord Options
+				</h2>
 				<div className="px-3 py-6">
 					<div className="mb-3">
 						<Toggle
@@ -51,7 +55,9 @@ export default function EditorDrawer({ open, onClose, formatOptions, onFormatCha
 			</section>
 			{currentSubscription.isPro && (
 				<section>
-					<h2 className="border-b border-t p-3 font-semibold bg-gray-50">More Options</h2>
+					<h2 className="border-b border-t dark:border-dark-gray-400 p-3 font-semibold bg-gray-50 dark:bg-dark-gray-600">
+						More Options
+					</h2>
 					<div className="px-3 py-6">
 						<Button
 							full

@@ -14,7 +14,7 @@ export default function SongAdjustmentsDrawerMainSheet({
 	onShowBottomSheet,
 }) {
 	const currentSubscription = useSelector(selectCurrentSubscription);
-	const iconClasses = "w-5 h-5 mr-3 text-blue-600";
+	const iconClasses = "w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue";
 
 	return (
 		<div className="flex flex-col pt-5">

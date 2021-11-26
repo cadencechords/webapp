@@ -71,8 +71,8 @@ export default function InvitationSignUpPage() {
 	if (token) {
 		return (
 			<CenteredPage>
-				<h1 className="font-bold text-3xl text-center mb-2">
-					Create a password for your new account
+				<h1 className="font-bold text-3xl text-center mb-8">
+					You're almost there! <br /> Create a password for your new account
 				</h1>
 
 				<div className="mb-2">Password</div>

@@ -204,7 +204,7 @@ export default function SongDetailPage() {
 						>
 							<div className="flex flex-row items-center">
 								<span className="mr-1">
-									<PlayIcon className="w-4 h-4 text-purple-700" />
+									<PlayIcon className="w-4 h-4 text-purple-700 dark:text-purple-500" />
 								</span>
 								Perform Song
 							</div>
@@ -253,7 +253,7 @@ export default function SongDetailPage() {
 						onClick={handlePresentSong}
 						full
 					>
-						<PlayIcon className="h-5 w-5 text-purple-700" /> Perform
+						<PlayIcon className="h-5 w-5 text-purple-700 dark:text-purple-500" /> Perform
 					</Button>
 				</div>
 				<SongPreview song={song} onDoubleClick={handleOpenInEditor} />

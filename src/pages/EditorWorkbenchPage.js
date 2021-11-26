@@ -194,7 +194,7 @@ export default function EditorWorkbenchPage() {
 						</Button>
 					</span>
 				</div>
-				<div className="bg-gray-50 py-3 px-5 border-t border-gray-200 border-b sticky top-0">
+				<div className="bg-gray-50 dark:bg-dark-gray-700 py-3 px-5 border-t border-gray-200 dark:border-dark-gray-600 border-b sticky top-0">
 					<EditorOptionsBar
 						formatOptions={format}
 						onFormatChange={handleFormatChange}

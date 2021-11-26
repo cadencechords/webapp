@@ -104,7 +104,7 @@ export default function TeamDetailPage() {
 						/>
 					</>
 				)}
-				<div className="text-gray-600 flex-between border-b py-2 w-full">
+				<div className="text-gray-600 dark:text-dark-gray-200 flex-between border-b dark:border-dark-gray-600 py-2 w-full">
 					<div className="font-semibold">Created:</div>
 					{format(currentTeam.created_at, "MMM D YYYY")}
 				</div>

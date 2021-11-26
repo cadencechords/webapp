@@ -81,7 +81,7 @@ export default function TransposeSheet({ song, onSongChange, className }) {
 
 			{song.show_transposed && hasAnyKeysSet(song) && (
 				<div>
-					<div className="flex-between p-2  bg-gray-100 mt-4 w-56 mx-auto">
+					<div className="flex-between p-2  bg-gray-100 dark:bg-dark-gray-600 mt-4 w-56 mx-auto">
 						<Button variant="open" color="gray" onClick={handleTransposeUpHalfStep}>
 							<PlusIcon className="w-5 h-5" />
 						</Button>

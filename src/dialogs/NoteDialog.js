@@ -44,7 +44,7 @@ export default function NoteDialog({ note, open, onCloseDialog, onUpdate, onDele
 				placeholder="Type here"
 				onChange={(e) => handleUpdate("content", e.target.value)}
 				value={updates.content || ""}
-				className="text-base p-2 w-full border rounded-md resize-none outline-none focus:outline-none focus:border-blue-400 transition-colors mb-4"
+				className="text-base p-2 w-full border border-dark-gray-600 rounded-md resize-none outline-none focus:outline-none focus:border-blue-400 dark:focus:border-dark-blue transition-colors mb-4 dark:bg-dark-gray-900 "
 			></textarea>
 			<Label>Note color</Label>
 			<NoteColorOption
@@ -80,8 +80,8 @@ export default function NoteDialog({ note, open, onCloseDialog, onUpdate, onDele
 }
 
 const NOTE_COLOR_OPTIONS = {
-	blue: "bg-blue-200",
-	pink: "bg-pink-200",
-	green: "bg-green-200",
-	yellow: "bg-yellow-200",
+	blue: "bg-blue-200 dark:bg-blue-300",
+	pink: "bg-pink-200 dark:bg-pink-300",
+	green: "bg-green-200 bg-green-300",
+	yellow: "bg-yellow-200 bg-yellow-300",
 };

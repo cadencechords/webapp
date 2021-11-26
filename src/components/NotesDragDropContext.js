@@ -66,7 +66,9 @@ export default function NotesDragDropContext({
 	}
 
 	function getNotesColumnStyles(snapshot) {
-		return snapshot.isDraggingOver ? "bg-gray-100" : "bg-white";
+		return snapshot.isDraggingOver
+			? "bg-gray-100 dark:bg-dark-gray-700"
+			: "bg-white dark:bg-dark-gray-900";
 	}
 
 	function handleUpdateNote(note, updates) {

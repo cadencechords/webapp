@@ -17,13 +17,17 @@ export default function TeamOptionsPopover({ team }) {
 	return (
 		<StyledPopover button={button} position="bottom-start">
 			<div className="w-64">
-				<MobileMenuButton full className="rounded-t-md border-b dark:border-dark-gray-400">
+				<MobileMenuButton
+					full
+					className="rounded-t-md border-b dark:border-dark-gray-400"
+					size="sm"
+				>
 					<Link className="flex justify-start items-center" to="/team">
 						<InformationCircleIcon className="mx-4 h-4" />
 						View details
 					</Link>
 				</MobileMenuButton>
-				<MobileMenuButton full className="rounded-b-md">
+				<MobileMenuButton full className="rounded-b-md" size="sm">
 					<Link className="flex justify-start  items-center" to="/login/teams">
 						<SwitchHorizontalIcon className="mx-4 h-4" />
 						Switch teams

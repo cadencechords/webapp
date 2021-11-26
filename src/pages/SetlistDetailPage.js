@@ -151,7 +151,8 @@ export default function SetlistDetailPage() {
 										size="md"
 										full
 									>
-										<PlayIcon className="h-5 w-5  text-purple-700 mr-4" /> Perform
+										<PlayIcon className="h-5 w-5  text-purple-700 dark:text-purple-500 mr-4" />
+										Perform
 									</Button>
 									<Button
 										variant="outlined"
@@ -160,7 +161,8 @@ export default function SetlistDetailPage() {
 										className="mb-2 hidden md:flex justify-center items-center"
 										size="xs"
 									>
-										<PlayIcon className="h-4 w-4 text-purple-700 mr-1" /> Perform
+										<PlayIcon className="h-4 w-4 text-purple-700 dark:text-purple-500 mr-1" />
+										Perform
 									</Button>
 								</>
 							)}

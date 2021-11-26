@@ -25,7 +25,7 @@ export default function ProfilePicture({ url, size, onClick }) {
 				}`}
 				onClick={onClick}
 			>
-				<UserCircleIcon className="w-full h-full text-gray-500 dark:text-dark-gray-200" />
+				<UserCircleIcon className="w-full h-full text-gray-500 dark:text-gray-600" />
 			</div>
 		);
 	}

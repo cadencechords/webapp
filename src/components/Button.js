@@ -27,7 +27,7 @@ export default function Button({
 	let fontClasses = ` ${bold ? " font-semibold " : ""} `;
 	let loadingColor = color;
 
-	if (color === "blue") loadingColor = "#1f6feb";
+	if (color === "blue" || color === "black") loadingColor = "#1f6feb";
 
 	if (variant === "filled") {
 		if (color === "black") {
@@ -91,7 +91,7 @@ export const TEXT_COLORS = {
 	green: "text-green-600",
 	yellow: "text-yellow-600",
 	indigo: "text-indigo-600",
-	purple: "text-purple-600",
+	purple: "text-purple-600 dark:text-purple-500",
 	pink: "text-pink-600",
 	gray: "text-gray-600 dark:text-dark-gray-200",
 	black: "text-black dark:text-dark-gray-200",
@@ -101,7 +101,7 @@ export const TEXT_COLORS = {
 export const BACKGROUND_COLORS = {
 	red: "bg-red-500 hover:bg-red-700 focus:bg-red-700",
 	blue: "bg-blue-600 hover:bg-blue-800 focus:bg-blue-800 dark:bg-dark-blue dark:hover:bg-blue-600 dark:focus:bg-blue-600",
-	green: "bg-green-500 hover:bg-green-700 focus:bg-green-700",
+	green: "bg-green-500 hover:bg-green-700 focus:bg-green-700 dark:bg-dark-green",
 	yellow: "bg-yellow-400 hover:bg-yellow-600 focus:bg-yellow-600",
 	indigo: "bg-indigo-600 hover:bg-indigo-800 focus:bg-indigo-800",
 	purple: "bg-purple-600 hover:bg-purple-800 focus:bg-purple-800",

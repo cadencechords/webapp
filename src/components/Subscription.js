@@ -19,7 +19,7 @@ export default function Subscription({ subscription }) {
 	}
 
 	return (
-		<div className="rounded-md border p-2 flex-between">
+		<div className="rounded-md border dark:border-dark-gray-600 p-2 flex-between">
 			<div>
 				<h4 className="font-semibold mb-2">
 					{subscription.team.name}

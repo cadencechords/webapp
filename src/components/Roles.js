@@ -20,7 +20,7 @@ export default function Roles({ roles }) {
 				<>
 					<Card
 						onClick={() => setShowCreateDialog(true)}
-						className="cursor-pointer flex-center text-gray-600 font-medium hover:bg-gray-200 focus:bg-gray-200 transition-colors"
+						className="cursor-pointer flex-center text-gray-600 dark:text-dark-gray-200 font-medium hover:bg-gray-200 focus:bg-gray-200 dark:bg-dark-gray-800 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700 transition-colors"
 					>
 						<PlusCircleIcon className="w-4 h-4 mr-2" />
 						New role

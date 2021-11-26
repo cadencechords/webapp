@@ -6,7 +6,7 @@ export default function Editor({ content, onContentChange, formatOptions }) {
 	return (
 		<div className="overflow-x-auto overflow-y-hidden">
 			<textarea
-				className="w-full resize-none outline-none focus:outline-none my-3 overflow-y-hidden"
+				className="w-full resize-none outline-none focus:outline-none my-3 overflow-y-hidden bg-transparent"
 				value={content}
 				onChange={(e) => onContentChange(e.target.value)}
 				style={styles}

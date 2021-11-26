@@ -9,7 +9,11 @@ export default function StyledListBox({ options, onChange, selectedOption, backg
 					className={
 						`transition-all px-3 py-2 shadow-sm h-8 text-left border-gray-300 dark:border-dark-gray-400 focus:outline-none outline-none` +
 						` w-full border rounded-md focus:ring-inset focus:ring-2 focus:ring-blue-400 flex-between` +
-						` ${background === "white" ? "bg-white" : " bg-" + background + "-200"}`
+						` ${
+							background === "white"
+								? "bg-white dark:bg-dark-gray-900 "
+								: " bg-" + background + "-200"
+						}`
 					}
 				>
 					{selectedOption.template}
