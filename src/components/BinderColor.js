@@ -14,7 +14,7 @@ export default function BinderColor({ color, onClick, block, size, editable }) {
 				focus:outline-none outline-none flex-center translate-y-6 rounded ${COLORS[color]}
 				${block ? " w-full py-3" : WIDTH_SIZES[size]} 
 				${onClick ? " cursor-pointer" : " cursor-default"} 
-				${color === "none" ? " border border-gray-300" : ""}
+				${color === "none" ? " border border-gray-300 dark:border-dark-gray-400 " : ""}
 			`}
 		>
 			{color === "none" ? <XIcon className="w-3 h-3 text-gray-600" /> : ""}

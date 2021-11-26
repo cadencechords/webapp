@@ -11,14 +11,14 @@ export default function EditorOptionsBar({ formatOptions, onFormatChange, onAddN
 
 	return (
 		<div className="flex items-center">
-			<div className="px-3 border-r border-gray-300 w-32 relative">
+			<div className="px-3 border-r border-gray-300 dark:border-dark-gray-600 w-32 relative">
 				<FontsListBox
 					selectedFont={formatOptions.font}
 					onChange={(newValue) => onFormatChange("font", newValue)}
 				/>
 			</div>
 
-			<div className="px-3 relative w-24 border-r border-gray-300">
+			<div className="px-3 relative w-24 border-r border-gray-300 dark:border-dark-gray-600">
 				<FontSizesListBox
 					selectedFontSize={formatOptions.font_size}
 					onChange={(newValue) => onFormatChange("font_size", newValue)}
@@ -31,7 +31,7 @@ export default function EditorOptionsBar({ formatOptions, onFormatChange, onAddN
 					onChange={(newValue) => onFormatChange("bold_chords", newValue)}
 				/>
 			</div>
-			<div className="px-3 w-32 border-r border-gray-300">
+			<div className="px-3 w-32 border-r border-gray-300 dark:border-dark-gray-600">
 				<ChordOption
 					optionName="Italic chords"
 					on={formatOptions.italic_chords}
@@ -40,12 +40,12 @@ export default function EditorOptionsBar({ formatOptions, onFormatChange, onAddN
 			</div>
 			{currentSubscription.isPro && (
 				<Button
-					className="mx-3 bg-white flex-center"
+					className="mx-3 bg-white dark:bg-transparent flex-center"
 					variant="outlined"
 					color="black"
 					onClick={onAddNote}
 				>
-					<PencilAltIcon className="h-4 w-4 text-blue-600 mr-2" />
+					<PencilAltIcon className="h-4 w-4 text-blue-600 dark:text-dark-blue mr-2" />
 					Add note
 				</Button>
 			)}

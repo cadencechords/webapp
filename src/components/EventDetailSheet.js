@@ -26,7 +26,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog, onCh
 			{event && (
 				<div className="grid grid-cols-10 gap-6">
 					<div className="col-span-1 flex justify-end items-start">
-						<UsersIcon className="text-gray-600 w-5 h-5 my-1 flex-shrink-0" />
+						<UsersIcon className="text-gray-600 dark:text-dark-gray-200 w-5 h-5 my-1 flex-shrink-0" />
 					</div>
 					<div className="col-span-9 flex flex-col justify-start items-start">
 						{event?.memberships?.length > 0 ? (
@@ -38,28 +38,32 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog, onCh
 								</div>
 							))
 						) : (
-							<div className="text-gray-600">No members</div>
+							<div className="text-gray-600 dark:text-dark-gray-200">No members</div>
 						)}
 					</div>
 					<div className="col-span-1 flex justify-end items-start">
-						<BellIcon className="text-gray-600 w-5 h-5 flex-shrink-0" />
+						<BellIcon className="text-gray-600 dark:text-dark-gray-200 w-5 h-5 flex-shrink-0" />
 					</div>
 					<div className="col-span-9 flex justify-start items-start">
 						{event.reminders_enabled ? (
 							`Reminders will be sent ${format(event.reminder_date, "MMMM D, YYYY h:mma")}`
 						) : (
-							<div className="text-gray-600">Reminders are not enabled for this event</div>
+							<div className="text-gray-600 dark:text-dark-gray-200">
+								Reminders are not enabled for this event
+							</div>
 						)}
 					</div>
 
 					<div className="col-span-1 flex justify-end items-start">
-						<MenuAlt2Icon className="text-gray-600 w-5 h-5 flex-shrink-0" />
+						<MenuAlt2Icon className="text-gray-600 dark:text-dark-gray-200 w-5 h-5 flex-shrink-0" />
 					</div>
 					<div className="col-span-9 flex justify-start items-start">
 						{event.description ? (
 							event.description
 						) : (
-							<div className="text-gray-600">No description provided for this event</div>
+							<div className="text-gray-600 dark:text-dark-gray-200">
+								No description provided for this event
+							</div>
 						)}
 					</div>
 				</div>

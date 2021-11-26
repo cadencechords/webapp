@@ -55,7 +55,7 @@ export default function SearchDialog({ open, onCloseDialog }) {
 			borderedTop={false}
 			showClose={false}
 		>
-			<div className="border-b pb-4">
+			<div className="border-b dark:border-dark-gray-400 pb-4">
 				<OpenInput
 					placeholder="Search for binders, songs or sets"
 					onChange={handleSearchQueryChange}

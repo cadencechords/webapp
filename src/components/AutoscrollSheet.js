@@ -19,7 +19,7 @@ export default function AutoscrollSheet({
 	bottomSheetOpen,
 	shortcutClasses,
 }) {
-	const iconClasses = "w-14 h-14 text-blue-600";
+	const iconClasses = "w-14 h-14 text-blue-600 dark:text-dark-blue";
 	const [isScrolling, setIsScrolling] = useState(false);
 	const [showShortcut, setShowShortcut] = useState(false);
 	const [updates, setUpdates] = useState();
@@ -140,7 +140,6 @@ export default function AutoscrollSheet({
 						</>
 					}
 				/>
-				{/* <button onClick={start}>start</button> <button onClick={stop}>stop</button> */}
 				<div className="flex-center mb-4">
 					<button className="outline-none focus:outline-none" onClick={handleToggleScroll}>
 						{isScrolling ? (
@@ -175,7 +174,7 @@ export default function AutoscrollSheet({
 						)}
 					</button>
 					<button className="focus:outline-none outline-none" onClick={handleStopScrolling}>
-						<XCircleIcon className="w-10 h-10 text-gray-500" />
+						<XCircleIcon className="w-10 h-10 text-gray-500 dark:text-dark-gray-200" />
 					</button>
 				</div>
 			)}

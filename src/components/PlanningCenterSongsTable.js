@@ -13,7 +13,12 @@ export default function PlanningCenterSongsTable({
 }) {
 	return (
 		<div>
-			<OpenInput placeholder="Search for a specific song" value={query} onChange={onQueryChange} />
+			<OpenInput
+				placeholder="Search for a specific song"
+				value={query}
+				onChange={onQueryChange}
+				className="mb-2"
+			/>
 			<AsyncPaginationTable
 				headers={headers}
 				rows={songs}

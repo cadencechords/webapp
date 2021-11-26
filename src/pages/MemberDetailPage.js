@@ -66,7 +66,7 @@ export default function MemberDetail() {
 					<div className="text-2xl font-bold mb-1 text-center">
 						{hasName() ? getFullName() : member.email}
 					</div>
-					<div className="text-gray-600 text-lg mb-4 text-center">
+					<div className="text-gray-600 dark:text-dark-gray-200 text-lg mb-4 text-center">
 						{hasName() ? member.email : "No name provided yet"}
 					</div>
 					<div className="mb-2 flex-center">
@@ -74,11 +74,11 @@ export default function MemberDetail() {
 					</div>
 
 					<div className="text-sm mb-4">
-						<div className="text-gray-600 flex-between border-b pb-2">
+						<div className="text-gray-600 dark:text-dark-gray-200 flex-between border-b dark:border-dark-gray-600 pb-2">
 							<div className="font-semibold">Position:</div>
 							{member?.position ? member.position : "No position provided yet"}
 						</div>
-						<div className="text-gray-600 flex-between py-2">
+						<div className="text-gray-600 dark:text-dark-gray-200 flex-between py-2">
 							<div className="font-semibold">Joined:</div>
 							{toMonthYearDate(member.created_at)}
 						</div>

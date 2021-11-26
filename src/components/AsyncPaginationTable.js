@@ -1,9 +1,9 @@
-import TableHead from "./TableHead";
-import TableRow from "./TableRow";
 import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import ArrowNarrowRightIcon from "@heroicons/react/outline/ArrowNarrowRightIcon";
-import PulseLoader from "react-spinners/PulseLoader";
 import Button from "./Button";
+import PulseLoader from "react-spinners/PulseLoader";
+import TableHead from "./TableHead";
+import TableRow from "./TableRow";
 
 export default function AsyncPaginationTable({
 	headers,
@@ -39,7 +39,7 @@ export default function AsyncPaginationTable({
 						<ArrowNarrowLeftIcon className="w-4 mr-3" /> Previous
 					</div>
 				</Button>
-				{loading && <PulseLoader size="7" color="blue" />}
+				{loading && <PulseLoader size="7" color="#1f6feb" />}
 				<Button variant="open" color="black" size="xs" bold onClick={onNext}>
 					<div className="flex-center">
 						Next

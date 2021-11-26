@@ -7,7 +7,7 @@ export default function NotificationSettingsList({ settings, onSettingChanged })
 	}
 
 	return (
-		<div className="border rounded-md p-2">
+		<div className="border dark:border-dark-gray-600 rounded-md p-2">
 			<NotificationSetting
 				setting={getSetting("Event reminder")}
 				icon={<CalendarIcon className="w-8 h-8" />}

@@ -5,7 +5,7 @@ export default function ProfilePicture({ url, size, onClick }) {
 		return (
 			<div style={{ width: SIZES[size], height: SIZES[size] }} onClick={onClick}>
 				<div
-					className={`w-full h-full rounded-full bg-gray-200 ${
+					className={`w-full h-full rounded-full bg-gray-200 dark:bg-dark-gray-700 ${
 						onClick ? " cursor-pointer hover:opacity-90 transition-opacity" : ""
 					}`}
 					style={{
@@ -25,7 +25,7 @@ export default function ProfilePicture({ url, size, onClick }) {
 				}`}
 				onClick={onClick}
 			>
-				<UserCircleIcon className="w-full h-full text-gray-500" />
+				<UserCircleIcon className="w-full h-full text-gray-500 dark:text-gray-600" />
 			</div>
 		);
 	}

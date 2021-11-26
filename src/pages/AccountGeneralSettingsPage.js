@@ -26,7 +26,7 @@ export default function AccountGeneralSettingsPage() {
 				</div>
 				<div className="font-semibold text-sm text-center mb-1">{currentUser.email}</div>
 				{currentUser.first_name ? (
-					<div className="font-semibold text-black text-center text-xl">
+					<div className="font-semibold text-black dark:text-dark-gray-100 text-center text-xl">
 						{currentUser.first_name} {currentUser.last_name}
 					</div>
 				) : (

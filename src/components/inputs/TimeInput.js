@@ -23,7 +23,7 @@ export default function TimeInput({
 	const [isFocused, setIsFocused] = useState(false);
 
 	const [inputClasses] = useState(
-		"appearance-none focus:outline-none outline-none w-10 text-center"
+		"appearance-none focus:outline-none outline-none w-10 text-center dark:bg-transparent "
 	);
 
 	const handleHourChange = (potentialHour) => {
@@ -86,7 +86,7 @@ export default function TimeInput({
 	return (
 		<div
 			className={
-				`border border-gray-300 rounded-md py-2 flex-center shadow-sm px-2` +
+				`border border-gray-300 dark:border-dark-gray-400 rounded-md py-2 flex-center shadow-sm px-2` +
 				` ${isFocused && "ring-inset ring-2 ring-blue-400"} ${className}`
 			}
 		>

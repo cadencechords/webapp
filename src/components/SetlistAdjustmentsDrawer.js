@@ -21,7 +21,7 @@ export default function SetlistAdjustmentsDrawer({
 	const dispatch = useDispatch();
 	const router = useHistory();
 
-	const iconClasses = "w-5 h-5 mr-3 text-blue-600";
+	const iconClasses = "w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue";
 
 	function handleOpenInEditor() {
 		dispatch(setSongBeingEdited(song));

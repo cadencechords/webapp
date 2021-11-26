@@ -64,7 +64,7 @@ export default function SongDetailPage() {
 	if (!song) {
 		return (
 			<div className="text-center py-4">
-				<PulseLoader color="blue" />
+				<PulseLoader color="#1f6feb" />
 			</div>
 		);
 	}
@@ -158,7 +158,7 @@ export default function SongDetailPage() {
 
 	return (
 		<div className="grid grid-cols-4">
-			<div className="lg:border-r lg:pr-4 col-span-4 lg:col-span-3">
+			<div className="lg:border-r lg:dark:border-dark-gray-700 lg:pr-4 col-span-4 lg:col-span-3">
 				<div className="flex-between mb-2">
 					<PageTitle
 						title={song.name}
@@ -172,7 +172,7 @@ export default function SongDetailPage() {
 						onClick={() => setShowPrintDialog(true)}
 						className="hidden sm:block"
 					>
-						<PrinterIcon className="text-gray-500 h-5 w-5" />
+						<PrinterIcon className="h-5 w-5" />
 					</Button>
 					<SongOptionsPopover onPrintClick={() => setShowPrintDialog(true)} />
 				</div>
@@ -188,7 +188,7 @@ export default function SongDetailPage() {
 							<Button variant="outlined" size="xs" color="black" onClick={handleOpenInEditor}>
 								<div className="flex flex-row items-center">
 									<span className="mr-1">
-										<PencilIcon className="w-4 h-4 text-blue-700" />
+										<PencilIcon className="w-4 h-4 text-blue-700 dark:text-dark-blue" />
 									</span>
 									Edit Song
 								</div>
@@ -204,7 +204,7 @@ export default function SongDetailPage() {
 						>
 							<div className="flex flex-row items-center">
 								<span className="mr-1">
-									<PlayIcon className="w-4 h-4 text-purple-700" />
+									<PlayIcon className="w-4 h-4 text-purple-700 dark:text-purple-500" />
 								</span>
 								Perform Song
 							</div>
@@ -242,7 +242,7 @@ export default function SongDetailPage() {
 							onClick={handleOpenInEditor}
 							full
 						>
-							<PencilIcon className="h-5 w-5 text-blue-700" /> Edit
+							<PencilIcon className="h-5 w-5 dark:text-dark-blue text-blue-700" /> Edit
 						</Button>
 					)}
 					<Button
@@ -253,13 +253,13 @@ export default function SongDetailPage() {
 						onClick={handlePresentSong}
 						full
 					>
-						<PlayIcon className="h-5 w-5 text-purple-700" /> Perform
+						<PlayIcon className="h-5 w-5 text-purple-700 dark:text-purple-500" /> Perform
 					</Button>
 				</div>
 				<SongPreview song={song} onDoubleClick={handleOpenInEditor} />
 			</div>
 			<div className="lg:col-span-1 lg:pl-5 pl-2 col-span-4">
-				<div className="border-b py-6 mt-1">
+				<div className="border-b dark:border-dark-gray-700 py-6 mt-1">
 					<SongKeyField
 						songKey={song.original_key}
 						onChange={(editedKey) => handleUpdate("original_key", editedKey)}

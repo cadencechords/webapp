@@ -27,10 +27,10 @@ export default function OnsongsSongsList({
 					</div>
 					{selectedSongs?.length} selected
 				</div>
-				<div className="max-h-96 overflow-y-auto mb-8 bg-gray-50 shadow-inner">
+				<div className="max-h-96 overflow-y-auto mb-8 bg-gray-50 dark:bg-dark-gray-800 shadow-inner">
 					{songs.map((song) => (
 						<div
-							className="flex items-center cursor-pointer p-2 border-b last:border-0 select-none"
+							className="flex items-center cursor-pointer p-2 border-b dark:border-dark-gray-600 last:border-0 select-none"
 							key={song.id}
 							onClick={() => onToggleSong(!isSelected(song), song)}
 						>

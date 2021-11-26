@@ -19,7 +19,7 @@ export default function OnsongChooseBackupFile({
 					<a
 						href="https://onsongapp.com/docs/interface/menubar/share-menu/export/"
 						rel="noreferrer"
-						className="underline text-blue-600"
+						className="underline text-blue-600 dark:text-dark-blue"
 						target="_blank"
 					>
 						here
@@ -30,10 +30,10 @@ export default function OnsongChooseBackupFile({
 
 				<FileInput accept=".backup" onChange={onBackupFileChosen} onRemove={onReset} />
 				{backup && (
-					<div className="flex-between border rounded-md p-3 my-4">
+					<div className="flex-between border dark:border-dark-gray-600 rounded-md p-3 my-4">
 						{backup.name}
-						<Button size="xs" variant="open" onClick={onReset}>
-							<XIcon className="w-5 h-5 text-gray-500" />
+						<Button size="xs" variant="open" onClick={onReset} color="gray">
+							<XIcon className="w-5 h-5" />
 						</Button>
 					</div>
 				)}

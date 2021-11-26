@@ -29,7 +29,7 @@ export default function OutlinedInput({
 			{label && <Label>{label}</Label>}
 			<div className="flex">
 				<input
-					className={`appearance-none transition-all px-3 py-2 shadow-sm border-gray-300 focus:outline-none outline-none w-full border ${roundedClasses} focus:ring-inset focus:ring-2 focus:ring-blue-400 ${className}`}
+					className={`dark:bg-dark-gray-700 appearance-none transition-all px-3 py-2 shadow-sm border-gray-300 dark:border-dark-gray-400 focus:outline-none outline-none w-full border ${roundedClasses} focus:ring-inset focus:ring-2 focus:ring-blue-400 ${className}`}
 					placeholder={placeholder}
 					onBlur={onBlur}
 					onFocus={onFocus}
@@ -45,9 +45,9 @@ export default function OutlinedInput({
 				{button && (
 					<button
 						className={
-							"rounded-r-md border-gray-300 border border-l-0 px-2 bg-gray-50 " +
+							"rounded-r-md border-gray-300 dark:border-dark-gray-400 border border-l-0 px-2 bg-gray-50 dark:bg-dark-gray-400 " +
 							" focus:outline-none outline-none transition-all font-semibold text-sm " +
-							" text-gray-600 " +
+							" text-gray-600 dark:text-dark-gray-200 " +
 							`${buttonLoading ? " w-20 cursor-wait " : " hover:bg-gray-200 focus:bg-gray-200"}`
 						}
 						onClick={!buttonLoading ? onButtonClick : null}

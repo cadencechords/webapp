@@ -91,7 +91,7 @@ export default function EventMembers({ event, onMembersLoaded, members, onFieldC
 					{filteredMembers.map((member) => (
 						<div
 							key={member.id}
-							className="p-2 last:border-0 border-b flex items-center gap-4 cursor-pointer"
+							className="p-2 last:border-0 border-b dark:border-dark-gray-400 flex items-center gap-4 cursor-pointer"
 							onClick={() => handleToggleMember(member)}
 						>
 							<Checkbox

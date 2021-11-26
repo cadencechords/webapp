@@ -12,7 +12,10 @@ export default function SongTabs() {
 	const currentMember = useSelector(selectCurrentMember);
 
 	return (
-		<Tab.Group as="div" className="border-t lg:border-none pt-4 col-span-4 lg:col-span-3 ">
+		<Tab.Group
+			as="div"
+			className="border-t dark:border-dark-gray-700 lg:border-none pt-4 col-span-4 lg:col-span-3 "
+		>
 			<Tab.List>
 				{currentSubscription.isPro && currentMember.can(VIEW_FILES) && (
 					<Tab className="outline-none focus:outline-none">
@@ -33,5 +36,6 @@ export default function SongTabs() {
 	);
 }
 
-const TAB_CLASSES = "px-3 py-2 font-medium hover:bg-gray-100 transition-colors";
-const SELECTED_TAB_CLASSES = "border-b-4 border-blue-600";
+const TAB_CLASSES =
+	"px-3 py-2 font-medium hover:bg-gray-100 dark:hover:bg-dark-gray-800 transition-colors";
+const SELECTED_TAB_CLASSES = "border-b-4 border-blue-600 dark:border-dark-blue";

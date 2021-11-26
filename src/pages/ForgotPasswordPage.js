@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
 	return (
 		<CenteredPage>
 			<PageTitle title="Reset Password" align="center" />
-			<div className="font-semibold text-gray-600 text-lg mb-6">
+			<div className="font-semibold text-gray-600 dark:text-dark-gray-200 text-lg mb-6">
 				Enter the email address you used to register with Cadence. If the email matches an account
 				in Cadence, we'll send you instructions to reset your password.
 			</div>

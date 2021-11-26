@@ -29,7 +29,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 		>
 			<Link to="/">
 				<MobileMenuButton full onClick={onCloseDialog}>
-					<div className="flex items-center text-gray-700">
+					<div className="flex items-center text-gray-700 dark:text-dark-gray-200">
 						<DashboardIcon className={iconClasses} />
 						Dashboard
 					</div>
@@ -38,7 +38,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 
 			<Link to="/binders">
 				<MobileMenuButton full onClick={onCloseDialog}>
-					<div className="flex items-center text-gray-700">
+					<div className="flex items-center text-gray-700 dark:text-dark-gray-200">
 						<BinderIcon className={iconClasses} />
 						Binders
 					</div>
@@ -47,7 +47,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 
 			<Link to="/songs">
 				<MobileMenuButton full onClick={onCloseDialog}>
-					<div className="flex items-center text-gray-700">
+					<div className="flex items-center text-gray-700 dark:text-dark-gray-200">
 						<MusicNoteIcon className={iconClasses} />
 						Songs
 					</div>
@@ -56,7 +56,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 
 			<Link to="/sets">
 				<MobileMenuButton full onClick={onCloseDialog}>
-					<div className="flex items-center text-gray-700">
+					<div className="flex items-center text-gray-700 dark:text-dark-gray-200">
 						<PlaylistIcon className={iconClasses} />
 						Sets
 					</div>
@@ -65,7 +65,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 
 			<Link to="/members">
 				<MobileMenuButton full onClick={onCloseDialog}>
-					<div className="flex items-center text-gray-700">
+					<div className="flex items-center text-gray-700 dark:text-dark-gray-200">
 						<UserGroupIcon className={iconClasses} />
 						Team members
 					</div>
@@ -75,7 +75,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 			{currentSubscription?.isPro && currentMember?.can(VIEW_EVENTS) && (
 				<Link to="/calendar">
 					<MobileMenuButton full onClick={onCloseDialog}>
-						<div className="flex items-center text-gray-700">
+						<div className="flex items-center text-gray-700 dark:text-dark-gray-200">
 							<CalendarIcon className={iconClasses} />
 							Calendar
 						</div>
@@ -84,7 +84,7 @@ export default function AppMenu({ onCloseDialog, open }) {
 			)}
 			<Link to="/login/teams">
 				<MobileMenuButton full onClick={onCloseDialog}>
-					<div className="flex items-center text-gray-700">
+					<div className="flex items-center text-gray-700 dark:text-dark-gray-200">
 						<SwitchHorizontalIcon className={iconClasses} />
 						Switch teams
 					</div>

@@ -34,7 +34,7 @@ export default function EventDetailDialog({ open, event, onCloseDialog, onDelete
 				</div>
 				<div className="col-span-9">
 					<div className="text-2xl mb-1">{event?.title}</div>
-					<div className="text-gray-600">
+					<div className="text-gray-600 dark:text-dark-gray-200">
 						{format(event?.start_time, "MMMM D, YYYY")}&nbsp;
 						{startTime && "(" + startTime}
 						{startTime && endTime && "-"}

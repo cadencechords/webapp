@@ -37,7 +37,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
 	return (
 		<div>
 			<div
-				className="hover:bg-gray-100 transition-colors rounded-md p-2 cursor-pointer"
+				className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-md p-2 cursor-pointer"
 				onClick={handleToggleOpen}
 			>
 				<div className="flex-between">
@@ -46,7 +46,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
 					</div>
 					<ChevronDownIcon
 						className={
-							`w-4 h-4 text-gray-600 transition-transform transform ` +
+							`w-4 h-4 text-gray-600 dark:text-dark-gray-200 transition-transform transform ` +
 							` ${open ? "rotate-180" : ""}`
 						}
 					/>
@@ -54,21 +54,21 @@ export default function NotificationSetting({ onChange, setting, icon }) {
 			</div>
 			<div className={`mt-2 transition-all ${open ? "block" : "hidden"}`}>
 				<div
-					className="hover:bg-gray-100 transition-colors rounded-sm cursor-pointer p-2 flex-between border-b"
+					className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-sm cursor-pointer p-2 flex-between border-b dark:border-dark-gray-600"
 					onClick={handleToggleEmail}
 				>
 					<div className="flex items-center gap-2">
-						<MailIcon className="w-5 h-5 text-gray-700" />
+						<MailIcon className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" />
 						Email
 					</div>
 					<Toggle enabled={setting?.email_enabled} onChange={noop} />
 				</div>
 				<div
-					className="hover:bg-gray-100 transition-colors rounded-sm cursor-pointer p-2 flex-between"
+					className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-sm cursor-pointer p-2 flex-between"
 					onClick={handleToggleSms}
 				>
 					<div className="flex items-center gap-2">
-						<ChatIcon className="w-5 h-5 text-gray-700" /> Text message
+						<ChatIcon className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" /> Text message
 					</div>
 					<Toggle enabled={setting?.sms_enabled} onChange={noop} />
 				</div>

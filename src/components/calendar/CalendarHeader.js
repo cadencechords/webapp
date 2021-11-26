@@ -31,7 +31,7 @@ export default function CalendarHeader({
 					</Button>
 				)}
 			</div>
-			<div className="grid grid-cols-7 text-gray-600 mb-2 text-center">
+			<div className="grid grid-cols-7 text-gray-600 dark:text-dark-gray-200 mb-2 text-center">
 				<div className="col-span-1">Su</div>
 				<div className="col-span-1">Mo</div>
 				<div className="col-span-1">Tu</div>

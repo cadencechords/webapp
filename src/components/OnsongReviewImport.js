@@ -11,9 +11,9 @@ export default function OnsongReviewImport({
 		<>
 			<div>
 				<h2 className="text-2xl font-semibold mb-4">Importing {selectedSongs?.length} songs</h2>
-				<div className="mb-4 max-h-96 overflow-y-auto bg-gray-50 shadow-inner">
+				<div className="mb-4 max-h-96 overflow-y-auto bg-gray-50 dark:bg-dark-gray-800 shadow-inner">
 					{selectedSongs?.map((song) => (
-						<div key={song.id} className="p-2 border-b last:border-0">
+						<div key={song.id} className="p-2 border-b dark:border-dark-gray-600 last:border-0">
 							{song.name}
 						</div>
 					))}

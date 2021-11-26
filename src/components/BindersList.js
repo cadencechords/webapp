@@ -1,7 +1,7 @@
-import { useHistory } from "react-router";
+import BinderColor from "./BinderColor";
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
-import BinderColor from "./BinderColor";
+import { useHistory } from "react-router";
 
 export default function BindersTable({ binders }) {
 	const router = useHistory();
@@ -40,13 +40,15 @@ export default function BindersTable({ binders }) {
 				{binders.map((binder) => (
 					<div
 						key={binder.id}
-						className="border-b py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
+						className="border-b dark:border-dark-gray-700 py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white dark:bg-transparent transition-colors hover:bg-gray-50 focus:bg-gray-50 dark:hover:bg-dark-gray-800 dark:focus:bg-dark-gray-800"
 						onClick={() => router.push(`/binders/${binder.id}`)}
 					>
 						<BinderColor color={binder.color} />
 						<div className="ml-3">
 							<div className="font-semibold">{binder.name}</div>
-							<div className="text-sm text-gray-600">{binder.description}</div>
+							<div className="text-sm text-gray-600 dark:text-dark-gray-200">
+								{binder.description}
+							</div>
 						</div>
 					</div>
 				))}

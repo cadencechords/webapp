@@ -32,7 +32,7 @@ export default function SongsList({ songs }) {
 				{songs.map((song) => (
 					<div
 						key={song.id}
-						className="border-b py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white transition-colors hover:bg-gray-50 focus:bg-gray-50"
+						className="border-b dark:border-dark-gray-700 py-2.5 flex items-center px-2 last:border-0 cursor-pointer bg-white dark:bg-dark-gray-900 transition-colors hover:bg-gray-50 dark:hover:bg-dark-gray-800 focus:bg-gray-50 dark:focus:bg-dark-gray-800"
 					>
 						<Link
 							className="overflow-hidden overflow-ellipsis whitespace-nowrap flex items-center gap-2"

@@ -11,8 +11,8 @@ export default function DetailSection({ title, items, onAdd, onDelete, canEdit }
 			<div className="mb-2 flex-between">
 				<DetailTitle>{title}</DetailTitle>
 				{canEdit && onAdd && (
-					<Button size="xs" variant="open" onClick={onAdd}>
-						<PlusIcon className="h-4 w-4 text-gray-700 " />
+					<Button size="xs" variant="open" onClick={onAdd} color="gray">
+						<PlusIcon className="h-4 w-4" />
 					</Button>
 				)}
 			</div>
@@ -24,7 +24,7 @@ export default function DetailSection({ title, items, onAdd, onDelete, canEdit }
 								<span className="mx-1">{item.name}</span>
 								{canEdit && onDelete && (
 									<XIcon
-										className="h-3 w-3 text-gray-700 cursor-pointer"
+										className="h-3 w-3 text-gray-700 dark:text-dark-gray-200 cursor-pointer"
 										onClick={() => onDelete(item.id)}
 									/>
 								)}

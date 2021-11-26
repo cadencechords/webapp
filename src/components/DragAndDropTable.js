@@ -32,15 +32,13 @@ export default function DragAndDropTable({
 	};
 
 	const getItemStyle = (isDragging, draggableStyle) => ({
-		// some basic styles to make the items look a bit nicer
-		userSelect: "none",
-
-		// change background colour if dragging
-		background: isDragging ? "#fafafa" : "white",
-
 		// styles we need to apply on draggables
 		...draggableStyle,
 	});
+
+	const getItemClass = (isDragging, draggableStyle) => {
+		return isDragging ? "bg-gray-100 dark:bg-dark-gray-700" : "bg-white dark:bg-dark-gray-900";
+	};
 
 	if (rearrangeable) {
 		return (
@@ -56,12 +54,15 @@ export default function DragAndDropTable({
 												ref={provided.innerRef}
 												{...provided.draggableProps}
 												{...provided.dragHandleProps}
-												className="border-b hover:bg-gray-50 py-2 px-2 bg-white flex-between"
+												className={
+													`border-b dark:border-dark-gray-600 hover:bg-gray-50 py-2 px-2 bg-white dark:bg-dark-gray-900 flex-between select-none` +
+													`${getItemClass(snapshot.isDragging, provided.draggableProps.style)}`
+												}
 												style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
 											>
 												<span
 													onClick={() => onClick(item.id)}
-													className="cursor-pointer hover:text-blue-600 flex items-center"
+													className="cursor-pointer hover:text-blue-600 dark:hover:text-dark-blue flex items-center"
 												>
 													{item.name}
 													{hasAnyKeysSet(item) && (
@@ -71,12 +72,12 @@ export default function DragAndDropTable({
 
 												{removeable && (
 													<Button
-														color="grey"
+														color="gray"
 														size="xs"
 														variant="open"
 														onClick={() => onRemove(item.id)}
 													>
-														<TrashIcon className="h-4 w-4 text-gray-600" />
+														<TrashIcon className="h-4 w-4" />
 													</Button>
 												)}
 											</div>

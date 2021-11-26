@@ -20,9 +20,9 @@ Alert.defaultProps = {
 };
 
 const COLOR_CLASSES = {
-	red: "bg-red-100 text-red-800",
+	red: "bg-red-100 text-red-800 dark:bg-dark-red dark:text-red-900",
 	blue: "bg-blue-100 text-blue-800",
-	gray: "bg-gray-100 text-gray-800",
+	gray: "bg-gray-100 text-gray-800 dark:bg-dark-gray-700 dark:text-dark-gray-200",
 	yellow: "bg-yellow-100 text-gray-800",
 	green: "bg-green-100 text-gray-800",
 	indigo: "bg-indigo-100 text-indigo-800",

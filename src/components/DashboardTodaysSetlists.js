@@ -9,10 +9,13 @@ import { toShortDate } from "../utils/DateUtils";
 export default function DashboardTodaysSetlists({ setlists }) {
 	function buildSetlists() {
 		return setlists?.map((setlist) => (
-			<div className="border-b last:border-0 py-2.5 px-2 flex-between" key={setlist.id}>
+			<div
+				className="border-b dark:border-dark-gray-600 last:border-0 py-2.5 px-2 flex-between"
+				key={setlist.id}
+			>
 				<div>
 					<div className="font-semibold mb-2">{setlist.name}</div>
-					<div className="text-sm text-gray-600 flex items-center">
+					<div className="text-sm text-gray-600 dark:text-dark-gray-200 flex items-center">
 						<div className="flex items-center">
 							<CalendarIcon className="w-4 h-4 mr-2" />
 							{toShortDate(setlist.scheduled_date)}

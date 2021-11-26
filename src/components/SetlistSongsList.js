@@ -46,7 +46,7 @@ export default function SetlistSongsList({ songs, onSongsAdded, onReordered, onS
 
 	return (
 		<>
-			<div className="font-semibold text-lg pb-2 flex-between border-b">
+			<div className="font-semibold text-lg pb-2 flex-between border-b border-dark-gray-600">
 				Songs
 				{currentMember.can(EDIT_SETLISTS) && (
 					<Button size="xs" variant="open" onClick={() => setShowSongsDialog(true)}>

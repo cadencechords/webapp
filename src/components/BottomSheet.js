@@ -10,7 +10,7 @@ export default function BottomSheet({ open, onClose, children, className }) {
 			}
 		>
 			<div
-				className={`rounded-t-md bg-white w-full md:w-3/4 lg:w-1/2 max-w-lg mx-auto relative z-30 ${className}`}
+				className={`rounded-t-md bg-white dark:bg-dark-gray-700 w-full md:w-3/4 lg:w-1/2 max-w-lg mx-auto relative z-30 ${className}`}
 				style={{ boxShadow: "0 0px 50px -5px rgba(0, 0, 0, .25)" }}
 			>
 				<Button

@@ -61,18 +61,21 @@ export default function StyledDialog({
 						<div
 							className={
 								`inline-block ${sizeClasses} ${mobileStyleClasses} ` +
-								` overflow-y-auto text-left align-middle transition-all transform bg-white  `
+								` overflow-y-auto text-left align-middle transition-all transform bg-white dark:bg-dark-gray-700 `
 							}
 						>
 							{showClose && (
 								<span className="absolute top-4 right-4">
 									<Button variant="open" size="xs" onClick={onCloseDialog} tabIndex={1}>
-										<XIcon className="h-4 w-4 text-gray-700" />
+										<XIcon className="h-4 w-4 text-gray-700 dark:text-dark-gray-200" />
 									</Button>
 								</span>
 							)}
-							<Dialog.Title as="h3" className={borderedTop ? ` border-b ` : ""}>
-								<div className="text-lg leading-6 text-gray-900 font-semibold px-5 py-6 whitespace-pre">
+							<Dialog.Title
+								as="h3"
+								className={borderedTop ? ` border-b dark:border-dark-gray-400 ` : ""}
+							>
+								<div className="text-lg leading-6 text-gray-900 dark:text-dark-gray-100 font-semibold px-5 py-6 whitespace-pre">
 									{title}
 								</div>
 							</Dialog.Title>

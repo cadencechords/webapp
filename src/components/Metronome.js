@@ -12,7 +12,7 @@ import TapTempo from "./TapTempo";
 export default function Metronome({ bpm, onBpmChange }) {
 	const [isOn, setIsOn] = useState(false);
 	const [metronome] = useState(() => new MetronomeTool(bpm));
-	const iconClasses = "w-14 h-14 text-blue-600";
+	const iconClasses = "w-14 h-14 text-blue-600 dark:text-dark-blue";
 
 	const handleBpmEdited = (newBpm) => {
 		if (newBpm !== "") {
@@ -57,7 +57,7 @@ export default function Metronome({ bpm, onBpmChange }) {
 				<div className="w-20">
 					<OpenInput
 						value={bpm || ""}
-						className="text-4xl hover:bg-gray-100 focus:bg-gray-100 rounded-md text-center"
+						className="text-4xl hover:bg-gray-100 focus:bg-gray-100  dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600 rounded-md text-center"
 						onChange={handleBpmEdited}
 						placeholder="0"
 					/>

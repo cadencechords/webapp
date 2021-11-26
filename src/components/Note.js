@@ -16,7 +16,7 @@ export default function Note({ note, inde, onUpdate, onDelete, isDragDisabled })
 					>
 						<textarea
 							className={
-								`w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm ` +
+								`w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm text-black dark:text-black` +
 								`${NOTE_COLORS[note.color].main}`
 							}
 							value={note.content || ""}
@@ -57,8 +57,24 @@ export default function Note({ note, inde, onUpdate, onDelete, isDragDisabled })
 }
 
 const NOTE_COLORS = {
-	blue: { main: "bg-blue-200", side: "bg-blue-300", icon: "text-blue-900" },
-	green: { main: "bg-green-200", side: "bg-green-300", icon: "text-green-900" },
-	yellow: { main: "bg-yellow-200", side: "bg-yellow-300", icon: "text-yellow-900" },
-	pink: { main: "bg-pink-200", side: "bg-pink-300", icon: "text-pink-900" },
+	blue: {
+		main: "bg-blue-200 dark:bg-blue-300 placeholder-blue-700",
+		side: "bg-blue-300 dark:bg-blue-400",
+		icon: "text-blue-900",
+	},
+	green: {
+		main: "bg-green-200 dark:bg-green-300 placeholder-green-700",
+		side: "bg-green-300 dark:bg-green-400",
+		icon: "text-green-900",
+	},
+	yellow: {
+		main: "bg-yellow-200 dark:bg-yellow-200 placeholder-yellow-700",
+		side: "bg-yellow-300",
+		icon: "text-yellow-900",
+	},
+	pink: {
+		main: "bg-pink-200 dark:bg-pink-300 placeholder-pink-700",
+		side: "bg-pink-300 dark:bg-pink-400",
+		icon: "text-pink-900",
+	},
 };

@@ -12,7 +12,7 @@ export default function SetPresenterTopBar({ song, onShowBottomSheet, onShowDraw
 	if (!song) return null;
 
 	return (
-		<nav className="py-2 px-1 border-b bg-gray-50">
+		<nav className="py-2 px-1 border-b dark:border-dark-gray-600 bg-gray-50 dark:bg-dark-gray-800">
 			<div className="flex-between max-w-3xl mx-auto">
 				<Link to={`/sets/${id}`}>
 					<Button variant="open" color="gray">

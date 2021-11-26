@@ -101,14 +101,14 @@ export default function SearchSongsDialog({ open, onCloseDialog, boundSongs, onA
 
 	return (
 		<StyledDialog open={open} onCloseDialog={handleClose} borderedTop={false}>
-			<div className="border-b pb-2 mb-7">
+			<div className="border-b dark:border-dark-gray-400 pb-2 mb-7">
 				<OpenInput placeholder="Search for a specific song" value={query} onChange={setQuery} />
 			</div>
 			<div className="font-semibold mb-3">Your song library</div>
 
 			{loading ? (
 				<div className="text-center">
-					<PulseLoader color="blue" />
+					<PulseLoader color="#1f6feb" />
 				</div>
 			) : (
 				<div className="max-h-96 overflow-y-auto">

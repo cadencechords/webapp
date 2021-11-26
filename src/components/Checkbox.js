@@ -8,7 +8,9 @@ export default function Checkbox({ color, checked, onChange, className }) {
 			<button
 				className={`w-5 h-5 ${RING_COLORS[color]}
 				shadow-sm focus:outline-none focus:ring-2 outline-none rounded-md cursor-pointer flex-center
-				${checked ? BACKGROUND_COLORS[color] : " border border-gray-300 "} ${className}`}
+				${
+					checked ? BACKGROUND_COLORS[color] : " border border-gray-300 dark:border-dark-gray-400 "
+				} ${className}`}
 				onClick={() => onChange(!checked)}
 			>
 				{checked && <CheckIcon className="text-white font-semibold h-4 w-4" />}
@@ -42,7 +44,7 @@ const RING_COLORS = {
 
 const BACKGROUND_COLORS = {
 	red: "bg-red-600",
-	blue: "bg-blue-600",
+	blue: "bg-blue-600 dark:bg-dark-blue",
 	yellow: "bg-yellow-600",
 	green: "bg-green-600",
 	purple: "bg-purple-600",

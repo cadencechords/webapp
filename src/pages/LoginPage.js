@@ -67,13 +67,13 @@ export default function LoginPage() {
 				<h1 className="font-bold text-3xl text-center mb-1">Login to your account</h1>
 				<div className="text-center mb-4">
 					Or
-					<Link to="/signup" className="text-blue-600 font-semibold ml-1">
+					<Link to="/signup" className="text-blue-600 dark:text-dark-blue font-semibold ml-1">
 						sign up for one!
 					</Link>
 				</div>
 				<div className="pt-5 pb-3">
 					<input
-						className="appearance-none px-3 py-2 border-gray-300 focus:outline-none outline-none w-full border rounded-t-md focus:ring-inset focus:ring-2 focus:ring-blue-400 "
+						className="appearance-none px-3 py-2 border-gray-300 dark:border-dark-gray-400 focus:outline-none outline-none w-full border rounded-t-md focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
 						placeholder="email"
 						type="email"
 						autoComplete="off"
@@ -83,7 +83,7 @@ export default function LoginPage() {
 					/>
 
 					<input
-						className="appearance-none px-3 py-2 shadow-sm focus:outline-none border-gray-300 outline-none w-full border rounded-b-md border-t-0 focus:ring-inset focus:ring-2 focus:ring-blue-400"
+						className="appearance-none px-3 py-2 shadow-sm focus:outline-none border-gray-300 dark:border-dark-gray-400 outline-none w-full border rounded-b-md border-t-0 focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
 						placeholder="password"
 						type="password"
 						autoComplete="off"
@@ -92,7 +92,7 @@ export default function LoginPage() {
 						value={password}
 					/>
 				</div>
-				<div className="mb-4 text-right font-semibold text-blue-600">
+				<div className="mb-4 text-right font-semibold text-blue-600 dark:text-dark-blue">
 					<Link to="/forgot_password">Forgot password?</Link>
 				</div>
 				{alertMessage && (

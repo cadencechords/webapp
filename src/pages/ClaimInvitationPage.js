@@ -65,7 +65,7 @@ export default function ClaimInvitationPage() {
 			<CenteredPage>
 				<div className="text-center">
 					<div className="mb-4 font-semibold">Claiming your invitation</div>
-					<PulseLoader color="blue" />
+					<PulseLoader color="#1f6feb" />
 				</div>
 			</CenteredPage>
 		);
