@@ -26,7 +26,7 @@ export default function Sidenav() {
 	}
 
 	return (
-		<div className="fixed h-full bg-gray-50 dark:bg-dark-gray-800 lg:w-52 md:w-14 w-0 transition-all border-r dark:border-dark-gray-400 shadow-inner">
+		<div className="fixed h-full bg-gray-50 dark:bg-dark-gray-800 lg:w-52 md:w-14 w-0 transition-all md:border-r dark:border-dark-gray-400 shadow-inner">
 			<div className="hidden md:flex flex-col">
 				{currentTeamCard}
 				<div className="flex flex-col py-3 ">
