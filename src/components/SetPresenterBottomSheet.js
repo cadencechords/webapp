@@ -2,6 +2,7 @@ import AutoscrollSheet from "./AutoscrollSheet";
 import BottomSheet from "./BottomSheet";
 import CapoSheet from "./CapoSheet";
 import TransposeSheet from "./TransposeSheet";
+import { hasAnyKeysSet } from "../utils/SongUtils";
 
 export default function SetPresenterBottomSheet({ song, sheet, open, onClose, onSongUpdate }) {
 	function isHidden(sheetInQuestion) {
@@ -12,16 +13,20 @@ export default function SetPresenterBottomSheet({ song, sheet, open, onClose, on
 		<BottomSheet open={open} onClose={onClose} className="p-2">
 			{song && (
 				<>
-					<CapoSheet
-						song={song}
-						onCapoChange={(capo) => onSongUpdate("capo", capo)}
-						className={isHidden("capo")}
-					/>
-					<TransposeSheet
-						song={song}
-						onSongChange={onSongUpdate}
-						className={isHidden("transpose")}
-					/>
+					{hasAnyKeysSet(song) && (
+						<>
+							<CapoSheet
+								song={song}
+								onCapoChange={(capo) => onSongUpdate("capo", capo)}
+								className={isHidden("capo")}
+							/>
+							<TransposeSheet
+								song={song}
+								onSongChange={onSongUpdate}
+								className={isHidden("transpose")}
+							/>
+						</>
+					)}
 					<AutoscrollSheet
 						song={song}
 						onSongChange={onSongUpdate}
