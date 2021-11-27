@@ -14,7 +14,7 @@ export default function DashboardPage() {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		document.title = "Dashboard";
+		document.title = "Cadence";
 
 		async function fetchData() {
 			try {

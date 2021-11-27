@@ -4,6 +4,10 @@ import ChordSheetJS from "chordsheetjs";
 import TextAutosize from "../components/TextAutosize";
 
 const CHORD_PRO_REGEX = new RegExp(/[[].*[\]]/);
+const LINES_REGEX = new RegExp(/\r\n|\r|\n/);
+const SECTION_TITLE_REGEX = new RegExp(
+	"(\\[)?(verse|chorus|interlude|prechorus|vamp|tag|outro|intro|break|pre chorus|bridge)( )*([0-9])*(:|])?( )*"
+);
 
 export function isChordLine(line) {
 	if (line) {
@@ -133,6 +137,8 @@ export function hasAnyKeysSet(song) {
 export function html(song, onLineDoubleClick) {
 	let content = song?.content;
 	if (content && song?.format) {
+		if (song.roadmap) content = fromRoadmap(song);
+
 		if (isChordPro(content)) {
 			content = formatChordPro(content);
 		}
@@ -215,4 +221,37 @@ export function countLines(content) {
 	} else {
 		return 0;
 	}
+}
+
+function fromRoadmap(song) {
+	let sections = breakIntoSections(song.content);
+
+	let expandedContent = "";
+	song.roadmap.forEach(
+		(roadmapSection) => (expandedContent += `${roadmapSection}\n${sections[roadmapSection]}`)
+	);
+
+	return expandedContent;
+}
+
+function breakIntoSections(content = "") {
+	let lines = content.split(LINES_REGEX);
+
+	let sectionTitle = "";
+	let sections = {};
+	lines.forEach((line) => {
+		if (isSectionTitle(line)) {
+			sectionTitle = line;
+			sections[sectionTitle] = "";
+		} else {
+			sections[sectionTitle] += `${line}\n`;
+		}
+	});
+
+	return sections;
+}
+
+function isSectionTitle(line) {
+	let lowercasedLine = line.toLowerCase();
+	return SECTION_TITLE_REGEX.test(lowercasedLine);
 }

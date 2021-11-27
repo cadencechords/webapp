@@ -5,6 +5,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useRef, useState } from "react";
 
 import NotesDragDropContext from "../components/NotesDragDropContext";
+import Roadmap from "../components/Roadmap";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterBottomSheet from "../components/SongPresenterBottomSheet";
 import SongPresenterTopBar from "../components/SongPresenterTopBar";
@@ -102,6 +103,7 @@ export default function SongPresenterPage() {
 				/>
 
 				<div className="mx-auto max-w-6xl p-3">
+					<Roadmap song={song} />
 					<div className={`relative ${song?.format?.autosize ? "" : "inline-block"}`}>
 						<div id="song" className={`mr-0 ${song?.notes?.length > 0 ? "md:mr-72" : ""}`}>
 							{html(song, handleLineDoubleClick)}
