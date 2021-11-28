@@ -100,7 +100,7 @@ export default function DragAndDropTable({
 			>
 				<span className="cursor-pointer hover:text-blue-600 dark:hover:text-dark-blue flex items-center gap-2">
 					{item.name}
-					<KeyBadge songKey={item.key} />
+					{hasAnyKeysSet(item) && <KeyBadge songKey={item.transposed_key || item.original_key} />}
 				</span>
 
 				{removeable && (
