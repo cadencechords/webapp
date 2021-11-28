@@ -94,18 +94,18 @@ export default function DragAndDropTable({
 	} else {
 		return items.map((item) => (
 			<div
-				className="border-b hover:bg-gray-50 py-2 px-2 bg-white flex-between"
+				className="border-b dark:border-dark-gray-600 hover:bg-gray-50 py-2 px-2 bg-white flex-between dark:bg-dark-gray-900"
 				key={item.id}
 				onClick={() => onClick(item.id)}
 			>
-				<span className="cursor-pointer hover:text-blue-600 flex items-center gap-2">
+				<span className="cursor-pointer hover:text-blue-600 dark:hover:text-dark-blue flex items-center gap-2">
 					{item.name}
-					<KeyBadge songKey={item.key} />
+					{hasAnyKeysSet(item) && <KeyBadge songKey={item.transposed_key || item.original_key} />}
 				</span>
 
 				{removeable && (
-					<Button color="grey" size="xs" variant="open" onClick={() => onRemove(item.id)}>
-						<TrashIcon className="h-4 w-4 text-gray-600" />
+					<Button color="gray" size="xs" variant="open" onClick={() => onRemove(item.id)}>
+						<TrashIcon className="h-4 w-4" />
 					</Button>
 				)}
 			</div>
