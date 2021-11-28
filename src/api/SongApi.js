@@ -44,6 +44,7 @@ export default class SongApi {
 		if (updates.transposed_key) allowedParams.transposed_key = updates.transposed_key;
 		if (updates.content) allowedParams.content = updates.content;
 		if (updates.scroll_speed) allowedParams.scroll_speed = updates.scroll_speed;
+		if (updates.roadmap) allowedParams.roadmap = updates.roadmap.join("@");
 
 		return axios.put(SONGS_URL + `/${songId}?team_id=${getTeamId()}`, allowedParams, {
 			headers: constructAuthHeaders(),

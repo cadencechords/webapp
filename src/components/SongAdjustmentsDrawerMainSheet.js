@@ -12,6 +12,7 @@ export default function SongAdjustmentsDrawerMainSheet({
 	onFormatChange,
 	onAddNote,
 	onShowBottomSheet,
+	onSongChange,
 }) {
 	const currentSubscription = useSelector(selectCurrentSubscription);
 	const iconClasses = "w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue";
@@ -30,6 +31,13 @@ export default function SongAdjustmentsDrawerMainSheet({
 			>
 				Show chords
 				<Toggle enabled={!song.format.chords_hidden} onChange={noop} spacing="between" />
+			</MobileMenuButton>
+			<MobileMenuButton
+				className="flex-between"
+				onClick={() => onSongChange("show_roadmap", !song.show_roadmap)}
+			>
+				Show roadmap
+				<Toggle enabled={song.show_roadmap} onChange={noop} spacing="between" />
 			</MobileMenuButton>
 
 			{currentSubscription.isPro && (

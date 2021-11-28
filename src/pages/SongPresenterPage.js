@@ -18,6 +18,7 @@ export default function SongPresenterPage() {
 	const router = useHistory();
 	const id = useParams().id;
 	const song = useSelector(selectSongBeingPresented);
+	console.log(song);
 	const dispatch = useDispatch();
 	const currentSubscription = useSelector(selectCurrentSubscription);
 	const pageRef = useRef();
@@ -93,6 +94,10 @@ export default function SongPresenterPage() {
 		setBottomSheet(sheet);
 	}
 
+	function handleToggleRoadmap() {
+		dispatch(adjustSongBeingPresented({ show_roadmap: !song.show_roadmap }));
+	}
+
 	if (song && song.format) {
 		return (
 			<div ref={pageRef} id="page">
@@ -103,7 +108,11 @@ export default function SongPresenterPage() {
 				/>
 
 				<div className="mx-auto max-w-6xl p-3">
-					<Roadmap song={song} />
+					<Roadmap
+						song={song}
+						onSongChange={handleSongChange}
+						onToggleRoadmap={handleToggleRoadmap}
+					/>
 					<div className={`relative ${song?.format?.autosize ? "" : "inline-block"}`}>
 						<div id="song" className={`mr-0 ${song?.notes?.length > 0 ? "md:mr-72" : ""}`}>
 							{html(song, handleLineDoubleClick)}

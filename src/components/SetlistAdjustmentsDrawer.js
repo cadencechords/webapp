@@ -52,6 +52,14 @@ export default function SetlistAdjustmentsDrawer({
 					Show chords
 					<Toggle enabled={!song?.format?.chords_hidden} onChange={noop} spacing="between" />
 				</MobileMenuButton>
+				<MobileMenuButton
+					full
+					className="flex-between"
+					onClick={() => onSongUpdate("show_roadmap", !song?.show_roadmap)}
+				>
+					Show roadmap
+					<Toggle enabled={song?.show_roadmap} onChange={noop} spacing="between" />
+				</MobileMenuButton>
 
 				{currentMember.can(EDIT_SONGS) && (
 					<>

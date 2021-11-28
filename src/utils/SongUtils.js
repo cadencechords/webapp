@@ -6,7 +6,7 @@ import TextAutosize from "../components/TextAutosize";
 const CHORD_PRO_REGEX = new RegExp(/[[].*[\]]/);
 const LINES_REGEX = new RegExp(/\r\n|\r|\n/);
 const SECTION_TITLE_REGEX = new RegExp(
-	"(\\[)?(verse|chorus|interlude|prechorus|vamp|tag|outro|intro|break|pre chorus|bridge)( )*([0-9])*(:|])?( )*"
+	"^(\\[)?(verse|chorus|interlude|prechorus|vamp|tag|outro|intro|break|pre chorus|bridge)( )*([0-9])*(:|])?( )*$"
 );
 
 export function isChordLine(line) {
@@ -137,14 +137,12 @@ export function hasAnyKeysSet(song) {
 export function html(song, onLineDoubleClick) {
 	let content = song?.content;
 	if (content && song?.format) {
-		if (song.roadmap) content = fromRoadmap(song);
+		if (song.roadmap?.length > 0 && song.show_roadmap) content = fromRoadmap(song);
 
-		if (isChordPro(content)) {
-			content = formatChordPro(content);
-		}
+		if (isChordPro(content)) content = formatChordPro(content);
 
 		if (!song.format.chords_hidden && (song.show_transposed || song.capo)) {
-			content = transpose(song);
+			content = transpose({ ...song, content: content });
 		}
 
 		let linesOfSong = content.split(/\r\n|\r|\n/);
@@ -225,11 +223,18 @@ export function countLines(content) {
 
 function fromRoadmap(song) {
 	let sections = breakIntoSections(song.content);
+	let roadmap = song.roadmap;
 
 	let expandedContent = "";
-	song.roadmap.forEach(
-		(roadmapSection) => (expandedContent += `${roadmapSection}\n${sections[roadmapSection]}`)
-	);
+	let sectionTitles = Object.keys(sections);
+
+	roadmap.forEach((roadmapSection) => {
+		let matchedSectionTitle = sectionTitles.find((sectionTitle) =>
+			sectionTitle.includes(roadmapSection)
+		);
+		if (matchedSectionTitle)
+			expandedContent += `${roadmapSection}\n${sections[matchedSectionTitle]}`;
+	});
 
 	return expandedContent;
 }

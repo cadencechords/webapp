@@ -28,7 +28,9 @@ export const { setSongBeingPresented, adjustSongBeingPresented, setSetlistBeingP
 export default presenterSlice.reducer;
 
 export const selectSongBeingPresented = (state) => {
-	return state.presenter.songBeingPresented;
+	return {
+		...state.presenter.songBeingPresented,
+	};
 };
 
 export const selectSetlistBeingPresented = (state) => {

@@ -49,7 +49,11 @@ export default function SetPresenter() {
 	useEffect(() => {
 		if (setlist?.songs) {
 			setSongs(
-				setlist.songs.map((song) => ({ ...song, show_transposed: Boolean(song.transposed_key) }))
+				setlist.songs.map((song) => ({
+					...song,
+					show_transposed: Boolean(song.transposed_key),
+					show_roadmap: song.roadmap?.length > 0,
+				}))
 			);
 		}
 	}, [setlist]);

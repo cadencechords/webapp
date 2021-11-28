@@ -2,8 +2,9 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import RoadmapSection from "./RoadmapSection";
 
-export default function RoadmapDragDropContext({ sections, onChange }) {
+export default function RoadmapDragDropContext({ sections, onChange, onDragStart, onDragEnd }) {
 	function handleDragEnd({ source, destination }) {
+		onDragEnd?.();
 		if (!destination) return;
 
 		let reordered = reorder(sections, source.index, destination.index);
@@ -28,26 +29,37 @@ export default function RoadmapDragDropContext({ sections, onChange }) {
 		onChange(sections.filter((section, index) => index !== indexToDelete));
 	}
 
+	function getItemStyle(isDragging, draggableStyle) {
+		return {
+			...draggableStyle,
+		};
+	}
+
 	return (
-		<DragDropContext onDragEnd={handleDragEnd}>
+		<DragDropContext onDragEnd={handleDragEnd} onDragStart={onDragStart}>
 			<Droppable droppableId="droppable" direction="horizontal">
 				{(provided, snapshot) => (
-					<div ref={provided.innerRef} {...provided.droppableProps}>
+					<div
+						ref={provided.innerRef}
+						{...provided.droppableProps}
+						className="flex items-center overflow-x-auto overflow-y-hidden py-2"
+					>
 						{sections.map((section, index) => (
 							<Draggable key={index} draggableId={`${index}`} index={index}>
-								{(provided) => (
-									<span
+								{(provided, snapshot) => (
+									<div
 										{...provided.draggableProps}
 										{...provided.dragHandleProps}
 										ref={provided.innerRef}
 										className="mr-2"
+										style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
 									>
 										<RoadmapSection
 											section={section}
 											onChange={(newValue) => handleChangeSection(newValue, index)}
 											onDelete={() => handleDeleteSection(index)}
 										/>
-									</span>
+									</div>
 								)}
 							</Draggable>
 						))}
