@@ -18,7 +18,6 @@ export default function SongPresenterPage() {
 	const router = useHistory();
 	const id = useParams().id;
 	const song = useSelector(selectSongBeingPresented);
-	console.log(song);
 	const dispatch = useDispatch();
 	const currentSubscription = useSelector(selectCurrentSubscription);
 	const pageRef = useRef();

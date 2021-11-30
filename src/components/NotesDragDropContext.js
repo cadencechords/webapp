@@ -92,7 +92,7 @@ export default function NotesDragDropContext({
 					reportError(error);
 				}
 			},
-			[1500]
+			[1200]
 		),
 		[]
 	);

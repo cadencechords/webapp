@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Button from "../components/Button";
@@ -14,7 +15,6 @@ import SongsCarousel from "../components/SongsCarousel";
 import { reportError } from "../utils/error";
 import { selectSetlistBeingPresented } from "../store/presenterSlice";
 import { setSetlistBeingPresented } from "../store/presenterSlice";
-import { useEffect } from "react";
 import { useState } from "react";
 
 export default function SetPresenter() {
@@ -64,13 +64,16 @@ export default function SetPresenter() {
 		setBottomSheet(sheet);
 	}
 
-	function handleSongUpdate(field, value) {
-		setSongs((currentSongs) => {
-			return currentSongs.map((song, index) =>
-				index === songBeingViewedIndex ? { ...song, [field]: value } : song
-			);
-		});
-	}
+	const handleSongUpdate = useCallback(
+		(field, value) => {
+			setSongs((currentSongs) => {
+				return currentSongs.map((song, index) => {
+					return index === songBeingViewedIndex ? { ...song, [field]: value } : song;
+				});
+			});
+		},
+		[songBeingViewedIndex]
+	);
 
 	if (loading) {
 		return <PageLoading />;

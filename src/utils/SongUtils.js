@@ -232,8 +232,11 @@ function fromRoadmap(song) {
 		let matchedSectionTitle = sectionTitles.find((sectionTitle) =>
 			sectionTitle.includes(roadmapSection)
 		);
-		if (matchedSectionTitle)
-			expandedContent += `${roadmapSection}\n${sections[matchedSectionTitle]}`;
+		if (matchedSectionTitle) {
+			let sectionToAppend = `${roadmapSection}\n${sections[matchedSectionTitle]}`;
+			if (!sectionToAppend.endsWith("\n\n")) sectionToAppend += "\n";
+			expandedContent += sectionToAppend;
+		}
 	});
 
 	return expandedContent;

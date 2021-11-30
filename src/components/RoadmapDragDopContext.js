@@ -1,8 +1,11 @@
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import RoadmapSection from "./RoadmapSection";
+import { useState } from "react";
 
 export default function RoadmapDragDropContext({ sections, onChange, onDragStart, onDragEnd }) {
+	const [scrollTimeoutId, setScrollTimeoutId] = useState();
+
 	function handleDragEnd({ source, destination }) {
 		onDragEnd?.();
 		if (!destination) return;
@@ -35,13 +38,35 @@ export default function RoadmapDragDropContext({ sections, onChange, onDragStart
 		};
 	}
 
+	function handleScroll() {
+		if (onDragStart && onDragEnd) {
+			onDragStart();
+			clearTimeout(scrollTimeoutId);
+			setScrollTimeoutId(setTimeout(onDragEnd), 150);
+		}
+	}
+
 	return (
 		<DragDropContext onDragEnd={handleDragEnd} onDragStart={onDragStart}>
-			<Droppable droppableId="droppable" direction="horizontal">
+			<Droppable
+				droppableId="droppable"
+				direction="horizontal"
+				renderClone={(provided, snapshot, item) => (
+					<div
+						{...provided.draggableProps}
+						{...provided.dragHandleProps}
+						ref={provided.ref}
+						style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+					>
+						<RoadmapSection section={sections[item.source.index]} />
+					</div>
+				)}
+			>
 				{(provided, snapshot) => (
 					<div
 						ref={provided.innerRef}
 						{...provided.droppableProps}
+						onScroll={handleScroll}
 						className="flex items-center overflow-x-auto overflow-y-hidden py-2"
 					>
 						{sections.map((section, index) => (
