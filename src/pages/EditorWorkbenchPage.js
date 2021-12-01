@@ -203,7 +203,7 @@ export default function EditorWorkbenchPage() {
 				</div>
 			</div>
 			<div className="hidden xl:grid grid-cols-2 ">
-				<div className="col-span-2 xl:col-span-1 container mx-auto px-5 mb-12 sm:mb-0 border-r">
+				<div className="col-span-2 xl:col-span-1 container mx-auto px-5 mb-12 sm:mb-0 border-r dark:border-dark-gray-600 ">
 					<Editor
 						content={changes.content ? changes.content : songBeingEdited.content}
 						formatOptions={format}
