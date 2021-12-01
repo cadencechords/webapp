@@ -1,15 +1,25 @@
+import { useEffect, useRef, useState } from "react";
+
 import AddCancelActions from "./buttons/AddCancelActions";
 import OutlinedInput from "./inputs/OutlinedInput";
 import PropTypes from "prop-types";
 import SetlistApi from "../api/SetlistApi";
 import StyledDialog from "./StyledDialog";
 import { reportError } from "../utils/error";
-import { useState } from "react";
 
 export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) {
 	const [name, setName] = useState("");
 	const [scheduledDate, setScheduledDate] = useState("");
 	const [loading, setLoading] = useState(false);
+	const inputRef = useRef();
+
+	useEffect(() => {
+		setTimeout(() => {
+			if (open) {
+				inputRef.current?.focus();
+			}
+		}, 100);
+	}, [open]);
 
 	const isDateValid = () => {
 		let dateToValidate = new Date(scheduledDate);
@@ -50,6 +60,7 @@ export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) 
 					placeholder="Give your set a name"
 					value={name}
 					onChange={setName}
+					ref={inputRef}
 				/>
 			</div>
 

@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 import BinderApi from "../api/BinderApi";
 import Button from "./Button";
 import ColorsList from "./ColorsList";
@@ -5,7 +7,6 @@ import OutlinedInput from "./inputs/OutlinedInput";
 import StyledDialog from "./StyledDialog";
 import { reportError } from "../utils/error";
 import { useHistory } from "react-router";
-import { useState } from "react";
 
 export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 	const [name, setName] = useState("");
@@ -13,6 +14,15 @@ export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 	const [color, setColor] = useState("none");
 	const [loading, setLoading] = useState(false);
 	const router = useHistory();
+	const inputRef = useRef();
+
+	useEffect(() => {
+		setTimeout(() => {
+			if (open) {
+				inputRef.current?.focus();
+			}
+		}, 100);
+	}, [open]);
 
 	const handleCloseDialog = () => {
 		setName("");
@@ -42,7 +52,7 @@ export default function CreateBinderDialog({ open, onCloseDialog, onCreated }) {
 		<StyledDialog title="Create a new binder" open={open} onCloseDialog={handleCloseDialog}>
 			<div className="mb-4 pt-2">
 				<div className="mb-2">Name</div>
-				<OutlinedInput placeholder="ex: Hymns" onChange={setName} />
+				<OutlinedInput placeholder="ex: Hymns" onChange={setName} ref={inputRef} />
 			</div>
 
 			<div className="mb-4">
