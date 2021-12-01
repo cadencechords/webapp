@@ -1,6 +1,9 @@
+import { DELETE_ROLES, EDIT_ROLES } from "../utils/constants";
 import { useCallback, useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 
-import { EDIT_ROLES } from "../utils/constants";
+import Button from "../components/Button";
+import ConfirmDeleteDialog from "../dialogs/ConfirmDeleteDialog";
 import EditableData from "../components/inputs/EditableData";
 import PageLoading from "../components/PageLoading";
 import PageTitle from "../components/PageTitle";
@@ -8,10 +11,10 @@ import PermissionsApi from "../api/permissionsApi";
 import RoleMembers from "../components/RoleMembers";
 import RolePermissions from "../components/RolePermissions";
 import RolesApi from "../api/rolesApi";
+import TrashIcon from "@heroicons/react/outline/TrashIcon";
 import _ from "lodash";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
-import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 
 export default function RoleDetailPage() {
@@ -19,7 +22,10 @@ export default function RoleDetailPage() {
 	const [role, setRole] = useState();
 	const [permissions, setPermissions] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [deleting, setDeleting] = useState(false);
 	const currentMember = useSelector(selectCurrentMember);
+	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+	const router = useHistory();
 
 	useEffect(() => {
 		document.title = "Permissions";
@@ -88,6 +94,17 @@ export default function RoleDetailPage() {
 		});
 	}
 
+	async function handleDeleteRole() {
+		try {
+			setDeleting(true);
+			await RolesApi.deleteOne(role.id);
+			router.push("/permissions");
+		} catch (error) {
+			reportError(error);
+			setLoading(false);
+		}
+	}
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounce = useCallback(
 		_.debounce((field, newValue) => {
@@ -105,12 +122,24 @@ export default function RoleDetailPage() {
 	} else {
 		return (
 			<div>
-				<PageTitle
-					title={role?.name}
-					editable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
-					onChange={handleNameChange}
-					placeholder="None title provided yet"
-				/>
+				<div className="flex-between">
+					<PageTitle
+						title={role?.name}
+						editable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
+						onChange={handleNameChange}
+						placeholder="None title provided yet"
+					/>
+					{currentMember.can(DELETE_ROLES) && !role?.is_admin && !role?.is_member && (
+						<Button
+							loading={deleting}
+							variant="open"
+							color="gray"
+							onClick={() => setShowConfirmDelete(true)}
+						>
+							<TrashIcon className="w-5 h-5" />
+						</Button>
+					)}
+				</div>
 				<EditableData
 					value={role?.description}
 					editable={currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)}
@@ -128,6 +157,14 @@ export default function RoleDetailPage() {
 					onPermissionToggled={handlePermissionToggled}
 					role={role}
 				/>
+				<ConfirmDeleteDialog
+					show={showConfirmDelete}
+					onCloseDialog={() => setShowConfirmDelete(false)}
+					onCancel={() => setShowConfirmDelete(false)}
+					onConfirm={handleDeleteRole}
+				>
+					Deleting this role will move everyone from this role into the members role.
+				</ConfirmDeleteDialog>
 			</div>
 		);
 	}

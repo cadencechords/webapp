@@ -4,6 +4,7 @@ import { ASSIGN_ROLES } from "../utils/constants";
 import AddMembersToRoleDialog from "../dialogs/AddMembersToRoleDialog";
 import Button from "./Button";
 import MembershipsApi from "../api/membershipsApi";
+import NoDataMessage from "./NoDataMessage";
 import SectionTitle from "./SectionTitle";
 import Table from "./Table";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
@@ -60,7 +61,11 @@ export default function RoleMembers({ role, members, onMemberRemoved, onMembersA
 					</Button>
 				)}
 			</div>
-			<Table headers={["Name", ""]} rows={rows} />
+			{members?.length > 0 ? (
+				<Table headers={["Name", ""]} rows={rows} />
+			) : (
+				<NoDataMessage>There are no members in this role yet</NoDataMessage>
+			)}
 			<AddMembersToRoleDialog
 				open={showAddMembersDialog}
 				onCloseDialog={() => setShowAddMembersDialog(false)}

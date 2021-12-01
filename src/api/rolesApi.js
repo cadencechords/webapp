@@ -51,4 +51,10 @@ export default class RolesApi {
 			headers: constructAuthHeaders(),
 		});
 	}
+
+	static deleteOne(roleId) {
+		return axios.delete(`${ROLES_URL}/${roleId}?team_id=${getTeamId()}`, {
+			headers: constructAuthHeaders(),
+		});
+	}
 }
