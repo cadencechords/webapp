@@ -58,6 +58,15 @@ export default function SetPresenter() {
 		}
 	}, [setlist]);
 
+	function handleSongBeingViewedIndexChange(index) {
+		let html = document.querySelector("html");
+		html.scrollTo({
+			top: 0,
+			behavior: "smooth",
+		});
+		setSongBeingViewedIndex(index);
+	}
+
 	function handleBottomSheetChange(sheet) {
 		setShowDrawer(false);
 		setShowBottomSheet(true);
@@ -90,7 +99,7 @@ export default function SetPresenter() {
 				<div className="mx-auto max-w-4xl p-3 whitespace-pre-wrap mb-12">
 					<SongsCarousel
 						songs={songs}
-						onIndexChange={setSongBeingViewedIndex}
+						onIndexChange={handleSongBeingViewedIndexChange}
 						index={songBeingViewedIndex}
 						onSongUpdate={handleSongUpdate}
 					/>
@@ -98,7 +107,7 @@ export default function SetPresenter() {
 
 				<SetlistNavigation
 					songs={setlist.songs}
-					onIndexChange={setSongBeingViewedIndex}
+					onIndexChange={handleSongBeingViewedIndexChange}
 					index={songBeingViewedIndex}
 				/>
 				<SetPresenterBottomSheet
