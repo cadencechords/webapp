@@ -158,3 +158,7 @@ export function diffInHours(date1, date2) {
 	if (!date1 || !date2) return 0;
 	return dayjs(date1).diff(date2, "hour");
 }
+
+export function addToNow(time, unit) {
+	return dayjs().add(time, unit).toDate();
+}

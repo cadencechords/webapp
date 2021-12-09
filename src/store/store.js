@@ -1,5 +1,6 @@
 import alertReducer from "./alertSlice";
 import authReducer from "./authSlice";
+import cacheReducer from "./cacheSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import editorReducer from "./editorSlice";
 import presenterReducer from "./presenterSlice";
@@ -12,5 +13,6 @@ export default configureStore({
 		alert: alertReducer,
 		presenter: presenterReducer,
 		subscription: subscriptionReducer,
+		cache: cacheReducer,
 	},
 });

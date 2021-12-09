@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 
 import Button from "./Button";
@@ -11,14 +12,17 @@ import StyledPopover from "./StyledPopover";
 import TrashIcon from "@heroicons/react/outline/TrashIcon";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
-import { useSelector } from "react-redux";
+import { selectSongsCache } from "../store/cacheSlice";
+import { setSongsCache } from "../store/cacheSlice";
 import { useState } from "react";
 
-export default function SongOptionsPopover({ onDeleteClick, onPrintClick }) {
+export default function SongOptionsPopover({ onPrintClick }) {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 	const router = useHistory();
-	const id = useParams().id;
+	const id = parseInt(useParams().id);
 	const currentMember = useSelector(selectCurrentMember);
+	const songsCache = useSelector(selectSongsCache);
+	const dispatch = useDispatch();
 
 	let button = (
 		<Button size="xs" variant="open" color="gray">
@@ -29,6 +33,12 @@ export default function SongOptionsPopover({ onDeleteClick, onPrintClick }) {
 	const handleDelete = async () => {
 		try {
 			await SongApi.deleteOneById(id);
+
+			if (songsCache?.expires > new Date().getTime()) {
+				let updatedSongs = songsCache.songs?.filter((song) => song.id !== id);
+				dispatch(setSongsCache({ ...songsCache, songs: updatedSongs }));
+			}
+
 			router.push("/songs");
 		} catch (error) {
 			reportError(error);

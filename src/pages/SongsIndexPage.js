@@ -1,3 +1,5 @@
+import { selectSongsCache, setSongsCache } from "../store/cacheSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
 import { ADD_SONGS } from "../utils/constants";
@@ -12,9 +14,9 @@ import QuickAdd from "../components/QuickAdd";
 import SongApi from "../api/SongApi";
 import SongsList from "../components/SongsList";
 import WellInput from "../components/inputs/WellInput";
+import { addToNow } from "../utils/date";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
-import { useSelector } from "react-redux";
 
 export default function SongsIndexPage() {
 	useEffect(() => (document.title = "Songs"));
@@ -24,13 +26,23 @@ export default function SongsIndexPage() {
 	const [loading, setLoading] = useState(false);
 	const currentMember = useSelector(selectCurrentMember);
 	const [query, setQuery] = useState("");
+	const songsCache = useSelector(selectSongsCache);
+	const [loadingStatus, setLoadingStatus] = useState("not loaded");
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		async function fetchSongs() {
 			setLoading(true);
 			try {
-				let result = await SongApi.getAll();
-				setSongs(result.data);
+				let { data } = await SongApi.getAll();
+				setSongs(data);
+
+				let cache = {
+					songs: data,
+					expires: addToNow(30, "second").getTime(),
+				};
+
+				dispatch(setSongsCache(cache));
 			} catch (error) {
 				reportError(error);
 			} finally {
@@ -38,11 +50,30 @@ export default function SongsIndexPage() {
 			}
 		}
 
-		fetchSongs();
-	}, []);
+		function cacheValid() {
+			return songsCache?.expires > new Date().getTime();
+		}
+
+		if (cacheValid() && loadingStatus === "not loaded") {
+			setSongs(songsCache.songs);
+			dispatch(setSongsCache({ ...songsCache, expires: addToNow(30, "second").getTime() }));
+			setLoadingStatus("loaded");
+		} else if (loadingStatus === "not loaded") {
+			fetchSongs();
+			setLoading("loaded");
+		}
+	}, [songsCache, dispatch, loadingStatus]);
 
 	const handleSongCreated = (newSong) => {
-		setSongs([...songs, newSong]);
+		setSongs((currentSongs) => {
+			dispatch(
+				setSongsCache({
+					songs: [newSong, ...currentSongs],
+					expires: addToNow(30, "second").getTime(),
+				})
+			);
+			return [newSong, ...currentSongs];
+		});
 	};
 
 	let content = null;
