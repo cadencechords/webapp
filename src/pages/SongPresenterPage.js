@@ -69,15 +69,15 @@ export default function SongPresenterPage() {
 				/>
 
 				<div className="mx-auto max-w-6xl p-3">
+					<Roadmap
+						song={song}
+						onSongChange={handleSongChange}
+						onToggleRoadmap={handleToggleRoadmap}
+					/>
 					<div className="relative w-full">
 						{currentSubscription?.isPro && song.notes?.length > 0 && (
 							<NotesList song={song} onDelete={handleDeleteNote} />
 						)}
-						<Roadmap
-							song={song}
-							onSongChange={handleSongChange}
-							onToggleRoadmap={handleToggleRoadmap}
-						/>
 						<div id="song" className="mr-0">
 							{html(song)}
 						</div>

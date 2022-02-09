@@ -34,16 +34,16 @@ export default function SongsCarouselSlide({ song, onDisableSwipe, onEnableSwipe
 
 	return (
 		<div key={song?.id} className="mb-4 block">
+			<Roadmap
+				song={{ id: song.id, roadmap: roadmap }}
+				onSongChange={handleRoadmapUpdate}
+				onDragEnd={onEnableSwipe}
+				onDragStart={onDisableSwipe}
+			/>
 			<div className="relative w-full">
 				{currentSubscription?.isPro && song.notes?.length > 0 && (
 					<NotesList rearrangeable={false} song={song} onDelete={onDeleteNote} />
 				)}
-				<Roadmap
-					song={{ id: song.id, roadmap: roadmap }}
-					onSongChange={handleRoadmapUpdate}
-					onDragEnd={onEnableSwipe}
-					onDragStart={onDisableSwipe}
-				/>
 				<div id="song" className="mr-0">
 					{html(song)}
 				</div>
