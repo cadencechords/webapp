@@ -17,12 +17,12 @@ export default function Note({ songId, note, onDelete, isDragDisabled, onUpdate 
 		if (updates.color) setColor(updates.color);
 		if (updates.content) setContent(updates.content);
 		handleSaveUpdates(updates);
-		onUpdate(note.id, updates);
+		onUpdate?.(note.id, updates);
 	}
 
 	function handleDragStop(e, data) {
 		handleSaveUpdates({ x: data.x, y: data.y });
-		onUpdate(note.id, { x: data.x, y: data.y });
+		onUpdate?.(note.id, { x: data.x, y: data.y });
 	}
 
 	function handleSaveUpdates(updates) {
@@ -48,7 +48,7 @@ export default function Note({ songId, note, onDelete, isDragDisabled, onUpdate 
 			async (content) => {
 				try {
 					NotesApi.update(songId, note.id, { content });
-					onUpdate({ content });
+					onUpdate?.({ content });
 				} catch (error) {
 					reportError(error);
 				}
