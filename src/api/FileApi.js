@@ -1,4 +1,5 @@
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
+
 import axios from "axios";
 
 const FILES_URL = process.env.REACT_APP_API_URL + "/files";

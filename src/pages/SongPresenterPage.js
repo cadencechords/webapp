@@ -1,15 +1,14 @@
 import { adjustSongBeingPresented, selectSongBeingPresented } from "../store/presenterSlice";
-import { countLines, html } from "../utils/SongUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { useRef, useState } from "react";
 
-import NotesDragDropContext from "../components/NotesDragDropContext";
+import NotesList from "../components/NotesList";
 import Roadmap from "../components/Roadmap";
 import SongAdjustmentsDrawer from "../components/SongAdjustmentsDrawer";
 import SongPresenterBottomSheet from "../components/SongPresenterBottomSheet";
 import SongPresenterTopBar from "../components/SongPresenterTopBar";
-import { max } from "../utils/numberUtils";
+import { html } from "../utils/SongUtils";
 import notesApi from "../api/notesApi";
 import { reportError } from "../utils/error";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
@@ -35,33 +34,6 @@ export default function SongPresenterPage() {
 		dispatch(adjustSongBeingPresented({ [field]: value }));
 	}
 
-	function handleLineDoubleClick(line, index) {
-		console.log(index, line);
-	}
-
-	function handleAddTempNote(tempNote) {
-		dispatch(adjustSongBeingPresented({ notes: [...song.notes, tempNote] }));
-	}
-
-	function handleReplaceTempNote(tempId, realNote) {
-		let index = song.notes.findIndex((note) => note.id === tempId);
-		let notes = [...song.notes];
-		if (index > -1) {
-			notes = song.notes?.map((note) => (note.id === tempId ? realNote : note));
-		} else {
-			notes.push(realNote);
-		}
-
-		dispatch(adjustSongBeingPresented({ notes }));
-	}
-
-	function handleUpdateNote(noteId, updates) {
-		let notesCopy = [...song.notes];
-		notesCopy = notesCopy.map((note) => (note.id === noteId ? { ...note, ...updates } : note));
-
-		dispatch(adjustSongBeingPresented({ notes: notesCopy }));
-	}
-
 	function handleDeleteNote(noteIdToDelete) {
 		let filteredNotes = song.notes.filter((note) => note.id !== noteIdToDelete);
 		dispatch(adjustSongBeingPresented({ notes: filteredNotes }));
@@ -69,22 +41,12 @@ export default function SongPresenterPage() {
 
 	async function handleAddNote() {
 		try {
-			let { data } = await notesApi.create(findNextAvailableLine(), song.id);
+			let { data } = await notesApi.create(song.id);
 			dispatch(adjustSongBeingPresented({ notes: [...song.notes, data] }));
+			setShowOptionsDrawer(false);
 		} catch (error) {
 			reportError(error);
 		}
-	}
-
-	function findNextAvailableLine() {
-		let highestLineNumber = 0;
-		song.notes.forEach((note) => {
-			if (note.line_number > highestLineNumber) highestLineNumber = note.line_number;
-		});
-
-		let lines = new Array(max(highestLineNumber, countLines(song.content))).fill(null);
-		song.notes?.forEach((note) => (lines[note.line_number] = note));
-		return lines.findIndex((line) => line === null);
 	}
 
 	function handleShowBottomSheet(sheet) {
@@ -107,29 +69,18 @@ export default function SongPresenterPage() {
 				/>
 
 				<div className="mx-auto max-w-6xl p-3">
-					<Roadmap
-						song={song}
-						onSongChange={handleSongChange}
-						onToggleRoadmap={handleToggleRoadmap}
-					/>
-					<div className={`relative ${song?.format?.autosize ? "" : "inline-block"}`}>
-						<div id="song" className={`mr-0 ${song?.notes?.length > 0 ? "md:mr-72" : ""}`}>
-							{html(song, handleLineDoubleClick)}
-						</div>
-
+					<div className="relative w-full">
 						{currentSubscription?.isPro && song.notes?.length > 0 && (
-							<div className="hidden md:absolute top-0 right-0 md:flex md:w-64">
-								<div className="md:w-64">
-									<NotesDragDropContext
-										song={song}
-										onAddTempNote={handleAddTempNote}
-										onReplaceTempNote={handleReplaceTempNote}
-										onUpdateNote={handleUpdateNote}
-										onDeleteNote={handleDeleteNote}
-									/>
-								</div>
-							</div>
+							<NotesList song={song} onDelete={handleDeleteNote} />
 						)}
+						<Roadmap
+							song={song}
+							onSongChange={handleSongChange}
+							onToggleRoadmap={handleToggleRoadmap}
+						/>
+						<div id="song" className="mr-0">
+							{html(song)}
+						</div>
 					</div>
 				</div>
 

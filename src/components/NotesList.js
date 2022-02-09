@@ -1,3 +1,14 @@
-export default function NotesList() {
-	return <div></div>;
+import Note from "./Note";
+
+export default function NotesList({ song, onDelete, rearrangeable = true, onUpdate }) {
+	return song.notes?.map((note) => (
+		<Note
+			note={note}
+			key={note.id}
+			songId={song.id}
+			onDelete={onDelete}
+			isDragDisabled={!rearrangeable}
+			onUpdate={onUpdate}
+		/>
+	));
 }

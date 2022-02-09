@@ -9,10 +9,10 @@ export default class NotesApi {
 		});
 	}
 
-	static create(lineNumber, songId) {
+	static create(songId) {
 		return api().post(
 			`/songs/${songId}/notes?team_id=${getTeamId()}`,
-			{ line_number: lineNumber },
+			{ x: 20, y: 20 },
 			{ headers: constructAuthHeaders() }
 		);
 	}

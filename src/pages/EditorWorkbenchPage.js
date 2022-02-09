@@ -1,4 +1,3 @@
-import { countLines, html } from "../utils/SongUtils";
 import {
 	selectSongBeingEdited,
 	updateSongBeingEdited,
@@ -16,12 +15,12 @@ import EditorOptionsBar from "../components/EditorOptionsBar";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import FormatApi from "../api/FormatApi";
 import NotesApi from "../api/notesApi";
-import NotesDragDropContext from "../components/NotesDragDropContext";
+import NotesList from "../components/NotesList";
 import PageTitle from "../components/PageTitle";
 import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import SongApi from "../api/SongApi";
+import { html } from "../utils/SongUtils";
 import { isEmpty } from "../utils/ObjectUtils";
-import { max } from "../utils/numberUtils";
 import { reportError } from "../utils/error";
 import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { setSetlistBeingPresented } from "../store/presenterSlice";
@@ -119,42 +118,14 @@ export default function EditorWorkbenchPage() {
 		dispatch(updateSongBeingEdited({ notes: updatedNotes }));
 	}
 
-	function handleAddTempNote(tempNote) {
-		dispatch(updateSongBeingEdited({ notes: [...songBeingEdited.notes, tempNote] }));
-	}
-
-	function handleReplaceTempNote(tempId, realNote) {
-		let index = songBeingEdited.notes.findIndex((note) => note.id === tempId);
-		let notes = [...songBeingEdited.notes];
-		if (index > -1) {
-			notes = songBeingEdited.notes?.map((note) => (note.id === tempId ? realNote : note));
-		} else {
-			notes.push(realNote);
-		}
-
-		dispatch(updateSongBeingEdited({ notes }));
-	}
-
 	async function handleAddNote() {
 		try {
-			let { data } = await NotesApi.create(findNextAvailableLine(), songBeingEdited.id);
+			let { data } = await NotesApi.create(songBeingEdited.id);
 			setShowEditor(false);
 			dispatch(updateSongBeingEdited({ notes: [...songBeingEdited.notes, data] }));
 		} catch (error) {
 			reportError(error);
 		}
-	}
-
-	function findNextAvailableLine() {
-		let highestLineNumber = 0;
-		songBeingEdited.notes.forEach((note) => {
-			if (note.line_number > highestLineNumber) highestLineNumber = note.line_number;
-		});
-
-		let lines = new Array(max(highestLineNumber, countLines(songBeingEdited.content))).fill(null);
-
-		songBeingEdited.notes?.forEach((note) => (lines[note.line_number] = note));
-		return lines.findIndex((line) => line === null);
 	}
 
 	return (
@@ -202,7 +173,7 @@ export default function EditorWorkbenchPage() {
 					/>
 				</div>
 			</div>
-			<div className="hidden xl:grid grid-cols-2 ">
+			<div className="hidden xl:grid grid-cols-2 overflow-x-hidden">
 				<div className="col-span-2 xl:col-span-1 container mx-auto px-5 mb-12 sm:mb-0 border-r dark:border-dark-gray-600 ">
 					<Editor
 						content={changes.content ? changes.content : songBeingEdited.content}
@@ -212,21 +183,17 @@ export default function EditorWorkbenchPage() {
 				</div>
 				<div className="px-5 my-3 hidden xl:block">
 					<PageTitle title="Preview" className="mb-4" />
-					<div className="flex">
-						<div className="mr-2">
-							{html({ content: changes.content || songBeingEdited.content, format: format })}
-						</div>
+
+					<div className="relative">
 						{currentSubscription.isPro && (
-							<div className="w-64">
-								<NotesDragDropContext
-									song={songBeingEdited}
-									onDeleteNote={handleDeleteNote}
-									onUpdateNote={handleUpdateNote}
-									onAddTempNote={handleAddTempNote}
-									onReplaceTempNote={handleReplaceTempNote}
-								/>
-							</div>
+							<NotesList
+								song={songBeingEdited}
+								onDelete={handleDeleteNote}
+								rearrangeable
+								onUpdate={handleUpdateNote}
+							/>
 						)}
+						{html({ content: changes.content || songBeingEdited.content, format: format })}
 					</div>
 				</div>
 			</div>
@@ -240,21 +207,16 @@ export default function EditorWorkbenchPage() {
 				) : (
 					<div>
 						<PageTitle title="Preview" className="my-4" />
-						<div className="flex">
-							<div>
-								{html({ content: changes.content || songBeingEdited.content, format: format })}
-							</div>
+						<div className="relative">
 							{currentSubscription.isPro && (
-								<div className="ml-10 w-64">
-									<NotesDragDropContext
-										song={songBeingEdited}
-										onDeleteNote={handleDeleteNote}
-										onUpdateNote={handleUpdateNote}
-										onAddTempNote={handleAddTempNote}
-										onReplaceTempNote={handleReplaceTempNote}
-									/>
-								</div>
+								<NotesList
+									song={songBeingEdited}
+									onDelete={handleDeleteNote}
+									rearrangeable
+									onUpdate={handleUpdateNote}
+								/>
 							)}
+							{html({ content: changes.content || songBeingEdited.content, format: format })}
 						</div>
 					</div>
 				)}
