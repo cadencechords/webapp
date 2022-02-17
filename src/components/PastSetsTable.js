@@ -7,7 +7,7 @@ import { toShortDate } from "../utils/DateUtils";
 export default function PastSetsTable({ setlists, onClick }) {
   return (
     <>
-      <FadeIn className="h-52 delay-150">
+      <FadeIn className="delay-150">
         <table className="w-full">
           <TableHead columns={["NAME", "SCHEDULED", "SONGS"]} />
           <tbody>

@@ -7,7 +7,7 @@ import { toShortDate } from "../utils/DateUtils";
 export default function UpcomingSetsTable({ setlists, onClick }) {
   return (
     <>
-      <FadeIn className="h-52 overflow-auto delay-75">
+      <FadeIn className="delay-75">
         <table className="w-full">
           <TableHead columns={["NAME", "SCHEDULED", "SONGS"]} />
           <tbody>
