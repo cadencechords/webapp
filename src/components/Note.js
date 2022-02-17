@@ -7,125 +7,131 @@ import NotesApi from "../api/notesApi";
 import _ from "lodash";
 import { reportError } from "../utils/error";
 
-export default function Note({ songId, note, onDelete, isDragDisabled, onUpdate }) {
-	const [content, setContent] = useState(note.content || "");
-	const [color, setColor] = useState(note.color || "");
+export default function Note({
+  songId,
+  note,
+  onDelete,
+  isDragDisabled,
+  onUpdate,
+}) {
+  const [content, setContent] = useState(note.content || "");
+  const [color, setColor] = useState(note.color || "");
 
-	const [showDialog, setShowDialog] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
-	function handleUpdatesFromDialog(updates) {
-		if (updates.color) setColor(updates.color);
-		if (updates.content) setContent(updates.content);
-		handleSaveUpdates(updates);
-		onUpdate?.(note.id, updates);
-	}
+  function handleUpdatesFromDialog(updates) {
+    if (updates.color) setColor(updates.color);
+    if (updates.content) setContent(updates.content);
+    handleSaveUpdates(updates);
+    onUpdate?.(note.id, updates);
+  }
 
-	function handleDragStop(e, data) {
-		handleSaveUpdates({ x: data.x, y: data.y });
-		onUpdate?.(note.id, { x: data.x, y: data.y });
-	}
+  function handleDragStop(e, data) {
+    handleSaveUpdates({ x: data.x, y: data.y });
+    onUpdate?.(note.id, { x: data.x, y: data.y });
+  }
 
-	function handleSaveUpdates(updates) {
-		try {
-			NotesApi.update(songId, note.id, updates);
-		} catch (error) {
-			reportError(error);
-		}
-	}
+  function handleSaveUpdates(updates) {
+    try {
+      NotesApi.update(songId, note.id, updates);
+    } catch (error) {
+      reportError(error);
+    }
+  }
 
-	function handleDelete() {
-		onDelete(note.id);
-		try {
-			NotesApi.delete(songId, note.id);
-		} catch (error) {
-			reportError(error);
-		}
-	}
+  function handleDelete() {
+    onDelete(note.id);
+    try {
+      NotesApi.delete(songId, note.id);
+    } catch (error) {
+      reportError(error);
+    }
+  }
 
-	// eslint-disable-next-line
-	const debounce = useCallback(
-		_.debounce(
-			async (content) => {
-				try {
-					NotesApi.update(songId, note.id, { content });
-					onUpdate?.({ content });
-				} catch (error) {
-					reportError(error);
-				}
-			},
-			[1200]
-		),
-		[songId, note.id]
-	);
+  // eslint-disable-next-line
+  const debounce = useCallback(
+    _.debounce(
+      async (content) => {
+        try {
+          NotesApi.update(songId, note.id, { content });
+          onUpdate?.({ content });
+        } catch (error) {
+          reportError(error);
+        }
+      },
+      [1200]
+    ),
+    [songId, note.id]
+  );
 
-	function handleContentChange(newContent) {
-		setContent(newContent);
-		debounce(newContent);
-	}
+  function handleContentChange(newContent) {
+    setContent(newContent);
+    debounce(newContent);
+  }
 
-	return (
-		<>
-			<Draggable
-				disabled={isDragDisabled}
-				handle=".handle"
-				defaultPosition={{ x: note.x, y: note.y }}
-				bounds="parent"
-				onStop={handleDragStop}
-			>
-				<div className="hidden md:flex shadow-md w-56 absolute">
-					<textarea
-						className={
-							`w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm text-black dark:text-black` +
-							` ${NOTE_COLORS[color].main}`
-						}
-						value={content}
-						onChange={(e) => handleContentChange(e.target.value)}
-						rows={3}
-						placeholder="Type here"
-					></textarea>
-					<div className={`w-9 ${NOTE_COLORS[color].side}`}>
-						<button
-							className="outline-none focus:outline-none w-full py-1 flex-center"
-							onClick={() => setShowDialog(true)}
-						>
-							<CogIcon className={`w-5 h-5 ${NOTE_COLORS[color].icon}`} />
-						</button>
+  return (
+    <>
+      <Draggable
+        disabled={isDragDisabled}
+        handle=".handle"
+        defaultPosition={{ x: note.x, y: note.y }}
+        bounds="parent"
+        onStop={handleDragStop}
+      >
+        <div className="hidden md:flex shadow-md w-56 h-20 absolute">
+          <textarea
+            className={
+              `w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm text-black dark:text-black` +
+              ` ${NOTE_COLORS[color].main}`
+            }
+            value={content}
+            onChange={(e) => handleContentChange(e.target.value)}
+            rows={3}
+            placeholder="Type here"
+          ></textarea>
+          <div className={`w-9 ${NOTE_COLORS[color].side}`}>
+            <button
+              className="outline-none focus:outline-none w-full py-1 flex-center"
+              onClick={() => setShowDialog(true)}
+            >
+              <CogIcon className={`w-5 h-5 ${NOTE_COLORS[color].icon}`} />
+            </button>
 
-						<div className="h-full w-full handle"></div>
-					</div>
-				</div>
-			</Draggable>
+            <div className="h-full w-full handle"></div>
+          </div>
+        </div>
+      </Draggable>
 
-			<NoteDialog
-				open={showDialog}
-				onCloseDialog={() => setShowDialog(false)}
-				note={{ content: content, color: color }}
-				onUpdate={handleUpdatesFromDialog}
-				onDelete={handleDelete}
-			/>
-		</>
-	);
+      <NoteDialog
+        open={showDialog}
+        onCloseDialog={() => setShowDialog(false)}
+        note={{ content: content, color: color }}
+        onUpdate={handleUpdatesFromDialog}
+        onDelete={handleDelete}
+      />
+    </>
+  );
 }
 
 const NOTE_COLORS = {
-	blue: {
-		main: "bg-blue-200 dark:bg-blue-300 placeholder-blue-700",
-		side: "bg-blue-300 dark:bg-blue-400",
-		icon: "text-blue-900",
-	},
-	green: {
-		main: "bg-green-200 dark:bg-green-300 placeholder-green-700",
-		side: "bg-green-300 dark:bg-green-400",
-		icon: "text-green-900",
-	},
-	yellow: {
-		main: "bg-yellow-200 dark:bg-yellow-200 placeholder-yellow-700",
-		side: "bg-yellow-300",
-		icon: "text-yellow-900",
-	},
-	pink: {
-		main: "bg-pink-200 dark:bg-pink-300 placeholder-pink-700",
-		side: "bg-pink-300 dark:bg-pink-400",
-		icon: "text-pink-900",
-	},
+  blue: {
+    main: "bg-blue-200 dark:bg-blue-300 placeholder-blue-700",
+    side: "bg-blue-300 dark:bg-blue-400",
+    icon: "text-blue-900",
+  },
+  green: {
+    main: "bg-green-200 dark:bg-green-300 placeholder-green-700",
+    side: "bg-green-300 dark:bg-green-400",
+    icon: "text-green-900",
+  },
+  yellow: {
+    main: "bg-yellow-200 dark:bg-yellow-200 placeholder-yellow-700",
+    side: "bg-yellow-300",
+    icon: "text-yellow-900",
+  },
+  pink: {
+    main: "bg-pink-200 dark:bg-pink-300 placeholder-pink-700",
+    side: "bg-pink-300 dark:bg-pink-400",
+    icon: "text-pink-900",
+  },
 };
