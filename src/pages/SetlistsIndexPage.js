@@ -11,109 +11,98 @@ import SetlistsList from "../components/SetlistsList";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
+import { isPast, sortDates } from "../utils/date";
 
 export default function SetlistsIndexPage() {
-	useEffect(() => (document.title = "Sets"));
-	const [setlists, setSetlists] = useState([]);
-	const [upcomingSetlists, setUpcomingSetlists] = useState([]);
-	const [pastSetlists, setPastSetlists] = useState([]);
-	const [showCreateSetlistDialog, setShowCreateSetlistDialog] = useState(false);
-	const [loading, setLoading] = useState(true);
-	const currentMember = useSelector(selectCurrentMember);
+  useEffect(() => (document.title = "Sets"));
+  const [setlists, setSetlists] = useState([]);
+  const [upcomingSetlists, setUpcomingSetlists] = useState([]);
+  const [pastSetlists, setPastSetlists] = useState([]);
+  const [showCreateSetlistDialog, setShowCreateSetlistDialog] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const currentMember = useSelector(selectCurrentMember);
 
-	useEffect(() => {
-		async function fetchSetlists() {
-			setLoading(true);
-			try {
-				let { data } = await SetlistApi.getAll();
-				setSetlists(data);
-			} catch (error) {
-				reportError(error);
-			} finally {
-				setLoading(false);
-			}
-		}
+  useEffect(() => {
+    async function fetchSetlists() {
+      setLoading(true);
+      try {
+        let { data } = await SetlistApi.getAll();
+        setSetlists(data);
+      } catch (error) {
+        reportError(error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-		fetchSetlists();
-	}, []);
+    fetchSetlists();
+  }, []);
 
-	useEffect(() => {
-		let now = new Date();
-		let today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-		let past = setlists.filter((setlist) => {
-			let scheduledDate = new Date(setlist.scheduled_date);
-			let utcScheduledDate = new Date(
-				Date.UTC(
-					scheduledDate.getFullYear(),
-					scheduledDate.getMonth(),
-					scheduledDate.getDate(),
-					24,
-					0,
-					0
-				)
-			);
-			return today.getTime() > utcScheduledDate.getTime();
-		});
+  useEffect(() => {
+    let upcoming = [];
+    let past = [];
 
-		let upcoming = setlists.filter((setlist) => {
-			let scheduledDate = new Date(setlist.scheduled_date);
-			let utcScheduledDate = new Date(
-				Date.UTC(
-					scheduledDate.getFullYear(),
-					scheduledDate.getMonth(),
-					scheduledDate.getDate(),
-					24,
-					0,
-					0
-				)
-			);
-			return today.getTime() <= utcScheduledDate.getTime();
-		});
+    setlists?.forEach((set) =>
+      isPast(set.scheduled_date) ? past.push(set) : upcoming.push(set)
+    );
 
-		setPastSetlists(past);
-		setUpcomingSetlists(upcoming);
-	}, [setlists]);
+    setUpcomingSetlists(
+      upcoming.sort((setA, setB) =>
+        sortDates(setA.scheduled_date, setB.scheduled_date)
+      )
+    );
+    setPastSetlists(
+      past.sort((setA, setB) =>
+        sortDates(setB.scheduled_date, setA.scheduled_date)
+      )
+    );
+  }, [setlists]);
 
-	const handleSetlistCreated = (newSetlist) => {
-		setSetlists([...setlists, newSetlist]);
-	};
+  const handleSetlistCreated = (newSetlist) => {
+    setSetlists([...setlists, newSetlist]);
+  };
 
-	let content = null;
+  let content = null;
 
-	if (setlists.length === 0) {
-		content = <NoDataMessage loading={loading} type="sets" />;
-	} else {
-		content = <SetlistsList upcomingSetlists={upcomingSetlists} pastSetlists={pastSetlists} />;
-	}
+  if (setlists.length === 0) {
+    content = <NoDataMessage loading={loading} type="sets" />;
+  } else {
+    content = (
+      <SetlistsList
+        upcomingSetlists={upcomingSetlists}
+        pastSetlists={pastSetlists}
+      />
+    );
+  }
 
-	return (
-		<>
-			<div className="sm:hidden mt-14 mb-10">
-				<MobileHeaderAndBottomButton
-					buttonText="Add a set"
-					onAdd={() => setShowCreateSetlistDialog(true)}
-					pageTitle="Sets"
-					canAdd={currentMember.can(ADD_SETLISTS)}
-				/>
-			</div>
-			<div className="hidden sm:block">
-				<PageTitle title="Sets" />
-			</div>
+  return (
+    <>
+      <div className="sm:hidden mt-14 mb-10">
+        <MobileHeaderAndBottomButton
+          buttonText="Add a set"
+          onAdd={() => setShowCreateSetlistDialog(true)}
+          pageTitle="Sets"
+          canAdd={currentMember.can(ADD_SETLISTS)}
+        />
+      </div>
+      <div className="hidden sm:block">
+        <PageTitle title="Sets" />
+      </div>
 
-			{content}
+      {content}
 
-			{currentMember.can(ADD_SETLISTS) && (
-				<>
-					<div className="hidden sm:block">
-						<QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
-					</div>
-					<CreateSetlistDialog
-						open={showCreateSetlistDialog}
-						onCloseDialog={() => setShowCreateSetlistDialog(false)}
-						onCreated={handleSetlistCreated}
-					/>
-				</>
-			)}
-		</>
-	);
+      {currentMember.can(ADD_SETLISTS) && (
+        <>
+          <div className="hidden sm:block">
+            <QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
+          </div>
+          <CreateSetlistDialog
+            open={showCreateSetlistDialog}
+            onCloseDialog={() => setShowCreateSetlistDialog(false)}
+            onCreated={handleSetlistCreated}
+          />
+        </>
+      )}
+    </>
+  );
 }
