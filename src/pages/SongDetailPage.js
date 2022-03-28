@@ -172,14 +172,13 @@ export default function SongDetailPage() {
       sortDates(setlistB.scheduled_date, setlistA.scheduled_date)
     );
 
-    let latestDate;
     if (sortedSetlists[0]) {
-      latestDate = dayjs(sortedSetlists[0].scheduled_date, "YYYY-MM-DD").format(
-        "MMM D, YYYY"
-      );
+      let latestDate = dayjs(
+        sortedSetlists[0].scheduled_date,
+        "YYYY-MM-DD"
+      ).format("MMM D, YYYY");
+      return { date: latestDate, ...sortedSetlists[0] };
     }
-
-    return latestDate;
   }
 
   return (
