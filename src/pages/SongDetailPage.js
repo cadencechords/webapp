@@ -115,6 +115,22 @@ export default function SongDetailPage() {
     setSong({ ...song, genres: song.genres.concat(newGenres) });
   };
 
+  const handleTrackDeleted = (trackIdToRemove) => {
+    setSong((currentSong) => {
+      let updatedTracks = currentSong.tracks?.filter(
+        (track) => track.id !== trackIdToRemove
+      );
+      return { ...currentSong, tracks: updatedTracks };
+    });
+  };
+
+  const handleTracksAdded = (addedTracks) => {
+    setSong((currentSong) => {
+      let updatedTracks = currentSong.tracks?.concat(addedTracks);
+      return { ...currentSong, tracks: updatedTracks };
+    });
+  };
+
   const handleRemoveTheme = async (themeIdToRemove) => {
     try {
       await SongApi.removeThemes(song.id, [themeIdToRemove]);
@@ -353,7 +369,11 @@ export default function SongDetailPage() {
           Save Changes
         </Button>
       )}
-      <SongTabs />
+      <SongTabs
+        song={song}
+        onTrackDeleted={handleTrackDeleted}
+        onTracksAdded={handleTracksAdded}
+      />
       <AddGenreDialog
         open={showAddGenreDialog}
         currentSong={song}
