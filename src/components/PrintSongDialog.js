@@ -1,75 +1,94 @@
 import StyledDialog from "./StyledDialog";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { toPdf } from "../utils/PdfUtils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
+import FontsListBox from "./FontsListBox";
+import FontSizesListBox from "./FontSizesListBox";
+import Checkbox from "./Checkbox";
 
-export default function PrintSongDialog({ song, open, onCloseDialog }) {
-	const [lyricsAndChordsClicked, setLyricsAndChordsClicked] = useState(false);
-	const [lyricsClicked, setLyricsClicked] = useState(false);
+export default function PrintSongDialog({
+  song: initialSong,
+  open,
+  onCloseDialog,
+}) {
+  const [song, setSong] = useState(initialSong);
+  const [showChords, setShowChords] = useState(true);
 
-	let printLyrics = null;
+  const handleCloseDialog = () => {
+    onCloseDialog();
+  };
 
-	if (lyricsClicked) {
-		printLyrics = (
-			<PDFDownloadLink document={toPdf(song, false)} fileName={`${song.name} Lyrics.pdf`}>
-				{({ blob, url, loading, error }) => (
-					<Button full loading={!blob}>
-						Download Now
-					</Button>
-				)}
-			</PDFDownloadLink>
-		);
-	} else {
-		printLyrics = (
-			<Button color="black" variant="open" full onClick={() => setLyricsClicked(true)}>
-				Print lyrics only
-			</Button>
-		);
-	}
+  useEffect(() => {
+    setSong(initialSong);
+  }, [initialSong]);
 
-	let printLyricsAndChords = null;
+  function handleChange(field, value) {
+    setSong({ ...song, format: { ...song.format, [field]: value } });
+  }
 
-	if (lyricsAndChordsClicked) {
-		printLyricsAndChords = (
-			<PDFDownloadLink document={toPdf(song, true)} fileName={`${song.name} Lyrics and Chords.pdf`}>
-				{({ blob, url, loading, error }) => (
-					<Button full loading={!blob}>
-						Download Now
-					</Button>
-				)}
-			</PDFDownloadLink>
-		);
-	} else {
-		printLyricsAndChords = (
-			<Button variant="open" color="black" full onClick={() => setLyricsAndChordsClicked(true)}>
-				Print lyrics and chords
-			</Button>
-		);
-	}
-
-	const handleCloseDialog = () => {
-		setLyricsAndChordsClicked(false);
-		setLyricsClicked(false);
-		onCloseDialog();
-	};
-
-	return (
-		<StyledDialog
-			open={open}
-			onCloseDialog={handleCloseDialog}
-			size="sm"
-			title="Printing"
-			fullscreen={false}
-		>
-			<div className="mb-2">{printLyrics}</div>
-			<div className="mb-4">{printLyricsAndChords}</div>
-
-			<div className="flex justify-end">
-				<Button variant="open" color="blue" onClick={handleCloseDialog}>
-					Cancel
-				</Button>
-			</div>
-		</StyledDialog>
-	);
+  return (
+    <StyledDialog
+      open={open}
+      onCloseDialog={handleCloseDialog}
+      size="5xl"
+      title="Printing"
+      fullscreen={true}
+    >
+      <div className="mb-4 grid grid-cols-8 gap-8">
+        <div className="col-span-8 md:col-span-2">
+          <div className="flex-between mb-2">
+            <span className="w-28">Font: </span>
+            <FontsListBox
+              selectedFont={song.format.font}
+              onChange={(newValue) => handleChange("font", newValue)}
+            />
+          </div>
+          <div className="flex-between mb-6">
+            <span className="w-28">Font size: </span>
+            <FontSizesListBox
+              selectedFontSize={song.format.font_size}
+              onChange={(newValue) => handleChange("font_size", newValue)}
+            />
+          </div>
+          <div className="flex-between pt-6 mb-4 border-t dark:border-dark-gray-600 ">
+            <span className="w-28">Show chords:</span>
+            <Checkbox checked={showChords} onChange={setShowChords} />
+          </div>
+          <div className="flex-between mb-4">
+            <span className="w-28">Bold chords:</span>
+            <Checkbox
+              checked={song.format.bold_chords}
+              onChange={(newValue) => handleChange("bold_chords", newValue)}
+            />
+          </div>
+          <div className="flex-between pb-4 border-b dark:border-dark-gray-600">
+            <span className="w-28">Italic chords:</span>
+            <Checkbox
+              checked={song.format.italic_chords}
+              onChange={(newValue) => handleChange("italic_chords", newValue)}
+            />
+          </div>
+          <PDFDownloadLink
+            document={toPdf(song, showChords)}
+            fileName={`${song.name}.pdf`}
+          >
+            <Button full className="mt-4">
+              Print
+            </Button>
+          </PDFDownloadLink>
+        </div>
+        <div className="col-span-8 md:col-span-6">
+          <PDFViewer style={{ height: 700, width: 700 }} showToolbar={false}>
+            {toPdf(song, showChords)}
+          </PDFViewer>
+        </div>
+      </div>
+      <div className="flex justify-end">
+        <Button variant="open" color="blue" onClick={handleCloseDialog}>
+          Cancel
+        </Button>
+      </div>
+    </StyledDialog>
+  );
 }
