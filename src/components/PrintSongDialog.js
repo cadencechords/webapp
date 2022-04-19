@@ -1,5 +1,5 @@
 import StyledDialog from "./StyledDialog";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { usePDF } from "@react-pdf/renderer";
 import { toPdf } from "../utils/PdfUtils";
 import { useEffect, useState } from "react";
 import Button from "./Button";
@@ -12,8 +12,15 @@ export default function PrintSongDialog({
   open,
   onCloseDialog,
 }) {
-  const [song, setSong] = useState(initialSong);
+  const [song, setSong] = useState({ ...initialSong });
   const [showChords, setShowChords] = useState(true);
+  const [instance, updateInstance] = usePDF({
+    document: toPdf(song, showChords),
+  });
+
+  useEffect(() => {
+    updateInstance(song, showChords);
+  }, [song, showChords, updateInstance]);
 
   const handleCloseDialog = () => {
     onCloseDialog();
@@ -33,7 +40,6 @@ export default function PrintSongDialog({
       onCloseDialog={handleCloseDialog}
       size="5xl"
       title="Printing"
-      fullscreen={true}
     >
       <div className="mb-4 grid grid-cols-8 gap-8">
         <div className="col-span-8 md:col-span-2">
@@ -69,19 +75,18 @@ export default function PrintSongDialog({
               onChange={(newValue) => handleChange("italic_chords", newValue)}
             />
           </div>
-          <PDFDownloadLink
-            document={toPdf(song, showChords)}
-            fileName={`${song.name}.pdf`}
-          >
+          <a href={instance.url} download={`${song.name}.pdf`}>
             <Button full className="mt-4">
-              Print
+              Download
             </Button>
-          </PDFDownloadLink>
+          </a>
         </div>
         <div className="col-span-8 md:col-span-6">
-          <PDFViewer style={{ height: 700, width: 700 }} showToolbar={false}>
-            {toPdf(song, showChords)}
-          </PDFViewer>
+          <embed
+            src={`${instance.url}#scrollbar=0`}
+            width="700px"
+            height="600px"
+          />
         </div>
       </div>
       <div className="flex justify-end">

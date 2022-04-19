@@ -45,7 +45,7 @@ export default function SongDetailPage() {
   const dispatch = useDispatch();
   const currentMember = useSelector(selectCurrentMember);
 
-  useEffect(() => (document.title = song ? song.name : "Songs"));
+  useEffect(() => (document.title = song ? song.name : "Songs"), [song]);
 
   const router = useHistory();
   const { id } = useParams();
