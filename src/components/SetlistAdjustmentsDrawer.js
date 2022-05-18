@@ -18,6 +18,9 @@ export default function SetlistAdjustmentsDrawer({
   open,
   onClose,
   onShowBottomSheet,
+  onStartSession,
+  onEndSession,
+  activeSession,
 }) {
   const currentMember = useSelector(selectCurrentMember);
   const currentSubscription = useSelector(selectCurrentSubscription);
@@ -34,6 +37,16 @@ export default function SetlistAdjustmentsDrawer({
   function handleFormatUpdate(field, value) {
     let updatedFormat = { ...song.format, [field]: value };
     onSongUpdate("format", updatedFormat);
+  }
+
+  function handleToggleSessionAndCloseDrawer() {
+    onClose();
+
+    if (activeSession && activeSession.is_creator) {
+      onEndSession();
+    } else {
+      onStartSession();
+    }
   }
 
   return (
@@ -97,9 +110,13 @@ export default function SetlistAdjustmentsDrawer({
         </MobileMenuButton>
 
         {currentSubscription.isPro && currentMember.can(START_SESSIONS) && (
-          <MobileMenuButton full className="flex items-center">
+          <MobileMenuButton
+            full
+            className="flex items-center"
+            onClick={handleToggleSessionAndCloseDrawer}
+          >
             <SessionIcon className={iconClasses} />
-            Start session
+            {activeSession?.is_creator ? "End session" : "Start session"}
           </MobileMenuButton>
         )}
       </div>

@@ -30,6 +30,7 @@
     "react-scripts": "4.0.3",
     "react-spinners": "^0.10.6",
     "react-textfit": "^1.1.1",
+    "react-toastify": "^9.0.1",
     "web-vitals": "^1.0.1",
     "workbox-background-sync": "^5.1.3",
     "workbox-broadcast-update": "^5.1.3",
