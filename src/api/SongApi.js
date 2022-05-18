@@ -1,105 +1,157 @@
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
 
 import axios from "axios";
-import { combineParamValues } from "../utils/ObjectUtils";
+import GenreApi from "./GenreApi";
+import ThemeApi from "./ThemeApi";
 
 const SONGS_URL = process.env.REACT_APP_API_URL + "/songs";
 
 export default class SongApi {
-	static search(name) {
-		return axios.get(`${SONGS_URL}?team_id=${getTeamId()}&name=${name}`, {
-			headers: constructAuthHeaders(),
-		});
-	}
+  static search(name) {
+    return axios.get(`${SONGS_URL}?team_id=${getTeamId()}&name=${name}`, {
+      headers: constructAuthHeaders(),
+    });
+  }
 
-	static getAll() {
-		return axios.get(SONGS_URL + `?team_id=${getTeamId()}`, {
-			headers: constructAuthHeaders(),
-		});
-	}
+  static getAll() {
+    let songs = localStorage.getItem("songs");
 
-	static createOne(newSong) {
-		let songParams = {
-			name: newSong.name,
-			team_id: getTeamId(),
-		};
+    if (!songs) {
+      localStorage.setItem("songs", "[]");
+      songs = [];
+    } else {
+      songs = JSON.parse(songs);
+    }
 
-		return axios.post(SONGS_URL, songParams, { headers: constructAuthHeaders() });
-	}
+    return songs;
+  }
 
-	static getOneById(songId) {
-		return axios.get(SONGS_URL + `/${songId}?team_id=${getTeamId()}`, {
-			headers: constructAuthHeaders(),
-		});
-	}
+  static createOne(newSong) {
+    let songs = this.getAll();
+    let nextId = this.calculateNextId(songs.map((s) => s.id));
 
-	static updateOneById(songId, updates) {
-		let allowedParams = {};
+    let song = {
+      ...newSong,
+      id: nextId,
+      content: "",
+      format: {
+        font: "Roboto Mono",
+        font_size: 18,
+        bold_chords: false,
+        italic_chords: false,
+      },
+      themes: [],
+      genres: [],
+      tracks: [],
+      binders: [],
+      original_key: null,
+      transposed_key: null,
+      bpm: null,
+      meter: null,
+      setlists: [],
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
 
-		if (updates.name) allowedParams.name = updates.name;
-		if (updates.bpm) allowedParams.bpm = updates.bpm;
-		if (updates.artist) allowedParams.artist = updates.artist;
-		if (updates.meter) allowedParams.meter = updates.meter;
-		if (updates.original_key) allowedParams.original_key = updates.original_key;
-		if (updates.transposed_key) allowedParams.transposed_key = updates.transposed_key;
-		if (updates.content) allowedParams.content = updates.content;
-		if (updates.scroll_speed) allowedParams.scroll_speed = updates.scroll_speed;
-		if (updates.roadmap) allowedParams.roadmap = updates.roadmap.join("@");
+    songs.push(song);
+    localStorage.setItem("songs", JSON.stringify(songs));
 
-		return axios.put(SONGS_URL + `/${songId}?team_id=${getTeamId()}`, allowedParams, {
-			headers: constructAuthHeaders(),
-		});
-	}
+    return { data: song };
+  }
 
-	static addThemes(songId, themeIds) {
-		if (themeIds.length > 0) {
-			return axios.post(
-				SONGS_URL + `/${songId}/themes`,
-				{ theme_ids: themeIds, team_id: getTeamId() },
-				{ headers: constructAuthHeaders() }
-			);
-		}
-	}
+  static calculateNextId(ids) {
+    let max = Math.max(...ids);
+    return isFinite(max) ? max + 1 : 1;
+  }
 
-	static removeThemes(songId, themeIds) {
-		if (themeIds?.length > 0) {
-			return axios.delete(
-				SONGS_URL +
-					`/${songId}/themes?${combineParamValues(
-						"theme_ids[]=",
-						themeIds
-					)}&team_id=${getTeamId()}`,
-				{ headers: constructAuthHeaders() }
-			);
-		}
-	}
+  static getOneById(songId) {
+    let parsedId = parseInt(songId);
+    let songs = this.getAll();
 
-	static addGenres(songId, genreIds) {
-		if (genreIds.length > 0) {
-			return axios.post(
-				SONGS_URL + `/${songId}/genres`,
-				{ genre_ids: genreIds, team_id: getTeamId() },
-				{ headers: constructAuthHeaders() }
-			);
-		}
-	}
+    let song = songs.find((s) => s.id === parsedId);
+    return { data: song };
+  }
 
-	static removeGenres(songId, genreIds) {
-		if (genreIds?.length > 0) {
-			return axios.delete(
-				SONGS_URL +
-					`/${songId}/genres?${combineParamValues(
-						"genre_ids[]=",
-						genreIds
-					)}&team_id=${getTeamId()}`,
-				{ headers: constructAuthHeaders() }
-			);
-		}
-	}
+  static updateOneById(songId, updates) {
+    let allowedParams = {};
 
-	static deleteOneById(id) {
-		return axios.delete(`${SONGS_URL}/${id}?team_id=${getTeamId()}`, {
-			headers: constructAuthHeaders(),
-		});
-	}
+    if (updates.name) allowedParams.name = updates.name;
+    if (updates.bpm) allowedParams.bpm = updates.bpm;
+    if (updates.artist) allowedParams.artist = updates.artist;
+    if (updates.meter) allowedParams.meter = updates.meter;
+    if (updates.original_key) allowedParams.original_key = updates.original_key;
+    if (updates.transposed_key)
+      allowedParams.transposed_key = updates.transposed_key;
+    if (updates.content) allowedParams.content = updates.content;
+    if (updates.scroll_speed) allowedParams.scroll_speed = updates.scroll_speed;
+    if (updates.roadmap) allowedParams.roadmap = updates.roadmap;
+
+    let { data: song } = this.getOneById(songId);
+    let updatedSong = { ...song, ...allowedParams, updated_at: new Date() };
+    this.setSongInStorage(updatedSong);
+
+    return { data: updatedSong };
+  }
+
+  static setSongInStorage(song) {
+    let songs = this.getAll();
+    songs = songs.map((s) => (s.id === song.id ? song : s));
+    this.setAllSongsInStorage(songs);
+  }
+
+  static setAllSongsInStorage(songs) {
+    let stringified = JSON.stringify(songs);
+    localStorage.setItem("songs", stringified);
+  }
+
+  static addThemes(songId, themeIds) {
+    let { data: allThemes } = ThemeApi.getAll();
+    let { data: song } = this.getOneById(songId);
+
+    let themesToAdd = allThemes.filter((t) => themeIds.includes(t.id));
+    song.themes = song.themes.concat(themesToAdd);
+    this.setSongInStorage(song);
+
+    return { data: themesToAdd };
+  }
+
+  static removeThemes(songId, themeId) {
+    let { data: song } = this.getOneById(songId);
+    let updatedThemes = song.themes.filter(
+      (themeInList) => themeInList.id !== themeId
+    );
+
+    song.themes = updatedThemes;
+
+    this.setSongInStorage(song);
+  }
+
+  static addGenres(songId, genreIds = []) {
+    let { data: allGenres } = GenreApi.getAll();
+    let { data: song } = this.getOneById(songId);
+
+    let genresToAdd = allGenres.filter((g) => genreIds.includes(g.id));
+    song.genres = song.genres.concat(genresToAdd);
+    this.setSongInStorage(song);
+
+    return { data: genresToAdd };
+  }
+
+  static removeGenres(songId, genreId) {
+    let { data: song } = this.getOneById(songId);
+    let updatedGenres = song.genres.filter(
+      (genreInList) => genreInList.id !== genreId
+    );
+
+    song.genres = updatedGenres;
+
+    this.setSongInStorage(song);
+  }
+
+  static deleteOneById(id) {
+    let songs = this.getAll();
+    songs = songs.filter((s) => s.id !== id);
+
+    this.setAllSongsInStorage(songs);
+  }
 }

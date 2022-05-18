@@ -67,33 +67,21 @@ export default function EditorWorkbenchPage() {
     }));
   };
 
-  const handleSaveChanges = async () => {
-    try {
-      if (changes.content) {
-        setSavingUpdates(true);
-        await SongApi.updateOneById(songBeingEdited.id, {
-          content: changes.content,
-        });
-        dispatch(updateSongContent(changes.content));
-      }
-
-      if (!isEmpty(changes.format)) {
-        setSavingUpdates(true);
-        if (format.id) {
-          await FormatApi.updateOneById(format.id, changes.format);
-        } else {
-          let newFormat = { ...changes.format };
-          newFormat.song_id = songBeingEdited.id;
-          await FormatApi.createOne(newFormat);
-        }
-      }
-    } catch (error) {
-      reportError(error);
-    } finally {
-      setSavingUpdates(false);
-      setDirty(false);
-      setChanges({ content: null, format: {} });
+  const handleSaveChanges = () => {
+    if (changes.content) {
+      SongApi.updateOneById(songBeingEdited.id, {
+        content: changes.content,
+      });
+      dispatch(updateSongContent(changes.content));
     }
+
+    if (changes.format) {
+      FormatApi.updateOneById(songBeingEdited.id, changes.format);
+    }
+
+    setSavingUpdates(false);
+    setDirty(false);
+    setChanges({ content: null, format: {} });
   };
 
   const handleContentChange = (newContent) => {

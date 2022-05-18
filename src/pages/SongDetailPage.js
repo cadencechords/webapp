@@ -51,17 +51,8 @@ export default function SongDetailPage() {
   const { id } = useParams();
 
   useEffect(() => {
-    async function fetchSong() {
-      try {
-        let { data } = await SongApi.getOneById(id);
-
-        setSong({ ...data, show_transposed: Boolean(data.transposed_key) });
-      } catch (error) {
-        reportError(error);
-      }
-    }
-
-    fetchSong();
+    let { data } = SongApi.getOneById(id);
+    setSong({ ...data, show_transposed: Boolean(data.transposed_key) });
   }, [id]);
 
   if (!song) {
@@ -89,17 +80,10 @@ export default function SongDetailPage() {
     setSong(updatedSong);
   };
 
-  const handleSaveChanges = async () => {
-    setSaving(true);
-    try {
-      let result = await SongApi.updateOneById(id, pendingUpdates);
-      setSong((currentSong) => ({ ...currentSong, ...result.data }));
-      setPendingUpdates({});
-    } catch (error) {
-      reportError(error);
-    } finally {
-      setSaving(false);
-    }
+  const handleSaveChanges = () => {
+    let { data } = SongApi.updateOneById(id, pendingUpdates);
+    setSong((currentSong) => ({ ...currentSong, ...data }));
+    setPendingUpdates({});
   };
 
   const handlePresentSong = () => {
@@ -132,27 +116,19 @@ export default function SongDetailPage() {
   };
 
   const handleRemoveTheme = async (themeIdToRemove) => {
-    try {
-      await SongApi.removeThemes(song.id, [themeIdToRemove]);
-      let newThemesList = song.themes.filter(
-        (themeInList) => themeInList.id !== themeIdToRemove
-      );
-      setSong({ ...song, themes: newThemesList });
-    } catch (error) {
-      reportError(error);
-    }
+    SongApi.removeThemes(song.id, themeIdToRemove);
+    let newThemesList = song.themes.filter(
+      (themeInList) => themeInList.id !== themeIdToRemove
+    );
+    setSong({ ...song, themes: newThemesList });
   };
 
   const handleRemoveGenre = async (genreIdToRemove) => {
-    try {
-      await SongApi.removeGenres(song.id, [genreIdToRemove]);
-      let newGenresList = song.genres.filter(
-        (genreInList) => genreInList.id !== genreIdToRemove
-      );
-      setSong({ ...song, genres: newGenresList });
-    } catch (error) {
-      reportError(error);
-    }
+    SongApi.removeGenres(song.id, genreIdToRemove);
+    let newGenresList = song.genres.filter(
+      (genreInList) => genreInList.id !== genreIdToRemove
+    );
+    setSong({ ...song, genres: newGenresList });
   };
 
   const bindersTags = song?.binders?.map((binder) => ({
