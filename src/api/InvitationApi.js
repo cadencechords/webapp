@@ -1,64 +1,57 @@
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-import axios from "axios";
-
-const INVITATIONS_URL = process.env.REACT_APP_API_URL + "/invitations";
-
 export default class InvitationApi {
-	static createOne(newInvite) {
-		if (newInvite) {
-			let allowedParams = {};
+  static createOne({ email }) {
+    let { data: allInvitations } = this.getAll();
+    let nextId = this.calculateNextId(allInvitations.map((i) => i.id));
 
-			if (newInvite.email) allowedParams.email = newInvite.email;
+    let invitation = {
+      id: nextId,
+      email,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
 
-			allowedParams.team_id = getTeamId();
+    allInvitations.push(invitation);
+    this.setAllInvitesInStorage(allInvitations);
 
-			return axios.post(INVITATIONS_URL, allowedParams, {
-				headers: constructAuthHeaders(),
-			});
-		}
-	}
+    return { data: invitation };
+  }
 
-	static getAll() {
-		return axios.get(`${INVITATIONS_URL}?team_id=${getTeamId()}`, {
-			headers: constructAuthHeaders(),
-		});
-	}
+  static calculateNextId(ids) {
+    let max = Math.max(...ids);
+    return isFinite(max) ? max + 1 : 1;
+  }
 
-	static resendOne(invitationId) {
-		return axios.post(
-			`${INVITATIONS_URL}/${invitationId}/resend`,
-			{
-				team_id: getTeamId(),
-			},
-			{
-				headers: constructAuthHeaders(),
-			}
-		);
-	}
+  static setAllInvitesInStorage(invitations) {
+    let stringified = JSON.stringify(invitations);
+    localStorage.setItem("invitations", stringified);
+  }
 
-	static deleteOne(invitationId) {
-		return axios.delete(`${INVITATIONS_URL}/${invitationId}?team_id=${getTeamId()}`, {
-			headers: constructAuthHeaders(),
-		});
-	}
+  static setInviteInStorage(invitation) {
+    let { data: invitations } = this.getAll();
+    invitations = invitations.map((i) =>
+      i.id === invitation.id ? invitation : i
+    );
+    this.setAllInvitesInStorage(invitations);
+  }
 
-	static claimOne(token) {
-		return axios.post(
-			`${INVITATIONS_URL}/claim`,
-			{
-				token,
-			},
-			{
-				headers: constructAuthHeaders(),
-			}
-		);
-	}
+  static getAll() {
+    let invitations = localStorage.getItem("invitations");
 
-	static signUpThroughToken(token, password, passwordConfirmation) {
-		return axios.post(`${INVITATIONS_URL}/signup`, {
-			token,
-			password,
-			password_confirmation: passwordConfirmation,
-		});
-	}
+    if (!invitations) {
+      localStorage.setItem("invitations", "[]");
+      invitations = [];
+    } else {
+      invitations = JSON.parse(invitations);
+    }
+
+    return { data: invitations };
+  }
+
+  static deleteOne(invitationId) {
+    let parsedId = parseInt(invitationId);
+    let { data: invitations } = this.getAll();
+    invitations = invitations.filter((i) => i.id !== parsedId);
+
+    this.setAllInvitesInStorage(invitations);
+  }
 }

@@ -1,4 +1,8 @@
-import { selectCurrentMember, selectCurrentTeam, selectCurrentUser } from "../store/authSlice";
+import {
+  selectCurrentMember,
+  selectCurrentTeam,
+  selectCurrentUser,
+} from "../store/authSlice";
 import { useEffect, useState } from "react";
 
 import { ADD_MEMBERS } from "../utils/constants";
@@ -10,124 +14,107 @@ import PageTitle from "../components/PageTitle";
 import PendingInvitationsList from "../components/PendingInvitationsList";
 import SectionTitle from "../components/SectionTitle";
 import SendInvitesDialog from "../components/SendInvitesDialog";
-import TeamApi from "../api/TeamApi";
-import { reportError } from "../utils/error";
 import { useSelector } from "react-redux";
 
 export default function MembersIndexPage() {
-	useEffect(() => (document.title = "Members"), []);
-	const [showInvitationDialog, setShowInvitationDialog] = useState(false);
-	const [loadingInvitations, setLoadingInvitations] = useState(false);
-	const [members, setMembers] = useState([]);
-	const [invitations, setInvitations] = useState([]);
-	const currentUser = useSelector(selectCurrentUser);
-	const currentTeam = useSelector(selectCurrentTeam);
-	const [memberBeingViewed, setMemberBeingViewed] = useState(null);
-	const currentMember = useSelector(selectCurrentMember);
+  useEffect(() => (document.title = "Members"), []);
+  const [showInvitationDialog, setShowInvitationDialog] = useState(false);
+  const [members, setMembers] = useState([]);
+  const [invitations, setInvitations] = useState([]);
+  const currentUser = useSelector(selectCurrentUser);
+  const currentTeam = useSelector(selectCurrentTeam);
+  const [memberBeingViewed, setMemberBeingViewed] = useState(null);
+  const currentMember = useSelector(selectCurrentMember);
 
-	useEffect(() => {
-		async function fetchInvitations() {
-			try {
-				setLoadingInvitations(true);
-				let { data } = await InvitationApi.getAll();
-				setInvitations(data);
-			} catch (error) {
-				reportError(error);
-			} finally {
-				setLoadingInvitations(false);
-			}
-		}
+  useEffect(() => {
+    let { data } = InvitationApi.getAll();
+    setInvitations(data);
+  }, []);
 
-		fetchInvitations();
-	}, []);
+  useEffect(() => {
+    setMembers(currentTeam.members);
+  }, [currentTeam]);
 
-	useEffect(() => {
-		async function fetchTeamDetails() {
-			try {
-				let { data } = await TeamApi.getCurrentTeam();
-				setMembers(data.members);
-			} catch (error) {
-				reportError(error);
-			}
-		}
+  const handleInviteSent = (newInvite) => {
+    setInvitations([...invitations, newInvite]);
+  };
 
-		fetchTeamDetails();
-	}, []);
+  const handleInvitationDeleted = (deletedInvitationId) => {
+    let updatedInvitesList = invitations.filter(
+      (invitation) => invitation.id !== deletedInvitationId
+    );
 
-	const handleInviteSent = (newInvite) => {
-		setInvitations([...invitations, newInvite]);
-	};
+    setInvitations(updatedInvitesList);
+  };
 
-	const handleInvitationDeleted = (deletedInvitationId) => {
-		let updatedInvitesList = invitations.filter(
-			(invitation) => invitation.id !== deletedInvitationId
-		);
+  const handleMemberRemoved = (memberIdToRemove) => {
+    let filteredMembers = members.filter(
+      (member) => member.id !== memberIdToRemove
+    );
+    setMembers(filteredMembers);
+  };
 
-		setInvitations(updatedInvitesList);
-	};
+  const handlePositionChanged = (userId, newPosition) => {
+    let me = members.find((m) => m.id === userId);
+    setMembers((currentMembers) => {
+      return currentMembers.map((m) =>
+        m.id === me.id ? { ...me, position: newPosition } : m
+      );
+    });
+  };
 
-	const handleMemberRemoved = (memberIdToRemove) => {
-		let filteredMembers = members.filter((member) => member.id !== memberIdToRemove);
-		setMembers(filteredMembers);
-	};
+  if (currentUser) {
+    const memberCards = members.map((member) => (
+      <MemberCard
+        key={member.id}
+        member={member}
+        isCurrentUser={currentUser.id === member.id}
+        onPositionChanged={(newPosition) =>
+          handlePositionChanged(member.id, newPosition)
+        }
+        onShowMemberMenu={() => setMemberBeingViewed(member)}
+      />
+    ));
+    return (
+      <>
+        <div className="mb-10">
+          <PageTitle title={currentTeam?.name} />
 
-	const handlePositionChanged = (userId, newPosition) => {
-		let membersCopy = members.slice();
-		let memberToUpdateIndex = members.findIndex((member) => member.id === userId);
-		let updatedMember = membersCopy[memberToUpdateIndex];
-		updatedMember.position = newPosition;
-		membersCopy.splice(memberToUpdateIndex, 1, updatedMember);
-		setMembers(membersCopy);
-	};
+          <div className="flex-between">
+            <SectionTitle title="Current members" />
+            {currentMember.can(ADD_MEMBERS) && (
+              <Button onClick={() => setShowInvitationDialog(true)}>
+                Send an invite
+              </Button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 my-5">
+            {memberCards}
+          </div>
 
-	if (currentUser) {
-		const memberCards = members.map((member) => (
-			<MemberCard
-				key={member.id}
-				member={member}
-				isCurrentUser={currentUser.id === member.id}
-				onPositionChanged={(newPosition) => handlePositionChanged(member.id, newPosition)}
-				onShowMemberMenu={() => setMemberBeingViewed(member)}
-			/>
-		));
-		return (
-			<>
-				<div className="mb-10">
-					<PageTitle title={currentTeam?.name} />
+          <PendingInvitationsList
+            invitations={invitations}
+            onInvitationDeleted={handleInvitationDeleted}
+          />
+        </div>
 
-					<div className="flex-between">
-						<SectionTitle title="Current members" />
-						{currentMember.can(ADD_MEMBERS) && (
-							<Button onClick={() => setShowInvitationDialog(true)}>Send an invite</Button>
-						)}
-					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 my-5">
-						{memberCards}
-					</div>
+        <SendInvitesDialog
+          open={showInvitationDialog}
+          onCloseDialog={() => setShowInvitationDialog(false)}
+          currentMembers={members}
+          onInviteSent={handleInviteSent}
+        />
 
-					<PendingInvitationsList
-						invitations={invitations}
-						loading={loadingInvitations}
-						onInvitationDeleted={handleInvitationDeleted}
-					/>
-				</div>
-
-				<SendInvitesDialog
-					open={showInvitationDialog}
-					onCloseDialog={() => setShowInvitationDialog(false)}
-					currentMembers={members}
-					onInviteSent={handleInviteSent}
-				/>
-
-				<MemberMenu
-					open={Boolean(memberBeingViewed)}
-					onCloseDialog={() => setMemberBeingViewed(null)}
-					member={memberBeingViewed}
-					onRemoved={handleMemberRemoved}
-				/>
-			</>
-		);
-	} else {
-		return "Loading ...";
-	}
+        <MemberMenu
+          isCurrentUser={currentUser.id === memberBeingViewed?.id}
+          open={Boolean(memberBeingViewed)}
+          onCloseDialog={() => setMemberBeingViewed(null)}
+          member={memberBeingViewed}
+          onRemoved={handleMemberRemoved}
+        />
+      </>
+    );
+  } else {
+    return "Loading ...";
+  }
 }
