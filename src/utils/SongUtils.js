@@ -147,7 +147,6 @@ export function html(song, onLineDoubleClick) {
     }
 
     let linesOfSong = content.split(/\r\n|\r|\n/);
-
     let htmlLines = linesOfSong.map((line, index) => {
       if (isNewLine(line))
         return (
