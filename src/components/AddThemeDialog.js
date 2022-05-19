@@ -10,7 +10,6 @@ import SongApi from "../api/SongApi";
 import StyledDialog from "./StyledDialog";
 import ThemeApi from "../api/ThemeApi";
 import ThemeOptions from "./ThemeOptions";
-import { reportError } from "../utils/error";
 
 export default function AddThemeDialog({
   open,

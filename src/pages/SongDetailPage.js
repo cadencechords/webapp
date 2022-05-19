@@ -24,10 +24,8 @@ import SongApi from "../api/SongApi";
 import SongKeyField from "../components/SongKeyField";
 import SongOptionsPopover from "../components/SongOptionsPopover";
 import SongPreview from "../components/SongPreview";
-import SongTabs from "../components/SongTabs";
 import TransposedKeyField from "../components/TransposedKeyField";
 import { isEmpty } from "../utils/ObjectUtils";
-import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { setSongBeingEdited } from "../store/editorSlice";
 import { setSongBeingPresented } from "../store/presenterSlice";
@@ -39,7 +37,6 @@ export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
   const [song, setSong] = useState();
   const [pendingUpdates, setPendingUpdates] = useState({});
-  const [saving, setSaving] = useState(false);
   const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
   const [showAddGenreDialog, setShowGenreDialog] = useState(false);
   const dispatch = useDispatch();
@@ -97,22 +94,6 @@ export default function SongDetailPage() {
 
   const handleGenresAdded = (newGenres) => {
     setSong({ ...song, genres: song.genres.concat(newGenres) });
-  };
-
-  const handleTrackDeleted = (trackIdToRemove) => {
-    setSong((currentSong) => {
-      let updatedTracks = currentSong.tracks?.filter(
-        (track) => track.id !== trackIdToRemove
-      );
-      return { ...currentSong, tracks: updatedTracks };
-    });
-  };
-
-  const handleTracksAdded = (addedTracks) => {
-    setSong((currentSong) => {
-      let updatedTracks = currentSong.tracks?.concat(addedTracks);
-      return { ...currentSong, tracks: updatedTracks };
-    });
   };
 
   const handleRemoveTheme = async (themeIdToRemove) => {
@@ -339,17 +320,11 @@ export default function SongDetailPage() {
         <Button
           bold
           onClick={handleSaveChanges}
-          loading={saving}
           className="fixed bottom-16 right-4 md:right-6 md:bottom-6"
         >
           Save Changes
         </Button>
       )}
-      <SongTabs
-        song={song}
-        onTrackDeleted={handleTrackDeleted}
-        onTracksAdded={handleTracksAdded}
-      />
       <AddGenreDialog
         open={showAddGenreDialog}
         currentSong={song}

@@ -11,92 +11,75 @@ import NoDataMessage from "../components/NoDataMessage";
 import PageTitle from "../components/PageTitle";
 import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
 import QuickAdd from "../components/QuickAdd";
-import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
-import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
 
 export default function BindersIndexPage() {
-	useEffect(() => (document.title = "Binders"));
-	const [showCreateDialog, setShowCreateDialog] = useState(false);
-	const [binders, setBinders] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const router = useHistory();
-	const currentMember = useSelector(selectCurrentMember);
+  useEffect(() => (document.title = "Binders"));
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [binders, setBinders] = useState([]);
 
-	useEffect(() => {
-		async function fetchBinders() {
-			setLoading(true);
-			try {
-				let result = await BinderApi.getAll();
-				setBinders(result.data);
-			} catch (error) {
-				if (error?.response?.status === 401) {
-					router.push("/login");
-				}
-				reportError(error);
-			} finally {
-				setLoading(false);
-			}
-		}
+  const currentMember = useSelector(selectCurrentMember);
 
-		fetchBinders();
-	}, [router]);
+  useEffect(() => {
+    let result = BinderApi.getAll();
+    setBinders(result.data);
+  }, []);
 
-	let content = null;
-	if (binders.length === 0) {
-		content = <NoDataMessage type="binders" loading={loading} />;
-	} else {
-		content = (
-			<FadeIn className="mb-10">
-				<BindersList binders={binders} />
-			</FadeIn>
-		);
-	}
+  let content = null;
+  if (binders.length === 0) {
+    content = <NoDataMessage type="binders" />;
+  } else {
+    content = (
+      <FadeIn className="mb-10">
+        <BindersList binders={binders} />
+      </FadeIn>
+    );
+  }
 
-	const handleBinderCreated = (newBinder) => {
-		setBinders([...binders, newBinder]);
-	};
+  const handleBinderCreated = (newBinder) => {
+    setBinders([...binders, newBinder]);
+  };
 
-	return (
-		<>
-			<div className="hidden sm:block">
-				<PageTitle title="Binders" />
-			</div>
-			<div className="h-14 mb-4 sm:hidden">
-				<MobileHeader
-					title="Binders"
-					className="shadow-inner"
-					onAdd={() => setShowCreateDialog(true)}
-					canAdd={currentMember.can(ADD_BINDERS)}
-				/>
-			</div>
+  return (
+    <>
+      <div className="hidden sm:block">
+        <PageTitle title="Binders" />
+      </div>
+      <div className="h-14 mb-4 sm:hidden">
+        <MobileHeader
+          title="Binders"
+          className="shadow-inner"
+          onAdd={() => setShowCreateDialog(true)}
+          canAdd={currentMember.can(ADD_BINDERS)}
+        />
+      </div>
 
-			{content}
+      {content}
 
-			{currentMember.can(ADD_BINDERS) && (
-				<>
-					<CreateBinderDialog
-						open={showCreateDialog}
-						onCloseDialog={() => setShowCreateDialog(false)}
-						onCreated={handleBinderCreated}
-					/>
-					<Button
-						variant="open"
-						className="bg-white dark:bg-dark-gray-700 fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
-						full
-						style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
-						onClick={() => setShowCreateDialog(true)}
-						color="blue"
-					>
-						<PlusCircleIcon className="h-4 w-4 mr-2" />
-						Add new binder
-					</Button>
-					<div className="hidden sm:block">
-						<QuickAdd onAdd={() => setShowCreateDialog(true)} />
-					</div>
-				</>
-			)}
-		</>
-	);
+      {currentMember.can(ADD_BINDERS) && (
+        <>
+          <CreateBinderDialog
+            open={showCreateDialog}
+            onCloseDialog={() => setShowCreateDialog(false)}
+            onCreated={handleBinderCreated}
+          />
+          <Button
+            variant="open"
+            className="bg-white dark:bg-dark-gray-700 fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
+            full
+            style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
+            onClick={() => setShowCreateDialog(true)}
+            color="blue"
+          >
+            <PlusCircleIcon className="h-4 w-4 mr-2" />
+            Add new binder
+          </Button>
+          <div className="hidden sm:block">
+            <QuickAdd onAdd={() => setShowCreateDialog(true)} />
+          </div>
+        </>
+      )}
+    </>
+  );
 }

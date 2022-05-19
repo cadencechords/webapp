@@ -1,8 +1,4 @@
-import {
-  selectSongBeingEdited,
-  updateSongBeingEdited,
-  updateSongContent,
-} from "../store/editorSlice";
+import { selectSongBeingEdited, updateSongContent } from "../store/editorSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
@@ -14,15 +10,11 @@ import EditorMobileTopNav from "../components/EditorMobileTopNav";
 import EditorOptionsBar from "../components/EditorOptionsBar";
 import EyeIcon from "@heroicons/react/outline/EyeIcon";
 import FormatApi from "../api/FormatApi";
-import NotesApi from "../api/notesApi";
-import NotesList from "../components/NotesList";
 import PageTitle from "../components/PageTitle";
 import PencilIcon from "@heroicons/react/outline/PencilIcon";
 import SongApi from "../api/SongApi";
 import { html } from "../utils/SongUtils";
 import { isEmpty } from "../utils/ObjectUtils";
-import { reportError } from "../utils/error";
-import { selectCurrentSubscription } from "../store/subscriptionSlice";
 import { setSetlistBeingPresented } from "../store/presenterSlice";
 import { useHistory } from "react-router";
 
@@ -39,7 +31,6 @@ export default function EditorWorkbenchPage() {
   const router = useHistory();
 
   const dispatch = useDispatch();
-  const currentSubscription = useSelector(selectCurrentSubscription);
 
   if (!songBeingEdited || isEmpty(songBeingEdited)) {
     router.push("/");
@@ -92,40 +83,6 @@ export default function EditorWorkbenchPage() {
     setDirty(true);
   };
 
-  function handleUpdateNote(noteId, updates) {
-    let updatedNotes = songBeingEdited.notes?.map((note) => {
-      if (noteId === note.id) {
-        return { ...note, ...updates };
-      } else {
-        return note;
-      }
-    });
-
-    dispatch(updateSongBeingEdited({ notes: updatedNotes }));
-  }
-
-  function handleDeleteNote(noteId) {
-    let updatedNotes = songBeingEdited.notes?.filter(
-      (note) => note.id !== noteId
-    );
-    dispatch(updateSongBeingEdited({ notes: updatedNotes }));
-  }
-
-  async function handleAddNote() {
-    try {
-      let { data } = await NotesApi.create(songBeingEdited.id, {
-        x: 20,
-        y: document.documentElement.scrollTop,
-      });
-      setShowEditor(false);
-      dispatch(
-        updateSongBeingEdited({ notes: [...songBeingEdited.notes, data] })
-      );
-    } catch (error) {
-      reportError(error);
-    }
-  }
-
   return (
     <>
       <div className="sm:hidden">
@@ -139,7 +96,6 @@ export default function EditorWorkbenchPage() {
           open={showEditorDrawer}
           onClose={() => setShowEditorDrawer(false)}
           onFormatChange={handleFormatChange}
-          onAddNote={handleAddNote}
         />
         <div className="fixed w-full bottom-0 p-3 z-20">
           <Button
@@ -176,7 +132,6 @@ export default function EditorWorkbenchPage() {
           <EditorOptionsBar
             formatOptions={format}
             onFormatChange={handleFormatChange}
-            onAddNote={handleAddNote}
           />
         </div>
       </div>
@@ -194,14 +149,6 @@ export default function EditorWorkbenchPage() {
           <PageTitle title="Preview" className="mb-4" />
 
           <div className="relative">
-            {currentSubscription.isPro && (
-              <NotesList
-                song={songBeingEdited}
-                onDelete={handleDeleteNote}
-                rearrangeable
-                onUpdate={handleUpdateNote}
-              />
-            )}
             {html({
               content: changes.content || songBeingEdited.content,
               format: format,
@@ -222,14 +169,6 @@ export default function EditorWorkbenchPage() {
           <div>
             <PageTitle title="Preview" className="my-4" />
             <div className="relative">
-              {currentSubscription.isPro && (
-                <NotesList
-                  song={songBeingEdited}
-                  onDelete={handleDeleteNote}
-                  rearrangeable
-                  onUpdate={handleUpdateNote}
-                />
-              )}
               {html({
                 content: changes.content || songBeingEdited.content,
                 format: format,

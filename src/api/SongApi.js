@@ -3,6 +3,7 @@ import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
 import axios from "axios";
 import GenreApi from "./GenreApi";
 import ThemeApi from "./ThemeApi";
+import BinderApi from "./BinderApi";
 
 const SONGS_URL = process.env.REACT_APP_API_URL + "/songs";
 
@@ -21,6 +22,9 @@ export default class SongApi {
       songs = [];
     } else {
       songs = JSON.parse(songs);
+      songs.sort((a, b) =>
+        a.name?.toLowerCase()?.localeCompare(b.name?.toLowerCase())
+      );
     }
 
     return songs;
@@ -69,6 +73,15 @@ export default class SongApi {
     let songs = this.getAll();
 
     let song = songs.find((s) => s.id === parsedId);
+
+    let { data: binders } = BinderApi.getAll();
+    binders = binders.filter((b) => b.songs.includes(parseInt(songId)));
+
+    song.binders = binders.map((b) => ({
+      color: b.color,
+      name: b.name,
+      id: b.id,
+    }));
     return { data: song };
   }
 
@@ -151,6 +164,15 @@ export default class SongApi {
   static deleteOneById(id) {
     let songs = this.getAll();
     songs = songs.filter((s) => s.id !== id);
+
+    let { data: binders } = BinderApi.getAll();
+
+    binders.forEach((binder) => {
+      console.log(binder);
+      binder.songs = binder.songs?.filter((s) => s.id !== id && s !== id);
+    });
+
+    BinderApi.setAllBindersInStorage(binders);
 
     this.setAllSongsInStorage(songs);
   }
