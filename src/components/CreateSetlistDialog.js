@@ -5,85 +5,86 @@ import OutlinedInput from "./inputs/OutlinedInput";
 import PropTypes from "prop-types";
 import SetlistApi from "../api/SetlistApi";
 import StyledDialog from "./StyledDialog";
-import { reportError } from "../utils/error";
 
-export default function CreateSetlistDialog({ open, onCloseDialog, onCreated }) {
-	const [name, setName] = useState("");
-	const [scheduledDate, setScheduledDate] = useState("");
-	const [loading, setLoading] = useState(false);
-	const inputRef = useRef();
+export default function CreateSetlistDialog({
+  open,
+  onCloseDialog,
+  onCreated,
+}) {
+  const [name, setName] = useState("");
+  const [scheduledDate, setScheduledDate] = useState("");
 
-	useEffect(() => {
-		setTimeout(() => {
-			if (open) {
-				inputRef.current?.focus();
-			}
-		}, 100);
-	}, [open]);
+  const inputRef = useRef();
 
-	const isDateValid = () => {
-		let dateToValidate = new Date(scheduledDate);
-		return !isNaN(dateToValidate);
-	};
+  useEffect(() => {
+    setTimeout(() => {
+      if (open) {
+        inputRef.current?.focus();
+      }
+    }, 100);
+  }, [open]);
 
-	const canCreate = name && isDateValid();
+  const isDateValid = () => {
+    let dateToValidate = new Date(scheduledDate);
+    return !isNaN(dateToValidate);
+  };
 
-	const handleCreateSetlist = async () => {
-		setLoading(true);
-		try {
-			let isoScheduledDate = new Date(scheduledDate).toISOString();
-			let { data } = await SetlistApi.createOne({ name, scheduledDate: isoScheduledDate });
-			onCreated(data);
-			handleCloseDialog();
-		} catch (error) {
-			reportError(error);
-			setLoading(false);
-		}
-	};
+  const canCreate = name && isDateValid();
 
-	const clearFields = () => {
-		setLoading(false);
-		setName("");
-		setScheduledDate("");
-	};
+  const handleCreateSetlist = async () => {
+    let { data } = await SetlistApi.createOne({
+      name,
+      scheduledDate,
+    });
+    onCreated(data);
+    handleCloseDialog();
+  };
 
-	const handleCloseDialog = () => {
-		clearFields();
-		onCloseDialog();
-	};
+  const clearFields = () => {
+    setName("");
+    setScheduledDate("");
+  };
 
-	return (
-		<StyledDialog title="Create a set" open={open} onCloseDialog={handleCloseDialog}>
-			<div className="mb-4">
-				<OutlinedInput
-					label="Name"
-					placeholder="Give your set a name"
-					value={name}
-					onChange={setName}
-					ref={inputRef}
-				/>
-			</div>
+  const handleCloseDialog = () => {
+    clearFields();
+    onCloseDialog();
+  };
 
-			<div className="mb-4">
-				<OutlinedInput
-					type="date"
-					onChange={setScheduledDate}
-					value={scheduledDate}
-					label="Scheduled date"
-					className="h-10"
-				/>
-			</div>
-			<AddCancelActions
-				onCancel={handleCloseDialog}
-				addText="Create"
-				addDisabled={!canCreate}
-				onAdd={handleCreateSetlist}
-				loadingAdd={loading}
-			/>
-		</StyledDialog>
-	);
+  return (
+    <StyledDialog
+      title="Create a set"
+      open={open}
+      onCloseDialog={handleCloseDialog}
+    >
+      <div className="mb-4">
+        <OutlinedInput
+          label="Name"
+          placeholder="Give your set a name"
+          value={name}
+          onChange={setName}
+          ref={inputRef}
+        />
+      </div>
+
+      <div className="mb-4">
+        <OutlinedInput
+          type="date"
+          onChange={setScheduledDate}
+          value={scheduledDate}
+          label="Scheduled date"
+          className="h-10"
+        />
+      </div>
+      <AddCancelActions
+        onCancel={handleCloseDialog}
+        addText="Create"
+        addDisabled={!canCreate}
+        onAdd={handleCreateSetlist}
+      />
+    </StyledDialog>
+  );
 }
 
 CreateSetlistDialog.propTypes = {
-	onCreated: PropTypes.func.isRequired,
+  onCreated: PropTypes.func.isRequired,
 };

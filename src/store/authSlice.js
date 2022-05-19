@@ -314,8 +314,8 @@ export const selectCurrentMember = (state) => {
   return {
     permissions,
     ...state.auth.currentUser,
-    can: (permission) => {
-      return permissions?.includes(permission);
+    can: () => {
+      return true;
     },
   };
 };

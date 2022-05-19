@@ -4,6 +4,7 @@ import axios from "axios";
 import GenreApi from "./GenreApi";
 import ThemeApi from "./ThemeApi";
 import BinderApi from "./BinderApi";
+import SetlistApi from "./SetlistApi";
 
 const SONGS_URL = process.env.REACT_APP_API_URL + "/songs";
 
@@ -81,6 +82,14 @@ export default class SongApi {
       color: b.color,
       name: b.name,
       id: b.id,
+    }));
+
+    let { data: setlists } = SetlistApi.getAll();
+    setlists = setlists.filter((s) => s.songs.includes(parseInt(songId)));
+
+    song.setlists = setlists.map((s) => ({
+      id: s.id,
+      scheduled_date: s.scheduled_date,
     }));
     return { data: song };
   }
@@ -168,11 +177,18 @@ export default class SongApi {
     let { data: binders } = BinderApi.getAll();
 
     binders.forEach((binder) => {
-      console.log(binder);
       binder.songs = binder.songs?.filter((s) => s.id !== id && s !== id);
     });
 
     BinderApi.setAllBindersInStorage(binders);
+
+    let { data: setlists } = SetlistApi.getAll();
+
+    setlists.forEach((setlist) => {
+      setlist.songs = setlist.songs?.filter((s) => s.id !== id && s !== id);
+    });
+
+    SetlistApi.setAllSetlistsInStorage(setlists);
 
     this.setAllSongsInStorage(songs);
   }

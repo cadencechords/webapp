@@ -8,7 +8,6 @@ import PageTitle from "../components/PageTitle";
 import QuickAdd from "../components/QuickAdd";
 import SetlistApi from "../api/SetlistApi";
 import SetlistsList from "../components/SetlistsList";
-import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { isPast, sortDates } from "../utils/date";
@@ -19,23 +18,11 @@ export default function SetlistsIndexPage() {
   const [upcomingSetlists, setUpcomingSetlists] = useState([]);
   const [pastSetlists, setPastSetlists] = useState([]);
   const [showCreateSetlistDialog, setShowCreateSetlistDialog] = useState(false);
-  const [loading, setLoading] = useState(true);
   const currentMember = useSelector(selectCurrentMember);
 
   useEffect(() => {
-    async function fetchSetlists() {
-      setLoading(true);
-      try {
-        let { data } = await SetlistApi.getAll();
-        setSetlists(data);
-      } catch (error) {
-        reportError(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchSetlists();
+    let { data } = SetlistApi.getAll();
+    setSetlists(data);
   }, []);
 
   useEffect(() => {
@@ -65,7 +52,7 @@ export default function SetlistsIndexPage() {
   let content = null;
 
   if (setlists.length === 0) {
-    content = <NoDataMessage loading={loading} type="sets" />;
+    content = <NoDataMessage type="sets" />;
   } else {
     content = (
       <SetlistsList

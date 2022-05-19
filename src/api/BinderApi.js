@@ -94,6 +94,7 @@ export default class BinderApi {
     let songs = SongApi.getAll();
 
     let addedSongs = songs.filter((s) => songIds.includes(s.id));
+    binder.songs = binder.songs.map((s) => s.id);
     binder.songs.push(...songIds);
 
     this.setBinderInStorage(binder);
