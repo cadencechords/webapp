@@ -1,81 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-if (!localStorage.getItem("members")) {
-  localStorage.setItem(
-    "members",
-    JSON.stringify([
-      {
-        id: 2,
-        email: "clintonclark@gmail.com",
-        first_name: "Clinton",
-        last_name: "Clark",
-        image_url: null,
-        position: "Drummer",
-        joined_team_at: "2022-02-15T03:02:22.694Z",
-      },
-      {
-        id: 3,
-        email: "deannaroberts@gmail.com",
-        first_name: "Deanna",
-        last_name: "Roberts",
-        image_url: null,
-        position: "Singer",
-        joined_team_at: "2022-02-15T03:02:22.694Z",
-      },
-      {
-        id: 4,
-        email: "marysmith@gmail.com",
-        first_name: "Mary",
-        last_name: "Smith",
-        image_url: null,
-        position: "Singer",
-        joined_team_at: "2022-02-15T03:02:22.694Z",
-      },
-      {
-        id: 5,
-        email: "mattscott@gmail.com",
-        first_name: "Matthew",
-        last_name: "Scott",
-        image_url: null,
-        position: "Pianist",
-        joined_team_at: "2022-02-14T03:02:22.694Z",
-      },
-      {
-        id: 6,
-        email: "daleleroy@gmail.com",
-        first_name: "Dale",
-        last_name: "Leroy",
-        image_url: null,
-        position: "Acoustic Guitarist",
-        joined_team_at: "2022-02-15T03:02:22.694Z",
-      },
-      {
-        id: 7,
-        email: "nancymcmanis@gmail.com",
-        first_name: "Nancy",
-        last_name: "McManis",
-        image_url: null,
-        position: "Bass",
-        joined_team_at: "2022-02-15T03:02:22.694Z",
-      },
-    ])
-  );
-}
-
 const initialState = {
   currentTeam: {
-    members: [
-      {
-        id: 1,
-        email: "testing@cadencechords.com",
-        first_name: "Test",
-        last_name: "User",
-        image_url: null,
-        position: "Leader",
-        joined_team_at: "2022-02-13T03:02:22.694Z",
-      },
-      ...JSON.parse(localStorage.getItem("members")),
-    ],
+    members: [],
     subscription: {
       plan_name: "Starter",
       status: "active",
@@ -358,19 +284,6 @@ export const authSlice = createSlice({
       me.position = action.payload.position;
     },
 
-    removeFromTeam: (state, action) => {
-      let members = state.currentTeam.members;
-      let memberIdToRemove = action.payload;
-
-      members = members.filter((m) => m.id !== memberIdToRemove);
-      localStorage.setItem(
-        "members",
-        JSON.stringify(members.filter((m) => m.id !== 1))
-      );
-
-      state.currentTeam.members = members;
-    },
-
     logOut: (state) => {},
   },
 });
@@ -381,7 +294,6 @@ export const {
   logOut,
   setMembership,
   updatePosition,
-  removeFromTeam,
 } = authSlice.actions;
 
 export default authSlice.reducer;

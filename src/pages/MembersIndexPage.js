@@ -15,6 +15,7 @@ import PendingInvitationsList from "../components/PendingInvitationsList";
 import SectionTitle from "../components/SectionTitle";
 import SendInvitesDialog from "../components/SendInvitesDialog";
 import { useSelector } from "react-redux";
+import MembershipsApi from "../api/membershipsApi";
 
 export default function MembersIndexPage() {
   useEffect(() => (document.title = "Members"), []);
@@ -29,11 +30,10 @@ export default function MembersIndexPage() {
   useEffect(() => {
     let { data } = InvitationApi.getAll();
     setInvitations(data);
-  }, []);
 
-  useEffect(() => {
-    setMembers(currentTeam.members);
-  }, [currentTeam]);
+    let { data: membersData } = MembershipsApi.getAll();
+    setMembers(membersData);
+  }, []);
 
   const handleInviteSent = (newInvite) => {
     setInvitations([...invitations, newInvite]);
@@ -55,6 +55,7 @@ export default function MembersIndexPage() {
   };
 
   const handlePositionChanged = (userId, newPosition) => {
+    MembershipsApi.updateMyMember({ position: newPosition });
     let me = members.find((m) => m.id === userId);
     setMembers((currentMembers) => {
       return currentMembers.map((m) =>

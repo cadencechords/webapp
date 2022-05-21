@@ -2,8 +2,9 @@ import MobileMenuButton from "../buttons/MobileMenuButton";
 import { REMOVE_MEMBERS } from "../../utils/constants";
 import StyledDialog from "../StyledDialog";
 import UserRemoveIcon from "@heroicons/react/outline/UserRemoveIcon";
-import { removeFromTeam, selectCurrentMember } from "../../store/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentMember } from "../../store/authSlice";
+import { useSelector } from "react-redux";
+import MembershipsApi from "../../api/membershipsApi";
 
 export default function MemberMenu({
   onCloseDialog,
@@ -13,10 +14,10 @@ export default function MemberMenu({
   isCurrentUser,
 }) {
   const currentMember = useSelector(selectCurrentMember);
-  const dispatch = useDispatch();
 
   const handleRemoveFromTeam = () => {
-    dispatch(removeFromTeam(member.id));
+    MembershipsApi.deleteById(member.id);
+    onRemoved(member.id);
     onCloseDialog();
   };
 

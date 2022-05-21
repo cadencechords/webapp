@@ -3,10 +3,6 @@ import DotsVerticalIcon from "@heroicons/react/outline/DotsVerticalIcon";
 import EditableData from "./inputs/EditableData";
 import { Link } from "react-router-dom";
 import ProfilePicture from "./ProfilePicture";
-import _ from "lodash";
-import { useCallback } from "react";
-import { updatePosition } from "../store/authSlice";
-import { useDispatch } from "react-redux";
 
 export default function MemberCard({
   member,
@@ -14,19 +10,9 @@ export default function MemberCard({
   onPositionChanged,
   onShowMemberMenu,
 }) {
-  const dispatch = useDispatch();
   const handlePositionChange = (newPosition) => {
     onPositionChanged(newPosition);
-    debounce(newPosition);
   };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce((newPosition) => {
-      dispatch(updatePosition({ id: member.id, position: newPosition }));
-    }, 1000),
-    [dispatch]
-  );
 
   if (member) {
     let currentUserBubble;
