@@ -29,11 +29,14 @@ export default function TeamOptionsPopover({ team }) {
             View details
           </Link>
         </MobileMenuButton>
-        <MobileMenuButton full className="rounded-b-md" size="sm">
-          <Link className="flex justify-start  items-center" to="/login/teams">
-            <SwitchHorizontalIcon className="mx-4 h-4" />
-            Switch teams
-          </Link>
+        <MobileMenuButton
+          full
+          className="rounded-b-md flex justify-start  items-center"
+          size="sm"
+          disabled={true}
+        >
+          <SwitchHorizontalIcon className="mx-4 h-4" />
+          Switch teams
         </MobileMenuButton>
       </div>
     </StyledPopover>

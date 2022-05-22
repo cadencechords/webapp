@@ -2,7 +2,6 @@ import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import NotificationSettingsList from "../components/NotificationSettingsList";
-import PageLoading from "../components/PageLoading";
 import PageTitle from "../components/PageTitle";
 
 import settingsApi from "../api/settingsApi";
