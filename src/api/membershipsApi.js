@@ -98,6 +98,7 @@ function setDefaultMe() {
       position: "Leader",
       joined_team_at: "2022-02-13T03:02:22.694Z",
       created_at: "2022-02-13T03:02:22.694Z",
+      phone_number: "202-555-0128",
     })
   );
 }

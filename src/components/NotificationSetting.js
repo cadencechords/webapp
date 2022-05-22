@@ -33,12 +33,8 @@ export default function NotificationSetting({ onChange, setting, icon }) {
     sendUpdateRequest({ push_enabled: newValue });
   }
 
-  async function sendUpdateRequest(updates) {
-    try {
-      await settingsApi.updateNotificationSetting(setting.id, updates);
-    } catch (error) {
-      reportError(error);
-    }
+  function sendUpdateRequest(updates) {
+    settingsApi.updateNotificationSetting(setting.id, updates);
   }
 
   return (
