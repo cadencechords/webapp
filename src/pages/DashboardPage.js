@@ -1,17 +1,5 @@
-import { useSelector } from "react-redux";
-import { selectCurrentMember } from "../store/authSlice";
-
-import PageTitle from "../components/PageTitle";
+import Welcome from "../components/Welcome";
 
 export default function DashboardPage() {
-  const currentMember = useSelector(selectCurrentMember);
-
-  return (
-    <>
-      <PageTitle
-        title={`Hi ${currentMember.first_name || currentMember.email}!`}
-      />
-      {/* <Dashboard data={data} /> */}
-    </>
-  );
+  return <Welcome />;
 }
