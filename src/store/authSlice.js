@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import MembershipsApi from "../api/membershipsApi";
+import TeamApi from "../api/TeamApi";
 const initialState = {
+  currentUserProfilePicture: MembershipsApi.getMyMember().data.image_url,
   currentTeam: {
     members: [],
     subscription: {
@@ -17,8 +20,7 @@ const initialState = {
       created_at: "2022-02-13T03:02:22.554Z",
       updated_at: "2022-02-13T03:02:22.554Z",
       id: 1,
-      image_url: null,
-      name: "Testing Team",
+      ...TeamApi.getCurrentTeam().data,
     },
   },
   currentUser: {
@@ -284,6 +286,18 @@ export const authSlice = createSlice({
       me.position = action.payload.position;
     },
 
+    updateImage: (state, action) => {
+      state.currentUserProfilePicture = action.payload;
+    },
+
+    updateTeamPicture: (state, action) => {
+      state.currentTeam.team.image_url = action.payload;
+    },
+
+    updateTeamName: (state, action) => {
+      state.currentTeam.team.name = action.payload;
+    },
+
     logOut: (state) => {},
   },
 });
@@ -294,6 +308,9 @@ export const {
   logOut,
   setMembership,
   updatePosition,
+  updateImage,
+  updateTeamPicture,
+  updateTeamName,
 } = authSlice.actions;
 
 export default authSlice.reducer;
@@ -306,7 +323,7 @@ export const selectCredentials = (state) => {
   };
 };
 
-export const selectCurrentUser = (state) => state.auth.currentUser;
+export const selectCurrentUser = (state) => state?.auth?.currentUser;
 export const selectCurrentTeam = (state) => state.auth.currentTeam;
 export const selectCurrentMember = (state) => {
   let permissions = state.auth.currentUser.role?.permissions?.map(
@@ -323,3 +340,6 @@ export const selectCurrentMember = (state) => {
 
 export const selectHasCredentials = (state) =>
   state.auth.accessToken && state.auth.client && state.auth.uid;
+
+export const selectCurrentUserProfilePicture = (state) =>
+  state?.auth?.currentUserProfilePicture;

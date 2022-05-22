@@ -2,13 +2,12 @@ import { Link } from "react-router-dom";
 import MobileMenuButton from "./buttons/MobileMenuButton";
 import ProfilePicture from "./ProfilePicture";
 import StyledPopover from "./StyledPopover";
-import MembershipsApi from "../api/membershipsApi";
-import { useState } from "react";
+import { selectCurrentUserProfilePicture } from "../store/authSlice";
+import { useSelector } from "react-redux";
 
 export default function AccountOptionsPopover() {
-  const [currentUser] = useState(() => MembershipsApi.getMyMember());
-
-  let button = <ProfilePicture url={currentUser?.image_url} size="xs" />;
+  const profilePicture = useSelector(selectCurrentUserProfilePicture);
+  let button = <ProfilePicture url={profilePicture} size="xs" />;
 
   return (
     <div className="mr-5">

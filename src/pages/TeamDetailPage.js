@@ -1,23 +1,22 @@
 import {
   selectCurrentMember,
   selectCurrentTeam,
-  setCurrentTeam,
+  updateTeamName,
+  updateTeamPicture,
 } from "../store/authSlice";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { EDIT_TEAM } from "../utils/constants";
-import FileApi from "../api/FileApi";
 import MobileProfilePictureMenu from "../components/mobile menus/MobileProfilePictureMenu";
 import PageTitle from "../components/PageTitle";
 import ProfilePicture from "../components/ProfilePicture";
 import TeamApi from "../api/TeamApi";
 import _ from "lodash";
 import { format } from "../utils/date";
-import { reportError } from "../utils/error";
 
 export default function TeamDetailPage() {
-  const currentTeam = useSelector(selectCurrentTeam);
+  const currentTeam = useSelector(selectCurrentTeam).team;
   useEffect(
     () => (document.title = currentTeam ? currentTeam.name : "Team Details")
   );
@@ -31,23 +30,19 @@ export default function TeamDetailPage() {
   };
 
   const handleImageSelected = async (e) => {
-    let tempImageUrl = URL.createObjectURL(e.target.files[0]);
-    dispatch(setCurrentTeam({ ...currentTeam, image_url: tempImageUrl }));
+    setShowImageDialog(false);
+    const reader = new FileReader();
 
-    try {
-      setShowImageDialog(false);
-      console.log(e.target.files[0]);
+    reader.onload = () => {
       try {
-        await FileApi.addImageToTeam(e.target.files[0]);
+        TeamApi.updateProfilePicture(reader.result);
+        dispatch(updateTeamPicture(reader.result));
       } catch (error) {
-        reportError(error);
-        dispatch(setCurrentTeam({ ...currentTeam, image_url: null }));
-      } finally {
-        URL.revokeObjectURL(tempImageUrl);
+        alert("Uh oh, looks like we weren't able to do that.");
       }
-    } catch (error) {
-      reportError(error);
-    }
+    };
+
+    if (e.target.files?.[0]) reader.readAsDataURL(e.target.files[0]);
   };
 
   const handleTeamImageClick = () => {
@@ -57,28 +52,20 @@ export default function TeamDetailPage() {
   };
 
   const handleDeleteImage = async () => {
-    try {
-      dispatch(setCurrentTeam({ ...currentTeam, image_url: null }));
-      await FileApi.deleteTeamImage();
-    } catch (error) {
-      reportError(error);
-    }
+    dispatch(updateTeamPicture(null));
+    TeamApi.updateProfilePicture(null);
   };
 
   const handleNameChange = (newName) => {
-    dispatch(setCurrentTeam({ ...currentTeam, name: newName }));
+    dispatch(updateTeamName(newName));
     debounce(newName);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
     _.debounce((newName) => {
-      try {
-        TeamApi.update({ name: newName });
-      } catch (error) {
-        reportError(error);
-      }
-    }, 1000),
+      TeamApi.update({ name: newName });
+    }, 500),
     []
   );
 

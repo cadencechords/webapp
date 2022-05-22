@@ -28,7 +28,10 @@ export default function AccountProfilePage() {
       </Link>
       <PageTitle title="Profile" className="mb-4" />
       <div className="mb-4">
-        <ProfilePictureDetail url={currentUser.image_url} />
+        <ProfilePictureDetail
+          url={currentUser.image_url}
+          onChange={(newUrl) => handleUpdated({ image_url: newUrl })}
+        />
       </div>
       <AccountProfileBasicInfo user={currentUser} onUpdated={handleUpdated} />
     </div>
