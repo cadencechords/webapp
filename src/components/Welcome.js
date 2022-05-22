@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "./Button";
 import PageTitle from "./PageTitle";
 import WelcomeChecklist from "./WelcomeChecklist";
 
@@ -16,9 +17,18 @@ export default function Welcome() {
         data you create will be saved to your browser and not sent to our
         servers.
       </p>
-      <div className="flex-center">
+      <div className="flex-center mb-8">
         <WelcomeChecklist />
       </div>
+      <h3 className="font-semibold text-xl">
+        Ready to try it for real?{" "}
+        <a
+          href="https://www.app.cadencechords.com/signup"
+          className="underline text-blue-600"
+        >
+          Sign me up!
+        </a>
+      </h3>
     </>
   );
 }

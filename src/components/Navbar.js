@@ -1,4 +1,5 @@
 import AccountOptionsPopover from "./AccountOptionsPopover";
+import Button from "./Button";
 import FeedbackPopover from "./FeedbackPopover";
 import SearchBar from "./SearchBar";
 import SupportButton from "./SupportButton";
@@ -11,6 +12,9 @@ export default function Navbar() {
         <SupportButton />
         <FeedbackPopover />
         <AccountOptionsPopover />
+        <a href="https://www.app.cadencechords.com/signup" className="ml-4">
+          <Button color="purple">Sign up</Button>
+        </a>
       </span>
     </nav>
   );
