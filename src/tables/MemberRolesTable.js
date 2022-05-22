@@ -5,51 +5,50 @@ import MembershipsApi from "../api/membershipsApi";
 import SectionTitle from "../components/SectionTitle";
 import StyledListBox from "../components/StyledListBox";
 import Table from "../components/Table";
-import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
 
 export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
-	const headers = ["Name", ""];
-	const [roleOptions, setRoleOptions] = useState([]);
-	const currentMember = useSelector(selectCurrentMember);
+  const headers = ["Name", ""];
+  const [roleOptions, setRoleOptions] = useState([]);
+  const currentMember = useSelector(selectCurrentMember);
+  const [me] = useState(() => MembershipsApi.getMyMember().data);
 
-	useEffect(() => {
-		if (roles) {
-			let roleOptions = roles?.map((role) => ({ value: role.name, template: role.name }));
-			setRoleOptions(roleOptions);
-		}
-	}, [roles]);
+  useEffect(() => {
+    if (roles) {
+      let roleOptions = roles?.map((role) => ({
+        value: role.name,
+        template: role.name,
+      }));
+      setRoleOptions(roleOptions);
+    }
+  }, [roles]);
 
-	const convertToRow = (member) => {
-		return [
-			member.user.email,
-			currentMember.can(ASSIGN_ROLES) ? (
-				<StyledListBox
-					options={roleOptions}
-					selectedOption={{ value: member.role.name, template: member.role.name }}
-					onChange={(option) => handleAssignRole(member, option)}
-				/>
-			) : (
-				member.role.name
-			),
-		];
-	};
-	const rows = members ? members.map((member) => convertToRow(member, roles)) : [];
+  const convertToRow = (member) => {
+    return [
+      member.email,
+      currentMember.can(ASSIGN_ROLES) && me.id !== member.id ? (
+        <StyledListBox
+          options={roleOptions}
+          selectedOption={{
+            value: member.role.name,
+            template: member.role.name,
+          }}
+          onChange={(option) => onRoleAssigned(member, option)}
+        />
+      ) : (
+        member.role.name
+      ),
+    ];
+  };
+  const rows = members
+    ? members.map((member) => convertToRow(member, roles))
+    : [];
 
-	async function handleAssignRole(member, role) {
-		try {
-			onRoleAssigned(member, role);
-			await MembershipsApi.assignRole(member.id, role);
-		} catch (error) {
-			reportError(error);
-		}
-	}
-
-	return (
-		<>
-			<SectionTitle title="Members" />
-			<Table headers={headers} rows={rows} />
-		</>
-	);
+  return (
+    <>
+      <SectionTitle title="Members" />
+      <Table headers={headers} rows={rows} />
+    </>
+  );
 }

@@ -4,7 +4,6 @@ import DeviceMobileIcon from "@heroicons/react/outline/DeviceMobileIcon";
 import MailIcon from "@heroicons/react/outline/MailIcon";
 import Toggle from "./Toggle";
 import { noop } from "../utils/constants";
-import { reportError } from "../utils/error";
 import settingsApi from "../api/settingsApi";
 import { useState } from "react";
 

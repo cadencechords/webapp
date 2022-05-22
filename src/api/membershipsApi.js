@@ -4,19 +4,34 @@ import UserThree from "../images/user 3.jpeg";
 import UserFour from "../images/user 4.jpeg";
 import UserFive from "../images/user 5.jpeg";
 import UserSix from "../images/user 6.jpeg";
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-
-import axios from "axios";
-
-const MEMBERSHIPS_URL = process.env.REACT_APP_API_URL + "/memberships";
+import RolesApi from "./rolesApi";
 
 export default class MembershipsApi {
-  static assignRole(memberId, roleName) {
-    return axios.post(
-      `${MEMBERSHIPS_URL}/${memberId}/role?team_id=${getTeamId()}`,
-      { name: roleName },
-      { headers: constructAuthHeaders() }
-    );
+  static assignRole(memberId, roleId) {
+    let { data: member } = this.getOne(memberId);
+    member.role = roleId;
+
+    let members = JSON.parse(localStorage.getItem("members"));
+
+    members = members.map((m) => (m.id === member.id ? member : m));
+    this.setAllMembersInStorage(members);
+  }
+
+  static assignBulkRole(memberIds = [], roleId) {
+    const parsedId = parseInt(roleId);
+
+    let { data: allMembers } = this.getAllWithoutMe();
+    allMembers.forEach((m) => {
+      if (memberIds.includes(m.id)) {
+        m.role = parsedId;
+      }
+    });
+
+    this.setAllMembersInStorage(allMembers);
+
+    let assignedMembers = allMembers.filter((m) => memberIds.includes(m.id));
+
+    return { data: assignedMembers };
   }
 
   static getOne(id) {
@@ -37,7 +52,15 @@ export default class MembershipsApi {
 
     let { data: me } = this.getMyMember();
 
-    return { data: [me, ...JSON.parse(members)] };
+    let { data: roles } = RolesApi.getAll();
+
+    members = [me, ...JSON.parse(members)];
+
+    members.forEach((m) => {
+      m.role = roles.find((r) => r.id === m.role);
+    });
+
+    return { data: members };
   }
 
   static getAllWithoutMe() {
@@ -99,6 +122,7 @@ function setDefaultMe() {
       joined_team_at: "2022-02-13T03:02:22.694Z",
       created_at: "2022-02-13T03:02:22.694Z",
       phone_number: "202-555-0128",
+      role: 1,
     })
   );
 }
@@ -116,6 +140,7 @@ function setDefaultMembers() {
         position: "Singer",
         joined_team_at: "2022-02-15T03:02:22.694Z",
         created_at: "2022-02-15T03:02:22.694Z",
+        role: 2,
       },
       {
         id: 3,
@@ -126,6 +151,7 @@ function setDefaultMembers() {
         position: "Singer",
         joined_team_at: "2022-02-15T03:02:22.694Z",
         created_at: "2022-02-15T03:02:22.694Z",
+        role: 2,
       },
       {
         id: 4,
@@ -136,6 +162,7 @@ function setDefaultMembers() {
         position: "PIANIST",
         joined_team_at: "2022-02-15T03:02:22.694Z",
         created_at: "2022-02-15T03:02:22.694Z",
+        role: 2,
       },
       {
         id: 5,
@@ -146,6 +173,7 @@ function setDefaultMembers() {
         position: "Drummer",
         joined_team_at: "2022-02-14T03:02:22.694Z",
         created_at: "2022-02-14T03:02:22.694Z",
+        role: 2,
       },
       {
         id: 6,
@@ -156,6 +184,7 @@ function setDefaultMembers() {
         position: "Acoustic Guitarist",
         joined_team_at: "2022-02-15T03:02:22.694Z",
         created_at: "2022-02-15T03:02:22.694Z",
+        role: 2,
       },
       {
         id: 7,
@@ -165,6 +194,7 @@ function setDefaultMembers() {
         image_url: UserFour,
         position: "Bass",
         created_at: "2022-02-15T03:02:22.694Z",
+        role: 2,
       },
     ])
   );
