@@ -1,15 +1,14 @@
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-
-import axios from "axios";
 import SongApi from "./SongApi";
-
-const BINDERS_URL = process.env.REACT_APP_API_URL + "/binders";
 
 export default class BinderApi {
   static search(name) {
-    return axios.get(`${BINDERS_URL}?team_id=${getTeamId()}&name=${name}`, {
-      headers: constructAuthHeaders(),
-    });
+    const query = name?.toLowerCase();
+    let { data: binders } = this.getAll();
+    let foundBinders = binders.filter((b) =>
+      b.name?.toLowerCase()?.includes(query)
+    );
+
+    return { data: foundBinders };
   }
 
   static getAll() {

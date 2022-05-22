@@ -1,14 +1,12 @@
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-import axios from "axios";
 import SongApi from "./SongApi";
-
-const SETLISTS_URL = process.env.REACT_APP_API_URL + "/setlists";
 
 export default class SetlistApi {
   static search(name) {
-    return axios.get(`${SETLISTS_URL}?team_id=${getTeamId()}&name=${name}`, {
-      headers: constructAuthHeaders(),
-    });
+    const query = name?.toLowerCase();
+    let { data: sets } = this.getAll();
+    let foundSets = sets.filter((s) => s.name?.toLowerCase()?.includes(query));
+
+    return { data: foundSets };
   }
 
   static getAll() {

@@ -1,18 +1,17 @@
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-
-import axios from "axios";
 import GenreApi from "./GenreApi";
 import ThemeApi from "./ThemeApi";
 import BinderApi from "./BinderApi";
 import SetlistApi from "./SetlistApi";
 
-const SONGS_URL = process.env.REACT_APP_API_URL + "/songs";
-
 export default class SongApi {
   static search(name) {
-    return axios.get(`${SONGS_URL}?team_id=${getTeamId()}&name=${name}`, {
-      headers: constructAuthHeaders(),
-    });
+    const query = name?.toLowerCase();
+    let songs = this.getAll();
+    let foundSongs = songs.filter((s) =>
+      s.name?.toLowerCase()?.includes(query)
+    );
+
+    return { data: foundSongs };
   }
 
   static getAll() {

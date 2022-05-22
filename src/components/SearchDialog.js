@@ -7,64 +7,63 @@ import SetlistApi from "../api/SetlistApi";
 import SongApi from "../api/SongApi";
 import StyledDialog from "./StyledDialog";
 import _ from "lodash";
-import { reportError } from "../utils/error";
 
 export default function SearchDialog({ open, onCloseDialog }) {
-	const [searchQuery, setSearchQuery] = useState("");
-	const [searchResults, setSearchResults] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debounce = useCallback(
-		_.debounce(async (nameToSearchFor) => {
-			if (nameToSearchFor && nameToSearchFor !== "") {
-				let results = { binders: [], songs: [], setlists: [] };
-				try {
-					let bindersResponse = await BinderApi.search(nameToSearchFor);
-					results.binders = bindersResponse.data;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounce = useCallback(
+    _.debounce((nameToSearchFor) => {
+      if (nameToSearchFor && nameToSearchFor !== "") {
+        let results = { binders: [], songs: [], setlists: [] };
 
-					let songsResponse = await SongApi.search(nameToSearchFor);
-					results.songs = songsResponse.data;
+        let bindersResponse = BinderApi.search(nameToSearchFor);
+        results.binders = bindersResponse.data;
 
-					let setlistsResponse = await SetlistApi.search(nameToSearchFor);
-					results.setlists = setlistsResponse.data;
+        let songsResponse = SongApi.search(nameToSearchFor);
+        results.songs = songsResponse.data;
 
-					setSearchResults(results);
-				} catch (error) {
-					reportError(error);
-				}
-			}
-		}, 300),
-		[]
-	);
+        let setlistsResponse = SetlistApi.search(nameToSearchFor);
+        results.setlists = setlistsResponse.data;
 
-	const handleSearchQueryChange = (newQuery) => {
-		setSearchQuery(newQuery);
-		debounce(newQuery);
-	};
+        setSearchResults(results);
+      }
+    }, 300),
+    []
+  );
 
-	const handleCloseDialog = () => {
-		setSearchQuery("");
-		setSearchResults(null);
-		onCloseDialog();
-	};
+  const handleSearchQueryChange = (newQuery) => {
+    setSearchQuery(newQuery);
+    debounce(newQuery);
+  };
 
-	return (
-		<StyledDialog
-			open={open}
-			onCloseDialog={handleCloseDialog}
-			borderedTop={false}
-			showClose={false}
-		>
-			<div className="border-b dark:border-dark-gray-400 pb-4">
-				<OpenInput
-					placeholder="Search for binders, songs or sets"
-					onChange={handleSearchQueryChange}
-					value={searchQuery}
-					autoFocus={true}
-				/>
-			</div>
+  const handleCloseDialog = () => {
+    setSearchQuery("");
+    setSearchResults(null);
+    onCloseDialog();
+  };
 
-			<SearchResults results={searchResults} onCloseDialog={handleCloseDialog} />
-		</StyledDialog>
-	);
+  return (
+    <StyledDialog
+      open={open}
+      onCloseDialog={handleCloseDialog}
+      borderedTop={false}
+      showClose={false}
+    >
+      <div className="border-b dark:border-dark-gray-400 pb-4">
+        <OpenInput
+          placeholder="Search for binders, songs or sets"
+          onChange={handleSearchQueryChange}
+          value={searchQuery}
+          autoFocus={true}
+        />
+      </div>
+
+      <SearchResults
+        results={searchResults}
+        onCloseDialog={handleCloseDialog}
+      />
+    </StyledDialog>
+  );
 }
