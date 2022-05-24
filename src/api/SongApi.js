@@ -94,21 +94,8 @@ export default class SongApi {
   }
 
   static updateOneById(songId, updates) {
-    let allowedParams = {};
-
-    if (updates.name) allowedParams.name = updates.name;
-    if (updates.bpm) allowedParams.bpm = updates.bpm;
-    if (updates.artist) allowedParams.artist = updates.artist;
-    if (updates.meter) allowedParams.meter = updates.meter;
-    if (updates.original_key) allowedParams.original_key = updates.original_key;
-    if (updates.transposed_key)
-      allowedParams.transposed_key = updates.transposed_key;
-    if (updates.content) allowedParams.content = updates.content;
-    if (updates.scroll_speed) allowedParams.scroll_speed = updates.scroll_speed;
-    if (updates.roadmap) allowedParams.roadmap = updates.roadmap;
-
     let { data: song } = this.getOneById(songId);
-    let updatedSong = { ...song, ...allowedParams, updated_at: new Date() };
+    let updatedSong = { ...song, ...updates, updated_at: new Date() };
     this.setSongInStorage(updatedSong);
 
     return { data: updatedSong };

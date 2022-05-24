@@ -1,25 +1,27 @@
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
-
-import api from "./api";
+import SongApi from "./SongApi";
 
 export default class CaposApi {
-	static create(capo, songId) {
-		return api().post(
-			`/songs/${songId}/capos?team_id=${getTeamId()}`,
-			{ capo_key: capo },
-			{ headers: constructAuthHeaders() }
-		);
-	}
+  static create(capo, songId) {
+    const newCapo = {
+      id: 1,
+      capo_key: capo,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+    SongApi.updateOneById(songId, { capo: newCapo });
 
-	static update(capoId, songId, updates) {
-		return api().put(`/songs/${songId}/capos/${capoId}?team_id=${getTeamId()}`, updates, {
-			headers: constructAuthHeaders(),
-		});
-	}
+    return { data: newCapo };
+  }
 
-	static delete(capoId, songId) {
-		return api().delete(`/songs/${songId}/capos/${capoId}?team_id=${getTeamId()}`, {
-			headers: constructAuthHeaders(),
-		});
-	}
+  static update(capoId, songId, updates) {
+    let { data: song } = SongApi.getOneById(songId);
+    let newCapo = { ...song.capo, ...updates, updated_at: new Date() };
+    SongApi.updateOneById(songId, { capo: newCapo });
+
+    return { data: newCapo };
+  }
+
+  static delete(capoId, songId) {
+    SongApi.updateOneById(songId, { capo: null });
+  }
 }
