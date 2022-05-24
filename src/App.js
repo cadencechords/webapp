@@ -52,11 +52,6 @@ function App() {
 
   useEffect(() => {
     window.Beacon("init", "802c2587-a08b-47dd-bb36-71cb60ed2021");
-    window.Beacon?.("config", {
-      docsEnabled: true,
-      messagingEnabled: false,
-      mode: "selfService",
-    });
   }, []);
 
   return (
