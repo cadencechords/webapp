@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="theme-color" content="#000000" />
-		<meta name="description" content="Access your team's songs from anywhere" />
-		<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-		<!--
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Access your team's songs from anywhere" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700&display=swap"
-			rel="stylesheet"
-		/>
-		<link
-			href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-			rel="stylesheet"
-		/>
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
 
-		<link
-			href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
-			rel="stylesheet"
-		/>
-		<!--
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
       Only files inside the `public` folder can be referenced from the HTML.
@@ -35,10 +35,34 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-		<title>Cadence</title>
-	</head>
-	<body class="bg-white dark:bg-dark-gray-900 dark:text-dark-gray-100">
-		<noscript>You need to enable JavaScript to run this app.</noscript>
-		<div id="root"></div>
-	</body>
+    <title>Cadence</title>
+  </head>
+  <script type="text/javascript">
+    !(function (e, t, n) {
+      function a() {
+        var e = t.getElementsByTagName("script")[0],
+          n = t.createElement("script");
+        (n.type = "text/javascript"),
+          (n.async = !0),
+          (n.src = "https://beacon-v2.helpscout.net"),
+          e.parentNode.insertBefore(n, e);
+      }
+      if (
+        ((e.Beacon = n =
+          function (t, n, a) {
+            e.Beacon.readyQueue.push({ method: t, options: n, data: a });
+          }),
+        (n.readyQueue = []),
+        "complete" === t.readyState)
+      )
+        return a();
+      e.attachEvent
+        ? e.attachEvent("onload", a)
+        : e.addEventListener("load", a, !1);
+    })(window, document, window.Beacon || function () {});
+  </script>
+  <body class="bg-white dark:bg-dark-gray-900 dark:text-dark-gray-100">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
 </html>

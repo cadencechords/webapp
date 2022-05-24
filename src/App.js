@@ -19,51 +19,56 @@ const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const InvitationSignUpPage = lazy(() => import("./pages/InvitationSignUpPage"));
 
 function App() {
-	useEffect(() => {
-		let theme = localStorage.getItem("theme");
+  useEffect(() => {
+    let theme = localStorage.getItem("theme");
 
-		if (theme === "dark") {
-			document.querySelector("html").className += " dark";
-		}
-	}, []);
-	return (
-		<Suspense
-			fallback={
-				<CenteredPage>
-					<PageLoading>Please wait...</PageLoading>
-				</CenteredPage>
-			}
-		>
-			<Sentry.ErrorBoundary showDialog fallback={<AppFallback />}>
-				<Router>
-					<Switch>
-						<Route path="/login" exact component={LoginPage} />
-						<Route path="/login/teams" exact component={TeamLoginPage} />
-						<Route path="/login/teams/new" exact>
-							<CreateNewTeamPage />
-						</Route>
-						<Route path="/confirmation" exact component={EmailConfirmedPage} />
-						<Route path="/signup" exact>
-							<SignUpPage />
-						</Route>
-						<Route path="/invitations" exact>
-							<ClaimInvitationPage />
-						</Route>
-						<Route path="/invitations/signup" exact>
-							<InvitationSignUpPage />
-						</Route>
-						<Route path="/forgot_password" exact>
-							<ForgotPasswordPage />
-						</Route>
-						<Route path="/reset_password" exact>
-							<ResetPasswordPage />
-						</Route>
-						<SecuredRoutes />
-					</Switch>
-				</Router>
-			</Sentry.ErrorBoundary>
-		</Suspense>
-	);
+    if (theme === "dark") {
+      document.querySelector("html").className += " dark";
+    }
+  }, []);
+
+  useEffect(() => {
+    window?.Beacon("init", "e59a5584-73cb-4380-b0b2-be1d76ff7362");
+  }, []);
+
+  return (
+    <Suspense
+      fallback={
+        <CenteredPage>
+          <PageLoading>Please wait...</PageLoading>
+        </CenteredPage>
+      }
+    >
+      <Sentry.ErrorBoundary showDialog fallback={<AppFallback />}>
+        <Router>
+          <Switch>
+            <Route path="/login" exact component={LoginPage} />
+            <Route path="/login/teams" exact component={TeamLoginPage} />
+            <Route path="/login/teams/new" exact>
+              <CreateNewTeamPage />
+            </Route>
+            <Route path="/confirmation" exact component={EmailConfirmedPage} />
+            <Route path="/signup" exact>
+              <SignUpPage />
+            </Route>
+            <Route path="/invitations" exact>
+              <ClaimInvitationPage />
+            </Route>
+            <Route path="/invitations/signup" exact>
+              <InvitationSignUpPage />
+            </Route>
+            <Route path="/forgot_password" exact>
+              <ForgotPasswordPage />
+            </Route>
+            <Route path="/reset_password" exact>
+              <ResetPasswordPage />
+            </Route>
+            <SecuredRoutes />
+          </Switch>
+        </Router>
+      </Sentry.ErrorBoundary>
+    </Suspense>
+  );
 }
 
 export default App;
