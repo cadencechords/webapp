@@ -70,7 +70,6 @@ export default function EditorWorkbenchPage() {
   const handleSaveChanges = async () => {
     try {
       if ("content" in changes) {
-        console.log({ changes });
         setSavingUpdates(true);
         await SongApi.updateOneById(songBeingEdited.id, {
           content: changes.content,
