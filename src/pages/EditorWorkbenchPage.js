@@ -41,15 +41,14 @@ export default function EditorWorkbenchPage() {
   const dispatch = useDispatch();
   const currentSubscription = useSelector(selectCurrentSubscription);
 
-  if (!songBeingEdited || isEmpty(songBeingEdited)) {
-    router.push("/");
-  }
-
   useEffect(() => {
-    let format = songBeingEdited.format;
-    setFormat(format);
-    document.title = songBeingEdited.name + " | Editor";
-  }, [songBeingEdited]);
+    if (isEmpty(songBeingEdited)) {
+      router.push("/songs");
+    } else {
+      setFormat(songBeingEdited.format);
+      document.title = songBeingEdited.name + " | Editor";
+    }
+  }, [songBeingEdited, router]);
 
   const handleGoBack = () => {
     dispatch(setSetlistBeingPresented({}));
@@ -136,6 +135,10 @@ export default function EditorWorkbenchPage() {
     } catch (error) {
       reportError(error);
     }
+  }
+
+  if (!songBeingEdited || isEmpty(songBeingEdited)) {
+    return null;
   }
 
   return (
