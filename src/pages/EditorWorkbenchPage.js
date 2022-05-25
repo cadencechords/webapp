@@ -26,7 +26,7 @@ export default function EditorWorkbenchPage() {
   const [dirty, setDirty] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
 
-  const [changes, setChanges] = useState({ content: null, format: {} });
+  const [changes, setChanges] = useState({ format: {} });
 
   const router = useHistory();
 
@@ -59,7 +59,7 @@ export default function EditorWorkbenchPage() {
   };
 
   const handleSaveChanges = () => {
-    if (changes.content) {
+    if ("content" in changes) {
       SongApi.updateOneById(songBeingEdited.id, {
         content: changes.content,
       });
@@ -72,7 +72,7 @@ export default function EditorWorkbenchPage() {
 
     setSavingUpdates(false);
     setDirty(false);
-    setChanges({ content: null, format: {} });
+    setChanges({ format: {} });
   };
 
   const handleContentChange = (newContent) => {
@@ -139,7 +139,7 @@ export default function EditorWorkbenchPage() {
         <div className="col-span-2 xl:col-span-1 container mx-auto px-5 mb-12 sm:mb-0 border-r dark:border-dark-gray-600 ">
           <Editor
             content={
-              changes.content ? changes.content : songBeingEdited.content
+              "content" in changes ? changes.content : songBeingEdited.content
             }
             formatOptions={format}
             onContentChange={handleContentChange}
@@ -150,7 +150,10 @@ export default function EditorWorkbenchPage() {
 
           <div className="relative">
             {html({
-              content: changes.content || songBeingEdited.content,
+              content:
+                "content" in changes
+                  ? changes.content
+                  : songBeingEdited.content,
               format: format,
             })}
           </div>
@@ -160,7 +163,7 @@ export default function EditorWorkbenchPage() {
         {showEditor ? (
           <Editor
             content={
-              changes.content ? changes.content : songBeingEdited.content
+              "content" in changes ? changes.content : songBeingEdited.content
             }
             formatOptions={format}
             onContentChange={handleContentChange}
@@ -170,7 +173,10 @@ export default function EditorWorkbenchPage() {
             <PageTitle title="Preview" className="my-4" />
             <div className="relative">
               {html({
-                content: changes.content || songBeingEdited.content,
+                content:
+                  "content" in changes
+                    ? changes.content
+                    : songBeingEdited.content,
                 format: format,
               })}
             </div>

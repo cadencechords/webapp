@@ -29,7 +29,12 @@ export default function SongsIndexPage() {
   let content = null;
 
   if (songs.length === 0) {
-    content = <NoDataMessage type="songs" />;
+    content = (
+      <NoDataMessage>
+        You don't have any songs in your library yet. Click the add button to
+        get started.
+      </NoDataMessage>
+    );
   } else {
     content = (
       <FadeIn className="mb-10 delay-100">

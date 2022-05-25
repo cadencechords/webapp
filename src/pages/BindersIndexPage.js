@@ -28,7 +28,11 @@ export default function BindersIndexPage() {
 
   let content = null;
   if (binders.length === 0) {
-    content = <NoDataMessage type="binders" />;
+    content = (
+      <NoDataMessage>
+        You don't have any binders yet. Click the add button to get started.
+      </NoDataMessage>
+    );
   } else {
     content = (
       <FadeIn className="mb-10">

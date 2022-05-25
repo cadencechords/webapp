@@ -52,7 +52,11 @@ export default function SetlistsIndexPage() {
   let content = null;
 
   if (setlists.length === 0) {
-    content = <NoDataMessage type="sets" />;
+    content = (
+      <NoDataMessage>
+        You don't have any sets yet. Click the add button to get started.
+      </NoDataMessage>
+    );
   } else {
     content = (
       <SetlistsList
