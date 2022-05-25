@@ -32,15 +32,15 @@ export default function EditorWorkbenchPage() {
 
   const dispatch = useDispatch();
 
-  if (!songBeingEdited || isEmpty(songBeingEdited)) {
-    router.push("/");
-  }
-
   useEffect(() => {
-    let format = songBeingEdited.format;
-    setFormat(format);
-    document.title = songBeingEdited.name + " | Editor";
-  }, [songBeingEdited]);
+    if (isEmpty(songBeingEdited)) {
+      router.push("/songs");
+    } else {
+      let format = songBeingEdited.format;
+      setFormat(format);
+      document.title = songBeingEdited.name + " | Editor";
+    }
+  }, [songBeingEdited, router]);
 
   const handleGoBack = () => {
     dispatch(setSetlistBeingPresented({}));
@@ -82,6 +82,10 @@ export default function EditorWorkbenchPage() {
     }));
     setDirty(true);
   };
+
+  if (!songBeingEdited || isEmpty(songBeingEdited)) {
+    return null;
+  }
 
   return (
     <>
