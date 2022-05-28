@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import TableHead from './TableHead';
 import TableRow from './TableRow';
 import Checkbox from './Checkbox';
+import { useSelector } from 'react-redux';
+import { selectCurrentMember } from '../store/authSlice';
+import { DELETE_SONGS } from '../utils/constants';
 
 export default function SongsList({
   songs,
@@ -10,24 +13,26 @@ export default function SongsList({
   onToggleSelect,
   onToggleSelectAll,
 }) {
+  const currentMember = useSelector(selectCurrentMember);
+  let headers = [];
+  if (currentMember.can(DELETE_SONGS)) {
+    headers = [
+      <Checkbox
+        checked={selectedIds.length === songs.length && songs.length > 0}
+        onChange={onToggleSelectAll}
+      />,
+      'NAME',
+      'BINDERS',
+      'CREATED',
+    ];
+  } else {
+    headers = ['NAME', 'BINDERS', 'CREATED'];
+  }
   return (
     <>
       <div className="hidden sm:block">
         <table className="w-full">
-          <TableHead
-            columns={[
-              <Checkbox
-                checked={
-                  selectedIds.length === songs.length && songs.length > 0
-                }
-                onChange={onToggleSelectAll}
-              />,
-              'NAME',
-              'BINDERS',
-              'CREATED',
-            ]}
-            editable
-          />
+          <TableHead columns={headers} editable />
           <tbody>
             {songs?.map(song => {
               let binders =
@@ -42,20 +47,26 @@ export default function SongsList({
                   />
                 </Link>
               );
-              return (
-                <TableRow
-                  columns={[
-                    <Checkbox
-                      checked={selectedIds.includes(song.id)}
-                      onChange={checked => onToggleSelect(checked, song.id)}
-                    />,
-                    songNameAndKey,
-                    binders,
-                    new Date(song.created_at).toDateString(),
-                  ]}
-                  key={song.id}
-                />
-              );
+
+              let columns = [];
+              if (currentMember.can(DELETE_SONGS)) {
+                columns = [
+                  <Checkbox
+                    checked={selectedIds.includes(song.id)}
+                    onChange={checked => onToggleSelect(checked, song.id)}
+                  />,
+                  songNameAndKey,
+                  binders,
+                  new Date(song.created_at).toDateString(),
+                ];
+              } else {
+                columns = [
+                  songNameAndKey,
+                  binders,
+                  new Date(song.created_at).toDateString(),
+                ];
+              }
+              return <TableRow columns={columns} key={song.id} />;
             })}
           </tbody>
         </table>

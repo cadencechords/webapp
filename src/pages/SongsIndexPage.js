@@ -17,6 +17,7 @@ import WellInput from '../components/inputs/WellInput';
 import { addToNow } from '../utils/date';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
+import { pluralize } from '../utils/StringUtils';
 
 export default function SongsIndexPage() {
   useEffect(() => (document.title = 'Songs'));
@@ -29,6 +30,7 @@ export default function SongsIndexPage() {
   const songsCache = useSelector(selectSongsCache);
   const [loadingStatus, setLoadingStatus] = useState('not loaded');
   const [selectedIds, setSelectedIds] = useState([]);
+  const [deleting, setDeleting] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -117,10 +119,25 @@ export default function SongsIndexPage() {
 
   function handleToggleSelectAll(checked) {
     if (checked) {
-      const allIds = songs?.map(s => s.id);
+      const allIds = filteredSongs().map(s => s.id);
       setSelectedIds(allIds);
     } else {
       setSelectedIds([]);
+    }
+  }
+
+  async function handleDeleteSelected() {
+    try {
+      setDeleting(true);
+      await SongApi.deleteBulk(selectedIds);
+      setSongs(currentSongs =>
+        currentSongs.filter(s => !selectedIds.includes(s.id))
+      );
+      setSelectedIds([]);
+    } catch (error) {
+      reportError(error);
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -139,7 +156,24 @@ export default function SongsIndexPage() {
       </div>
       {songs.length > 0 && (
         <>
-          <FadeIn className="pl-2 mb-2">{songs.length} total</FadeIn>
+          <FadeIn className="pl-2 mb-2">
+            <div className="flex-between h-8">
+              <span>{songs.length} total</span>
+              <span className="hidden sm:inline">
+                {selectedIds?.length > 0 && (
+                  <Button
+                    size="xs"
+                    color="red"
+                    onClick={handleDeleteSelected}
+                    loading={deleting}
+                  >
+                    Delete {selectedIds.length}{' '}
+                    {pluralize('song', selectedIds.length)}
+                  </Button>
+                )}
+              </span>
+            </div>
+          </FadeIn>
           <FadeIn className="mb-4 lg:text-sm delay-75">
             <WellInput
               placeholder="Search your songs"

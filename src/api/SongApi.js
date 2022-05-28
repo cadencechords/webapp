@@ -1,9 +1,9 @@
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
+import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 
-import axios from "axios";
-import { combineParamValues } from "../utils/ObjectUtils";
+import axios from 'axios';
+import { combineParamValues } from '../utils/ObjectUtils';
 
-const SONGS_URL = process.env.REACT_APP_API_URL + "/songs";
+const SONGS_URL = process.env.REACT_APP_API_URL + '/songs';
 
 export default class SongApi {
   static search(name) {
@@ -45,9 +45,9 @@ export default class SongApi {
     if (updates.original_key) allowedParams.original_key = updates.original_key;
     if (updates.transposed_key)
       allowedParams.transposed_key = updates.transposed_key;
-    if ("content" in updates) allowedParams.content = updates.content;
+    if ('content' in updates) allowedParams.content = updates.content;
     if (updates.scroll_speed) allowedParams.scroll_speed = updates.scroll_speed;
-    if (updates.roadmap) allowedParams.roadmap = updates.roadmap.join("@");
+    if (updates.roadmap) allowedParams.roadmap = updates.roadmap.join('@');
 
     return axios.put(
       SONGS_URL + `/${songId}?team_id=${getTeamId()}`,
@@ -73,7 +73,7 @@ export default class SongApi {
       return axios.delete(
         SONGS_URL +
           `/${songId}/themes?${combineParamValues(
-            "theme_ids[]=",
+            'theme_ids[]=',
             themeIds
           )}&team_id=${getTeamId()}`,
         { headers: constructAuthHeaders() }
@@ -96,7 +96,7 @@ export default class SongApi {
       return axios.delete(
         SONGS_URL +
           `/${songId}/genres?${combineParamValues(
-            "genre_ids[]=",
+            'genre_ids[]=',
             genreIds
           )}&team_id=${getTeamId()}`,
         { headers: constructAuthHeaders() }
@@ -108,5 +108,16 @@ export default class SongApi {
     return axios.delete(`${SONGS_URL}/${id}?team_id=${getTeamId()}`, {
       headers: constructAuthHeaders(),
     });
+  }
+
+  static deleteBulk(ids) {
+    return axios.delete(
+      `${SONGS_URL}?` +
+        combineParamValues('ids[]=', ids) +
+        `&team_id=${getTeamId()}`,
+      {
+        headers: constructAuthHeaders(),
+      }
+    );
   }
 }
