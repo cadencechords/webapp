@@ -1,33 +1,38 @@
-import "react-toastify/dist/ReactToastify.min.css";
-import * as Sentry from "@sentry/react";
+import 'react-toastify/dist/ReactToastify.min.css';
+import * as Sentry from '@sentry/react';
 
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
-import { Suspense, lazy, useEffect } from "react";
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Suspense, lazy, useEffect } from 'react';
 
-import AppFallback from "./components/AppFallback";
-import CenteredPage from "./components/CenteredPage";
-import CreateNewTeamPage from "./pages/CreateNewTeamPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import PageLoading from "./components/PageLoading";
-import SecuredRoutes from "./components/SecuredRoutes";
-import SignUpPage from "./pages/SignUpPage";
-import { ToastContainer } from "react-toastify";
+import AppFallback from './components/AppFallback';
+import CenteredPage from './components/CenteredPage';
+import CreateNewTeamPage from './pages/CreateNewTeamPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import PageLoading from './components/PageLoading';
+import SecuredRoutes from './components/SecuredRoutes';
+import SignUpPage from './pages/SignUpPage';
+import { ToastContainer } from 'react-toastify';
 
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const TeamLoginPage = lazy(() => import("./pages/TeamLoginPage"));
-const EmailConfirmedPage = lazy(() => import("./pages/EmailConfirmedPage"));
-const ClaimInvitationPage = lazy(() => import("./pages/ClaimInvitationPage"));
-const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
-const InvitationSignUpPage = lazy(() => import("./pages/InvitationSignUpPage"));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const TeamLoginPage = lazy(() => import('./pages/TeamLoginPage'));
+const EmailConfirmedPage = lazy(() => import('./pages/EmailConfirmedPage'));
+const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
+const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
 
 function App() {
   useEffect(() => {
-    let theme = localStorage.getItem("theme");
+    let theme = localStorage.getItem('theme');
 
-    if (theme === "dark") {
-      document.querySelector("html").className += " dark";
+    if (theme === 'dark') {
+      document.querySelector('html').className += ' dark';
     }
   }, []);
+
+  useEffect(() => {
+    window?.Beacon('init', 'e59a5584-73cb-4380-b0b2-be1d76ff7362');
+  }, []);
+
   return (
     <Suspense
       fallback={

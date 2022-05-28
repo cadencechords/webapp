@@ -34,22 +34,21 @@ export default function EditorWorkbenchPage() {
   const [dirty, setDirty] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
 
-  const [changes, setChanges] = useState({ content: null, format: {} });
+  const [changes, setChanges] = useState({ format: {} });
 
   const router = useHistory();
 
   const dispatch = useDispatch();
   const currentSubscription = useSelector(selectCurrentSubscription);
 
-  if (!songBeingEdited || isEmpty(songBeingEdited)) {
-    router.push("/");
-  }
-
   useEffect(() => {
-    let format = songBeingEdited.format;
-    setFormat(format);
-    document.title = songBeingEdited.name + " | Editor";
-  }, [songBeingEdited]);
+    if (isEmpty(songBeingEdited)) {
+      router.push("/songs");
+    } else {
+      setFormat(songBeingEdited.format);
+      document.title = songBeingEdited.name + " | Editor";
+    }
+  }, [songBeingEdited, router]);
 
   const handleGoBack = () => {
     dispatch(setSetlistBeingPresented({}));
@@ -69,7 +68,7 @@ export default function EditorWorkbenchPage() {
 
   const handleSaveChanges = async () => {
     try {
-      if (changes.content) {
+      if ("content" in changes) {
         setSavingUpdates(true);
         await SongApi.updateOneById(songBeingEdited.id, {
           content: changes.content,
@@ -92,7 +91,7 @@ export default function EditorWorkbenchPage() {
     } finally {
       setSavingUpdates(false);
       setDirty(false);
-      setChanges({ content: null, format: {} });
+      setChanges({ format: {} });
     }
   };
 
@@ -136,6 +135,10 @@ export default function EditorWorkbenchPage() {
     } catch (error) {
       reportError(error);
     }
+  }
+
+  if (!songBeingEdited || isEmpty(songBeingEdited)) {
+    return null;
   }
 
   return (
@@ -196,7 +199,7 @@ export default function EditorWorkbenchPage() {
         <div className="col-span-2 xl:col-span-1 container mx-auto px-5 mb-12 sm:mb-0 border-r dark:border-dark-gray-600 ">
           <Editor
             content={
-              changes.content ? changes.content : songBeingEdited.content
+              "content" in changes ? changes.content : songBeingEdited.content
             }
             formatOptions={format}
             onContentChange={handleContentChange}
@@ -215,7 +218,10 @@ export default function EditorWorkbenchPage() {
               />
             )}
             {html({
-              content: changes.content || songBeingEdited.content,
+              content:
+                "content" in changes
+                  ? changes.content
+                  : songBeingEdited.content,
               format: format,
             })}
           </div>
@@ -225,7 +231,7 @@ export default function EditorWorkbenchPage() {
         {showEditor ? (
           <Editor
             content={
-              changes.content ? changes.content : songBeingEdited.content
+              "content" in changes ? changes.content : songBeingEdited.content
             }
             formatOptions={format}
             onContentChange={handleContentChange}
@@ -243,7 +249,10 @@ export default function EditorWorkbenchPage() {
                 />
               )}
               {html({
-                content: changes.content || songBeingEdited.content,
+                content:
+                  "content" in changes
+                    ? changes.content
+                    : songBeingEdited.content,
                 format: format,
               })}
             </div>
