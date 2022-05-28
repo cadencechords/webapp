@@ -41,7 +41,7 @@ export default function SongsIndexPage() {
 
   function handleToggleSelectAll(checked) {
     if (checked) {
-      const allIds = songs?.map(s => s.id);
+      const allIds = filteredSongs().map(s => s.id);
       setSelectedIds(allIds);
     } else {
       setSelectedIds([]);
