@@ -105,9 +105,24 @@ export default function SongsIndexPage() {
     );
   }
 
-  function handleToggleSelect(checked, id) {}
+  function handleToggleSelect(checked, id) {
+    setSelectedIds(currentIds => {
+      if (checked) {
+        return [...currentIds, id];
+      } else {
+        return currentIds.filter(idInList => idInList !== id);
+      }
+    });
+  }
 
-  function handleToggleSelectAll(checked) {}
+  function handleToggleSelectAll(checked) {
+    if (checked) {
+      const allIds = songs?.map(s => s.id);
+      setSelectedIds(allIds);
+    } else {
+      setSelectedIds([]);
+    }
+  }
 
   return (
     <>
