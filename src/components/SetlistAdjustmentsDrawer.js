@@ -1,16 +1,19 @@
-import { EDIT_SONGS, noop, START_SESSIONS } from "../utils/constants";
-import { useDispatch, useSelector } from "react-redux";
+import { EDIT_SONGS, noop, START_SESSIONS } from '../utils/constants';
+import { useDispatch, useSelector } from 'react-redux';
 
-import Drawer from "./Drawer";
-import MobileMenuButton from "./buttons/MobileMenuButton";
-import PencilIcon from "@heroicons/react/solid/PencilIcon";
-import ScrollIcon from "../icons/ScrollIcon";
-import Toggle from "./Toggle";
-import { selectCurrentMember } from "../store/authSlice";
-import { setSongBeingEdited } from "../store/editorSlice";
-import { useHistory } from "react-router-dom";
-import { selectCurrentSubscription } from "../store/subscriptionSlice";
-import SessionIcon from "../icons/SessionIcon";
+import Drawer from './Drawer';
+import MobileMenuButton from './buttons/MobileMenuButton';
+import PencilIcon from '@heroicons/react/solid/PencilIcon';
+import ScrollIcon from '../icons/ScrollIcon';
+import Toggle from './Toggle';
+import { selectCurrentMember } from '../store/authSlice';
+import { setSongBeingEdited } from '../store/editorSlice';
+import { useHistory } from 'react-router-dom';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import SessionIcon from '../icons/SessionIcon';
+import { useContext } from 'react';
+import { SessionsContext } from '../contexts/SessionsProvider';
+import NumberBadge from './NumberBadge';
 
 export default function SetlistAdjustmentsDrawer({
   song,
@@ -18,35 +21,45 @@ export default function SetlistAdjustmentsDrawer({
   open,
   onClose,
   onShowBottomSheet,
-  onStartSession,
-  onEndSession,
-  activeSession,
+  setlist,
+  currentSongIndex,
 }) {
   const currentMember = useSelector(selectCurrentMember);
   const currentSubscription = useSelector(selectCurrentSubscription);
   const dispatch = useDispatch();
   const router = useHistory();
-
-  const iconClasses = "w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue";
+  const iconClasses = 'w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue';
+  const {
+    sessions,
+    onStartSession,
+    onEndSession,
+    onLeaveAsMember,
+    activeSessionDetails: { isHost, activeSession },
+  } = useContext(SessionsContext);
 
   function handleOpenInEditor() {
     dispatch(setSongBeingEdited(song));
-    router.push("/editor");
+    router.push('/editor');
   }
 
   function handleFormatUpdate(field, value) {
     let updatedFormat = { ...song.format, [field]: value };
-    onSongUpdate("format", updatedFormat);
+    onSongUpdate('format', updatedFormat);
   }
 
   function handleToggleSessionAndCloseDrawer() {
     onClose();
 
-    if (activeSession && activeSession.is_creator) {
+    if (activeSession && isHost) {
       onEndSession();
     } else {
-      onStartSession();
+      onStartSession(setlist, currentSongIndex);
     }
+  }
+
+  function handleLeaveSessionAndCloseDrawer() {
+    onLeaveAsMember();
+    onClose();
   }
 
   return (
@@ -56,7 +69,7 @@ export default function SetlistAdjustmentsDrawer({
           full
           className="flex-between"
           onClick={() =>
-            handleFormatUpdate("autosize", !song?.format?.autosize)
+            handleFormatUpdate('autosize', !song?.format?.autosize)
           }
         >
           Resize lyrics
@@ -66,7 +79,7 @@ export default function SetlistAdjustmentsDrawer({
           full
           className="flex-between"
           onClick={() =>
-            handleFormatUpdate("chords_hidden", !song?.format?.chords_hidden)
+            handleFormatUpdate('chords_hidden', !song?.format?.chords_hidden)
           }
         >
           Show chords
@@ -79,7 +92,7 @@ export default function SetlistAdjustmentsDrawer({
         <MobileMenuButton
           full
           className="flex-between"
-          onClick={() => onSongUpdate("show_roadmap", !song?.show_roadmap)}
+          onClick={() => onSongUpdate('show_roadmap', !song?.show_roadmap)}
         >
           Show roadmap
           <Toggle
@@ -103,7 +116,7 @@ export default function SetlistAdjustmentsDrawer({
         )}
         <MobileMenuButton
           className="flex items-center"
-          onClick={() => onShowBottomSheet("autoscroll")}
+          onClick={() => onShowBottomSheet('autoscroll')}
           full
         >
           <ScrollIcon className={iconClasses} /> Auto scroll
@@ -116,7 +129,32 @@ export default function SetlistAdjustmentsDrawer({
             onClick={handleToggleSessionAndCloseDrawer}
           >
             <SessionIcon className={iconClasses} />
-            {activeSession?.is_creator ? "End session" : "Start session"}
+            {activeSession && isHost ? 'End session' : 'Start session'}
+          </MobileMenuButton>
+        )}
+
+        {currentSubscription.isPro && (
+          <MobileMenuButton
+            full
+            className="flex items-center"
+            disabled={activeSession && isHost}
+            onClick={() => onShowBottomSheet('sessions')}
+          >
+            <NumberBadge className="mr-2" disabled={activeSession && isHost}>
+              {sessions.length}
+            </NumberBadge>
+            <div>View sessions</div>
+          </MobileMenuButton>
+        )}
+
+        {currentSubscription.isPro && activeSession && !isHost && (
+          <MobileMenuButton
+            full
+            className="flex items-center"
+            color="red"
+            onClick={handleLeaveSessionAndCloseDrawer}
+          >
+            Leave session
           </MobileMenuButton>
         )}
       </div>

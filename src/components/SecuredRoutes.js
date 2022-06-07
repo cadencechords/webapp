@@ -1,7 +1,7 @@
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
 
-import { Route, Switch } from "react-router-dom";
-import { lazy, useEffect } from "react";
+import { Route, Switch } from 'react-router-dom';
+import { lazy, useEffect } from 'react';
 import {
   selectCurrentTeam,
   selectCurrentUser,
@@ -10,24 +10,24 @@ import {
   setCurrentTeam,
   setCurrentUser,
   setMembership,
-} from "../store/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+} from '../store/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
-import CenteredPage from "./CenteredPage";
-import Content from "./Content";
-import PageLoading from "./PageLoading";
-import TeamApi from "../api/TeamApi";
-import UserApi from "../api/UserApi";
-import { reportError } from "../utils/error";
-import { setSubscription } from "../store/subscriptionSlice";
-import { useHistory } from "react-router";
+import CenteredPage from './CenteredPage';
+import Content from './Content';
+import PageLoading from './PageLoading';
+import TeamApi from '../api/TeamApi';
+import UserApi from '../api/UserApi';
+import { reportError } from '../utils/error';
+import { setSubscription } from '../store/subscriptionSlice';
+import { useHistory } from 'react-router';
 
-const EditorWorkbenchPage = lazy(() => import("../pages/EditorWorkbenchPage"));
+const EditorWorkbenchPage = lazy(() => import('../pages/EditorWorkbenchPage'));
 const CustomerPortalSessionGeneratorPage = lazy(() =>
-  import("../pages/CustomerPortalSessionGeneratorPage")
+  import('../pages/CustomerPortalSessionGeneratorPage')
 );
-const SetPresenterPage = lazy(() => import("../pages/SetPresenterPage"));
-const SongPresenterPage = lazy(() => import("../pages/SongPresenterPage"));
+const SetPresenterPage = lazy(() => import('../pages/SetPresenterPage'));
+const SongPresenterPage = lazy(() => import('../pages/SongPresenterPage'));
 
 export default function SecuredRoutes() {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ export default function SecuredRoutes() {
 
   useEffect(() => {
     if (!hasCredentials) {
-      router.push("/login");
+      router.push('/login');
     } else {
       async function fetchCurrentUser() {
         try {
@@ -50,13 +50,13 @@ export default function SecuredRoutes() {
           if (!data.timezone) saveTimeZone();
 
           if (!teamId) {
-            router.push("/login/teams");
+            router.push('/login/teams');
           } else {
             await fetchCurrentTeam();
           }
         } catch (error) {
           reportError(error);
-          router.push("/login");
+          router.push('/login');
         }
       }
 
@@ -77,7 +77,7 @@ export default function SecuredRoutes() {
         );
       } catch (error) {
         reportError(error);
-        router.push("/login/teams");
+        router.push('/login/teams');
       }
     }
   }, [hasCredentials, router, teamId, dispatch]);

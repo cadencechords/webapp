@@ -3,32 +3,30 @@ import {
   EDIT_SETLISTS,
   EDIT_SONGS,
   PUBLISH_SETLISTS,
-} from "../utils/constants";
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router";
+} from '../utils/constants';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router';
 
-import Alert from "../components/Alert";
-import Button from "../components/Button";
-import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
-import ChangeSetlistDateDialog from "../components/ChangeSetlistDateDialog";
-import PageLoading from "../components/PageLoading";
-import PageTitle from "../components/PageTitle";
-import PlayIcon from "@heroicons/react/solid/PlayIcon";
-import PublicSetlistDetailsDialog from "../dialogs/PublicSetlistDetailsDialog";
-import PublishSetlistDialog from "../components/PublishSetlistDialog";
-import SectionTitle from "../components/SectionTitle";
-import SetlistApi from "../api/SetlistApi";
-import SetlistSongsList from "../components/SetlistSongsList";
-import _ from "lodash";
-import { reportError } from "../utils/error";
-import { selectCurrentMember } from "../store/authSlice";
-import { setSetlistBeingPresented } from "../store/presenterSlice";
-import { toShortDate } from "../utils/DateUtils";
-
-// import GlobeIcon from "@heroicons/react/outline/GlobeIcon";
-
-// import PublicSetlistApi from "../api/PublicSetlistApi";
+import Alert from '../components/Alert';
+import Button from '../components/Button';
+import CalendarIcon from '@heroicons/react/outline/CalendarIcon';
+import ChangeSetlistDateDialog from '../components/ChangeSetlistDateDialog';
+import PageLoading from '../components/PageLoading';
+import PageTitle from '../components/PageTitle';
+import PlayIcon from '@heroicons/react/solid/PlayIcon';
+import PublicSetlistDetailsDialog from '../dialogs/PublicSetlistDetailsDialog';
+import PublishSetlistDialog from '../components/PublishSetlistDialog';
+import SectionTitle from '../components/SectionTitle';
+import SetlistApi from '../api/SetlistApi';
+import SetlistSongsList from '../components/SetlistSongsList';
+import _ from 'lodash';
+import { reportError } from '../utils/error';
+import { selectCurrentMember } from '../store/authSlice';
+import { setSetlistBeingPresented } from '../store/presenterSlice';
+import { toShortDate } from '../utils/DateUtils';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import SetlistSessionsList from '../components/SetlistSessionsList';
 
 export default function SetlistDetailPage() {
   const [setlist, setSetlist] = useState();
@@ -43,21 +41,21 @@ export default function SetlistDetailPage() {
   const router = useHistory();
   const id = useParams().id;
   const currentMember = useSelector(selectCurrentMember);
+  const currentSubscription = useSelector(selectCurrentSubscription);
   const dispatch = useDispatch();
   const [errored, setErrored] = useState(false);
+  const [sessions, setSessions] = useState([]);
 
   useEffect(
-    () => (document.title = setlist ? setlist.name + " | Sets" : "Set"),
+    () => (document.title = setlist ? setlist.name + ' | Sets' : 'Set'),
     [setlist]
   );
+
   useEffect(() => {
     async function fetchData() {
       try {
         let result = await SetlistApi.getOne(id);
         setSetlist(result.data);
-
-        // result = await PublicSetlistApi.getOne(id);
-        // setPublicSetlist(result.data);
       } catch (error) {
         reportError(error);
         setErrored(true);
@@ -67,36 +65,36 @@ export default function SetlistDetailPage() {
     }
 
     fetchData();
-  }, [id]);
+  }, [id, currentMember]);
 
-  const handleSongsAdded = (songsAdded) => {
+  const handleSongsAdded = songsAdded => {
     setSetlist({ ...setlist, songs: [...setlist.songs, ...songsAdded] });
   };
 
-  const handleSongsReordered = (reorderedSongs) => {
+  const handleSongsReordered = reorderedSongs => {
     setSetlist({ ...setlist, songs: reorderedSongs });
   };
 
-  const handleSongRemoved = (songIdToRemove) => {
+  const handleSongRemoved = songIdToRemove => {
     let filteredSongs = setlist.songs?.filter(
-      (song) => song.id !== songIdToRemove
+      song => song.id !== songIdToRemove
     );
     setSetlist({ ...setlist, songs: filteredSongs });
   };
 
-  const handleNameChange = (newName) => {
+  const handleNameChange = newName => {
     setSetlist({ ...setlist, name: newName });
     debounce(newName);
   };
 
   const handleOpenInPresenter = () => {
-    dispatch(setSetlistBeingPresented(setlist));
+    dispatch(setSetlistBeingPresented({ ...setlist, sessions }));
     router.push(`/sets/${id}/present`);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
-    _.debounce((newName) => {
+    _.debounce(newName => {
       try {
         SetlistApi.updateOne({ name: newName }, id);
       } catch (error) {
@@ -110,7 +108,7 @@ export default function SetlistDetailPage() {
     setDeleting(true);
     try {
       await SetlistApi.deleteOne(id);
-      router.push("/sets");
+      router.push('/sets');
     } catch (error) {
       reportError(error);
       setDeleting(false);
@@ -121,6 +119,15 @@ export default function SetlistDetailPage() {
     if (currentMember.can(EDIT_SONGS)) {
       setShowChangeDateDialog(true);
     }
+  };
+
+  const handleSessionsChanged = useCallback(updatedSessions => {
+    setSessions(updatedSessions);
+  }, []);
+
+  const handleJoinSession = session => {
+    dispatch(setSetlistBeingPresented({ ...setlist, sessions }));
+    router.push(`/sets/${setlist.id}/present?session_id=${session.id}`);
   };
 
   if (loading) {
@@ -220,6 +227,14 @@ export default function SetlistDetailPage() {
             />
           </div>
         </div>
+        {currentSubscription.isPro && (
+          <SetlistSessionsList
+            setlist={setlist}
+            sessions={sessions}
+            onSessionsChange={handleSessionsChanged}
+            onJoinSession={handleJoinSession}
+          />
+        )}
         {currentMember.can(DELETE_SETLISTS) && (
           <div>
             <SectionTitle title="Delete" underline />
@@ -232,7 +247,7 @@ export default function SetlistDetailPage() {
           open={showChangeDateDialog}
           onCloseDialog={() => setShowChangeDateDialog(false)}
           scheduledDate={setlist?.scheduled_date}
-          onDateChanged={(newScheduledDate) =>
+          onDateChanged={newScheduledDate =>
             setSetlist({ ...setlist, scheduled_date: newScheduledDate })
           }
         />

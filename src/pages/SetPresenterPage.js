@@ -1,60 +1,135 @@
-import { Link, useParams } from "react-router-dom";
-import { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from 'react-router-dom';
+import { useCallback, useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import Button from "../components/Button";
-import CenteredPage from "../components/CenteredPage";
-import NoDataMessage from "../components/NoDataMessage";
-import PageLoading from "../components/PageLoading";
-import SetPresenterBottomSheet from "../components/SetPresenterBottomSheet";
-import SetPresenterTopBar from "../components/SetPresenterTopBar";
-import SetlistAdjustmentsDrawer from "../components/SetlistAdjustmentsDrawer";
-import SetlistApi from "../api/SetlistApi";
-import SetlistNavigation from "../components/SetlistNavigation";
-import SongsCarousel from "../components/SongsCarousel";
-import { reportError } from "../utils/error";
-import { selectSetlistBeingPresented } from "../store/presenterSlice";
-import { setSetlistBeingPresented } from "../store/presenterSlice";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import SessionsApi from "../api/sessionsApi";
-import { selectCurrentUser } from "../store/authSlice";
+import Button from '../components/Button';
+import CenteredPage from '../components/CenteredPage';
+import NoDataMessage from '../components/NoDataMessage';
+import PageLoading from '../components/PageLoading';
+import SetPresenterBottomSheet from '../components/SetPresenterBottomSheet';
+import SetPresenterTopBar from '../components/SetPresenterTopBar';
+import SetlistAdjustmentsDrawer from '../components/SetlistAdjustmentsDrawer';
+import SetlistApi from '../api/SetlistApi';
+import SetlistNavigation from '../components/SetlistNavigation';
+import SongsCarousel from '../components/SongsCarousel';
+import { reportError } from '../utils/error';
+import { selectSetlistBeingPresented } from '../store/presenterSlice';
+import { setSetlistBeingPresented } from '../store/presenterSlice';
+import { useState } from 'react';
+import { isEmpty } from 'lodash';
+import { useHistory } from 'react-router-dom';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import SessionsApi from '../api/sessionsApi';
+import SessionsProvider, {
+  SessionsContext,
+} from '../contexts/SessionsProvider';
+import useQuery from '../hooks/useQuery';
 
-export default function SetPresenter() {
+export default function Page() {
+  return (
+    <SessionsProvider>
+      <SetPresenter />
+    </SessionsProvider>
+  );
+}
+
+function SetPresenter() {
+  const defaultSessionId = useQuery().get('session_id');
   const setlist = useSelector(selectSetlistBeingPresented);
   const [songs, setSongs] = useState([]);
   const [songBeingViewedIndex, setSongBeingViewedIndex] = useState(0);
   const { id } = useParams();
+  const router = useHistory();
   const dispatch = useDispatch();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
-  const [bottomSheet, setBottomSheet] = useState("");
+  const [bottomSheet, setBottomSheet] = useState('');
   const [showDrawer, setShowDrawer] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [activeSession, setActiveSession] = useState();
-  const currentUser = useSelector(selectCurrentUser);
+  const currentSubscription = useSelector(selectCurrentSubscription);
+  const {
+    initializeHostSessionIfExists,
+    onSongChange,
+    setSessions,
+    activeSessionDetails,
+    onTryToJoinAsMember,
+  } = useContext(SessionsContext);
+
+  useEffect(() => {
+    let intervalId;
+    if (currentSubscription.isPro && !activeSessionDetails.isHost) {
+      intervalId = setInterval(async () => {
+        try {
+          let { data } = await SessionsApi.getActiveSessions(id);
+          setSessions(data);
+        } catch (error) {
+          reportError(error);
+        }
+      }, 7000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [currentSubscription, setSessions, id, activeSessionDetails.isHost]);
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
         let { data } = await SetlistApi.getOne(id);
+
+        document.title = `${data.name} | Sets`;
+
+        if (currentSubscription.isPro) {
+          let sessionsResult = await SessionsApi.getActiveSessions(id);
+          data.sessions = sessionsResult.data;
+        }
+
         dispatch(setSetlistBeingPresented(data));
       } catch (e) {
         reportError(e);
+        if (e.response.status === 404) {
+          router.push('/sets');
+        }
       } finally {
         setLoading(false);
       }
     }
-    if (!setlist?.songs) {
+
+    if (isEmpty(setlist)) {
       fetchData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setlist, dispatch, id, router, currentSubscription]);
+
+  useEffect(() => {
+    if (!isEmpty(setlist) && currentSubscription.isPro) {
+      setSessions(setlist.sessions);
+      initializeHostSessionIfExists(setlist);
+    }
+  }, [
+    setlist,
+    currentSubscription,
+    initializeHostSessionIfExists,
+    setSessions,
+  ]);
+
+  useEffect(() => {
+    const { activeSession, isHost, socket } = activeSessionDetails;
+    if (activeSession && !isHost && socket && currentSubscription.isPro) {
+      socket.on('initial data', ({ scrollTop, songIndex }) => {
+        const html = document.querySelector('html');
+        html.scrollTo({ top: scrollTop });
+        setSongBeingViewedIndex(songIndex);
+      });
+
+      socket.on('go to song', newSongIndex =>
+        setSongBeingViewedIndex(newSongIndex)
+      );
+    }
+  }, [activeSessionDetails, currentSubscription]);
 
   useEffect(() => {
     if (setlist?.songs) {
       setSongs(
-        setlist.songs.map((song) => ({
+        setlist.songs.map(song => ({
           ...song,
           show_transposed: Boolean(song.transposed_key),
           show_roadmap: song.roadmap?.length > 0,
@@ -63,11 +138,24 @@ export default function SetPresenter() {
     }
   }, [setlist]);
 
+  useEffect(() => {
+    if (currentSubscription.isPro && defaultSessionId && setlist?.sessions) {
+      onTryToJoinAsMember(defaultSessionId, setlist.sessions);
+    }
+  }, [setlist, defaultSessionId, currentSubscription, onTryToJoinAsMember]);
+
+  useEffect(() => {
+    return () => activeSessionDetails?.socket?.disconnect();
+  }, [activeSessionDetails.socket]);
+
   function handleSongBeingViewedIndexChange(index) {
-    let html = document.querySelector("html");
+    if (currentSubscription.isPro) {
+      onSongChange(index);
+    }
+    let html = document.querySelector('html');
     html.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
     setSongBeingViewedIndex(index);
   }
@@ -80,7 +168,7 @@ export default function SetPresenter() {
 
   const handleSongUpdate = useCallback(
     (field, value) => {
-      setSongs((currentSongs) => {
+      setSongs(currentSongs => {
         return currentSongs.map((song, index) => {
           return index === songBeingViewedIndex
             ? { ...song, [field]: value }
@@ -91,50 +179,11 @@ export default function SetPresenter() {
     [songBeingViewedIndex]
   );
 
-  async function handleStartSession() {
-    try {
-      const toastId = toast.loading("Starting session");
-      let { data } = await SessionsApi.startSession(setlist.id);
-
-      setActiveSession({
-        ...data,
-        is_creator: data.user_id === currentUser.id,
-      });
-
-      // JOIN THE SESSION HERE THROUGH SOCKET
-
-      toast.update(toastId, {
-        render: "Session started!",
-        isLoading: false,
-        hideProgressBar: true,
-        autoClose: 2000,
-      });
-    } catch (error) {
-      reportError(error);
-    }
-  }
-
-  async function handleEndSession() {
-    try {
-      const id = toast.loading("Ending session");
-      await SessionsApi.endSession(setlist.id, activeSession.id);
-      toast.update(id, {
-        render: "Session ended!",
-        isLoading: false,
-        hideProgressBar: true,
-        autoClose: 2000,
-      });
-
-      setActiveSession(null);
-    } catch (error) {
-      reportError(error);
-    }
-  }
   if (loading) {
     return <PageLoading />;
   }
 
-  if (setlist?.songs) {
+  if (setlist?.songs?.length > 0) {
     return (
       <>
         <SetPresenterTopBar
@@ -148,6 +197,7 @@ export default function SetPresenter() {
             onIndexChange={handleSongBeingViewedIndexChange}
             index={songBeingViewedIndex}
             onSongUpdate={handleSongUpdate}
+            currentSubscription={currentSubscription}
           />
         </div>
 
@@ -169,9 +219,8 @@ export default function SetPresenter() {
           onClose={() => setShowDrawer(false)}
           onSongUpdate={handleSongUpdate}
           onShowBottomSheet={handleBottomSheetChange}
-          onStartSession={handleStartSession}
-          onEndSession={handleEndSession}
-          activeSession={activeSession}
+          setlist={setlist}
+          currentSongIndex={songBeingViewedIndex}
         />
       </>
     );
