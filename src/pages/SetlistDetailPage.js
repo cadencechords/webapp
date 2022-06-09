@@ -27,6 +27,7 @@ import { setSetlistBeingPresented } from '../store/presenterSlice';
 import { toShortDate } from '../utils/DateUtils';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SetlistSessionsList from '../components/SetlistSessionsList';
+import GlobeIcon from '@heroicons/react/outline/GlobeIcon';
 
 export default function SetlistDetailPage() {
   const [setlist, setSetlist] = useState();
@@ -193,27 +194,27 @@ export default function SetlistDetailPage() {
               )}
               {!publicSetlist && currentMember.can(PUBLISH_SETLISTS) && (
                 <>
-                  {/* <Button
-										variant="outlined"
-										color="black"
-										className="mb-2 hidden md:flex justify-center items-center"
-										size="xs"
-										onClick={() => setShowPublishSetlistDialog(true)}
-									>
-										<GlobeIcon className="h-4 w-4 mr-1 text-blue-700" />
-										Publish
-									</Button>
-									<Button
-										variant="outlined"
-										color="black"
-										className="flex-center mb-2 md:hidden"
-										size="md"
-										full
-										onClick={() => setShowPublishSetlistDialog(true)}
-									>
-										<GlobeIcon className="h-5 w-5 mr-4 text-blue-700" />
-										Publish
-									</Button> */}
+                  <Button
+                    variant="outlined"
+                    color="black"
+                    className="mb-2 hidden md:flex justify-center items-center"
+                    size="xs"
+                    onClick={() => setShowPublishSetlistDialog(true)}
+                  >
+                    <GlobeIcon className="h-4 w-4 mr-1 text-blue-700" />
+                    Publish
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="black"
+                    className="flex-center mb-2 md:hidden"
+                    size="md"
+                    full
+                    onClick={() => setShowPublishSetlistDialog(true)}
+                  >
+                    <GlobeIcon className="h-5 w-5 mr-4 text-blue-700" />
+                    Publish
+                  </Button>
                 </>
               )}
             </div>
