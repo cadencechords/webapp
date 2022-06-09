@@ -53,12 +53,18 @@ export default function SetlistDetailPage() {
       try {
         let result = await SetlistApi.getOne(id);
         setSetlist(result.data);
-
-        result = await PublicSetlistApi.getOne(id);
-        setPublicSetlist(result.data);
       } catch (error) {
         reportError(error);
         setErrored(true);
+      } finally {
+        setLoading(false);
+      }
+
+      try {
+        let result = await PublicSetlistApi.getOne(id);
+        setPublicSetlist(result.data);
+      } catch (error) {
+        reportError(error);
       } finally {
         setLoading(false);
       }
