@@ -3,32 +3,30 @@ import {
   EDIT_SETLISTS,
   EDIT_SONGS,
   PUBLISH_SETLISTS,
-} from "../utils/constants";
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router";
+} from '../utils/constants';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router';
 
-import Alert from "../components/Alert";
-import Button from "../components/Button";
-import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
-import ChangeSetlistDateDialog from "../components/ChangeSetlistDateDialog";
-import PageLoading from "../components/PageLoading";
-import PageTitle from "../components/PageTitle";
-import PlayIcon from "@heroicons/react/solid/PlayIcon";
-import PublicSetlistDetailsDialog from "../dialogs/PublicSetlistDetailsDialog";
-import PublishSetlistDialog from "../components/PublishSetlistDialog";
-import SectionTitle from "../components/SectionTitle";
-import SetlistApi from "../api/SetlistApi";
-import SetlistSongsList from "../components/SetlistSongsList";
-import _ from "lodash";
-import { reportError } from "../utils/error";
-import { selectCurrentMember } from "../store/authSlice";
-import { setSetlistBeingPresented } from "../store/presenterSlice";
-import { toShortDate } from "../utils/DateUtils";
-
-// import GlobeIcon from "@heroicons/react/outline/GlobeIcon";
-
-// import PublicSetlistApi from "../api/PublicSetlistApi";
+import Alert from '../components/Alert';
+import Button from '../components/Button';
+import CalendarIcon from '@heroicons/react/outline/CalendarIcon';
+import ChangeSetlistDateDialog from '../components/ChangeSetlistDateDialog';
+import PageLoading from '../components/PageLoading';
+import PageTitle from '../components/PageTitle';
+import PlayIcon from '@heroicons/react/solid/PlayIcon';
+import PublicSetlistDetailsDialog from '../dialogs/PublicSetlistDetailsDialog';
+import PublishSetlistDialog from '../components/PublishSetlistDialog';
+import SectionTitle from '../components/SectionTitle';
+import SetlistApi from '../api/SetlistApi';
+import SetlistSongsList from '../components/SetlistSongsList';
+import _ from 'lodash';
+import { reportError } from '../utils/error';
+import { selectCurrentMember } from '../store/authSlice';
+import { setSetlistBeingPresented } from '../store/presenterSlice';
+import { toShortDate } from '../utils/DateUtils';
+import PublicSetlistApi from '../api/PublicSetlistApi';
+import GlobeIcon from '@heroicons/react/outline/GlobeIcon';
 
 export default function SetlistDetailPage() {
   const [setlist, setSetlist] = useState();
@@ -47,7 +45,7 @@ export default function SetlistDetailPage() {
   const [errored, setErrored] = useState(false);
 
   useEffect(
-    () => (document.title = setlist ? setlist.name + " | Sets" : "Set"),
+    () => (document.title = setlist ? setlist.name + ' | Sets' : 'Set'),
     [setlist]
   );
   useEffect(() => {
@@ -56,8 +54,8 @@ export default function SetlistDetailPage() {
         let result = await SetlistApi.getOne(id);
         setSetlist(result.data);
 
-        // result = await PublicSetlistApi.getOne(id);
-        // setPublicSetlist(result.data);
+        result = await PublicSetlistApi.getOne(id);
+        setPublicSetlist(result.data);
       } catch (error) {
         reportError(error);
         setErrored(true);
@@ -69,22 +67,22 @@ export default function SetlistDetailPage() {
     fetchData();
   }, [id]);
 
-  const handleSongsAdded = (songsAdded) => {
+  const handleSongsAdded = songsAdded => {
     setSetlist({ ...setlist, songs: [...setlist.songs, ...songsAdded] });
   };
 
-  const handleSongsReordered = (reorderedSongs) => {
+  const handleSongsReordered = reorderedSongs => {
     setSetlist({ ...setlist, songs: reorderedSongs });
   };
 
-  const handleSongRemoved = (songIdToRemove) => {
+  const handleSongRemoved = songIdToRemove => {
     let filteredSongs = setlist.songs?.filter(
-      (song) => song.id !== songIdToRemove
+      song => song.id !== songIdToRemove
     );
     setSetlist({ ...setlist, songs: filteredSongs });
   };
 
-  const handleNameChange = (newName) => {
+  const handleNameChange = newName => {
     setSetlist({ ...setlist, name: newName });
     debounce(newName);
   };
@@ -96,7 +94,7 @@ export default function SetlistDetailPage() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
-    _.debounce((newName) => {
+    _.debounce(newName => {
       try {
         SetlistApi.updateOne({ name: newName }, id);
       } catch (error) {
@@ -110,7 +108,7 @@ export default function SetlistDetailPage() {
     setDeleting(true);
     try {
       await SetlistApi.deleteOne(id);
-      router.push("/sets");
+      router.push('/sets');
     } catch (error) {
       reportError(error);
       setDeleting(false);
@@ -186,27 +184,27 @@ export default function SetlistDetailPage() {
               )}
               {!publicSetlist && currentMember.can(PUBLISH_SETLISTS) && (
                 <>
-                  {/* <Button
-										variant="outlined"
-										color="black"
-										className="mb-2 hidden md:flex justify-center items-center"
-										size="xs"
-										onClick={() => setShowPublishSetlistDialog(true)}
-									>
-										<GlobeIcon className="h-4 w-4 mr-1 text-blue-700" />
-										Publish
-									</Button>
-									<Button
-										variant="outlined"
-										color="black"
-										className="flex-center mb-2 md:hidden"
-										size="md"
-										full
-										onClick={() => setShowPublishSetlistDialog(true)}
-									>
-										<GlobeIcon className="h-5 w-5 mr-4 text-blue-700" />
-										Publish
-									</Button> */}
+                  <Button
+                    variant="outlined"
+                    color="black"
+                    className="mb-2 hidden md:flex justify-center items-center"
+                    size="xs"
+                    onClick={() => setShowPublishSetlistDialog(true)}
+                  >
+                    <GlobeIcon className="h-4 w-4 mr-1 text-blue-700" />
+                    Publish
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="black"
+                    className="flex-center mb-2 md:hidden"
+                    size="md"
+                    full
+                    onClick={() => setShowPublishSetlistDialog(true)}
+                  >
+                    <GlobeIcon className="h-5 w-5 mr-4 text-blue-700" />
+                    Publish
+                  </Button>
                 </>
               )}
             </div>
@@ -232,7 +230,7 @@ export default function SetlistDetailPage() {
           open={showChangeDateDialog}
           onCloseDialog={() => setShowChangeDateDialog(false)}
           scheduledDate={setlist?.scheduled_date}
-          onDateChanged={(newScheduledDate) =>
+          onDateChanged={newScheduledDate =>
             setSetlist({ ...setlist, scheduled_date: newScheduledDate })
           }
         />
