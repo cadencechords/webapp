@@ -26,6 +26,8 @@ import { selectCurrentMember } from '../store/authSlice';
 import { setSetlistBeingPresented } from '../store/presenterSlice';
 import { toShortDate } from '../utils/DateUtils';
 import PublicSetlistApi from '../api/PublicSetlistApi';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import SetlistSessionsList from '../components/SetlistSessionsList';
 import GlobeIcon from '@heroicons/react/outline/GlobeIcon';
 
 export default function SetlistDetailPage() {
@@ -41,13 +43,16 @@ export default function SetlistDetailPage() {
   const router = useHistory();
   const id = useParams().id;
   const currentMember = useSelector(selectCurrentMember);
+  const currentSubscription = useSelector(selectCurrentSubscription);
   const dispatch = useDispatch();
   const [errored, setErrored] = useState(false);
+  const [sessions, setSessions] = useState([]);
 
   useEffect(
     () => (document.title = setlist ? setlist.name + ' | Sets' : 'Set'),
     [setlist]
   );
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -71,7 +76,7 @@ export default function SetlistDetailPage() {
     }
 
     fetchData();
-  }, [id]);
+  }, [id, currentMember]);
 
   const handleSongsAdded = songsAdded => {
     setSetlist({ ...setlist, songs: [...setlist.songs, ...songsAdded] });
@@ -94,7 +99,7 @@ export default function SetlistDetailPage() {
   };
 
   const handleOpenInPresenter = () => {
-    dispatch(setSetlistBeingPresented(setlist));
+    dispatch(setSetlistBeingPresented({ ...setlist, sessions }));
     router.push(`/sets/${id}/present`);
   };
 
@@ -125,6 +130,15 @@ export default function SetlistDetailPage() {
     if (currentMember.can(EDIT_SONGS)) {
       setShowChangeDateDialog(true);
     }
+  };
+
+  const handleSessionsChanged = useCallback(updatedSessions => {
+    setSessions(updatedSessions);
+  }, []);
+
+  const handleJoinSession = session => {
+    dispatch(setSetlistBeingPresented({ ...setlist, sessions }));
+    router.push(`/sets/${setlist.id}/present?session_id=${session.id}`);
   };
 
   if (loading) {
@@ -224,6 +238,14 @@ export default function SetlistDetailPage() {
             />
           </div>
         </div>
+        {currentSubscription.isPro && (
+          <SetlistSessionsList
+            setlist={setlist}
+            sessions={sessions}
+            onSessionsChange={handleSessionsChanged}
+            onJoinSession={handleJoinSession}
+          />
+        )}
         {currentMember.can(DELETE_SETLISTS) && (
           <div>
             <SectionTitle title="Delete" underline />
