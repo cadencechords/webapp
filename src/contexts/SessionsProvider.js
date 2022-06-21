@@ -59,6 +59,18 @@ export default function SessionsProvider(props) {
           songIndex: 0,
           sessionId: currentSession.id,
         });
+        initializedSocket.on('inactive session', () => {
+          toast('Inactive session', {
+            hideProgressBar: true,
+            autoClose: 2000,
+            pauseOnHover: false,
+          });
+          setActiveSessionDetails({
+            activeSession: null,
+            socket: null,
+            isHost: false,
+          });
+        });
         toast.success('Connected to your session', {
           hideProgressBar: true,
           autoClose: 2000,
@@ -87,6 +99,20 @@ export default function SessionsProvider(props) {
       initializedSocket.emit('perform change song', {
         songIndex: currentSongIndex,
         sessionId: newSession.id,
+      });
+
+      initializedSocket.on('inactive session', () => {
+        toast('Your session is now inactive', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          pauseOnHover: false,
+        });
+        activeSessionDetails?.socket?.disconnect();
+        setActiveSessionDetails({
+          activeSession: null,
+          socket: null,
+          isHost: false,
+        });
       });
 
       setActiveSessionDetails({
