@@ -12,6 +12,7 @@ import PageLoading from './components/PageLoading';
 import SecuredRoutes from './components/SecuredRoutes';
 import SignUpPage from './pages/SignUpPage';
 import { ToastContainer } from 'react-toastify';
+import JoinLinkPage from './pages/JoinLinkPage';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const TeamLoginPage = lazy(() => import('./pages/TeamLoginPage'));
@@ -47,6 +48,7 @@ function App() {
           <Switch>
             <Route path="/login" exact component={LoginPage} />
             <Route path="/login/teams" exact component={TeamLoginPage} />
+            <Route path="/join/:code" exact component={JoinLinkPage} />
             <Route path="/login/teams/new" exact>
               <CreateNewTeamPage />
             </Route>
