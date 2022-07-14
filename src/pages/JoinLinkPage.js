@@ -104,13 +104,13 @@ export default function JoinLinkPage() {
           You're already on <span className="font-bold">{team?.name}</span>
         </h1>
         <Link to="/">
-          <Button full={true} onClick={handleGoToTeam}>
+          <Button full={true} onClick={handleGoToTeam} name="go to team">
             Go to team
           </Button>
         </Link>
         <OrDivider />
         <Link to={`/login?target_url=${window.location.pathname}`}>
-          <Button variant="open" full={true}>
+          <Button variant="open" full={true} name="use other user">
             Login as someone else
           </Button>
         </Link>
@@ -147,7 +147,7 @@ export default function JoinLinkPage() {
           </Card>
           <OrDivider />
           <Link to={`/login?target_url=${window.location.pathname}`}>
-            <Button variant="open" full>
+            <Button variant="open" full name="use other user">
               Login as someone else
             </Button>
           </Link>

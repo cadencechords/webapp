@@ -79,6 +79,7 @@ export default function LoginPage() {
           <Link
             to="/signup"
             className="text-blue-600 dark:text-dark-blue font-semibold ml-1"
+            aria-label="sign up"
           >
             sign up for one!
           </Link>

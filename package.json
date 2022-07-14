@@ -50,6 +50,8 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "e2e": "cypress open",
+    "e2e:headless": "cypress run",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -71,11 +73,15 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/cypress": "^8.0.3",
     "autoprefixer": "9",
     "axios-mock-adapter": "^1.21.1",
     "babel-plugin-polyfill-corejs2": "^0.2.2",
     "babel-plugin-polyfill-corejs3": "^0.2.5",
     "babel-plugin-polyfill-regenerator": "^0.2.2",
+    "cheerio": "=1.0.0-rc.3",
+    "cypress": "^10.3.0",
+    "eslint-plugin-cypress": "^2.12.1",
     "jest-localstorage-mock": "^2.4.21",
     "postcss": "7",
     "tailwind-scrollbar": "^1.3.1",
