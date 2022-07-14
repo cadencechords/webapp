@@ -26,7 +26,10 @@ export default function SignUpPage() {
     document.title = 'Sign Up';
     const script = document.createElement('script');
 
-    script.src = `https://${window.location.hostname}/scripts/passwords.js`;
+    const protocol = window.location.hostname?.includes('localhost')
+      ? 'http'
+      : 'https';
+    script.src = `${protocol}://${window.location.hostname}:${window.location.port}/scripts/passwords.js`;
     script.async = true;
 
     document.body.appendChild(script);
@@ -172,6 +175,7 @@ export default function SignUpPage() {
           disabled={!canSignUp}
           loading={loading}
           onClick={handleSignUp}
+          name="sign up"
         >
           Sign Up
         </Button>

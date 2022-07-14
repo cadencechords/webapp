@@ -25,7 +25,6 @@ export default function TeamLoginPage() {
       }
     }
 
-    console.log('in here');
     fetchTeams();
   }, []);
 

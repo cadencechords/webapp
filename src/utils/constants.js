@@ -35,4 +35,6 @@ export const EDIT_FILES = 'Edit files';
 export const ADD_FILES = 'Add files';
 export const DELETE_FILES = 'Delete files';
 
+export const MANAGE_BILLING = 'Manage billing';
+
 export function noop() {}
