@@ -1,22 +1,28 @@
-import * as Transposer from "chord-transposer";
+import * as Transposer from 'chord-transposer';
 
-import ChordSheetJS from "chordsheetjs";
-import TextAutosize from "../components/TextAutosize";
+import ChordSheetJS from 'chordsheetjs';
+import TextAutosize from '../components/TextAutosize';
 
-const CHORD_PRO_REGEX = new RegExp(/[[].*[\]]/);
+const CHORD_REGEX = new RegExp(
+  /^([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?$/
+);
+
+const CHORD_PRO_REGEX = new RegExp(
+  /^[[]([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?[\]]$/
+);
 const LINES_REGEX = new RegExp(/\r\n|\r|\n/);
 const SECTION_TITLE_REGEX = new RegExp(
-  "^(\\[)?(verse|chorus|interlude|prechorus|vamp|tag|outro|intro|break|pre chorus|bridge)( )*([0-9])*(:|])?( )*$"
+  '^(\\[)?(verse|chorus|interlude|prechorus|vamp|tag|outro|intro|break|pre chorus|bridge)( )*([0-9])*(:|])?( )*$'
 );
 
 export function isChordLine(line) {
   if (line) {
-    let parts = line.split(" ");
-    parts = parts.map((part) => part.replace(/\s/g, ""));
-    parts = parts.filter((part) => part !== "");
+    let parts = line.split(' ');
+    parts = parts.map(part => part.replace(/\s/g, ''));
+    parts = parts.filter(part => part !== '');
     let numChordMatches = 0;
 
-    parts?.forEach((part) => {
+    parts?.forEach(part => {
       if (isChord(part)) {
         ++numChordMatches;
       }
@@ -38,21 +44,21 @@ function isChord(potentialChord) {
 }
 
 export function isNewLine(line) {
-  return line === "";
+  return line === '';
 }
 
 export function parseQuality(key) {
   if (key?.length > 0) {
-    return isMinor(key) ? "m" : "";
+    return isMinor(key) ? 'm' : '';
   } else {
-    return "";
+    return '';
   }
 }
 
 export function isMinor(key) {
   if (key) {
     let lastChar = key.charAt(key.length - 1);
-    return lastChar === "m";
+    return lastChar === 'm';
   } else {
     return key;
   }
@@ -78,7 +84,7 @@ export function transpose(song) {
   ) {
     let linesOfSong = song.content.split(/\r\n|\r|\n/);
 
-    let transposedContent = "";
+    let transposedContent = '';
 
     linesOfSong.forEach((line, index) => {
       let transposedLine;
@@ -112,13 +118,13 @@ export function transpose(song) {
       }
 
       if (index < linesOfSong.length - 1) {
-        transposedContent += "\n";
+        transposedContent += '\n';
       }
     });
 
     return transposedContent;
   } else {
-    return song?.content ? song.content : "";
+    return song?.content ? song.content : '';
   }
 }
 
@@ -163,7 +169,7 @@ export function html(song, onLineDoubleClick) {
           <p
             key={index}
             className={lineClasses}
-            style={{ lineHeight: "1.5" }}
+            style={{ lineHeight: '1.5' }}
             onDoubleClick={() => onLineDoubleClick?.(line, index)}
           >
             {line}
@@ -183,7 +189,7 @@ export function html(song, onLineDoubleClick) {
     );
   }
 
-  return "";
+  return '';
 }
 
 function isChordPro(content) {
@@ -191,7 +197,7 @@ function isChordPro(content) {
 }
 
 function determineClassesForLine(line, format) {
-  let baseClasses = format.autosize ? "whitespace-pre" : "whitespace-pre-wrap";
+  let baseClasses = format.autosize ? 'whitespace-pre' : 'whitespace-pre-wrap';
   if (isChordLine(line)) {
     return `${baseClasses} ${determineClassesForChordLine(format)}`;
   } else {
@@ -201,13 +207,13 @@ function determineClassesForLine(line, format) {
 
 function determineClassesForChordLine(format) {
   if (format.chords_hidden) {
-    return "hidden";
+    return 'hidden';
   }
 
-  let classes = "";
+  let classes = '';
 
-  if (format.bold_chords) classes += " font-bold";
-  if (format.italic_chords) classes += " italic";
+  if (format.bold_chords) classes += ' font-bold';
+  if (format.italic_chords) classes += ' italic';
 
   return classes;
 }
@@ -235,16 +241,16 @@ function fromRoadmap(song) {
   let sections = breakIntoSections(song.content);
   let roadmap = song.roadmap;
 
-  let expandedContent = "";
+  let expandedContent = '';
   let sectionTitles = Object.keys(sections);
 
-  roadmap.forEach((roadmapSection) => {
-    let matchedSectionTitle = sectionTitles.find((sectionTitle) =>
+  roadmap.forEach(roadmapSection => {
+    let matchedSectionTitle = sectionTitles.find(sectionTitle =>
       sectionTitle.includes(roadmapSection)
     );
     if (matchedSectionTitle) {
       let sectionToAppend = `${roadmapSection}\n${sections[matchedSectionTitle]}`;
-      if (!sectionToAppend.endsWith("\n\n")) sectionToAppend += "\n";
+      if (!sectionToAppend.endsWith('\n\n')) sectionToAppend += '\n';
       expandedContent += sectionToAppend;
     }
   });
@@ -252,15 +258,15 @@ function fromRoadmap(song) {
   return expandedContent;
 }
 
-function breakIntoSections(content = "") {
+function breakIntoSections(content = '') {
   let lines = content.split(LINES_REGEX);
 
-  let sectionTitle = "";
+  let sectionTitle = '';
   let sections = {};
-  lines.forEach((line) => {
+  lines.forEach(line => {
     if (isSectionTitle(line)) {
       sectionTitle = line;
-      sections[sectionTitle] = "";
+      sections[sectionTitle] = '';
     } else {
       sections[sectionTitle] += `${line}\n`;
     }
