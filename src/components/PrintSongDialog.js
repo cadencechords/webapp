@@ -1,11 +1,12 @@
-import StyledDialog from "./StyledDialog";
-import { usePDF } from "@react-pdf/renderer";
-import { toPdf } from "../utils/PdfUtils";
-import { useEffect, useState } from "react";
-import Button from "./Button";
-import FontsListBox from "./FontsListBox";
-import FontSizesListBox from "./FontSizesListBox";
-import Checkbox from "./Checkbox";
+import StyledDialog from './StyledDialog';
+import { usePDF } from '@react-pdf/renderer';
+import { toPdf } from '../utils/PdfUtils';
+import { useEffect, useState } from 'react';
+import Button from './Button';
+import FontsListBox from './FontsListBox';
+import FontSizesListBox from './FontSizesListBox';
+import Checkbox from './Checkbox';
+import ColorPicker from './ColorPicker';
 
 export default function PrintSongDialog({
   song: initialSong,
@@ -47,14 +48,14 @@ export default function PrintSongDialog({
             <span className="w-28">Font: </span>
             <FontsListBox
               selectedFont={song.format.font}
-              onChange={(newValue) => handleChange("font", newValue)}
+              onChange={newValue => handleChange('font', newValue)}
             />
           </div>
           <div className="flex-between mb-6">
             <span className="w-28">Font size: </span>
             <FontSizesListBox
               selectedFontSize={song.format.font_size}
-              onChange={(newValue) => handleChange("font_size", newValue)}
+              onChange={newValue => handleChange('font_size', newValue)}
             />
           </div>
           <div className="flex-between pt-6 mb-4 border-t dark:border-dark-gray-600 ">
@@ -65,14 +66,28 @@ export default function PrintSongDialog({
             <span className="w-28">Bold chords:</span>
             <Checkbox
               checked={song.format.bold_chords}
-              onChange={(newValue) => handleChange("bold_chords", newValue)}
+              onChange={newValue => handleChange('bold_chords', newValue)}
             />
           </div>
-          <div className="flex-between pb-4 border-b dark:border-dark-gray-600">
+          <div className="flex-between pb-4">
             <span className="w-28">Italic chords:</span>
             <Checkbox
               checked={song.format.italic_chords}
-              onChange={(newValue) => handleChange("italic_chords", newValue)}
+              onChange={newValue => handleChange('italic_chords', newValue)}
+            />
+          </div>
+          <div className="flex-between pb-4">
+            <span className="w-28">Chord color:</span>
+            <ColorPicker
+              color={song.format.chord_color}
+              onChange={newValue => handleChange('chord_color', newValue)}
+            />
+          </div>
+          <div className="flex-between pb-4 border-b dark:border-dark-gray-600">
+            <span className="w-28">Highlight color:</span>
+            <ColorPicker
+              color={song.format.highlight_color}
+              onChange={newValue => handleChange('highlight_color', newValue)}
             />
           </div>
           <a href={instance.url} download={`${song.name}.pdf`}>

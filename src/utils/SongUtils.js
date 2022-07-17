@@ -3,9 +3,9 @@ import * as Transposer from 'chord-transposer';
 import ChordSheetJS from 'chordsheetjs';
 import TextAutosize from '../components/TextAutosize';
 
-const CHORD_REGEX = new RegExp(
-  /^([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?$/
-);
+// const CHORD_REGEX = new RegExp(
+//   /^([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?$/
+// );
 
 const CHORD_PRO_REGEX = new RegExp(
   /^[[]([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?[\]]$/
@@ -34,7 +34,7 @@ export function isChordLine(line) {
   }
 }
 
-function isChord(potentialChord) {
+export function isChord(potentialChord) {
   try {
     Transposer.Chord.parse(potentialChord);
     return true;
@@ -164,6 +164,41 @@ export function html(song, onLineDoubleClick) {
         );
       else {
         let lineClasses = determineClassesForLine(line, song.format);
+
+        if (
+          isChordLine(line)
+          // (song.format.highlight_color || song.format.chord_color)
+        ) {
+          let chordStyles = {};
+          if (song.format.chord_color)
+            chordStyles = { color: song.format.chord_color };
+
+          let tokens = line.split(/(\s+)/);
+          tokens = tokens.map((token, index) =>
+            isChord(token) ? (
+              <span key={index} style={chordStyles} className="relative">
+                {token}
+                {song.format.highlight_color && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      backgroundColor: song.format.highlight_color,
+                      height: '100%',
+                      top: '0px',
+                      left: '-4px',
+                      right: '-4px',
+                      zIndex: '-1',
+                    }}
+                  ></span>
+                )}
+              </span>
+            ) : (
+              token
+            )
+          );
+
+          line = tokens;
+        }
 
         return (
           <p

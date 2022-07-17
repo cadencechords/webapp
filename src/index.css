@@ -58,3 +58,14 @@ input[type="number"] {
 .alice-carousel__stage-item * {
   line-height: 1.5 !important;
 }
+
+.react-colorful {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+
+  width: 100% !important;
+}
+
+.react-colorful__last-control {
+  border-radius: 0 !important;
+}

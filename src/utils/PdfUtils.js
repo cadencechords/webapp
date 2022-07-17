@@ -1,17 +1,18 @@
-import { Document, Font, Page, Text, View } from "@react-pdf/renderer";
-import { formatChordPro, isChordLine, isNewLine } from "./SongUtils";
+import { Document, Font, Page, Text, View } from '@react-pdf/renderer';
+import { formatChordPro, isChord, isChordLine, isNewLine } from './SongUtils';
 
-import OpenSansBold from "../fonts/OpenSans-Bold.ttf";
-import OpenSansBoldItalic from "../fonts/OpenSans-BoldItalic.ttf";
-import OpenSansItalic from "../fonts/OpenSans-Italic.ttf";
-import OpenSansRegular from "../fonts/OpenSans-Regular.ttf";
-import RobotoBold from "../fonts/RobotoMono-Bold.ttf";
-import RobotoBoldItalic from "../fonts/RobotoMono-BoldItalic.ttf";
-import RobotoItalic from "../fonts/RobotoMono-Italic.ttf";
-import RobotoRegular from "../fonts/RobotoMono-Regular.ttf";
+import OpenSansBold from '../fonts/OpenSans-Bold.ttf';
+import OpenSansBoldItalic from '../fonts/OpenSans-BoldItalic.ttf';
+import OpenSansItalic from '../fonts/OpenSans-Italic.ttf';
+import OpenSansRegular from '../fonts/OpenSans-Regular.ttf';
+import RobotoBold from '../fonts/RobotoMono-Bold.ttf';
+import RobotoBoldItalic from '../fonts/RobotoMono-BoldItalic.ttf';
+import RobotoItalic from '../fonts/RobotoMono-Italic.ttf';
+import RobotoRegular from '../fonts/RobotoMono-Regular.ttf';
+import HighlightedText from '../components/pdf/HighlightedText';
 
 export function toPdf(song, showChords) {
-  let pdfLines = "";
+  let pdfLines = '';
   if (song?.content) {
     registerFonts(song.format);
     pdfLines = constructPdfLines(song, showChords);
@@ -23,12 +24,12 @@ export function toPdf(song, showChords) {
     <Document creator="Cadence" producer="Cadence" author="Cadence">
       <Page size="A4" style={PDF_STYLES}>
         <View style={{ fontFamily: song.format.font }}>
-          <View style={{ marginBottom: ".25in", fontWeight: "bold" }}>
+          <View style={{ marginBottom: '.25in', fontWeight: 'bold' }}>
             <Text>{song.name}</Text>
           </View>
           <View
             style={{
-              fontSize: song.format.font_size + "px",
+              fontSize: song.format.font_size + 'px',
               flexGrow: 1,
             }}
           >
@@ -75,28 +76,32 @@ function constructNormalFontStyle(font) {
 
 function constructBoldItalicFontStyle(font) {
   let importedFontSrc = FONT_IMPORTS[font].boldItalic;
-  return { src: importedFontSrc, fontStyle: "italic", fontWeight: "bold" };
+  return { src: importedFontSrc, fontStyle: 'italic', fontWeight: 'bold' };
 }
 
 function constructBoldFontStyle(font) {
   let importedFontSrc = FONT_IMPORTS[font].bold;
-  return { src: importedFontSrc, fontWeight: "bold" };
+  return { src: importedFontSrc, fontWeight: 'bold' };
 }
 
 function constructItalicFontStyle(font) {
   let importedFontSrc = FONT_IMPORTS[font].italic;
-  return { src: importedFontSrc, fontStyle: "italic" };
+  return { src: importedFontSrc, fontStyle: 'italic' };
 }
 
 function constructChordStyles(format) {
   let chordStyles = {};
 
   if (format.bold_chords) {
-    chordStyles.fontWeight = "bold";
+    chordStyles.fontWeight = 'bold';
   }
 
   if (format.italic_chords) {
-    chordStyles.fontStyle = "italic";
+    chordStyles.fontStyle = 'italic';
+  }
+
+  if (format.chord_color) {
+    chordStyles.color = format.chord_color;
   }
 
   return chordStyles;
@@ -109,16 +114,32 @@ function constructPdfLines(song, showChords) {
     if (isNewLine(line)) {
       return <Text key={index}> &nbsp;</Text>;
     } else if (isChordLine(line) && showChords) {
-      return (
-        <View style={chordStyles} key={index}>
-          <Text>
-            &nbsp;
-            {line}
-          </Text>
-        </View>
-      );
+      if (song.format.highlight_color) {
+        const highlightedLine = buildHighlightedLine(line, {
+          backgroundColor: song.format.highlight_color,
+        });
+
+        return (
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              position: 'relative',
+              ...chordStyles,
+            }}
+          >
+            {highlightedLine}
+          </View>
+        );
+      } else {
+        return (
+          <View style={chordStyles} key={index}>
+            <Text>{line}</Text>
+          </View>
+        );
+      }
     } else if (!isChordLine(line)) {
-      return <Text key={index}>&nbsp;{line}</Text>;
+      return <Text key={index}>{line}</Text>;
     } else {
       return null;
     }
@@ -127,19 +148,40 @@ function constructPdfLines(song, showChords) {
   return pdfLines;
 }
 
+function buildHighlightedLine(line, { backgroundColor } = {}) {
+  let tokens = line.split(/(\s+)/);
+
+  tokens = tokens.map((token, index) => {
+    if (isChord(token)) {
+      return (
+        <HighlightedText
+          key={`token-${index}`}
+          backgroundColor={backgroundColor}
+        >
+          {token}
+        </HighlightedText>
+      );
+    } else {
+      return <Text key={`token-${index}`}>{token}</Text>;
+    }
+  });
+
+  return tokens;
+}
+
 const ALLOWED_FONTS = {
-  "Roboto Mono": "Roboto Mono",
-  "Open Sans": "Open Sans",
+  'Roboto Mono': 'Roboto Mono',
+  'Open Sans': 'Open Sans',
 };
 
 const FONT_IMPORTS = {
-  "Roboto Mono": {
+  'Roboto Mono': {
     regular: RobotoRegular,
     boldItalic: RobotoBoldItalic,
     bold: RobotoBold,
     italic: RobotoItalic,
   },
-  "Open Sans": {
+  'Open Sans': {
     regular: OpenSansRegular,
     boldItalic: OpenSansBoldItalic,
     bold: OpenSansBold,
@@ -148,8 +190,8 @@ const FONT_IMPORTS = {
 };
 
 const PDF_STYLES = {
-  paddingTop: ".75in",
-  paddingBottom: ".75in",
-  paddingLeft: "1in",
-  paddingRight: "1in",
+  paddingTop: '.75in',
+  paddingBottom: '.75in',
+  paddingLeft: '1in',
+  paddingRight: '1in',
 };
