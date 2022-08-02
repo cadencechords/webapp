@@ -1,9 +1,4 @@
-import {
-  DELETE_SETLISTS,
-  EDIT_SETLISTS,
-  EDIT_SONGS,
-  PUBLISH_SETLISTS,
-} from '../utils/constants';
+import { DELETE_SETLISTS, EDIT_SETLISTS, EDIT_SONGS } from '../utils/constants';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
@@ -15,8 +10,7 @@ import ChangeSetlistDateDialog from '../components/ChangeSetlistDateDialog';
 import PageLoading from '../components/PageLoading';
 import PageTitle from '../components/PageTitle';
 import PlayIcon from '@heroicons/react/solid/PlayIcon';
-import PublicSetlistDetailsDialog from '../dialogs/PublicSetlistDetailsDialog';
-import PublishSetlistDialog from '../components/PublishSetlistDialog';
+
 import SectionTitle from '../components/SectionTitle';
 import SetlistApi from '../api/SetlistApi';
 import SetlistSongsList from '../components/SetlistSongsList';
@@ -25,21 +19,15 @@ import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { setSetlistBeingPresented } from '../store/presenterSlice';
 import { toShortDate } from '../utils/DateUtils';
-import PublicSetlistApi from '../api/PublicSetlistApi';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SetlistSessionsList from '../components/SetlistSessionsList';
-import GlobeIcon from '@heroicons/react/outline/GlobeIcon';
+import PublicSetlistSection from '../components/PublicSetlistSection';
 
 export default function SetlistDetailPage() {
   const [setlist, setSetlist] = useState();
-  const [publicSetlist, setPublicSetlist] = useState();
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [showChangeDateDialog, setShowChangeDateDialog] = useState(false);
-  const [showPublishSetlistDialog, setShowPublishSetlistDialog] =
-    useState(false);
-  const [showPublicSetlistDetailsDialog, setShowPublicSetlistDetailsDialog] =
-    useState(false);
   const router = useHistory();
   const id = useParams().id;
   const currentMember = useSelector(selectCurrentMember);
@@ -61,15 +49,6 @@ export default function SetlistDetailPage() {
       } catch (error) {
         reportError(error);
         setErrored(true);
-      } finally {
-        setLoading(false);
-      }
-
-      try {
-        let result = await PublicSetlistApi.getOne(id);
-        setPublicSetlist(result.data);
-      } catch (error) {
-        reportError(error);
       } finally {
         setLoading(false);
       }
@@ -141,6 +120,10 @@ export default function SetlistDetailPage() {
     router.push(`/sets/${setlist.id}/present?session_id=${session.id}`);
   };
 
+  const handlePublicLinkToggled = newToggleValue => {
+    setSetlist({ ...setlist, public_link_enabled: newToggleValue });
+  };
+
   if (loading) {
     return <PageLoading />;
   } else if (errored) {
@@ -148,18 +131,6 @@ export default function SetlistDetailPage() {
   } else {
     return (
       <div className="mt-4">
-        {publicSetlist && (
-          <Alert className="mb-4">
-            This set is currently public
-            <Button
-              variant="open"
-              size="small"
-              onClick={() => setShowPublicSetlistDetailsDialog(true)}
-            >
-              View details
-            </Button>
-          </Alert>
-        )}
         <div className="grid md:grid-cols-3 grid-cols-1 gap-y-5 md:gap-5 w-full py-2">
           <div className="col-span-1">
             <PageTitle
@@ -202,31 +173,6 @@ export default function SetlistDetailPage() {
                   </Button>
                 </>
               )}
-              {!publicSetlist && currentMember.can(PUBLISH_SETLISTS) && (
-                <>
-                  <Button
-                    variant="outlined"
-                    color="black"
-                    className="mb-2 hidden md:flex justify-center items-center"
-                    size="xs"
-                    onClick={() => setShowPublishSetlistDialog(true)}
-                  >
-                    <GlobeIcon className="h-4 w-4 mr-1 text-blue-700" />
-                    Publish
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="black"
-                    className="flex-center mb-2 md:hidden"
-                    size="md"
-                    full
-                    onClick={() => setShowPublishSetlistDialog(true)}
-                  >
-                    <GlobeIcon className="h-5 w-5 mr-4 text-blue-700" />
-                    Publish
-                  </Button>
-                </>
-              )}
             </div>
           </div>
           <div className="col-span-2">
@@ -238,6 +184,10 @@ export default function SetlistDetailPage() {
             />
           </div>
         </div>
+        <PublicSetlistSection
+          setlist={setlist}
+          onChange={handlePublicLinkToggled}
+        />
         {currentSubscription.isPro && (
           <SetlistSessionsList
             setlist={setlist}
@@ -261,17 +211,6 @@ export default function SetlistDetailPage() {
           onDateChanged={newScheduledDate =>
             setSetlist({ ...setlist, scheduled_date: newScheduledDate })
           }
-        />
-        <PublishSetlistDialog
-          open={showPublishSetlistDialog}
-          onCloseDialog={() => setShowPublishSetlistDialog(false)}
-          onSetlistPublished={setPublicSetlist}
-        />
-        <PublicSetlistDetailsDialog
-          open={showPublicSetlistDetailsDialog}
-          publicSetlist={publicSetlist}
-          onCloseDialog={() => setShowPublicSetlistDetailsDialog(false)}
-          onUnpublished={() => setPublicSetlist(null)}
         />
       </div>
     );
