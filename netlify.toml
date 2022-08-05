@@ -7,6 +7,7 @@ REACT_APP_SENTRY_URL        = "https://d8ae4d03e076479fbe4dd2588eaccecb@o486136.
 REACT_APP_SESSIONS_URL      = "https://chords-sessions.herokuapp.com"
 REACT_APP_URL               = "https://app.cadencechords.com"
 REACT_APP_SENTRY_ENVIRONMENT= "production"
+REACT_APP_PUBLIC_URL        = "https://public.cadencechords.com"
 
 
 [context.dev.environment]
@@ -18,3 +19,4 @@ REACT_APP_SENTRY_URL        = "https://d8ae4d03e076479fbe4dd2588eaccecb@o486136.
 REACT_APP_SESSIONS_URL      = "https://chords-sessions-dev.herokuapp.com"
 REACT_APP_URL               = "https://dev.app.cadencechords.com"
 REACT_APP_SENTRY_ENVIRONMENT= "dev"
+REACT_APP_PUBLIC_URL        = "https://public.dev.cadencechords.com"
