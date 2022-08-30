@@ -1,5 +1,5 @@
-import { selectSongsCache, setSongsCache } from '../store/cacheSlice';
-import { useDispatch, useSelector } from 'react-redux';
+// import { selectSongsCache, setSongsCache } from '../store/cacheSlice';
+import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
 import { ADD_SONGS } from '../utils/constants';
@@ -14,7 +14,7 @@ import QuickAdd from '../components/QuickAdd';
 import SongApi from '../api/SongApi';
 import SongsList from '../components/SongsList';
 import WellInput from '../components/inputs/WellInput';
-import { addToNow } from '../utils/date';
+// import { addToNow } from '../utils/date';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { pluralize } from '../utils/StringUtils';
@@ -31,7 +31,7 @@ export default function SongsIndexPage() {
   const [query, setQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
   const [deleting, setDeleting] = useState(false);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const handleSongCreated = newSong => {
     // setSongs(currentSongs => {
@@ -90,7 +90,7 @@ export default function SongsIndexPage() {
       <div className="hidden sm:block">
         <PageTitle title="Songs" />
       </div>
-      <div className="h-14 mb-4 sm:hidden">
+      <div className="mb-4 h-14 sm:hidden">
         <MobileHeader
           title="Songs"
           className="shadow-inner"
@@ -101,7 +101,7 @@ export default function SongsIndexPage() {
       {songs.length > 0 && (
         <>
           <FadeIn className="pl-2 mb-2">
-            <div className="flex-between h-8">
+            <div className="h-8 flex-between">
               <span>{songs.length} total</span>
               <span className="hidden sm:inline">
                 {selectedIds?.length > 0 && (
@@ -118,7 +118,7 @@ export default function SongsIndexPage() {
               </span>
             </div>
           </FadeIn>
-          <FadeIn className="mb-4 lg:text-sm delay-75">
+          <FadeIn className="mb-4 delay-75 lg:text-sm">
             <WellInput
               placeholder="Search your songs"
               value={query}
@@ -152,12 +152,12 @@ export default function SongsIndexPage() {
           />
           <Button
             variant="open"
-            className="bg-white dark:bg-dark-gray-700 fixed bottom-12 left-0 flex-center sm:hidden h-12"
+            className="fixed left-0 h-12 bg-white dark:bg-dark-gray-700 bottom-12 flex-center sm:hidden"
             full
             style={{ boxShadow: 'rgba(0, 0, 0, 0.1) 0px -5px 17px 0px' }}
             onClick={() => setIsCreating(true)}
           >
-            <PlusCircleIcon className="h-4 w-4 mr-2" />
+            <PlusCircleIcon className="w-4 h-4 mr-2" />
             Add new song
           </Button>
         </>
