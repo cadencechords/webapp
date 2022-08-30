@@ -12,10 +12,12 @@ export default class SongApi {
     });
   }
 
-  static getAll() {
-    return axios.get(SONGS_URL + `?team_id=${getTeamId()}`, {
+  static async getAll() {
+    const result = await axios.get(SONGS_URL + `?team_id=${getTeamId()}`, {
       headers: constructAuthHeaders(),
     });
+
+    return result?.data;
   }
 
   static createOne(newSong) {

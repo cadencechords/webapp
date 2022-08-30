@@ -18,88 +18,32 @@ import { addToNow } from '../utils/date';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { pluralize } from '../utils/StringUtils';
+import useSongs from '../hooks/useSongs';
+import PageLoading from '../components/PageLoading';
+import Alert from '../components/Alert';
 
 export default function SongsIndexPage() {
   useEffect(() => (document.title = 'Songs'));
 
+  const { data: songs, isLoading, error, isSuccess } = useSongs();
   const [isCreating, setIsCreating] = useState(false);
-  const [songs, setSongs] = useState([]);
-  const [loading, setLoading] = useState(false);
   const currentMember = useSelector(selectCurrentMember);
   const [query, setQuery] = useState('');
-  const songsCache = useSelector(selectSongsCache);
-  const [loadingStatus, setLoadingStatus] = useState('not loaded');
   const [selectedIds, setSelectedIds] = useState([]);
   const [deleting, setDeleting] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    async function fetchSongs() {
-      setLoading(true);
-      try {
-        let { data } = await SongApi.getAll();
-        setSongs(data);
-
-        let cache = {
-          songs: data,
-          expires: addToNow(30, 'second').getTime(),
-        };
-
-        dispatch(setSongsCache(cache));
-      } catch (error) {
-        reportError(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    function cacheValid() {
-      return songsCache?.expires > new Date().getTime();
-    }
-
-    if (cacheValid() && loadingStatus === 'not loaded') {
-      setSongs(songsCache.songs);
-      dispatch(
-        setSongsCache({
-          ...songsCache,
-          expires: addToNow(30, 'second').getTime(),
-        })
-      );
-      setLoadingStatus('loaded');
-    } else if (loadingStatus === 'not loaded') {
-      fetchSongs();
-      setLoading('loaded');
-    }
-  }, [songsCache, dispatch, loadingStatus]);
-
   const handleSongCreated = newSong => {
-    setSongs(currentSongs => {
-      dispatch(
-        setSongsCache({
-          songs: [newSong, ...currentSongs],
-          expires: addToNow(30, 'second').getTime(),
-        })
-      );
-      return [newSong, ...currentSongs];
-    });
+    // setSongs(currentSongs => {
+    //   dispatch(
+    //     setSongsCache({
+    //       songs: [newSong, ...currentSongs],
+    //       expires: addToNow(30, 'second').getTime(),
+    //     })
+    //   );
+    //   return [newSong, ...currentSongs];
+    // });
   };
-
-  let content = null;
-
-  if (songs.length === 0) {
-    content = <NoDataMessage type="songs" loading={loading} />;
-  } else {
-    content = (
-      <FadeIn className="mb-10 delay-100">
-        <SongsList
-          songs={filteredSongs()}
-          selectedIds={selectedIds}
-          onToggleSelect={handleToggleSelect}
-          onToggleSelectAll={handleToggleSelectAll}
-        />
-      </FadeIn>
-    );
-  }
 
   function filteredSongs() {
     return songs?.filter(song =>
@@ -130,9 +74,9 @@ export default function SongsIndexPage() {
     try {
       setDeleting(true);
       await SongApi.deleteBulk(selectedIds);
-      setSongs(currentSongs =>
-        currentSongs.filter(s => !selectedIds.includes(s.id))
-      );
+      // setSongs(currentSongs =>
+      //   currentSongs.filter(s => !selectedIds.includes(s.id))
+      // );
       setSelectedIds([]);
     } catch (error) {
       reportError(error);
@@ -183,8 +127,19 @@ export default function SongsIndexPage() {
           </FadeIn>
         </>
       )}
-      {content}
-
+      {isLoading && <PageLoading />}
+      {error && <Alert>{error}</Alert>}
+      {isSuccess && songs.length === 0 && <NoDataMessage type="songs" />}
+      {isSuccess && songs.length > 0 && (
+        <FadeIn className="mb-10 delay-100">
+          <SongsList
+            songs={filteredSongs()}
+            selectedIds={selectedIds}
+            onToggleSelect={handleToggleSelect}
+            onToggleSelectAll={handleToggleSelectAll}
+          />
+        </FadeIn>
+      )}
       {currentMember.can(ADD_SONGS) && (
         <>
           <div className="hidden sm:block">
