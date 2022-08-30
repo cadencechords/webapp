@@ -9,13 +9,14 @@ import PasswordRequirements from '../components/PasswordRequirements';
 import useQuery from '../hooks/useQuery';
 
 export default function SignUpPage() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [email, setEmail] = useState(useQuery().get('email') || '');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [isLongEnough, setIsLongEnough] = useState(false);
   const [isUncommon, setIsUncommon] = useState(false);
-  const [canSignUp, setCanSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState(null);
   const [alertColor, setAlertColor] = useState(null);
@@ -47,42 +48,19 @@ export default function SignUpPage() {
     let { score } = window.zxcvbn(passwordValue);
 
     setIsUncommon(score >= 3);
-
-    setCanSignUp(
-      passwordValue === passwordConfirmation &&
-        score >= 3 &&
-        passwordValue.length >= MIN_PASSWORD_LENGTH &&
-        email !== ''
-    );
-  };
-
-  const handleConfirmationChange = confirmationValue => {
-    setPasswordConfirmation(confirmationValue);
-
-    setCanSignUp(
-      confirmationValue === password &&
-        isUncommon &&
-        isLongEnough &&
-        email !== ''
-    );
-  };
-
-  const handleEmailChange = emailValue => {
-    setEmail(emailValue);
-
-    setCanSignUp(
-      passwordConfirmation === password &&
-        isUncommon &&
-        isLongEnough &&
-        emailValue !== ''
-    );
   };
 
   const handleSignUp = async () => {
     setLoading(true);
 
     try {
-      await AuthApi.signUp(email, password, passwordConfirmation);
+      await AuthApi.signUp({
+        email,
+        password,
+        passwordConfirmation,
+        firstName,
+        lastName,
+      });
       setAlertColor('blue');
       setAlertMessage(
         'Thanks for signing up! Check your email for further instructions.'
@@ -102,29 +80,59 @@ export default function SignUpPage() {
     setPasswordConfirmation('');
     setIsPasswordFocused(false);
     setIsLongEnough(false);
-    setCanSignUp(false);
+    setFirstName('');
+    setLastName('');
     setIsUncommon(false);
   };
 
+  const canSignUp = () => {
+    return (
+      passwordConfirmation === password &&
+      isUncommon &&
+      isLongEnough &&
+      email &&
+      firstName &&
+      lastName
+    );
+  };
+
   return (
-    <div className="w-screen h-screen flex">
-      <div className="m-auto lg:w-2/5 sm:w-3/4 md:w-3/5 w-full px-3 max-w-xl">
-        <h1 className="font-bold text-3xl text-center mb-2">
+    <div className="flex w-screen h-screen">
+      <div className="w-full max-w-xl px-3 m-auto lg:w-2/5 sm:w-3/4 md:w-3/5">
+        <h1 className="mb-2 text-3xl font-bold text-center">
           Sign up for an account
         </h1>
-        <div className="text-center mb-4">
+        <div className="mb-4 text-center">
           Or
-          <Link to="/login" className="text-blue-600 font-semibold ml-1">
+          <Link to="/login" className="ml-1 font-semibold text-blue-600">
             login here
           </Link>
         </div>
         <div className="py-2">
+          <div className="flex mb-4">
+            <div className="w-full pr-2">
+              <div className="mb-2">First Name</div>
+              <OutlinedInput
+                placeholder="first name"
+                onChange={setFirstName}
+                value={firstName}
+              />
+            </div>
+            <div className="w-full pl-2">
+              <div className="mb-2">Last Name</div>
+              <OutlinedInput
+                placeholder="last name"
+                onChange={setLastName}
+                value={lastName}
+              />
+            </div>
+          </div>
           <div className="mb-2">Email</div>
           <div className="mb-4">
             <OutlinedInput
               placeholder="email"
               type="email"
-              onChange={handleEmailChange}
+              onChange={setEmail}
               value={email}
             />
           </div>
@@ -154,7 +162,7 @@ export default function SignUpPage() {
               value={passwordConfirmation}
               placeholder="enter your password again"
               type="password"
-              onChange={handleConfirmationChange}
+              onChange={setPasswordConfirmation}
             />
           </div>
         </div>
@@ -172,7 +180,7 @@ export default function SignUpPage() {
 
         <Button
           full
-          disabled={!canSignUp}
+          disabled={!canSignUp()}
           loading={loading}
           onClick={handleSignUp}
           name="sign up"
