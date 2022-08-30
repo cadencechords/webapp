@@ -25,26 +25,23 @@ export default function ClaimInvitationPage() {
 	useEffect(() => {
 		async function claimToken() {
 			setClaimingToken(true);
-			setTimeout(async () => {
-
-				try {
-					let result = await InvitationApi.claimOne(token);
-					let accessToken = result.headers["access-token"];
-					let client = result.headers["client"];
-					let uid = result.headers["uid"];
-					dispatch(setAuth({ accessToken, client, uid }));
-					dispatch(setTeamId(result.data.team_id));
-					router.push("/");
-				} catch (error) {
-					reportError(error);
-					if (error.response.status === 404) {
-						setErrors(error.response.data.message);
-						setClaimingToken(false);
-					} else if (error.response.status === 400) {
-						router.push(`/invitations/signup?token=${token}`);
-					}
+			try {
+				let result = await InvitationApi.claimOne(token);
+				let accessToken = result.headers["access-token"];
+				let client = result.headers["client"];
+				let uid = result.headers["uid"];
+				dispatch(setAuth({ accessToken, client, uid }));
+				dispatch(setTeamId(result.data.team_id));
+				router.push("/");
+			} catch (error) {
+				reportError(error);
+				if (error.response.status === 404) {
+					setErrors(error.response.data.message);
+					setClaimingToken(false);
+				} else if (error.response.status === 400) {
+					router.push(`/invitations/signup?token=${token}`);
 				}
-			}, 1500)
+			}
 		}
 
 		if (token) {
@@ -57,7 +54,7 @@ export default function ClaimInvitationPage() {
 			<CenteredPage>
 				<div className="text-center">
 					Uh oh, looks like something went wrong.
-					<Link className="block mt-3" to="/login">
+					<Link className="mt-3 block" to="/login">
 						<Button>Take me home</Button>
 					</Link>
 				</div>
