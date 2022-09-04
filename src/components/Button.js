@@ -17,6 +17,7 @@ export default function Button({
   onFocus,
   onBlur,
   name,
+  type = 'button',
 }) {
   let defaultClasses = ` outline-none focus:outline-none transition-colors text-sm ${
     className ? className : ''
@@ -62,6 +63,7 @@ export default function Button({
       onFocus={onFocus?.()}
       onBlur={onBlur?.()}
       aria-label={name}
+      type={type}
     >
       {loading ? <PulseLoader color={loadingColor} size={6} /> : children}
     </button>

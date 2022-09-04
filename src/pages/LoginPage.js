@@ -33,7 +33,8 @@ export default function LoginPage() {
     setCanLogin(emailValue !== '' && password !== '');
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async e => {
+    e.preventDefault();
     setLoading(true);
     try {
       let result = await AuthApi.login(email, password);
@@ -69,67 +70,69 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-screen h-screen flex">
-      <div className="m-auto lg:w-2/5 sm:w-3/4 md:w-3/5 w-full px-3 max-w-xl">
-        <h1 className="font-bold text-3xl text-center mb-1">
+    <div className="flex w-screen h-screen">
+      <div className="w-full max-w-xl px-3 m-auto lg:w-2/5 sm:w-3/4 md:w-3/5">
+        <h1 className="mb-1 text-3xl font-bold text-center">
           Login to your account
         </h1>
-        <div className="text-center mb-4">
+        <div className="mb-4 text-center">
           Or
           <Link
             to="/signup"
-            className="text-blue-600 dark:text-dark-blue font-semibold ml-1"
+            className="ml-1 font-semibold text-blue-600 dark:text-dark-blue"
             aria-label="sign up"
           >
             sign up for one!
           </Link>
         </div>
-        <div className="pt-5 pb-3">
-          <input
-            className="appearance-none px-3 py-2 border-gray-300 dark:border-dark-gray-400 focus:outline-none outline-none w-full border rounded-t-md focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
-            placeholder="email"
-            type="email"
-            autoComplete="off"
-            autoCapitalize="off"
-            onChange={e => handleEmailChange(e.target.value)}
-            value={email}
-          />
+        <form onSubmit={handleLogin}>
+          <div className="pt-5 pb-3">
+            <input
+              className="w-full px-3 py-2 border border-gray-300 outline-none appearance-none dark:border-dark-gray-400 focus:outline-none rounded-t-md focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
+              placeholder="email"
+              type="email"
+              autoComplete="off"
+              autoCapitalize="off"
+              onChange={e => handleEmailChange(e.target.value)}
+              value={email}
+            />
 
-          <input
-            className="appearance-none px-3 py-2 shadow-sm focus:outline-none border-gray-300 dark:border-dark-gray-400 outline-none w-full border rounded-b-md border-t-0 focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
-            placeholder="password"
-            type="password"
-            autoComplete="off"
-            autoCapitalize="off"
-            onChange={e => handlePasswordChange(e.target.value)}
-            value={password}
-          />
-        </div>
-        <div className="mb-4 text-right font-semibold text-blue-600 dark:text-dark-blue">
-          <Link to="/forgot_password">Forgot password?</Link>
-        </div>
-        {alertMessage && (
-          <div className="mb-6">
-            <Alert
-              color={alertColor}
-              dismissable
-              onDismiss={() => setAlertMessage(null)}
-            >
-              {alertMessage}
-            </Alert>
+            <input
+              className="w-full px-3 py-2 border border-t-0 border-gray-300 shadow-sm outline-none appearance-none focus:outline-none dark:border-dark-gray-400 rounded-b-md focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
+              placeholder="password"
+              type="password"
+              autoComplete="off"
+              autoCapitalize="off"
+              onChange={e => handlePasswordChange(e.target.value)}
+              value={password}
+            />
           </div>
-        )}
-        <div className="my-3">
-          <Button
-            full
-            bold
-            disabled={!canLogin}
-            loading={loading}
-            onClick={handleLogin}
-          >
-            Login
-          </Button>
-        </div>
+          <div className="mb-4 font-semibold text-right text-blue-600 dark:text-dark-blue">
+            <Link to="/forgot_password">Forgot password?</Link>
+          </div>
+          {alertMessage && (
+            <div className="mb-6">
+              <Alert
+                color={alertColor}
+                dismissable
+                onDismiss={() => setAlertMessage(null)}
+              >
+                {alertMessage}
+              </Alert>
+            </div>
+          )}
+          <div className="my-3">
+            <Button
+              full
+              bold
+              disabled={!canLogin}
+              loading={loading}
+              type="submit"
+            >
+              Login
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
