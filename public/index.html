@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Access your team's songs from anywhere" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta name="apple-itunes-app" content="app-id=1608995158" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -40,11 +41,11 @@
   <script type="text/javascript">
     !(function (e, t, n) {
       function a() {
-        var e = t.getElementsByTagName("script")[0],
-          n = t.createElement("script");
-        (n.type = "text/javascript"),
+        var e = t.getElementsByTagName('script')[0],
+          n = t.createElement('script');
+        (n.type = 'text/javascript'),
           (n.async = !0),
-          (n.src = "https://beacon-v2.helpscout.net"),
+          (n.src = 'https://beacon-v2.helpscout.net'),
           e.parentNode.insertBefore(n, e);
       }
       if (
@@ -53,12 +54,12 @@
             e.Beacon.readyQueue.push({ method: t, options: n, data: a });
           }),
         (n.readyQueue = []),
-        "complete" === t.readyState)
+        'complete' === t.readyState)
       )
         return a();
       e.attachEvent
-        ? e.attachEvent("onload", a)
-        : e.addEventListener("load", a, !1);
+        ? e.attachEvent('onload', a)
+        : e.addEventListener('load', a, !1);
     })(window, document, window.Beacon || function () {});
   </script>
   <body class="bg-white dark:bg-dark-gray-900 dark:text-dark-gray-100">
