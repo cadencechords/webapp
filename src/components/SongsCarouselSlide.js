@@ -1,11 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
-import NotesList from "./NotesList";
-import Roadmap from "./Roadmap";
-import _ from "lodash";
-import { html } from "../utils/SongUtils";
-import { selectCurrentSubscription } from "../store/subscriptionSlice";
-import { useSelector } from "react-redux";
+import NotesList from './NotesList';
+import Roadmap from './Roadmap';
+import _ from 'lodash';
+import { html } from '../utils/SongUtils';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import { useSelector } from 'react-redux';
 
 export default function SongsCarouselSlide({
   song,
@@ -27,25 +27,25 @@ export default function SongsCarouselSlide({
 
   function handleRoadmapUpdate(field, updatedRoadmap) {
     setRoadmap(updatedRoadmap);
-    debounce("roadmap", updatedRoadmap);
+    debounce('roadmap', updatedRoadmap);
   }
 
   function onDeleteNote(noteId) {
-    let updatedNotes = notes?.filter((note) => note.id !== noteId);
+    let updatedNotes = notes?.filter(note => note.id !== noteId);
 
     setNotes(updatedNotes);
-    debounce("notes", updatedNotes);
+    debounce('notes', updatedNotes);
   }
 
   return (
-    <div key={song?.id} className="mb-4 block">
+    <div key={song?.id} className="block mb-4">
       <Roadmap
         song={{ id: song.id, roadmap: roadmap }}
         onSongChange={handleRoadmapUpdate}
         onDragEnd={onEnableSwipe}
         onDragStart={onDisableSwipe}
       />
-      <div className="relative w-full">
+      <div className="relative w-full overflow-x-hidden">
         {currentSubscription?.isPro && song.notes?.length > 0 && (
           <NotesList
             rearrangeable={false}
@@ -53,7 +53,7 @@ export default function SongsCarouselSlide({
             onDelete={onDeleteNote}
           />
         )}
-        <div id="song" className="mr-0 pb-24">
+        <div id="song" className="pb-24 mr-0">
           {html(song)}
         </div>
       </div>
