@@ -31,7 +31,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    window?.Beacon('init', 'e59a5584-73cb-4380-b0b2-be1d76ff7362');
+    // window?.Beacon('init', 'e59a5584-73cb-4380-b0b2-be1d76ff7362');
   }, []);
 
   return (
