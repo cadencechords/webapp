@@ -22,7 +22,7 @@ import { reportError } from '../utils/error';
 import { setSubscription } from '../store/subscriptionSlice';
 import { useHistory } from 'react-router';
 
-const EditorWorkbenchPage = lazy(() => import('../pages/EditorWorkbenchPage'));
+const SongEditorPage = lazy(() => import('../pages/SongEditorPage'));
 const CustomerPortalSessionGeneratorPage = lazy(() =>
   import('../pages/CustomerPortalSessionGeneratorPage')
 );
@@ -93,7 +93,7 @@ export default function SecuredRoutes() {
     return (
       <>
         <Switch>
-          <Route path="/editor" exact component={EditorWorkbenchPage} />
+          <Route path="/songs/:id/edit" exact component={SongEditorPage} />
           <Route
             path="/songs/:id/present"
             exact
