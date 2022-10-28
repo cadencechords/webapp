@@ -1,5 +1,5 @@
 import { EDIT_SONGS, noop, START_SESSIONS } from '../utils/constants';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Drawer from './Drawer';
 import MobileMenuButton from './buttons/MobileMenuButton';
@@ -7,8 +7,7 @@ import PencilIcon from '@heroicons/react/solid/PencilIcon';
 import ScrollIcon from '../icons/ScrollIcon';
 import Toggle from './Toggle';
 import { selectCurrentMember } from '../store/authSlice';
-import { setSongBeingEdited } from '../store/editorSlice';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SessionIcon from '../icons/SessionIcon';
 import { useContext } from 'react';
@@ -26,8 +25,6 @@ export default function SetlistAdjustmentsDrawer({
 }) {
   const currentMember = useSelector(selectCurrentMember);
   const currentSubscription = useSelector(selectCurrentSubscription);
-  const dispatch = useDispatch();
-  const router = useHistory();
   const iconClasses = 'w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue';
   const {
     sessions,
@@ -36,11 +33,6 @@ export default function SetlistAdjustmentsDrawer({
     onLeaveAsMember,
     activeSessionDetails: { isHost, activeSession },
   } = useContext(SessionsContext);
-
-  function handleOpenInEditor() {
-    dispatch(setSongBeingEdited(song));
-    router.push('/editor');
-  }
 
   function handleFormatUpdate(field, value) {
     let updatedFormat = { ...song.format, [field]: value };
@@ -104,14 +96,15 @@ export default function SetlistAdjustmentsDrawer({
 
         {currentMember.can(EDIT_SONGS) && (
           <>
-            <MobileMenuButton
-              full
-              className="flex items-center"
-              onClick={handleOpenInEditor}
+            <Link
+              to={{ pathname: `/songs/${song?.id}/edit`, state: song }}
+              className="w-full"
             >
-              <PencilIcon className={iconClasses} />
-              Edit
-            </MobileMenuButton>
+              <MobileMenuButton full className="flex items-center">
+                <PencilIcon className={iconClasses} />
+                Edit
+              </MobileMenuButton>
+            </Link>
           </>
         )}
         <MobileMenuButton

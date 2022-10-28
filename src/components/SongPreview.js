@@ -1,12 +1,9 @@
-import { html } from "../utils/SongUtils";
+import { html } from '../utils/SongUtils';
 
-export default function SongPreview({ song, onDoubleClick }) {
-	return (
-		<div
-			className="rounded-md whitespace-pre-wrap resize-none shadow-md p-4 border border-gray-300 dark:border-dark-gray-700"
-			onDoubleClick={onDoubleClick}
-		>
-			{html(song)}
-		</div>
-	);
+export default function SongPreview({ song }) {
+  return (
+    <div className="p-4 whitespace-pre-wrap border border-gray-300 rounded-md shadow-md resize-none dark:border-dark-gray-700">
+      {html(song)}
+    </div>
+  );
 }

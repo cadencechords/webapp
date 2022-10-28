@@ -8,7 +8,7 @@ import TextAutosize from '../components/TextAutosize';
 // );
 
 const CHORD_PRO_REGEX = new RegExp(
-  /^[[]([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?[\]]$/
+  /[[]([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?[\]]/
 );
 const LINES_REGEX = new RegExp(/\r\n|\r|\n/);
 const SECTION_TITLE_REGEX = new RegExp(
