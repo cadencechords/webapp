@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FormatBottomSheet from './FormatBottomSheet';
 import FormatPanel from './FormatPanel';
 
 export default function EditorFormatOptions({ show, onClose }) {
@@ -16,6 +17,9 @@ export default function EditorFormatOptions({ show, onClose }) {
             defaultCoordinates={formatPanelCoordinates}
             onCoordinatesChange={setFormatPanelCoordinates}
           />
+        </div>
+        <div className="md:hidden">
+          <FormatBottomSheet show={show} onClose={onClose} />
         </div>
       </>
     )

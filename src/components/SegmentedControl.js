@@ -18,7 +18,7 @@ export default function SegmentedControl({
             type="radio"
             name={name}
             className="w-0 h-0"
-            id={`segmented-control-${option}`}
+            id={`${name}-segmented-control-${option}`}
             checked={selected === option}
             value={option}
             onChange={e => onChange(e.target.value)}
@@ -31,7 +31,7 @@ export default function SegmentedControl({
                 ? 'bg-white dark:bg-dark-gray-700 rounded-md shadow-sm'
                 : ''
             }`}
-            htmlFor={`segmented-control-${option}`}
+            htmlFor={`${name}-segmented-control-${option}`}
           >
             {option}
           </label>

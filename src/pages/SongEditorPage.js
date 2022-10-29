@@ -34,9 +34,10 @@ function Page() {
               setShowFormatOptions(previous => !previous)
             }
             saving={saving}
+            isFormatOpen={showFormatOptions}
           />
         </div>
-        <div className="w-full px-3 flex-center xl:hidden">
+        <div className="w-full px-3 py-2 flex-center xl:hidden">
           <div className="w-full max-w-md">
             <SegmentedControl
               options={['Edit content', 'Preview']}
