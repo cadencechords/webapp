@@ -40,12 +40,12 @@ export default function FormatPanelGeneralOptions() {
   );
 }
 
-const FONT_OPTIONS = [
+export const FONT_OPTIONS = [
   { value: 'Roboto Mono', display: 'Roboto Mono' },
   { value: 'Open Sans', display: 'Open Sans' },
 ];
 
-const FONT_SIZES = [
+export const FONT_SIZES = [
   { value: '14', display: '14' },
   { value: '15', display: '15' },
   { value: '16', display: '16' },

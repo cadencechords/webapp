@@ -88,7 +88,7 @@ export default function LoginPage() {
         <form onSubmit={handleLogin}>
           <div className="pt-5 pb-3">
             <input
-              className="w-full px-3 py-2 border border-gray-300 outline-none appearance-none dark:border-dark-gray-400 focus:outline-none rounded-t-md focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
+              className="w-full px-3 py-2 border border-gray-300 rounded-b-none outline-none appearance-none rounded-t-xl dark:border-dark-gray-400 focus:outline-none focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
               placeholder="email"
               type="email"
               autoComplete="off"
@@ -98,7 +98,7 @@ export default function LoginPage() {
             />
 
             <input
-              className="w-full px-3 py-2 border border-t-0 border-gray-300 shadow-sm outline-none appearance-none focus:outline-none dark:border-dark-gray-400 rounded-b-md focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
+              className="w-full px-3 py-2 border border-t-0 border-gray-300 rounded-t-none shadow-sm outline-none appearance-none rounded-b-xl focus:outline-none dark:border-dark-gray-400 focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
               placeholder="password"
               type="password"
               autoComplete="off"

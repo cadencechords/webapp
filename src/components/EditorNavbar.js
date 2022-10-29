@@ -12,6 +12,7 @@ export default function EditorNavbar({
   onSave,
   saving,
   onToggleFormatOptions,
+  isFormatOpen,
 }) {
   const router = useHistory();
   const dispatch = useDispatch();
@@ -37,14 +38,14 @@ export default function EditorNavbar({
         <div className="flex items-center">
           <Button
             variant="open"
-            color="gray"
+            color={isFormatOpen ? 'blue' : 'gray'}
             onClick={onToggleFormatOptions}
-            className="md:mr-4"
+            className="sm:mr-4"
           >
             <AdjustmentsIcon className="w-5 h-5" />
           </Button>
-          <span className="fixed bottom-0 left-0 z-20 w-full p-3 md:p-0 md:w-auto md:relative">
-            <div className="w-full md:w-20">
+          <span className="fixed bottom-0 left-0 z-20 w-full p-3 sm:p-0 sm:w-auto sm:relative">
+            <div className="w-full sm:w-20">
               <Button
                 disabled={!dirty}
                 onClick={onSave}
