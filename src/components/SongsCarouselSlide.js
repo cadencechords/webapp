@@ -48,9 +48,11 @@ export default function SongsCarouselSlide({
       <div className="relative w-full overflow-x-hidden">
         {currentSubscription?.isPro && song.notes?.length > 0 && (
           <NotesList
-            rearrangeable={false}
+            rearrangeable={true}
             song={song}
             onDelete={onDeleteNote}
+            onDragEnd={onEnableSwipe}
+            onDragStart={onDisableSwipe}
           />
         )}
         <div id="song" className="pb-24 mr-0">

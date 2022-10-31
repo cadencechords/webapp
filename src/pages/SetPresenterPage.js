@@ -24,6 +24,7 @@ import SessionsProvider, {
   SessionsContext,
 } from '../contexts/SessionsProvider';
 import useQuery from '../hooks/useQuery';
+import notesApi from '../api/notesApi';
 
 export default function Page() {
   return (
@@ -166,6 +167,22 @@ function SetPresenter() {
     setBottomSheet(sheet);
   }
 
+  async function handleAddNote() {
+    const song = songs[songBeingViewedIndex];
+    try {
+      let { data } = await notesApi.create(song.id);
+      setSongs(currentSongs => {
+        return currentSongs.map((song, index) => {
+          return index === songBeingViewedIndex
+            ? { ...song, notes: [...song.notes, data] }
+            : song;
+        });
+      });
+    } catch (error) {
+      reportError(error);
+    }
+  }
+
   const handleSongUpdate = useCallback(
     (field, value) => {
       setSongs(currentSongs => {
@@ -191,7 +208,7 @@ function SetPresenter() {
           onShowBottomSheet={handleBottomSheetChange}
           onShowDrawer={() => setShowDrawer(true)}
         />
-        <div className="mx-auto max-w-4xl p-3 whitespace-pre-wrap mb-12">
+        <div className="max-w-4xl p-3 mx-auto mb-12 whitespace-pre-wrap">
           <SongsCarousel
             songs={songs}
             onIndexChange={handleSongBeingViewedIndexChange}
@@ -221,6 +238,7 @@ function SetPresenter() {
           onShowBottomSheet={handleBottomSheetChange}
           setlist={setlist}
           currentSongIndex={songBeingViewedIndex}
+          onAddNote={handleAddNote}
         />
       </>
     );

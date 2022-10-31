@@ -13,6 +13,7 @@ import SessionIcon from '../icons/SessionIcon';
 import { useContext } from 'react';
 import { SessionsContext } from '../contexts/SessionsProvider';
 import NumberBadge from './NumberBadge';
+import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
 
 export default function SetlistAdjustmentsDrawer({
   song,
@@ -22,6 +23,7 @@ export default function SetlistAdjustmentsDrawer({
   onShowBottomSheet,
   setlist,
   currentSongIndex,
+  onAddNote,
 }) {
   const currentMember = useSelector(selectCurrentMember);
   const currentSubscription = useSelector(selectCurrentSubscription);
@@ -93,6 +95,17 @@ export default function SetlistAdjustmentsDrawer({
             spacing="between"
           />
         </MobileMenuButton>
+
+        {currentSubscription.isPro && (
+          <MobileMenuButton
+            full
+            className="hidden sm:flex sm:items-center"
+            onClick={onAddNote}
+          >
+            <AddStickyNoteIcon className={iconClasses} />
+            Add a note
+          </MobileMenuButton>
+        )}
 
         {currentMember.can(EDIT_SONGS) && (
           <>
