@@ -12,16 +12,6 @@ export default function SongsCarousel({
 }) {
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(true);
 
-  function handleEnableSwiping() {
-    setTimeout(() => {
-      setIsSwipeEnabled(true);
-    }, [100]);
-  }
-
-  function handleDisableSwiping() {
-    setIsSwipeEnabled(false);
-  }
-
   function buildTemplates() {
     return songs?.map(song => (
       <SongsCarouselSlide
@@ -29,8 +19,8 @@ export default function SongsCarousel({
         song={song}
         onDeleteNote={handleDeleteNote}
         onUpdateNote={handleUpdateNote}
-        onEnableSwipe={handleEnableSwiping}
-        onDisableSwipe={handleDisableSwiping}
+        onEnableSwipe={() => setIsSwipeEnabled(true)}
+        onDisableSwipe={() => setIsSwipeEnabled(false)}
         onSongUpdate={onSongUpdate}
       />
     ));

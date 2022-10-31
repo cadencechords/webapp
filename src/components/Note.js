@@ -1,11 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
-import CogIcon from "@heroicons/react/outline/CogIcon";
-import Draggable from "react-draggable";
-import NoteDialog from "../dialogs/NoteDialog";
-import NotesApi from "../api/notesApi";
-import _ from "lodash";
-import { reportError } from "../utils/error";
+import CogIcon from '@heroicons/react/outline/CogIcon';
+import Draggable from 'react-draggable';
+import NoteDialog from '../dialogs/NoteDialog';
+import NotesApi from '../api/notesApi';
+import _ from 'lodash';
+import { reportError } from '../utils/error';
 
 export default function Note({
   songId,
@@ -13,9 +13,11 @@ export default function Note({
   onDelete,
   isDragDisabled,
   onUpdate,
+  onDragEnd,
+  onDragStart,
 }) {
-  const [content, setContent] = useState(note.content || "");
-  const [color, setColor] = useState(note.color || "");
+  const [content, setContent] = useState(note.content || '');
+  const [color, setColor] = useState(note.color || '');
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -27,6 +29,7 @@ export default function Note({
   }
 
   function handleDragStop(e, data) {
+    onDragEnd?.();
     handleSaveUpdates({ x: data.x, y: data.y });
     onUpdate?.(note.id, { x: data.x, y: data.y });
   }
@@ -51,7 +54,7 @@ export default function Note({
   // eslint-disable-next-line
   const debounce = useCallback(
     _.debounce(
-      async (content) => {
+      async content => {
         try {
           NotesApi.update(songId, note.id, { content });
           onUpdate?.({ content });
@@ -77,27 +80,28 @@ export default function Note({
         defaultPosition={{ x: note.x, y: note.y }}
         bounds="parent"
         onStop={handleDragStop}
+        onStart={onDragStart}
       >
-        <div className="hidden md:flex shadow-md w-56 h-20 absolute">
+        <div className="absolute hidden w-56 h-20 shadow-md md:flex">
           <textarea
             className={
               `w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm text-black dark:text-black` +
               ` ${NOTE_COLORS[color].main}`
             }
             value={content}
-            onChange={(e) => handleContentChange(e.target.value)}
+            onChange={e => handleContentChange(e.target.value)}
             rows={3}
             placeholder="Type here"
           ></textarea>
           <div className={`w-9 ${NOTE_COLORS[color].side}`}>
             <button
-              className="outline-none focus:outline-none w-full py-1 flex-center"
+              className="w-full py-1 outline-none focus:outline-none flex-center"
               onClick={() => setShowDialog(true)}
             >
               <CogIcon className={`w-5 h-5 ${NOTE_COLORS[color].icon}`} />
             </button>
 
-            <div className="h-full w-full handle"></div>
+            <div className="w-full h-full handle"></div>
           </div>
         </div>
       </Draggable>
@@ -115,23 +119,23 @@ export default function Note({
 
 const NOTE_COLORS = {
   blue: {
-    main: "bg-blue-200 dark:bg-blue-300 placeholder-blue-700",
-    side: "bg-blue-300 dark:bg-blue-400",
-    icon: "text-blue-900",
+    main: 'bg-blue-200 dark:bg-blue-300 placeholder-blue-700',
+    side: 'bg-blue-300 dark:bg-blue-400',
+    icon: 'text-blue-900',
   },
   green: {
-    main: "bg-green-200 dark:bg-green-300 placeholder-green-700",
-    side: "bg-green-300 dark:bg-green-400",
-    icon: "text-green-900",
+    main: 'bg-green-200 dark:bg-green-300 placeholder-green-700',
+    side: 'bg-green-300 dark:bg-green-400',
+    icon: 'text-green-900',
   },
   yellow: {
-    main: "bg-yellow-200 dark:bg-yellow-200 placeholder-yellow-700",
-    side: "bg-yellow-300",
-    icon: "text-yellow-900",
+    main: 'bg-yellow-200 dark:bg-yellow-200 placeholder-yellow-700',
+    side: 'bg-yellow-300',
+    icon: 'text-yellow-900',
   },
   pink: {
-    main: "bg-pink-200 dark:bg-pink-300 placeholder-pink-700",
-    side: "bg-pink-300 dark:bg-pink-400",
-    icon: "text-pink-900",
+    main: 'bg-pink-200 dark:bg-pink-300 placeholder-pink-700',
+    side: 'bg-pink-300 dark:bg-pink-400',
+    icon: 'text-pink-900',
   },
 };
