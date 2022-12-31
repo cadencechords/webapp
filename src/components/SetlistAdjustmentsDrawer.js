@@ -99,7 +99,7 @@ export default function SetlistAdjustmentsDrawer({
         {currentSubscription.isPro && (
           <MobileMenuButton
             full
-            className="hidden sm:flex sm:items-center"
+            className="flex items-center"
             onClick={onAddNote}
           >
             <AddStickyNoteIcon className={iconClasses} />

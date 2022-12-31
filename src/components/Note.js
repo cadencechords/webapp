@@ -82,7 +82,7 @@ export default function Note({
         onStop={handleDragStop}
         onStart={onDragStart}
       >
-        <div className="absolute hidden w-56 h-20 shadow-md md:flex">
+        <div className="absolute flex w-56 h-20 shadow-md">
           <textarea
             className={
               `w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm text-black dark:text-black` +
