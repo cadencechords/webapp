@@ -1,116 +1,95 @@
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from 'react';
 
-import Button from "../components/Button";
-import Checkbox from "../components/Checkbox";
-import PageLoading from "../components/PageLoading";
-import TeamApi from "../api/TeamApi";
-import WellInput from "../components/inputs/WellInput";
-import { hasName } from "../utils/model";
-import { reportError } from "../utils/error";
+import Button from '../components/Button';
+import Checkbox from '../components/Checkbox';
+import PageLoading from '../components/PageLoading';
+import WellInput from '../components/inputs/WellInput';
+import { hasName } from '../utils/model';
+import useTeamMembers from '../hooks/api/useTeamMembers';
 
-export default function EventMembers({ event, onMembersLoaded, members, onFieldChange }) {
-	const [loading, setLoading] = useState(false);
-	const [query, setQuery] = useState("");
-	const [filteredMembers, setFilteredMembers] = useState(members);
+export default function EventMembers({ members, onChange }) {
+  const { data: teamMembers, isLoading } = useTeamMembers();
+  const [query, setQuery] = useState('');
 
-	useEffect(() => {
-		async function fetchMembers() {
-			try {
-				setLoading(true);
-				let { data } = await TeamApi.getMemberships();
-				onMembersLoaded(data);
-				setFilteredMembers(data);
-			} catch (error) {
-				reportError(error);
-			} finally {
-				setLoading(false);
-			}
-		}
+  const filterMembers = useCallback(() => {
+    if (!query) return teamMembers;
 
-		if (!members) {
-			fetchMembers();
-		}
-	}, [onMembersLoaded, members]);
+    return teamMembers?.filter(teamMember => {
+      if (hasName(teamMember.user)) {
+        if (
+          teamMember.user.first_name.toLowerCase().includes(query) ||
+          teamMember.user.last_name.toLowerCase().includes(query)
+        ) {
+          return true;
+        }
+      }
+      if (teamMember.user.email.toLowerCase().includes(query)) {
+        return true;
+      }
 
-	function handleQueryChange(newQuery) {
-		setQuery(newQuery.toLowerCase());
-		setFilteredMembers(members.filter((member) => matchesNameOrEmail(member, newQuery)));
-	}
+      return false;
+    });
+  }, [query, teamMembers]);
+  const queriedMembers = useMemo(() => filterMembers(), [filterMembers]);
 
-	function matchesNameOrEmail(member, query) {
-		if (query === "") {
-			return true;
-		}
-		if (hasName(member.user)) {
-			if (
-				member.user.first_name.toLowerCase().includes(query) ||
-				member.user.last_name.toLowerCase().includes(query)
-			) {
-				return true;
-			}
-		}
-		if (member.user.email.toLowerCase().includes(query)) {
-			return true;
-		}
-		return false;
-	}
+  function isMemberChecked(member) {
+    return !!members?.find(
+      alreadyCheckedMember => alreadyCheckedMember.id === member.id
+    );
+  }
 
-	function handleToggleMember(member) {
-		let updatedMembers = [];
-		if (event.members?.find((memberInList) => member.id === memberInList.id)) {
-			updatedMembers = event.members.filter((memberInEvent) => memberInEvent.id !== member.id);
-		} else {
-			updatedMembers = [...event.members, member];
-		}
+  function handleToggleMember(checked, member) {
+    if (checked) {
+      onChange(members.concat(member));
+    } else {
+      onChange(
+        members.filter(
+          alreadySelectedMember => alreadySelectedMember.id !== member.id
+        )
+      );
+    }
+  }
 
-		onFieldChange("members", updatedMembers);
-	}
+  if (isLoading) return <PageLoading />;
 
-	function handleCheckAll() {
-		onFieldChange("members", members);
-	}
-
-	function handleUncheckAll() {
-		onFieldChange("members", []);
-	}
-
-	if (loading || !members) {
-		return <PageLoading />;
-	} else {
-		return (
-			<div>
-				<div className="sm:hidden font-semibold mb-5">Members</div>
-				<WellInput autoFocus onChange={handleQueryChange} value={query} />
-				<div className="my-4">
-					<Button variant="open" size="xs" className="mr-2" onClick={handleCheckAll}>
-						Check all
-					</Button>
-					<Button variant="open" size="xs" onClick={handleUncheckAll}>
-						Uncheck all
-					</Button>
-					{filteredMembers.map((member) => (
-						<div
-							key={member.id}
-							className="p-2 last:border-0 border-b dark:border-dark-gray-400 flex items-center gap-4 cursor-pointer"
-							onClick={() => handleToggleMember(member)}
-						>
-							<Checkbox
-								onChange={() => {}}
-								checked={event.members.find((eventMember) => eventMember.id === member.id)}
-							/>
-							<div>
-								{hasName(member.user) ? (
-									<>
-										{member.user.first_name} {member.user.last_name}
-									</>
-								) : (
-									member.user.email
-								)}
-							</div>
-						</div>
-					))}
-				</div>
-			</div>
-		);
-	}
+  return (
+    <div>
+      <div className="mb-3 font-semibold">Members</div>
+      <WellInput onChange={setQuery} value={query} />
+      <div className="my-4">
+        <Button
+          variant="open"
+          size="xs"
+          className="mr-2"
+          onClick={() => onChange(teamMembers)}
+        >
+          Check all
+        </Button>
+        <Button variant="open" size="xs" onClick={() => onChange([])}>
+          Uncheck all
+        </Button>
+        {queriedMembers.map(member => (
+          <div
+            key={member.id}
+            className="flex items-center gap-4 p-2 border-b cursor-pointer last:border-0 dark:border-dark-gray-400"
+            onClick={() => handleToggleMember(!isMemberChecked(member), member)}
+          >
+            <Checkbox
+              onChange={newValue => handleToggleMember(newValue, member)}
+              checked={isMemberChecked(member)}
+            />
+            <div>
+              {hasName(member.user) ? (
+                <>
+                  {member.user.first_name} {member.user.last_name}
+                </>
+              ) : (
+                member.user.email
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

@@ -1,34 +1,34 @@
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import dayjs from "dayjs";
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import dayjs from 'dayjs';
 
 dayjs.extend(customParseFormat);
 
 export const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 export function getCalendarDates(
   month = dayjs().month(),
   year = dayjs().year()
 ) {
-  let daysInMonth = dayjs().set("year", year).set("month", month).daysInMonth();
+  let daysInMonth = dayjs().set('year', year).set('month', month).daysInMonth();
   let calendarWeeks = [[], [], [], [], [], []];
   let calendarWeekNumber = 0;
 
   calendarWeeks[0] = padLeft(month, year);
   for (let day = 1; day <= daysInMonth; ++day) {
-    let date = dayjs().set("year", year).set("month", month).date(day);
+    let date = dayjs().set('year', year).set('month', month).date(day);
 
     if (isNewWeek(date)) {
       ++calendarWeekNumber;
@@ -50,7 +50,7 @@ function isNewWeek(date) {
 }
 
 function padLeft(month, year) {
-  let startOfMonth = dayjs().set("year", year).set("month", month).date(1);
+  let startOfMonth = dayjs().set('year', year).set('month', month).date(1);
   let numToPad = startOfMonth.day();
   let firstWeek = [];
 
@@ -62,7 +62,7 @@ function padLeft(month, year) {
 }
 
 function padRight(calendarWeek, month, year) {
-  let endOfMonth = dayjs().set("year", year).set("month", month).endOf("month");
+  let endOfMonth = dayjs().set('year', year).set('month', month).endOf('month');
   let numToPad = 6 - endOfMonth.day();
 
   for (let i = 0; i < numToPad; ++i) {
@@ -95,22 +95,22 @@ export function doubleDigitsProvided(hour) {
 }
 
 export function isValidTime(time) {
-  return dayjs(time, ["h:mm A", "hh:mm A"]).isValid();
+  return dayjs(time, ['h:mm A', 'hh:mm A']).isValid();
 }
 
 export function combineDateAndTime(date, time) {
   if (date && time) {
     return dayjs(`${date} ${time}`, [
-      "YYYY-MM-DD h:mm A",
-      "YYYY-MM-DD hh:mm A",
+      'YYYY-MM-DD h:mm A',
+      'YYYY-MM-DD hh:mm A',
     ]).toDate();
   } else {
-    return dayjs(date, "YYYY-MM-DD").toDate();
+    return dayjs(date, 'YYYY-MM-DD').toDate();
   }
 }
 
 export function subtractHours(hoursToSubtract, date) {
-  return dayjs(date).subtract(hoursToSubtract, "hour");
+  return dayjs(date).subtract(hoursToSubtract, 'hour');
 }
 
 export function getMonthYearFromDate(date) {
@@ -118,7 +118,7 @@ export function getMonthYearFromDate(date) {
 }
 
 export function isSameDay(date1, date2) {
-  return dayjs(date1).isSame(date2, "date");
+  return dayjs(date1).isSame(date2, 'date');
 }
 
 export function isSameDate(date1, date2) {
@@ -129,40 +129,40 @@ export function isSameDate(date1, date2) {
 }
 
 export function getTimeFromDate(date) {
-  if (!date) return "";
+  if (!date) return '';
   date = dayjs(date);
   if (date.hour() !== 0 || date.minute() !== 0) {
-    return date.format("h:mma");
+    return date.format('h:mma');
   } else {
     return null;
   }
 }
 
 export function format(date, format) {
-  if (!date || !format) return "";
+  if (!date || !format) return '';
 
   return dayjs(date).format(format);
 }
 
 export function parseHours(date) {
-  if (!date) return "";
+  if (!date) return '';
 
-  return dayjs(date).format("h");
+  return date.split(':')[0];
 }
 
 export function parseMinutes(date) {
-  if (!date) return "";
-  return dayjs(date).format("mm");
+  if (!date) return '';
+  return date.split(':')[1].slice(0, 2);
 }
 
 export function parsePeriod(date) {
-  if (!date) return "";
-  return dayjs(date).format("A");
+  if (!date) return '';
+  return date.split(' ')[1];
 }
 
 export function diffInHours(date1, date2) {
   if (!date1 || !date2) return 0;
-  return dayjs(date1).diff(date2, "hour");
+  return dayjs(date1).diff(date2, 'hour');
 }
 
 export function addToNow(time, unit) {
@@ -175,5 +175,5 @@ export function sortDates(dateA, dateB) {
 
 export function isPast(date) {
   if (!date) return false;
-  return dayjs(date).isBefore(new Date(), "date");
+  return dayjs(date).isBefore(new Date(), 'date');
 }

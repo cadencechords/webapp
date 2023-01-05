@@ -13,6 +13,7 @@ import SecuredRoutes from './components/SecuredRoutes';
 import SignUpPage from './pages/SignUpPage';
 import { ToastContainer } from 'react-toastify';
 import JoinLinkPage from './pages/JoinLinkPage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const TeamLoginPage = lazy(() => import('./pages/TeamLoginPage'));
@@ -20,6 +21,8 @@ const EmailConfirmedPage = lazy(() => import('./pages/EmailConfirmedPage'));
 const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
+
+const queryClient = new QueryClient();
 
 function App() {
   useEffect(() => {
@@ -35,44 +38,50 @@ function App() {
   }, []);
 
   return (
-    <Suspense
-      fallback={
-        <CenteredPage>
-          <PageLoading>Please wait...</PageLoading>
-        </CenteredPage>
-      }
-    >
-      <ToastContainer />
-      <Sentry.ErrorBoundary showDialog fallback={<AppFallback />}>
-        <Router>
-          <Switch>
-            <Route path="/login" exact component={LoginPage} />
-            <Route path="/login/teams" exact component={TeamLoginPage} />
-            <Route path="/join/:code" exact component={JoinLinkPage} />
-            <Route path="/login/teams/new" exact>
-              <CreateNewTeamPage />
-            </Route>
-            <Route path="/confirmation" exact component={EmailConfirmedPage} />
-            <Route path="/signup" exact>
-              <SignUpPage />
-            </Route>
-            <Route path="/invitations" exact>
-              <ClaimInvitationPage />
-            </Route>
-            <Route path="/invitations/signup" exact>
-              <InvitationSignUpPage />
-            </Route>
-            <Route path="/forgot_password" exact>
-              <ForgotPasswordPage />
-            </Route>
-            <Route path="/reset_password" exact>
-              <ResetPasswordPage />
-            </Route>
-            <SecuredRoutes />
-          </Switch>
-        </Router>
-      </Sentry.ErrorBoundary>
-    </Suspense>
+    <QueryClientProvider client={queryClient}>
+      <Suspense
+        fallback={
+          <CenteredPage>
+            <PageLoading>Please wait...</PageLoading>
+          </CenteredPage>
+        }
+      >
+        <ToastContainer />
+        <Sentry.ErrorBoundary showDialog fallback={<AppFallback />}>
+          <Router>
+            <Switch>
+              <Route path="/login" exact component={LoginPage} />
+              <Route path="/login/teams" exact component={TeamLoginPage} />
+              <Route path="/join/:code" exact component={JoinLinkPage} />
+              <Route path="/login/teams/new" exact>
+                <CreateNewTeamPage />
+              </Route>
+              <Route
+                path="/confirmation"
+                exact
+                component={EmailConfirmedPage}
+              />
+              <Route path="/signup" exact>
+                <SignUpPage />
+              </Route>
+              <Route path="/invitations" exact>
+                <ClaimInvitationPage />
+              </Route>
+              <Route path="/invitations/signup" exact>
+                <InvitationSignUpPage />
+              </Route>
+              <Route path="/forgot_password" exact>
+                <ForgotPasswordPage />
+              </Route>
+              <Route path="/reset_password" exact>
+                <ResetPasswordPage />
+              </Route>
+              <SecuredRoutes />
+            </Switch>
+          </Router>
+        </Sentry.ErrorBoundary>
+      </Suspense>
+    </QueryClientProvider>
   );
 }
 

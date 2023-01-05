@@ -24,6 +24,8 @@ import SongDetailPage from '../pages/SongDetailPage';
 import SongImportSourcesIndexPage from '../pages/SongImportSourcesIndexPage';
 import SongsIndexPage from '../pages/SongsIndexPage';
 import TeamDetailPage from '../pages/TeamDetailPage';
+import CreateCalendarEventPage from '../pages/CreateCalendarEventPage';
+import EventFormProvider from '../contexts/EventFormProvider';
 
 const PcoSongsIndexPage = lazy(() => import('../pages/PcoSongsIndexPage'));
 const RoleDetailPage = lazy(() => import('../pages/RoleDetailPage'));
@@ -36,7 +38,7 @@ export default function Content() {
       <Sidenav />
       <Navbar />
       <MobileNav />
-      <div className="md:ml-14 lg:ml-52 md:px-10 px-2 py-3">
+      <div className="px-2 py-3 md:ml-14 lg:ml-52 md:px-10">
         <div className="container mx-auto">
           <Route path="/" exact>
             <DashboardPage />
@@ -109,7 +111,14 @@ export default function Content() {
             <Route path="/permissions" exact component={RolesIndexPage} />
           </Suspense>
           <Suspense fallback={<PageLoading>Loading your calendar</PageLoading>}>
-            <Route path="/calendar" exact component={CalendarPage} />
+            <EventFormProvider>
+              <Route path="/calendar" exact component={CalendarPage} />
+              <Route
+                path="/calendar/new"
+                exact
+                component={CreateCalendarEventPage}
+              />
+            </EventFormProvider>
           </Suspense>
         </div>
         <div className="h-12 md:h-0"></div>
