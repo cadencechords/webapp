@@ -6,9 +6,8 @@ import useEventForm from '../hooks/forms/useEventForm';
 import useCreateCalendarEvent from '../hooks/api/useCreateCalendarEvent';
 import { useHistory } from 'react-router-dom';
 import Alert from '../components/Alert';
-import dayjs from 'dayjs';
-import { subtractHours } from '../utils/date';
 import useClearForm from '../hooks/useClearForm';
+import { fromEventForm } from '../utils/event.utils';
 
 export default function CreateCalendarEventPage() {
   const router = useHistory();
@@ -22,48 +21,7 @@ export default function CreateCalendarEventPage() {
   useClearForm(clearForm);
 
   function handleSave() {
-    let event = {
-      title: form.title,
-      description: form.description,
-      color: form.color,
-      reminders_enabled: !!form.reminders_enabled,
-    };
-
-    if (form.setlist) {
-      event.setlist_id = form.setlist.id;
-    }
-
-    if (form.startTime) {
-      event.start_time = dayjs(
-        `${form.startDate} ${form.startTime}`,
-        'YYYY-MM-DD h:mm A'
-      ).toDate();
-    } else {
-      event.start_time = dayjs(form.startDate).toDate();
-    }
-
-    if (form.endTime) {
-      event.end_time = dayjs(
-        `${form.startDate} ${form.endTime}`,
-        'YYYY-MM-DD h:mm A'
-      ).toDate();
-    }
-
-    if (form.reminders_enabled) {
-      if (form.memberships?.length) {
-        event.membership_ids = form.memberships.map(
-          membership => membership.id
-        );
-      }
-
-      if (form.remind_number_of_hours_before) {
-        event.reminder_date = subtractHours(
-          form.remind_number_of_hours_before,
-          event.start_time
-        ).toDate();
-      }
-    }
-
+    const event = fromEventForm(form);
     createEvent(event);
   }
 

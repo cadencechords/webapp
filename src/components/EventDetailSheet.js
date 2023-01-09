@@ -1,91 +1,100 @@
-import { DELETE_EVENTS, EDIT_EVENTS } from "../utils/constants";
+import { DELETE_EVENTS, EDIT_EVENTS } from '../utils/constants';
 
-import BellIcon from "@heroicons/react/outline/BellIcon";
-import Button from "../components/Button";
-import MenuAlt2Icon from "@heroicons/react/outline/MenuAlt2Icon";
-import PencilIcon from "@heroicons/react/outline/PencilIcon";
-import TrashIcon from "@heroicons/react/outline/TrashIcon";
-import UsersIcon from "@heroicons/react/solid/UsersIcon";
-import eventsApi from "../api/eventsApi";
-import { format } from "../utils/date";
-import { hasName } from "../utils/model";
-import { selectCurrentMember } from "../store/authSlice";
-import { useSelector } from "react-redux";
+import BellIcon from '@heroicons/react/outline/BellIcon';
+import Button from '../components/Button';
+import MenuAlt2Icon from '@heroicons/react/outline/MenuAlt2Icon';
+import PencilIcon from '@heroicons/react/outline/PencilIcon';
+import TrashIcon from '@heroicons/react/outline/TrashIcon';
+import UsersIcon from '@heroicons/react/solid/UsersIcon';
+import eventsApi from '../api/eventsApi';
+import { format } from '../utils/date';
+import { hasName } from '../utils/model';
+import { selectCurrentMember } from '../store/authSlice';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import useEventForm from '../hooks/forms/useEventForm';
 
-export default function EventDetailSheet({ event, onDeleted, onCloseDialog, onChangeSheet }) {
-	const currentMember = useSelector(selectCurrentMember);
+export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
+  const currentMember = useSelector(selectCurrentMember);
+  const { setForm } = useEventForm();
 
-	function handleDelete() {
-		eventsApi.delete(event.id);
-		onDeleted(event.id);
-		onCloseDialog();
-	}
+  function handleDelete() {
+    eventsApi.delete(event.id);
+    onDeleted(event.id);
+    onCloseDialog();
+  }
 
-	return (
-		<>
-			{event && (
-				<div className="grid grid-cols-10 gap-6">
-					<div className="col-span-1 flex justify-end items-start">
-						<UsersIcon className="text-gray-600 dark:text-dark-gray-200 w-5 h-5 my-1 flex-shrink-0" />
-					</div>
-					<div className="col-span-9 flex flex-col justify-start items-start">
-						{event?.memberships?.length > 0 ? (
-							event.memberships.map((member) => (
-								<div key={member.id} className="my-1">
-									{hasName(member.user)
-										? `${member.user.first_name} ${member.user.last_name}`
-										: member.user.email}
-								</div>
-							))
-						) : (
-							<div className="text-gray-600 dark:text-dark-gray-200">No members</div>
-						)}
-					</div>
-					<div className="col-span-1 flex justify-end items-start">
-						<BellIcon className="text-gray-600 dark:text-dark-gray-200 w-5 h-5 flex-shrink-0" />
-					</div>
-					<div className="col-span-9 flex justify-start items-start">
-						{event.reminders_enabled ? (
-							`Reminders will be sent ${format(event.reminder_date, "MMMM D, YYYY h:mma")}`
-						) : (
-							<div className="text-gray-600 dark:text-dark-gray-200">
-								Reminders are not enabled for this event
-							</div>
-						)}
-					</div>
+  function handleEdit() {
+    setForm(event);
+  }
 
-					<div className="col-span-1 flex justify-end items-start">
-						<MenuAlt2Icon className="text-gray-600 dark:text-dark-gray-200 w-5 h-5 flex-shrink-0" />
-					</div>
-					<div className="col-span-9 flex justify-start items-start">
-						{event.description ? (
-							event.description
-						) : (
-							<div className="text-gray-600 dark:text-dark-gray-200">
-								No description provided for this event
-							</div>
-						)}
-					</div>
-				</div>
-			)}
+  if (event)
+    return (
+      <>
+        <div className="grid grid-cols-10 gap-6">
+          <div className="flex items-start justify-end col-span-1">
+            <UsersIcon className="flex-shrink-0 w-5 h-5 my-1 text-gray-600 dark:text-dark-gray-200" />
+          </div>
+          <div className="flex flex-col items-start justify-start col-span-9">
+            {event?.memberships?.length > 0 ? (
+              event.memberships.map(member => (
+                <div key={member.id} className="my-1">
+                  {hasName(member.user)
+                    ? `${member.user.first_name} ${member.user.last_name}`
+                    : member.user.email}
+                </div>
+              ))
+            ) : (
+              <div className="text-gray-600 dark:text-dark-gray-200">
+                No members
+              </div>
+            )}
+          </div>
+          <div className="flex items-start justify-end col-span-1">
+            <BellIcon className="flex-shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
+          </div>
+          <div className="flex items-start justify-start col-span-9">
+            {event.reminders_enabled ? (
+              `Reminders will be sent ${format(
+                event.reminder_date,
+                'MMMM D, YYYY h:mma'
+              )}`
+            ) : (
+              <div className="text-gray-600 dark:text-dark-gray-200">
+                Reminders are not enabled for this event
+              </div>
+            )}
+          </div>
 
-			<div className="mt-4 flex justify-end">
-				{currentMember?.can(EDIT_EVENTS) && (
-					<Button
-						variant="open"
-						color="gray"
-						onClick={() => onChangeSheet("edit")}
-						className="mr-2"
-					>
-						<PencilIcon className="h-5 w-5" />
-					</Button>
-				)}
-				{currentMember?.can(DELETE_EVENTS) && (
-					<Button variant="open" color="gray" onClick={handleDelete}>
-						<TrashIcon className="h-5 w-5" />
-					</Button>
-				)}
-			</div>
-		</>
-	);
+          <div className="flex items-start justify-end col-span-1">
+            <MenuAlt2Icon className="flex-shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
+          </div>
+          <div className="flex items-start justify-start col-span-9">
+            {event.description ? (
+              event.description
+            ) : (
+              <div className="text-gray-600 dark:text-dark-gray-200">
+                No description provided for this event
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="flex justify-end mt-4">
+          {currentMember?.can(EDIT_EVENTS) && (
+            <Link to={`/calendar/${event.id}/edit`} onClick={handleEdit}>
+              <Button variant="open" color="gray" className="mr-2">
+                <PencilIcon className="w-5 h-5" />
+              </Button>
+            </Link>
+          )}
+          {currentMember?.can(DELETE_EVENTS) && (
+            <Button variant="open" color="gray" onClick={handleDelete}>
+              <TrashIcon className="w-5 h-5" />
+            </Button>
+          )}
+        </div>
+      </>
+    );
+
+  return null;
 }

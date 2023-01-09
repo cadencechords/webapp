@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { createContext, useState } from 'react';
 import React from 'react';
+import { toEventForm } from '../utils/event.utils';
 
 export const EventFormContext = createContext();
 
@@ -21,10 +22,16 @@ export default function EventFormProvider(props) {
 
     return dayjs(`${startDate} ${startTime}`, 'YYYY-MM-DD h:mm A').isValid();
   }
+
+  function populateForm(event) {
+    const _form = toEventForm(event);
+    setForm(_form);
+  }
+
   return (
     <EventFormContext.Provider
       {...props}
-      value={{ form, setForm, isValid: checkIfValid() }}
+      value={{ form, isValid: checkIfValid(), populateForm, setForm }}
     />
   );
 }

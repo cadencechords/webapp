@@ -26,6 +26,7 @@ import SongsIndexPage from '../pages/SongsIndexPage';
 import TeamDetailPage from '../pages/TeamDetailPage';
 import CreateCalendarEventPage from '../pages/CreateCalendarEventPage';
 import EventFormProvider from '../contexts/EventFormProvider';
+import EditCalendarEventPage from '../pages/EditCalendarEventPage';
 
 const PcoSongsIndexPage = lazy(() => import('../pages/PcoSongsIndexPage'));
 const RoleDetailPage = lazy(() => import('../pages/RoleDetailPage'));
@@ -117,6 +118,11 @@ export default function Content() {
                 path="/calendar/new"
                 exact
                 component={CreateCalendarEventPage}
+              />
+              <Route
+                path="/calendar/:id/edit"
+                exact
+                component={EditCalendarEventPage}
               />
             </EventFormProvider>
           </Suspense>

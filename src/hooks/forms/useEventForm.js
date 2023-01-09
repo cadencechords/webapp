@@ -2,7 +2,7 @@ import { useCallback, useContext } from 'react';
 import { EventFormContext } from '../../contexts/EventFormProvider';
 
 export default function useEventForm() {
-  const { form, setForm, isValid } = useContext(EventFormContext);
+  const { form, setForm, isValid, populateForm } = useContext(EventFormContext);
 
   function onChange(field, value) {
     setForm(previousForm => ({ ...previousForm, [field]: value }));
@@ -23,5 +23,6 @@ export default function useEventForm() {
     onChange,
     isValid,
     clearForm,
+    setForm: populateForm,
   };
 }
