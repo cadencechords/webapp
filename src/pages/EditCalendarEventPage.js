@@ -3,7 +3,7 @@ import PageTitle from '../components/PageTitle';
 import EventForm from '../components/EventForm';
 import Button from '../components/Button';
 import useEventForm from '../hooks/forms/useEventForm';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import Alert from '../components/Alert';
 import useClearForm from '../hooks/useClearForm';
 import useCalendarEvent from '../hooks/api/useCalendarEvent';
@@ -17,6 +17,7 @@ import {
 } from '../utils/event.utils';
 import { getModifiedFields } from '../utils/ObjectUtils';
 import useUpdateCalendarEvent from '../hooks/api/useUpdateCalendarEvent';
+import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 
 export default function EditCalendarEventPage() {
   const { form, setForm, clearForm, isValid } = useEventForm();
@@ -58,6 +59,14 @@ export default function EditCalendarEventPage() {
 
   return (
     <div className="container max-w-3xl">
+      <Link to="/calendar" className="inline-block mb-4">
+        <Button variant="open" color="gray">
+          <div className="flex-center">
+            <ArrowNarrowLeftIcon className="w-4 h-4 mr-4" />
+            Calendar
+          </div>
+        </Button>
+      </Link>
       {isError && (
         <div className="hidden mb-4 lg:block">
           <Alert color="red">An error occurred. Please try again later</Alert>
