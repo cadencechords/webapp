@@ -24,16 +24,26 @@ import SongDetailPage from '../pages/SongDetailPage';
 import SongImportSourcesIndexPage from '../pages/SongImportSourcesIndexPage';
 import SongsIndexPage from '../pages/SongsIndexPage';
 import TeamDetailPage from '../pages/TeamDetailPage';
-import CreateCalendarEventPage from '../pages/CreateCalendarEventPage';
 import EventFormProvider from '../contexts/EventFormProvider';
-import EditCalendarEventPage from '../pages/EditCalendarEventPage';
+import { useSelector } from 'react-redux';
+import { selectCurrentMember } from '../store/authSlice';
+import { MANAGE_BILLING } from '../utils/constants';
 
 const PcoSongsIndexPage = lazy(() => import('../pages/PcoSongsIndexPage'));
 const RoleDetailPage = lazy(() => import('../pages/RoleDetailPage'));
 const RolesIndexPage = lazy(() => import('../pages/RolesIndexPage'));
 const CalendarPage = lazy(() => import('../pages/CalendarPage'));
+const EditCalendarEventPage = lazy(() =>
+  import('../pages/EditCalendarEventPage')
+);
+const CreateCalendarEventPage = lazy(() =>
+  import('../pages/CreateCalendarEventPage')
+);
+const BillingPage = lazy(() => import('../pages/BillingPage'));
 
 export default function Content() {
+  const currentMember = useSelector(selectCurrentMember);
+
   return (
     <>
       <Sidenav />
@@ -111,6 +121,13 @@ export default function Content() {
           <Suspense fallback={<PageLoading />}>
             <Route path="/permissions" exact component={RolesIndexPage} />
           </Suspense>
+          {currentMember.can(MANAGE_BILLING) && (
+            <Suspense
+              fallback={<PageLoading>Loading billing details</PageLoading>}
+            >
+              <Route path="/billing" exact component={BillingPage} />
+            </Suspense>
+          )}
           <Suspense fallback={<PageLoading>Loading your calendar</PageLoading>}>
             <EventFormProvider>
               <Route path="/calendar" exact component={CalendarPage} />

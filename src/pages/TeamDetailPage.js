@@ -6,7 +6,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { EDIT_TEAM, MANAGE_BILLING } from '../utils/constants';
+import { EDIT_TEAM } from '../utils/constants';
 import FileApi from '../api/FileApi';
 import MobileProfilePictureMenu from '../components/mobile menus/MobileProfilePictureMenu';
 import PageTitle from '../components/PageTitle';
@@ -17,7 +17,6 @@ import { format } from '../utils/date';
 import { reportError } from '../utils/error';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import Badge from '../components/Badge';
-import TeamSubscriptionSection from '../components/TeamSubscriptionSection';
 
 export default function TeamDetailPage() {
   const currentTeam = useSelector(selectCurrentTeam);
@@ -89,7 +88,7 @@ export default function TeamDetailPage() {
 
   if (currentTeam && currentSubscription) {
     return (
-      <div className="flex items-center flex-col pt-4 max-w-sm mx-auto">
+      <div className="flex flex-col items-center max-w-sm pt-4 mx-auto">
         <ProfilePicture
           url={currentTeam.image_url}
           size="lg"
@@ -119,12 +118,12 @@ export default function TeamDetailPage() {
             />
           </>
         )}
-        <div className="text-gray-600 dark:text-dark-gray-200 w-full">
-          <div className="flex-between py-2">
+        <div className="w-full text-gray-600 dark:text-dark-gray-200">
+          <div className="py-2 flex-between">
             <div className="font-semibold">Created:</div>
             {format(currentTeam.created_at, 'MMM D YYYY')}
           </div>
-          <div className="flex-between py-2">
+          <div className="py-2 flex-between">
             <div className="font-semibold">Plan:</div>
             <div>
               {currentSubscription.status === 'trialing' && (
@@ -135,9 +134,6 @@ export default function TeamDetailPage() {
               {currentSubscription.plan_name}
             </div>
           </div>
-          {currentMember.can(MANAGE_BILLING) && (
-            <TeamSubscriptionSection subscription={currentSubscription} />
-          )}
         </div>
       </div>
     );

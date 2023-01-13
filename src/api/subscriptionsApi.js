@@ -1,8 +1,10 @@
-import api from "./api";
-import { constructAuthHeaders } from "../utils/AuthUtils";
+import api from './api';
+import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 
 export default class SubscriptionsApi {
-	static getAll() {
-		return api().get(`/users/me/subscriptions`, { headers: constructAuthHeaders() });
-	}
+  static getCurrentSubscription() {
+    return api().get(`/teams/${getTeamId()}/subscription`, {
+      headers: constructAuthHeaders(),
+    });
+  }
 }

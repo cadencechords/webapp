@@ -100,7 +100,7 @@ export default function JoinLinkPage() {
   if (isEverythingResolved && currentUser && isAlreadyOnTeam()) {
     return (
       <CenteredPage>
-        <h1 className="text-xl text-center mb-8">
+        <h1 className="mb-8 text-xl text-center">
           You're already on <span className="font-bold">{team?.name}</span>
         </h1>
         <Link to="/">
@@ -121,14 +121,14 @@ export default function JoinLinkPage() {
   return (
     <CenteredPage>
       <>
-        <h1 className="text-2xl text-center mb-8">
+        <h1 className="mb-8 text-2xl text-center">
           You are now joining <span className="font-bold">{team?.name}</span>
         </h1>
         <div>
-          <Card className="flex flex-col items-center">
+          <Card className="flex flex-col items-center text-center">
             <ProfilePicture url={currentUser.image_url} />
             {hasName(currentUser) && (
-              <div className="font-semibold text-xl mb-1">
+              <div className="mb-1 text-xl font-semibold">
                 {currentUser.first_name} {currentUser.last_name}
               </div>
             )}
