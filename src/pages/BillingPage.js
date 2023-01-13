@@ -77,7 +77,6 @@ export default function BillingPage() {
           )}
         </div>
 
-        <div>What's included:</div>
         <div className="flex flex-col mt-4 text-sm md:flex-row">
           <div className="flex-1">
             <div className="flex items-center">
