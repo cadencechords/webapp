@@ -13,8 +13,8 @@ import HighlightedText from '../components/pdf/HighlightedText';
 
 export function toPdf(song, showChords) {
   let pdfLines = '';
+  registerFonts(song.format);
   if (song?.content) {
-    registerFonts(song.format);
     pdfLines = constructPdfLines(song, showChords);
   } else {
     pdfLines = <Text></Text>;
