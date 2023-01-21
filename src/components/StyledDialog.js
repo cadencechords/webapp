@@ -1,9 +1,9 @@
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition } from '@headlessui/react';
 
-import Button from "./Button";
-import { Fragment } from "react";
-import PropTypes from "prop-types";
-import XIcon from "@heroicons/react/outline/XIcon";
+import Button from './Button';
+import { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import XIcon from '@heroicons/react/outline/XIcon';
 
 export default function StyledDialog({
   open,
@@ -28,13 +28,13 @@ export default function StyledDialog({
       <Dialog
         as="div"
         className={`fixed inset-0 z-50 max-h-full ${
-          fullscreen ? "mx-0" : "mx-3"
+          fullscreen ? 'mx-0' : 'mx-3'
         }`}
         static
         open={open}
         onClose={onCloseDialog}
       >
-        <div className="sm:px-4 text-center max-h-full overflow-auto">
+        <div className="max-h-full overflow-auto text-center sm:px-4">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -76,23 +76,23 @@ export default function StyledDialog({
                     onClick={onCloseDialog}
                     tabIndex={1}
                   >
-                    <XIcon className="h-4 w-4 text-gray-700 dark:text-dark-gray-200" />
+                    <XIcon className="w-4 h-4 text-gray-700 dark:text-dark-gray-200" />
                   </Button>
                 </span>
               )}
               <Dialog.Title
                 as="h3"
                 className={
-                  borderedTop ? ` border-b dark:border-dark-gray-400 ` : ""
+                  borderedTop ? ` border-b dark:border-dark-gray-400 ` : ''
                 }
               >
-                <div className="text-lg leading-6 text-gray-900 dark:text-dark-gray-100 font-semibold px-5 py-6 whitespace-pre">
+                <div className="px-3 py-6 text-lg font-semibold leading-6 text-gray-900 whitespace-pre dark:text-dark-gray-100 sm:px-5">
                   {title}
                 </div>
               </Dialog.Title>
               <div
-                className={`my-2 px-5 ${
-                  borderedTop ? " py-4 " : " pb-6 pt-0 "
+                className={`my-2 px-3 sm:px-5 ${
+                  borderedTop ? ' py-4 ' : ' pb-6 pt-0 '
                 }`}
               >
                 {children}
@@ -111,30 +111,30 @@ StyledDialog.propTypes = {
 };
 
 StyledDialog.defaultProps = {
-  size: "md",
+  size: 'md',
   showClose: true,
   fullscreen: true,
   borderedTop: true,
 };
 
 const MAX_WIDTHS = {
-  sm: "max-w-sm",
-  md: "max-w-md",
-  lg: "max-w-lg",
-  xl: "max-w-xl",
-  "2xl": "max-w-2xl",
-  "3xl": "max-w-3xl",
-  "4xl": "max-w-4xl",
-  "5xl": "max-w-5xl",
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+  xl: 'max-w-xl',
+  '2xl': 'max-w-2xl',
+  '3xl': 'max-w-3xl',
+  '4xl': 'max-w-4xl',
+  '5xl': 'max-w-5xl',
 };
 
 const SM_MAX_WIDTHS = {
-  sm: "sm:max-w-sm",
-  md: "sm:max-w-md",
-  lg: "sm:max-w-lg",
-  xl: "sm:max-w-xl",
-  "2xl": "sm:max-w-2xl",
-  "3xl": "sm:max-w-3xl",
-  "4xl": "sm:max-w-4xl",
-  "5xl": "sm:max-w-5xl",
+  sm: 'sm:max-w-sm',
+  md: 'sm:max-w-md',
+  lg: 'sm:max-w-lg',
+  xl: 'sm:max-w-xl',
+  '2xl': 'sm:max-w-2xl',
+  '3xl': 'sm:max-w-3xl',
+  '4xl': 'sm:max-w-4xl',
+  '5xl': 'sm:max-w-5xl',
 };

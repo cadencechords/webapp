@@ -1,66 +1,74 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from 'react';
 
-import Button from "./Button";
-import OrDivider from "./OrDivider";
-import OutlinedInput from "./inputs/OutlinedInput";
-import SongApi from "../api/SongApi";
-import StyledDialog from "./StyledDialog";
-import { reportError } from "../utils/error";
-import { useHistory } from "react-router";
+import Button from './Button';
+import OrDivider from './OrDivider';
+import OutlinedInput from './inputs/OutlinedInput';
+import StyledDialog from './StyledDialog';
+import useSongForm from '../hooks/forms/useSongForm';
+import { Link, useHistory } from 'react-router-dom';
+import useCreateSong from '../hooks/api/useCreateSong';
 
-export default function CreateSongDialog({ open, onCloseDialog, onCreate }) {
-	const [name, setName] = useState("");
-	const [loading, setLoading] = useState(false);
-	const router = useHistory();
-	const inputRef = useRef();
+export default function CreateSongDialog({ open, onCloseDialog }) {
+  const { form, onChange, isValid, clearForm } = useSongForm();
+  const { name } = form;
+  const router = useHistory();
 
-	const canCreate = Boolean(name);
+  const { isLoading: isCreating, run: createSong } = useCreateSong({
+    onSuccess: createdSong => {
+      clearForm();
+      onCloseDialog();
+      router.push(`/songs/${createdSong.id}`);
+    },
+  });
 
-	useEffect(() => {
-		setTimeout(() => {
-			if (open) {
-				inputRef.current?.focus();
-			}
-		}, 100);
-	}, [open]);
+  const inputRef = useRef();
 
-	const handleCreate = async () => {
-		setLoading(true);
-		try {
-			let result = await SongApi.createOne({ name });
-			if (onCreate) {
-				setName("");
-				onCreate(result.data);
-				onCloseDialog();
-			}
-		} catch (error) {
-			reportError(error);
-		} finally {
-			setLoading(false);
-		}
-	};
+  useEffect(() => {
+    setTimeout(() => {
+      if (open) {
+        inputRef.current?.focus();
+      }
+    }, 100);
+  }, [open]);
 
-	return (
-		<StyledDialog title="Create a new song" open={open} onCloseDialog={onCloseDialog} size="lg">
-			<div className="mb-4">
-				<div className="mb-2">Name</div>
-				<OutlinedInput
-					placeholder="ex: Amazing Grace"
-					value={name}
-					onChange={setName}
-					ref={inputRef}
-				/>
-			</div>
+  function handleCreate() {
+    createSong(form);
+  }
 
-			<Button full disabled={!canCreate} loading={loading} onClick={handleCreate}>
-				Create Song
-			</Button>
+  return (
+    <StyledDialog
+      title="Create a new song"
+      open={open}
+      onCloseDialog={onCloseDialog}
+      size="lg"
+      fullscreen={true}
+    >
+      <div className="mb-4">
+        <div className="mb-2">Name</div>
+        <OutlinedInput
+          placeholder="ex: Amazing Grace"
+          value={name}
+          onChange={newName => onChange('name', newName)}
+          ref={inputRef}
+        />
+      </div>
 
-			<OrDivider />
+      <Button
+        full
+        disabled={!isValid}
+        loading={isCreating}
+        onClick={handleCreate}
+      >
+        Create Song
+      </Button>
 
-			<Button variant="open" full color="blue" onClick={() => router.push("/import")}>
-				Import a song
-			</Button>
-		</StyledDialog>
-	);
+      <OrDivider />
+
+      <Link to="/import">
+        <Button variant="open" full color="blue">
+          Import a song
+        </Button>
+      </Link>
+    </StyledDialog>
+  );
 }

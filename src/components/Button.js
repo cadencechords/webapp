@@ -39,15 +39,15 @@ export default function Button({
     }
     loadingColor = 'white';
     disabledClasses += ` bg-gray-100 text-gray-600 dark:bg-dark-gray-400 dark:text-dark-gray-200`;
-    roundedClasses += ' rounded-md ';
+    roundedClasses += ' rounded-lg ';
   } else if (variant === 'open') {
     colorClasses += ` ${TEXT_COLORS[color]} hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600`;
     disabledClasses += ` text-gray-500 `;
-    roundedClasses += ' rounded-md ';
+    roundedClasses += ' rounded-lg ';
   } else if (variant === 'outlined') {
     colorClasses += ` border border-gray-300 dark:border-dark-gray-400 ${TEXT_COLORS[color]} hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700 `;
     disabledClasses += ` border border-gray-300 text-gray-500 dark:border-dark-gray-400 dark:text-dark-gray-200 `;
-    roundedClasses += ' rounded-md ';
+    roundedClasses += ' rounded-lg ';
   }
 
   return (

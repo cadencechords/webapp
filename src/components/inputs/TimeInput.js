@@ -96,8 +96,8 @@ export default function TimeInput({ onChange, className, defaultValue }) {
   return (
     <div
       className={
-        `border border-gray-300 dark:border-dark-gray-400 rounded-md py-2 flex-center h-10 shadow-sm px-2` +
-        ` ${isFocused && 'ring-inset ring-2 ring-blue-400'} ${className}`
+        `border transition-all border-gray-300 dark:border-dark-gray-400 rounded-md py-2 flex-center h-10 shadow-sm px-2` +
+        ` ${isFocused && 'ring-offset-2 ring-2 ring-blue-400'} ${className}`
       }
     >
       <input

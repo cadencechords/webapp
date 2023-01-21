@@ -49,7 +49,7 @@ export default function Content() {
       <Sidenav />
       <Navbar />
       <MobileNav />
-      <div className="px-2 py-3 md:ml-14 lg:ml-52 md:px-10">
+      <div className="px-3 py-3 md:ml-14 lg:ml-52 md:px-10">
         <div className="container mx-auto">
           <Route path="/" exact>
             <DashboardPage />
