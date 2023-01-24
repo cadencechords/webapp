@@ -43,7 +43,7 @@ export default class SongApi {
     if (updates.artist) allowedParams.artist = updates.artist;
     if (updates.meter) allowedParams.meter = updates.meter;
     if (updates.original_key) allowedParams.original_key = updates.original_key;
-    if (updates.transposed_key)
+    if ('transposed_key' in updates)
       allowedParams.transposed_key = updates.transposed_key;
     if ('content' in updates) allowedParams.content = updates.content;
     if (updates.scroll_speed) allowedParams.scroll_speed = updates.scroll_speed;
