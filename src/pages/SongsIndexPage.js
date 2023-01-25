@@ -42,7 +42,7 @@ export default function SongsIndexPage() {
       <PageHeader title="Songs" headerRightVisible={false} />
       {isLoading && <PageLoading />}
       {isError && (
-        <Alert color="red">There was an issue retrieving your songs</Alert>
+        <Alert color="red">There was an issue retrieving your songs.</Alert>
       )}
 
       {isSuccess && (

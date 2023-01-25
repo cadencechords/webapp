@@ -1,156 +1,107 @@
-import { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router";
-
-import BinderApi from "../api/BinderApi";
-import BinderColor from "../components/BinderColor";
-import BinderOptionsPopover from "../components/BinderOptionsPopover";
-import BinderSongsList from "../components/BinderSongsList";
-import Button from "../components/Button";
-import ColorDialog from "../components/ColorDialog";
-import { EDIT_BINDERS } from "../utils/constants";
-import EditableData from "../components/inputs/EditableData";
-import PageTitle from "../components/PageTitle";
-import PulseLoader from "react-spinners/PulseLoader";
-import { isEmpty } from "../utils/ObjectUtils";
-import { reportError } from "../utils/error";
-import { selectCurrentMember } from "../store/authSlice";
-import { useSelector } from "react-redux";
+import { useHistory, useLocation, useParams } from 'react-router';
+import BinderColor from '../components/BinderColor';
+import BinderOptionsPopover from '../components/BinderOptionsPopover';
+import BinderSongsList from '../components/BinderSongsList';
+import Button from '../components/Button';
+import ColorDialog from '../components/ColorDialog';
+import { EDIT_BINDERS } from '../utils/constants';
+import EditableData from '../components/inputs/EditableData';
+import PageTitle from '../components/PageTitle';
+import { isEmpty } from '../utils/ObjectUtils';
+import { selectCurrentMember } from '../store/authSlice';
+import { useSelector } from 'react-redux';
+import useBinder from '../hooks/api/useBinder';
+import useUpdates from '../hooks/useUpdates';
+import PageLoading from '../components/PageLoading';
+import useUpdateBinder from '../hooks/api/useUpdateBinder';
+import Alert from '../components/Alert';
+import useDialog from '../hooks/useDialog';
 
 export default function BinderDetailPage() {
-	const [showColorPicker, setShowColorPicker] = useState(false);
-	const [binder, setBinder] = useState();
-	const [pendingUpdates, setPendingUpdates] = useState({});
-	const [saving, setSaving] = useState(false);
-	const [songIdsBeingRemoved, setSongIdsBeingRemoved] = useState([]);
-	const { id } = useParams();
-	const router = useHistory();
-	const currentMember = useSelector(selectCurrentMember);
+  const [isColorPickerOpen, showColorPicker, hideColorPicker] = useDialog();
 
-	useEffect(() => {
-		async function fetchBinder() {
-			try {
-				let { data } = await BinderApi.getOneById(id);
-				setBinder(data);
-			} catch (error) {
-				reportError(error);
-				if (error?.response?.status === 401) {
-					router.push("/login");
-				}
-			}
-		}
+  const router = useHistory();
+  const { id } = useParams();
+  const { state } = useLocation();
 
-		fetchBinder();
-	}, [id, router]);
+  const {
+    data: originalBinder,
+    isLoading,
+    isError,
+  } = useBinder(id, { placeholderData: state });
 
-	const handleUpdate = (field, value) => {
-		let updates = { ...pendingUpdates };
-		updates[field] = value;
-		setPendingUpdates(updates);
+  const {
+    updates,
+    updatedValue: binder,
+    onChange,
+    clearUpdates,
+  } = useUpdates(originalBinder);
 
-		let updatedBinder = { ...binder };
-		updatedBinder[field] = value;
-		setBinder(updatedBinder);
-	};
+  const currentMember = useSelector(selectCurrentMember);
 
-	const handleSaveChanges = async () => {
-		setSaving(true);
-		try {
-			if (!isEmpty(pendingUpdates)) {
-				let { data } = await BinderApi.updateOneById(id, pendingUpdates);
-				setBinder(data);
-				setPendingUpdates({});
-			}
-		} catch (error) {
-			reportError(error);
-			if (error?.response?.status === 401) {
-				router.push("/login");
-			}
-		} finally {
-			setSaving(false);
-		}
-	};
+  const { isLoading: isSaving, run: updateBinder } = useUpdateBinder({
+    onSuccess: () => {
+      clearUpdates();
+      router.replace(`/binders/${id}`, null);
+    },
+  });
 
-	const handleAddSongs = (addedSongs) => {
-		setBinder({
-			...binder,
-			songs: binder.songs.concat(addedSongs),
-		});
-	};
+  if (isLoading) {
+    return <PageLoading />;
+  }
 
-	const handleRemoveSong = async (songToRemove) => {
-		setSongIdsBeingRemoved([...songIdsBeingRemoved, songToRemove.id]);
-		try {
-			await BinderApi.removeSongs(binder.id, [songToRemove.id]);
-			let updatedSongsList = binder.songs?.filter((song) => song.id !== songToRemove.id);
-			setBinder({ ...binder, songs: updatedSongsList });
+  if (isError)
+    return (
+      <Alert>There was an issue loading this binder. Please try again.</Alert>
+    );
 
-			let updatedIdsBeingRemoved = songIdsBeingRemoved.filter(
-				(beingRemoved) => beingRemoved !== songToRemove.id
-			);
-			setSongIdsBeingRemoved(updatedIdsBeingRemoved);
-		} catch (error) {
-			reportError(error);
-			if (error?.response?.status === 401) {
-				router.push("/login");
-			}
-		}
-	};
+  return (
+    <div className="mb-10">
+      <div className="flex-center">
+        <span className="mr-2 cursor-pointer">
+          <BinderColor
+            color={binder.color}
+            onClick={showColorPicker}
+            editable={currentMember.can(EDIT_BINDERS)}
+          />
+          <ColorDialog
+            open={isColorPickerOpen}
+            onCloseDialog={hideColorPicker}
+            binderColor={binder.color}
+            onChange={editedColor => onChange('color', editedColor)}
+          />
+        </span>
+        <PageTitle
+          title={binder.name}
+          editable={currentMember.can(EDIT_BINDERS)}
+          onChange={editedName => onChange('name', editedName)}
+        />
+        {currentMember.can(EDIT_BINDERS) && (
+          <BinderOptionsPopover onChangeColorClick={showColorPicker} />
+        )}
+      </div>
+      <div className="mb-6">
+        <EditableData
+          placeholder="Add a description for this binder"
+          value={binder.description || ''}
+          onChange={editedDescription =>
+            onChange('description', editedDescription)
+          }
+          editable={currentMember.can(EDIT_BINDERS)}
+        />
+      </div>
+      <BinderSongsList binder={binder} />
 
-	if (!binder) {
-		return (
-			<div className="text-center py-4">
-				<PulseLoader color="#1f6feb" />
-			</div>
-		);
-	}
-
-	return (
-		<div className="mb-10">
-			<div className="flex-center">
-				<span className="mr-2 cursor-pointer">
-					<BinderColor
-						color={binder.color}
-						onClick={() => setShowColorPicker(true)}
-						editable={currentMember.can(EDIT_BINDERS)}
-					/>
-					<ColorDialog
-						open={showColorPicker}
-						onCloseDialog={() => setShowColorPicker(false)}
-						binderColor={binder.color}
-						onChange={(editedColor) => handleUpdate("color", editedColor)}
-					/>
-				</span>
-				<PageTitle
-					title={binder.name}
-					editable={currentMember.can(EDIT_BINDERS)}
-					onChange={(editedName) => handleUpdate("name", editedName)}
-				/>
-				{currentMember.can(EDIT_BINDERS) && (
-					<BinderOptionsPopover onChangeColorClick={() => setShowColorPicker(true)} />
-				)}
-			</div>
-			<div>
-				<EditableData
-					placeholder="Add a description for this binder"
-					value={binder.description}
-					onChange={(editedDescription) => handleUpdate("description", editedDescription)}
-					editable={currentMember.can(EDIT_BINDERS)}
-				/>
-			</div>
-			<BinderSongsList
-				boundSongs={binder.songs}
-				onAdd={handleAddSongs}
-				onRemoveSong={handleRemoveSong}
-				songsBeingRemoved={songIdsBeingRemoved}
-			/>
-
-			{currentMember.can(EDIT_BINDERS) && !isEmpty(pendingUpdates) && (
-				<div className="fixed bottom-8 right-8 shadow-md">
-					<Button onClick={handleSaveChanges} loading={saving}>
-						Save Changes
-					</Button>
-				</div>
-			)}
-		</div>
-	);
+      {currentMember.can(EDIT_BINDERS) && !isEmpty(updates) && (
+        <div className="fixed shadow-md bottom-8 right-8">
+          <Button
+            onClick={() => updateBinder({ id, updates })}
+            loading={isSaving}
+          >
+            Save Changes
+          </Button>
+        </div>
+      )}
+    </div>
+  );
 }

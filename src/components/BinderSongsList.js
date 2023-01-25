@@ -1,125 +1,89 @@
-import Button from "./Button";
-import { EDIT_BINDERS } from "../utils/constants";
-import KeyBadge from "./KeyBadge";
-import NoDataMessage from "./NoDataMessage";
-import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
-import SearchSongsDialog from "./SearchSongsDialog";
-import SectionTitle from "./SectionTitle";
-import TableHead from "./TableHead";
-import TableRow from "./TableRow";
-import TrashIcon from "@heroicons/react/outline/TrashIcon";
-import { hasAnyKeysSet } from "../utils/SongUtils";
-import { selectCurrentMember } from "../store/authSlice";
-import { useHistory } from "react-router";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import Button from './Button';
+import { EDIT_BINDERS } from '../utils/constants';
+import NoDataMessage from './NoDataMessage';
+import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon';
+import SearchSongsDialog from './SearchSongsDialog';
+import SectionTitle from './SectionTitle';
+import { selectCurrentMember } from '../store/authSlice';
+import { useSelector } from 'react-redux';
+import useDialog from '../hooks/useDialog';
+import List from './List';
+import BinderSongRow from './BinderSongRow';
+import { useState } from 'react';
+import { useMemo } from 'react';
+import { useCallback } from 'react';
+import WellInput from './inputs/WellInput';
 
-export default function BinderSongsList({ boundSongs, onAdd, onRemoveSong, songsBeingRemoved }) {
-	const [showSearchDialog, setShowSearchDialog] = useState(false);
-	const router = useHistory();
-	const currentMember = useSelector(selectCurrentMember);
+export default function BinderSongsList({ binder }) {
+  const [isSearchOpen, showSearch, hideSearch] = useDialog();
+  const currentMember = useSelector(selectCurrentMember);
+  const [query, setQuery] = useState('');
 
-	const handleOpenSong = (songId) => {
-		router.push(`/songs/${songId}`);
-	};
+  const searchSongs = useCallback(() => {
+    if (query?.length > 1) {
+      return binder.songs?.filter(song =>
+        song.name.toLowerCase().includes(query.toLowerCase())
+      );
+    } else {
+      return binder.songs;
+    }
+  }, [query, binder.songs]);
 
-	return (
-		<>
-			<div className="sm:block hidden">
-				<div className="flex-between mb-2">
-					<SectionTitle title="Songs in this binder" />
-					{currentMember.can(EDIT_BINDERS) && (
-						<Button
-							variant="open"
-							size="xs"
-							onClick={() => setShowSearchDialog(true)}
-							bold
-							color="blue"
-						>
-							Add Songs
-						</Button>
-					)}
-				</div>
-				<table className="w-full">
-					<TableHead columns={["NAME", ""]} />
-					<tbody>
-						{boundSongs?.length > 0 ? (
-							boundSongs?.map((song) => (
-								<TableRow
-									columns={[
-										<>
-											{song.name}
-											{hasAnyKeysSet(song) && (
-												<KeyBadge songKey={song.transposed_key || song.original_key} />
-											)}
-										</>,
-									]}
-									key={song.id}
-									onClick={() => handleOpenSong(song.id)}
-									removable={currentMember.can(EDIT_BINDERS)}
-									onRemove={() => onRemoveSong(song)}
-									removing={songsBeingRemoved.includes(song.id)}
-								/>
-							))
-						) : (
-							<tr>
-								<td colSpan={2}>
-									<NoDataMessage type="songs" />
-								</td>
-							</tr>
-						)}
-					</tbody>
-				</table>
-			</div>
+  const queriedSongs = useMemo(() => searchSongs(), [searchSongs]);
 
-			<div className="sm:hidden">
-				<SectionTitle title="Songs in this binder" />
-				{boundSongs?.length > 0
-					? boundSongs.map((song) => (
-							<div
-								className="border-b dark:border-dark-gray-600 py-2.5 flex-between px-2 last:border-0 cursor-pointer bg-white dark:bg-dark-gray-900 transition-colors hover:bg-gray-50 dark:hover:bg-dark-gray-800 focus:bg-gray-50 dark:focus:bg-dark-gray-800 "
-								key={song.id}
-							>
-								<div onClick={() => handleOpenSong(song.id)} className="flex-grow">
-									<div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
-										{song.name}{" "}
-										{hasAnyKeysSet(song) && (
-											<KeyBadge songKey={song.transposed_key || song.original_key} />
-										)}
-									</div>
-								</div>
-								{currentMember.can(EDIT_BINDERS) && (
-									<Button
-										variant="open"
-										color="black"
-										size="xs"
-										onClick={() => onRemoveSong(song)}
-										removing={songsBeingRemoved.includes(song.id)}
-									>
-										<TrashIcon className="h-4 w-4" />
-									</Button>
-								)}
-							</div>
-					  ))
-					: "No songs in this binder yet"}
-			</div>
+  return (
+    <>
+      <div className="flex-between">
+        <SectionTitle title="Songs in this binder" />
+        {currentMember.can(EDIT_BINDERS) && (
+          <div className="hidden sm:block">
+            <Button
+              variant="open"
+              size="xs"
+              onClick={showSearch}
+              bold
+              color="blue"
+            >
+              Add Songs
+            </Button>
+          </div>
+        )}
+      </div>
 
-			<SearchSongsDialog
-				open={showSearchDialog}
-				onCloseDialog={() => setShowSearchDialog(false)}
-				onAdd={onAdd}
-				boundSongs={boundSongs}
-			/>
-			<Button
-				variant="open"
-				className="bg-white dark:bg-dark-gray-700 fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
-				full
-				style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
-				onClick={() => setShowSearchDialog(true)}
-			>
-				<PlusCircleIcon className="h-4 w-4 mr-2" />
-				Add more songs
-			</Button>
-		</>
-	);
+      <List
+        ListHeader={
+          <>
+            <div className="mb-2 text-xs">{binder.songs?.length} total</div>
+            <WellInput
+              placeholder="Search songs in binder"
+              value={query}
+              onChange={setQuery}
+              className="mb-4 lg:text-sm"
+            />
+          </>
+        }
+        ListEmpty={<NoDataMessage>No songs to show</NoDataMessage>}
+        data={queriedSongs}
+        renderItem={song => (
+          <BinderSongRow song={song} key={song.id} binderId={binder.id} />
+        )}
+      />
+
+      <SearchSongsDialog
+        open={isSearchOpen}
+        onCloseDialog={hideSearch}
+        binder={binder}
+      />
+      <Button
+        variant="open"
+        className="fixed left-0 h-12 bg-white rounded-none dark:bg-dark-gray-700 bottom-12 flex-center sm:hidden"
+        full
+        style={{ boxShadow: 'rgba(0, 0, 0, 0.1) 0px -5px 17px 0px' }}
+        onClick={showSearch}
+      >
+        <PlusCircleIcon className="w-4 h-4 mr-2" />
+        Add more songs
+      </Button>
+    </>
+  );
 }

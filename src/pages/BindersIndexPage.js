@@ -1,102 +1,73 @@
-import { useEffect, useState } from "react";
-
-import { ADD_BINDERS } from "../utils/constants";
-import BinderApi from "../api/BinderApi";
-import BindersList from "../components/BindersList";
-import Button from "../components/Button";
-import CreateBinderDialog from "../components/CreateBinderDialog";
-import FadeIn from "../components/FadeIn";
-import MobileHeader from "../components/MobileHeader";
-import NoDataMessage from "../components/NoDataMessage";
-import PageTitle from "../components/PageTitle";
-import PlusCircleIcon from "@heroicons/react/solid/PlusCircleIcon";
-import QuickAdd from "../components/QuickAdd";
-import { reportError } from "../utils/error";
-import { selectCurrentMember } from "../store/authSlice";
-import { useHistory } from "react-router";
-import { useSelector } from "react-redux";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ADD_BINDERS } from '../utils/constants';
+import CreateBinderDialog from '../components/CreateBinderDialog';
+import QuickAdd from '../components/QuickAdd';
+import { selectCurrentMember } from '../store/authSlice';
+import { useSelector } from 'react-redux';
+import useBinders from '../hooks/api/useBinders';
+import PageHeader from '../components/PageHeader';
+import PageLoading from '../components/PageLoading';
+import Alert from '../components/Alert';
+import List from '../components/List';
+import NoDataMessage from '../components/NoDataMessage';
+import BinderRow from '../components/BinderRow';
+import WellInput from '../components/inputs/WellInput';
+import useDialog from '../hooks/useDialog';
 
 export default function BindersIndexPage() {
-	useEffect(() => (document.title = "Binders"));
-	const [showCreateDialog, setShowCreateDialog] = useState(false);
-	const [binders, setBinders] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const router = useHistory();
-	const currentMember = useSelector(selectCurrentMember);
+  useEffect(() => (document.title = 'Binders'));
 
-	useEffect(() => {
-		async function fetchBinders() {
-			setLoading(true);
-			try {
-				let result = await BinderApi.getAll();
-				setBinders(result.data);
-			} catch (error) {
-				if (error?.response?.status === 401) {
-					router.push("/login");
-				}
-				reportError(error);
-			} finally {
-				setLoading(false);
-			}
-		}
+  const [isOpen, showDialog, hideDialog] = useDialog();
+  const [query, setQuery] = useState('');
+  const currentMember = useSelector(selectCurrentMember);
 
-		fetchBinders();
-	}, [router]);
+  const { data: binders, isLoading, isError, isSuccess } = useBinders();
 
-	let content = null;
-	if (binders.length === 0) {
-		content = <NoDataMessage type="binders" loading={loading} />;
-	} else {
-		content = (
-			<FadeIn className="mb-10">
-				<BindersList binders={binders} />
-			</FadeIn>
-		);
-	}
+  const searchBinders = useCallback(() => {
+    if (query.length > 1) {
+      return binders?.filter(song =>
+        song.name.toLowerCase().includes(query.toLowerCase())
+      );
+    } else {
+      return binders;
+    }
+  }, [query, binders]);
 
-	const handleBinderCreated = (newBinder) => {
-		setBinders([...binders, newBinder]);
-	};
+  const queriedBinders = useMemo(() => searchBinders(), [searchBinders]);
 
-	return (
-		<>
-			<div className="hidden sm:block">
-				<PageTitle title="Binders" />
-			</div>
-			<div className="h-14 mb-4 sm:hidden">
-				<MobileHeader
-					title="Binders"
-					className="shadow-inner"
-					onAdd={() => setShowCreateDialog(true)}
-					canAdd={currentMember.can(ADD_BINDERS)}
-				/>
-			</div>
+  return (
+    <div className="mb-10">
+      <PageHeader title="Binders" headerRightVisible={false} />
+      {isLoading && <PageLoading />}
+      {isError && (
+        <Alert color="red">There was an issue retrieving your binders.</Alert>
+      )}
 
-			{content}
+      {isSuccess && (
+        <List
+          data={queriedBinders}
+          ListEmpty={<NoDataMessage type={'binders'} />}
+          renderItem={binder => <BinderRow binder={binder} key={binder.id} />}
+          ListHeader={
+            <>
+              <div className="mb-2">{binders.length} total</div>
+              <WellInput
+                placeholder="Search your binders"
+                value={query}
+                onChange={setQuery}
+                className="mb-4 lg:text-sm"
+              />
+            </>
+          }
+        />
+      )}
 
-			{currentMember.can(ADD_BINDERS) && (
-				<>
-					<CreateBinderDialog
-						open={showCreateDialog}
-						onCloseDialog={() => setShowCreateDialog(false)}
-						onCreated={handleBinderCreated}
-					/>
-					<Button
-						variant="open"
-						className="bg-white dark:bg-dark-gray-700 fixed bottom-12 left-0 rounded-none flex-center sm:hidden h-12"
-						full
-						style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -5px 17px 0px" }}
-						onClick={() => setShowCreateDialog(true)}
-						color="blue"
-					>
-						<PlusCircleIcon className="h-4 w-4 mr-2" />
-						Add new binder
-					</Button>
-					<div className="hidden sm:block">
-						<QuickAdd onAdd={() => setShowCreateDialog(true)} />
-					</div>
-				</>
-			)}
-		</>
-	);
+      {currentMember.can(ADD_BINDERS) && (
+        <>
+          <CreateBinderDialog open={isOpen} onCloseDialog={hideDialog} />
+          <QuickAdd onAdd={showDialog} />
+        </>
+      )}
+    </div>
+  );
 }

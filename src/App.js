@@ -1,6 +1,6 @@
 import 'react-toastify/dist/ReactToastify.min.css';
 import * as Sentry from '@sentry/react';
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { Suspense, lazy, useEffect } from 'react';
 
@@ -81,6 +81,7 @@ function App() {
           </Router>
         </Sentry.ErrorBoundary>
       </Suspense>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
