@@ -13,6 +13,7 @@ import NoDataMessage from '../components/NoDataMessage';
 import BinderRow from '../components/BinderRow';
 import WellInput from '../components/inputs/WellInput';
 import useDialog from '../hooks/useDialog';
+import FadeIn from '../components/FadeIn';
 
 export default function BindersIndexPage() {
   useEffect(() => (document.title = 'Binders'));
@@ -47,9 +48,11 @@ export default function BindersIndexPage() {
         <List
           data={queriedBinders}
           ListEmpty={<NoDataMessage type={'binders'} />}
+          withFade={true}
+          className="delay-100"
           renderItem={binder => <BinderRow binder={binder} key={binder.id} />}
           ListHeader={
-            <>
+            <FadeIn>
               <div className="mb-2">{binders.length} total</div>
               <WellInput
                 placeholder="Search your binders"
@@ -57,7 +60,7 @@ export default function BindersIndexPage() {
                 onChange={setQuery}
                 className="mb-4 lg:text-sm"
               />
-            </>
+            </FadeIn>
           }
         />
       )}

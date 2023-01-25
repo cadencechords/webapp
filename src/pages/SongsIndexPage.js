@@ -15,6 +15,7 @@ import Alert from '../components/Alert';
 import List from '../components/List';
 import SongRow from '../components/SongRow';
 import useDialog from '../hooks/useDialog';
+import FadeIn from '../components/FadeIn';
 
 export default function SongsIndexPage() {
   useEffect(() => (document.title = 'Songs'));
@@ -47,18 +48,22 @@ export default function SongsIndexPage() {
 
       {isSuccess && (
         <List
+          withFade={true}
           data={queriedSongs}
+          className="delay-100"
           renderItem={song => <SongRow song={song} key={song.id} />}
           ListEmpty={<NoDataMessage type={'songs'} />}
           ListHeader={
             <>
               <div className="mb-2">{songs.length} total</div>
-              <WellInput
-                placeholder="Search your songs"
-                value={query}
-                onChange={setQuery}
-                className="mb-4 lg:text-sm"
-              />
+              <FadeIn>
+                <WellInput
+                  placeholder="Search your songs"
+                  value={query}
+                  onChange={setQuery}
+                  className="mb-4 lg:text-sm"
+                />
+              </FadeIn>
             </>
           }
         />
