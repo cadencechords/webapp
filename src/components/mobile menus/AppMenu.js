@@ -7,14 +7,14 @@ import { MANAGE_BILLING, VIEW_EVENTS, VIEW_ROLES } from '../../utils/constants';
 import { selectCurrentSubscription } from '../../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
 import BinderIcon from '../../icons/BinderIcon';
-import CalendarIcon from '@heroicons/react/outline/CalendarIcon';
+import CalendarIcon from '@heroicons/react/solid/CalendarIcon';
 import DashboardIcon from '../../icons/DashboardIcon';
 import MusicNoteIcon from '@heroicons/react/solid/MusicNoteIcon';
 import PlaylistIcon from '../../icons/PlaylistIcon';
-import SwitchHorizontalIcon from '@heroicons/react/outline/SwitchHorizontalIcon';
-import UserGroupIcon from '@heroicons/react/solid/UserGroupIcon';
-import CreditCardIcon from '@heroicons/react/outline/CreditCardIcon';
-import LockClosedIcon from '@heroicons/react/outline/LockClosedIcon';
+import SwitchHorizontalIcon from '@heroicons/react/solid/SwitchHorizontalIcon';
+import UserIcon from '@heroicons/react/solid/UserIcon';
+import CreditCardIcon from '@heroicons/react/solid/CreditCardIcon';
+import LockClosedIcon from '@heroicons/react/solid/LockClosedIcon';
 
 export default function AppMenu({ onCloseDialog, open }) {
   const currentSubscription = useSelector(selectCurrentSubscription);
@@ -72,7 +72,7 @@ export default function AppMenu({ onCloseDialog, open }) {
       <Link to="/members">
         <MobileMenuButton full onClick={onCloseDialog} size="none">
           <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <UserGroupIcon className={iconClasses} />
+            <UserIcon className={iconClasses} />
             Team members
           </div>
         </MobileMenuButton>

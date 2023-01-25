@@ -14,7 +14,7 @@ export default function StyledListBox({
         <Listbox.Button
           className={
             `transition-all px-3 py-2 shadow-sm h-8 text-left border-gray-300 dark:border-dark-gray-400 focus:outline-none outline-none` +
-            ` w-full border rounded-md focus:ring-offset-2 focus:ring-2 focus:ring-blue-400 flex-between` +
+            ` w-full border rounded-md focus:ring-offset-1 focus:ring-2 focus:ring-blue-400 dark:focus:ring-offset-dark-gray-700 flex-between` +
             ` ${
               background === 'white'
                 ? 'bg-white dark:bg-dark-gray-900 '

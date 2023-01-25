@@ -2,17 +2,17 @@ import { MANAGE_BILLING, VIEW_EVENTS, VIEW_ROLES } from '../utils/constants';
 import { selectCurrentMember, selectCurrentTeam } from '../store/authSlice';
 
 import BinderIcon from '../icons/BinderIcon';
-import CalendarIcon from '@heroicons/react/outline/CalendarIcon';
+import CalendarIcon from '@heroicons/react/solid/CalendarIcon';
 import DashboardIcon from '../icons/DashboardIcon';
-import LockClosedIcon from '@heroicons/react/outline/LockClosedIcon';
-import CreditCardIcon from '@heroicons/react/outline/CreditCardIcon';
+import LockClosedIcon from '@heroicons/react/solid/LockClosedIcon';
+import CreditCardIcon from '@heroicons/react/solid/CreditCardIcon';
 import MusicNoteIcon from '@heroicons/react/solid/MusicNoteIcon';
 import PlaylistIcon from '../icons/PlaylistIcon';
 import SidenavLink from './SidenavLink';
 import TeamOptionsPopover from './TeamOptionsPopover';
-import UserGroupIcon from '@heroicons/react/solid/UserGroupIcon';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
+import UserIcon from '@heroicons/react/solid/UserIcon';
 
 export default function Sidenav() {
   let iconClasses = 'h-5 w-5';
@@ -27,7 +27,7 @@ export default function Sidenav() {
   }
 
   return (
-    <div className="fixed w-0 h-full transition-all shadow-inner bg-gray-50 dark:bg-dark-gray-800 lg:w-52 md:w-14 md:border-r dark:border-dark-gray-400">
+    <div className="fixed w-0 h-full transition-all dark:bg-dark-gray-800 lg:w-56 md:w-14 md:border-r dark:border-0">
       <div className="flex-col hidden md:flex">
         {currentTeamCard}
         <div className="flex flex-col py-3 ">
@@ -36,11 +36,6 @@ export default function Sidenav() {
             to="/"
             icon={<DashboardIcon className={iconClasses} />}
             exact
-          />
-          <SidenavLink
-            text="Binders"
-            to="/binders"
-            icon={<BinderIcon className={iconClasses} />}
           />
           <SidenavLink
             text="Songs"
@@ -53,9 +48,14 @@ export default function Sidenav() {
             icon={<PlaylistIcon className="w-6 h-6" />}
           />
           <SidenavLink
+            text="Binders"
+            to="/binders"
+            icon={<BinderIcon className={iconClasses} />}
+          />
+          <SidenavLink
             text="Team members"
             to="/members"
-            icon={<UserGroupIcon className={iconClasses} />}
+            icon={<UserIcon className={iconClasses} />}
           />
           {currentSubscription?.isPro && currentMember?.can(VIEW_EVENTS) && (
             <SidenavLink

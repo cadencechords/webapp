@@ -53,7 +53,7 @@ export default function BinderSongsList({ binder }) {
       <List
         ListHeader={
           <>
-            <div className="mb-2 text-xs">{binder.songs?.length} total</div>
+            <div className="mb-2 text-sm">{binder.songs?.length} total</div>
             <WellInput
               placeholder="Search songs in binder"
               value={query}
