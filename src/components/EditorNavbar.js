@@ -23,7 +23,7 @@ export default function EditorNavbar({
   }
 
   return (
-    <div className="border-b dark:border-dark-gray-600 bg-gray-50 dark:bg-dark-gray-800">
+    <div className="border-b dark:border-0 bg-gray-50 dark:bg-dark-gray-800">
       <div className="container px-3 py-2 mx-auto flex-between">
         <div className="flex items-center">
           <span className="mr-4 flex-center">

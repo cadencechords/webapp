@@ -72,7 +72,7 @@ export default function BinderSongsList({ binder }) {
       />
       <Button
         variant="open"
-        className="fixed left-0 h-12 bg-white rounded-none dark:bg-dark-gray-700 bottom-12 flex-center sm:hidden"
+        className="fixed left-0 h-12 bg-white rounded-none rounded-b-none dark:bg-dark-gray-700 bottom-12 flex-center sm:hidden"
         full
         style={{ boxShadow: 'rgba(0, 0, 0, 0.1) 0px -5px 17px 0px' }}
         onClick={showSearch}

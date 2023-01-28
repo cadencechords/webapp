@@ -18,7 +18,7 @@ export default function BinderSongRow({ song, binderId }) {
         to={{ pathname: `/songs/${song.id}`, state: song }}
         className="flex items-center w-full h-full mr-5 overflow-hidden"
       >
-        <div className="inline-block overflow-hidden whitespace-nowrap overflow-ellipsis">
+        <div className="inline-block overflow-hidden whitespace-nowrap overflow-ellipsis hover:underline">
           {song.name}{' '}
         </div>
         <KeyBadge songKey={song.transposed_key || song.original_key} />
