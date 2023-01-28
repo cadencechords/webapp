@@ -41,26 +41,26 @@ export default function SongOptionsPopover({ onPrintClick }) {
         onCancel={() => setShowDeleteDialog(false)}
         onConfirm={handleDelete}
       />
-      <StyledPopover button={button} position="bottom-start">
-        <div className="w-60">
+      <StyledPopover button={button} position="bottom-end">
+        <div className="overflow-hidden rounded-lg w-60">
           <MobileMenuButton
             onClick={onPrintClick}
             full
             color="black"
-            className="flex items-center rounded-t-md"
+            className="border-b flex-between last:border-0 dark:border-dark-gray-400"
           >
-            <PrinterIcon className="w-5 h-5 mr-3" />
             Print
+            <PrinterIcon className="w-5 h-5" />
           </MobileMenuButton>
           {currentMember.can(DELETE_SONGS) && (
             <MobileMenuButton
               full
               color="red"
-              className="flex items-center border-t dark:border-dark-gray-400 rounded-b-md"
+              className="border-b flex-between last:border-0 dark:border-dark-gray-400"
               onClick={() => setShowDeleteDialog(true)}
             >
-              <TrashIcon className="w-5 h-5 mr-3" />
               Delete
+              <TrashIcon className="w-5 h-5" />
             </MobileMenuButton>
           )}
         </div>

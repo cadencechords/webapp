@@ -11,7 +11,6 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { DELETE_SETLISTS } from '../utils/constants';
-import classNames from 'classnames';
 
 export default function SetlistOptionsPopover({ setlist, onPerform }) {
   const [isConfirmationOpen, showConfirmation, hideConfirmation] = useDialog();
@@ -38,7 +37,7 @@ export default function SetlistOptionsPopover({ setlist, onPerform }) {
             <MobileMenuButton
               full
               color="gray"
-              className="flex items-center"
+              className="flex items-center border-b last:border-0 dark:border-dark-gray-400"
               onClick={onPerform}
             >
               Perform
@@ -48,10 +47,7 @@ export default function SetlistOptionsPopover({ setlist, onPerform }) {
             <MobileMenuButton
               full
               color="red"
-              className={classNames(
-                'flex-between dark:border-dark-gray-400',
-                setlist.songs?.length && 'border-t'
-              )}
+              className="border-b flex-between last:border-0 dark:border-dark-gray-400"
               onClick={showConfirmation}
             >
               Delete

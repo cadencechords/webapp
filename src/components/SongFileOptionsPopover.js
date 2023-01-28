@@ -1,63 +1,60 @@
-import { DELETE_FILES, EDIT_FILES } from "../utils/constants";
+import { DELETE_FILES, EDIT_FILES } from '../utils/constants';
 
-import Button from "./Button";
-import DotsVerticalIcon from "@heroicons/react/outline/DotsVerticalIcon";
-import DownloadIcon from "@heroicons/react/outline/DownloadIcon";
-import MobileMenuButton from "./buttons/MobileMenuButton";
-import PencilIcon from "@heroicons/react/outline/PencilIcon";
-import StyledPopover from "./StyledPopover";
-import TrashIcon from "@heroicons/react/outline/TrashIcon";
-import { selectCurrentMember } from "../store/authSlice";
-import { useSelector } from "react-redux";
+import Button from './Button';
+import DotsVerticalIcon from '@heroicons/react/outline/DotsVerticalIcon';
+import DownloadIcon from '@heroicons/react/outline/DownloadIcon';
+import MobileMenuButton from './buttons/MobileMenuButton';
+import PencilIcon from '@heroicons/react/outline/PencilIcon';
+import StyledPopover from './StyledPopover';
+import TrashIcon from '@heroicons/react/outline/TrashIcon';
+import { selectCurrentMember } from '../store/authSlice';
+import { useSelector } from 'react-redux';
 
 export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
-	const currentMember = useSelector(selectCurrentMember);
+  const currentMember = useSelector(selectCurrentMember);
 
-	const button = (
-		<Button variant="open" color="gray">
-			<DotsVerticalIcon className="w-4 h-4" />
-		</Button>
-	);
-	return (
-		<StyledPopover button={button}>
-			<div className="rounded-lg shadow-xl bg-white dark:bg-dark-gray-700 w-48">
-				<a
-					href={file.url}
-					target="_blank"
-					rel="noreferrer"
-					className="dark:border-dark-gray-400 border-gray-300 border-b block"
-				>
-					<MobileMenuButton full className="text-left rounded-t-lg" color="black">
-						<div className="flex items-center">
-							<DownloadIcon className="w-4 h-4 mr-4" /> Download
-						</div>
-					</MobileMenuButton>
-				</a>
-				{currentMember.can(EDIT_FILES) && (
-					<MobileMenuButton
-						full
-						className="text-left dark:border-dark-gray-400 border-gray-300 border-b last:border-0 first:rounded-t-lg last:rounded-b-lg"
-						color="black"
-						onClick={onEdit}
-					>
-						<div className="flex items-center">
-							<PencilIcon className="w-4 h-4 mr-4" /> Edit
-						</div>
-					</MobileMenuButton>
-				)}
-				{currentMember.can(DELETE_FILES) && (
-					<MobileMenuButton
-						full
-						className="text-left first:rounded-t-lg last:rounded-b-lg"
-						color="red"
-						onClick={onDelete}
-					>
-						<div className="flex items-center">
-							<TrashIcon className="w-4 h-4 mr-4" /> Delete
-						</div>
-					</MobileMenuButton>
-				)}
-			</div>
-		</StyledPopover>
-	);
+  const button = (
+    <Button variant="open" color="gray">
+      <DotsVerticalIcon className="w-4 h-4" />
+    </Button>
+  );
+  return (
+    <StyledPopover button={button}>
+      <div className="overflow-hidden rounded-lg w-60">
+        <a
+          href={file.url}
+          target="_blank"
+          rel="noreferrer"
+          className="block border-b dark:border-dark-gray-400 last:border-0"
+        >
+          <MobileMenuButton full className="flex-between" color="black">
+            Download
+            <DownloadIcon className="w-4 h-4" />
+          </MobileMenuButton>
+        </a>
+        {currentMember.can(EDIT_FILES) && (
+          <MobileMenuButton
+            full
+            className="border-b dark:border-dark-gray-400 last:border-0 flex-between"
+            color="black"
+            onClick={onEdit}
+          >
+            Edit
+            <PencilIcon className="w-4 h-4" />
+          </MobileMenuButton>
+        )}
+        {currentMember.can(DELETE_FILES) && (
+          <MobileMenuButton
+            full
+            className="border-b dark:border-dark-gray-400 last:border-0 flex-between"
+            color="red"
+            onClick={onDelete}
+          >
+            Delete
+            <TrashIcon className="w-4 h-4" />
+          </MobileMenuButton>
+        )}
+      </div>
+    </StyledPopover>
+  );
 }

@@ -1,36 +1,32 @@
-import TrashIcon from "@heroicons/react/outline/TrashIcon";
-import PlayIcon from "@heroicons/react/solid/PlayIcon";
-import React from "react";
-import MobileMenuButton from "./buttons/MobileMenuButton";
-import StyledPopover from "./StyledPopover";
+import TrashIcon from '@heroicons/react/outline/TrashIcon';
+import PlayIcon from '@heroicons/react/solid/PlayIcon';
+import React from 'react';
+import MobileMenuButton from './buttons/MobileMenuButton';
+import StyledPopover from './StyledPopover';
 
 export default function TrackOptionsPopover({ track, button, onDelete }) {
   return (
     <StyledPopover button={button} position="top">
-      <div className="rounded-lg shadow-xl bg-white dark:bg-dark-gray-700 w-60 flex flex-col">
-        <MobileMenuButton
-          full
-          className="text-left dark:border-dark-gray-400 border-gray-300 border-b last:border-0 first:rounded-t-lg last:rounded-b-lg"
-          color="black"
+      <div className="overflow-hidden rounded-lg w-60">
+        <a
+          className="block border-b dark:border-dark-gray-400 last:border-0"
+          href={track.url}
+          target="_blank"
+          rel="noreferrer"
         >
-          <a
-            className="flex items-center"
-            href={track.url}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <PlayIcon className="w-4 h-4 mr-4" /> Listen on {track.source}
-          </a>
-        </MobileMenuButton>
+          <MobileMenuButton full className="flex-between" color="black">
+            Listen on {track.source}
+            <PlayIcon className="w-4 h-4" />
+          </MobileMenuButton>
+        </a>
         <MobileMenuButton
           full
-          className="text-left first:rounded-t-lg last:rounded-b-lg"
+          className="border-b dark:border-dark-gray-400 last:border-0 flex-between"
           color="red"
           onClick={onDelete}
         >
-          <div className="flex items-center">
-            <TrashIcon className="w-4 h-4 mr-4" /> Delete
-          </div>
+          Delete
+          <TrashIcon className="w-4 h-4" />
         </MobileMenuButton>
       </div>
     </StyledPopover>

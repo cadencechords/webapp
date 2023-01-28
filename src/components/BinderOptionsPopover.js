@@ -9,8 +9,12 @@ import StyledPopover from './StyledPopover';
 import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import { reportError } from '../utils/error';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectCurrentMember } from '../store/authSlice';
+import { DELETE_BINDERS } from '../utils/constants';
 
 export default function BinderOptionsPopover({ onChangeColorClick }) {
+  const currentMember = useSelector(selectCurrentMember);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useHistory();
   const id = useParams().id;
@@ -42,24 +46,26 @@ export default function BinderOptionsPopover({ onChangeColorClick }) {
         is irreversible.
       </ConfirmDeleteDialog>
       <StyledPopover button={button} position="bottom-start">
-        <div className="w-60">
+        <div className="overflow-hidden rounded-lg w-60">
           <MobileMenuButton
             full
             color="black"
-            className="flex items-center rounded-t-md"
+            className="flex items-center border-b last:border-0 dark:border-dark-gray-400"
             onClick={onChangeColorClick}
           >
             Change color
           </MobileMenuButton>
-          <MobileMenuButton
-            full
-            color="red"
-            className="flex items-center border-t dark:border-dark-gray-400"
-            onClick={() => setShowDeleteDialog(true)}
-          >
-            <TrashIcon className="w-5 h-5 mr-3" />
-            Delete
-          </MobileMenuButton>
+          {currentMember.can(DELETE_BINDERS) && (
+            <MobileMenuButton
+              full
+              color="red"
+              className="border-b last:border-0 flex-between dark:border-dark-gray-400"
+              onClick={() => setShowDeleteDialog(true)}
+            >
+              Delete
+              <TrashIcon className="w-5 h-5" />
+            </MobileMenuButton>
+          )}
         </div>
       </StyledPopover>
     </>

@@ -18,23 +18,25 @@ export default function TeamOptionsPopover({ team }) {
   );
   return (
     <StyledPopover button={button} position="bottom-start">
-      <div className="w-64">
-        <MobileMenuButton
-          full
-          className="border-b rounded-t-md dark:border-dark-gray-400"
-          size="sm"
+      <div className="overflow-hidden rounded-lg w-60">
+        <Link
+          className="block border-b dark:border-dark-gray-400 last:border-0"
+          to="/team"
         >
-          <Link className="flex items-center justify-start" to="/team">
-            <InformationCircleIcon className="h-4 mx-4" />
+          <MobileMenuButton full className="flex-between">
             View details
-          </Link>
-        </MobileMenuButton>
-        <MobileMenuButton full className="rounded-b-md" size="sm">
-          <Link className="flex items-center justify-start" to="/login/teams">
-            <SwitchHorizontalIcon className="h-4 mx-4" />
+            <InformationCircleIcon className="w-4 h-4" />
+          </MobileMenuButton>
+        </Link>
+        <Link
+          className="block border-b dark:border-dark-gray-400 last:border-0"
+          to="/login/teams"
+        >
+          <MobileMenuButton full className="flex-between">
             Switch teams
-          </Link>
-        </MobileMenuButton>
+            <SwitchHorizontalIcon className="w-4 h-4" />
+          </MobileMenuButton>
+        </Link>
       </div>
     </StyledPopover>
   );
