@@ -45,24 +45,27 @@ export default function BindersIndexPage() {
       )}
 
       {isSuccess && (
-        <List
-          data={queriedBinders}
-          ListEmpty={<NoDataMessage type={'binders'} />}
-          withFade={true}
-          className="delay-100"
-          renderItem={binder => <BinderRow binder={binder} key={binder.id} />}
-          ListHeader={
-            <FadeIn>
-              <div className="mb-2">{binders.length} total</div>
-              <WellInput
-                placeholder="Search your binders"
-                value={query}
-                onChange={setQuery}
-                className="mb-4 lg:text-sm"
-              />
-            </FadeIn>
-          }
-        />
+        <>
+          <FadeIn>
+            <div className="mb-2">{binders.length} total</div>
+            <WellInput
+              placeholder="Search your binders"
+              value={query}
+              onChange={setQuery}
+              className="mb-4 lg:text-sm"
+            />
+          </FadeIn>
+          <FadeIn className="delay-100">
+            <List
+              data={queriedBinders}
+              ListEmpty={<NoDataMessage type={'binders'} />}
+              className="delay-100"
+              renderItem={binder => (
+                <BinderRow binder={binder} key={binder.id} />
+              )}
+            />
+          </FadeIn>
+        </>
       )}
 
       {currentMember.can(ADD_BINDERS) && (

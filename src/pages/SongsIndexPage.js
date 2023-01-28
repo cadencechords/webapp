@@ -47,26 +47,25 @@ export default function SongsIndexPage() {
       )}
 
       {isSuccess && (
-        <List
-          withFade={true}
-          data={queriedSongs}
-          className="delay-100"
-          renderItem={song => <SongRow song={song} key={song.id} />}
-          ListEmpty={<NoDataMessage type={'songs'} />}
-          ListHeader={
-            <>
-              <div className="mb-2">{songs.length} total</div>
-              <FadeIn>
-                <WellInput
-                  placeholder="Search your songs"
-                  value={query}
-                  onChange={setQuery}
-                  className="mb-4 lg:text-sm"
-                />
-              </FadeIn>
-            </>
-          }
-        />
+        <>
+          <div className="mb-2">{songs.length} total</div>
+          <FadeIn>
+            <WellInput
+              placeholder="Search your songs"
+              value={query}
+              onChange={setQuery}
+              className="mb-4 lg:text-sm"
+            />
+          </FadeIn>
+          <FadeIn className="delay-100">
+            <List
+              data={queriedSongs}
+              className="delay-100"
+              renderItem={song => <SongRow song={song} key={song.id} />}
+              ListEmpty={<NoDataMessage type={'songs'} />}
+            />
+          </FadeIn>
+        </>
       )}
       {currentMember.can(ADD_SONGS) && (
         <>

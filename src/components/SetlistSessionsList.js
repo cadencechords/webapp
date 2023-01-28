@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import SessionsApi from '../api/sessionsApi';
 import { reportError } from '../utils/error';
 import NoDataMessage from './NoDataMessage';
-import SectionTitle from './SectionTitle';
 import SessionCard from './SessionCard';
 
 export default function SetlistSessionsList({
@@ -37,21 +36,24 @@ export default function SetlistSessionsList({
   }
 
   return (
-    <div style={{ minHeight: '150px' }} className="mt-8 md:mt-0">
-      <SectionTitle title="Sessions" underline />
+    <div style={{ minHeight: '150px' }} className="mt-12">
+      <div className="pt-3 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Sessions
+      </div>
       {sessions.length === 0 ? (
         <NoDataMessage loading={loading}>
           No active sessions to show
         </NoDataMessage>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
+        <div className="flex gap-4 my-4 overflow-x-auto flex-nowrap">
           {sessions.map(session => (
-            <SessionCard
-              session={session}
-              key={session.id}
-              onSessionEnded={handleSessionEnded}
-              onJoin={onJoinSession}
-            />
+            <div key={session.id} className="flex-shrink-0 w-72">
+              <SessionCard
+                session={session}
+                onSessionEnded={handleSessionEnded}
+                onJoin={onJoinSession}
+              />
+            </div>
           ))}
         </div>
       )}

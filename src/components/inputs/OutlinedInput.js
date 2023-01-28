@@ -18,6 +18,7 @@ const OutlinedInput = React.forwardRef(
       buttonLoading,
       className,
       onEnter,
+      id,
     },
     ref
   ) => {
@@ -34,6 +35,7 @@ const OutlinedInput = React.forwardRef(
         {label && <Label>{label}</Label>}
         <div className="flex gap-2">
           <input
+            id={id}
             className={`dark:bg-dark-gray-700 appearance-none transition-all px-3 py-2 shadow-sm border-gray-300 dark:border-dark-gray-400 focus:outline-none outline-none w-full border ${roundedClasses}  focus:ring-offset-1 focus:ring-2 focus:ring-blue-400 dark:focus:ring-offset-dark-gray-700 ${className}`}
             placeholder={placeholder}
             onBlur={onBlur}

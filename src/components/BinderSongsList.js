@@ -50,18 +50,14 @@ export default function BinderSongsList({ binder }) {
         )}
       </div>
 
+      <div className="mb-2 text-sm">{binder.songs?.length} total</div>
+      <WellInput
+        placeholder="Search songs in binder"
+        value={query}
+        onChange={setQuery}
+        className="mb-4 lg:text-sm"
+      />
       <List
-        ListHeader={
-          <>
-            <div className="mb-2 text-sm">{binder.songs?.length} total</div>
-            <WellInput
-              placeholder="Search songs in binder"
-              value={query}
-              onChange={setQuery}
-              className="mb-4 lg:text-sm"
-            />
-          </>
-        }
         ListEmpty={<NoDataMessage>No songs to show</NoDataMessage>}
         data={queriedSongs}
         renderItem={song => (

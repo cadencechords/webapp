@@ -1,17 +1,15 @@
-import { DELETE_SETLISTS, EDIT_SETLISTS, EDIT_SONGS } from '../utils/constants';
+import { EDIT_SETLISTS, EDIT_SONGS } from '../utils/constants';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
 
 import Alert from '../components/Alert';
 import Button from '../components/Button';
-import CalendarIcon from '@heroicons/react/outline/CalendarIcon';
+import CalendarIcon from '@heroicons/react/solid/CalendarIcon';
 import ChangeSetlistDateDialog from '../components/ChangeSetlistDateDialog';
 import PageLoading from '../components/PageLoading';
 import PageTitle from '../components/PageTitle';
 import PlayIcon from '@heroicons/react/solid/PlayIcon';
-
-import SectionTitle from '../components/SectionTitle';
 import SetlistApi from '../api/SetlistApi';
 import SetlistSongsList from '../components/SetlistSongsList';
 import _ from 'lodash';
@@ -22,11 +20,11 @@ import { toShortDate } from '../utils/DateUtils';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SetlistSessionsList from '../components/SetlistSessionsList';
 import PublicSetlistSection from '../components/PublicSetlistSection';
+import SetlistOptionsPopover from '../components/SetlistOptionsPopover';
 
 export default function SetlistDetailPage() {
   const [setlist, setSetlist] = useState();
   const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState(false);
   const [showChangeDateDialog, setShowChangeDateDialog] = useState(false);
   const router = useHistory();
   const id = useParams().id;
@@ -94,17 +92,6 @@ export default function SetlistDetailPage() {
     []
   );
 
-  const handleDelete = async () => {
-    setDeleting(true);
-    try {
-      await SetlistApi.deleteOne(id);
-      router.push('/sets');
-    } catch (error) {
-      reportError(error);
-      setDeleting(false);
-    }
-  };
-
   const handleClickDateDialog = () => {
     if (currentMember.can(EDIT_SONGS)) {
       setShowChangeDateDialog(true);
@@ -131,62 +118,59 @@ export default function SetlistDetailPage() {
   } else {
     return (
       <div className="mt-4">
-        <div className="grid md:grid-cols-3 grid-cols-1 gap-y-5 md:gap-5 w-full py-2">
-          <div className="col-span-1">
-            <PageTitle
-              title={setlist?.name}
-              editable={currentMember.can(EDIT_SETLISTS)}
-              onChange={handleNameChange}
-            />
-            <div
-              className="text-gray-500 flex items-center cursor-pointer mb-4"
-              onClick={handleClickDateDialog}
-            >
-              <CalendarIcon className="h-4 w-4 mr-2" />
-              <span className="leading-6 h-6">
-                {toShortDate(setlist?.scheduled_date)}
-              </span>
-            </div>
-            <div className="md:block flex gap-4 w-full">
-              {setlist?.songs?.length > 0 && (
-                <>
-                  <Button
-                    variant="outlined"
-                    color="black"
-                    onClick={handleOpenInPresenter}
-                    className="flex-center mb-2 md:hidden"
-                    size="md"
-                    full
-                  >
-                    <PlayIcon className="h-5 w-5  text-purple-700 dark:text-purple-500 mr-4" />
-                    Perform
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="black"
-                    onClick={handleOpenInPresenter}
-                    className="mb-2 hidden md:flex justify-center items-center"
-                    size="xs"
-                  >
-                    <PlayIcon className="h-4 w-4 text-purple-700 dark:text-purple-500 mr-1" />
-                    Perform
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-          <div className="col-span-2">
-            <SetlistSongsList
-              songs={setlist?.songs}
-              onSongsAdded={handleSongsAdded}
-              onReordered={handleSongsReordered}
-              onSongRemoved={handleSongRemoved}
-            />
-          </div>
+        <div className="flex-between">
+          <PageTitle
+            title={setlist?.name}
+            editable={currentMember.can(EDIT_SETLISTS)}
+            onChange={handleNameChange}
+          />
+          <SetlistOptionsPopover
+            setlist={setlist}
+            onPerform={handleOpenInPresenter}
+          />
         </div>
-        <PublicSetlistSection
-          setlist={setlist}
-          onChange={handlePublicLinkToggled}
+        <div
+          className="inline-flex items-center flex-grow-0 mb-4 text-gray-500 cursor-pointer"
+          onClick={handleClickDateDialog}
+        >
+          <CalendarIcon className="w-4 h-4 mr-2" />
+          <span className="h-6 leading-6">
+            {toShortDate(setlist?.scheduled_date)}
+          </span>
+        </div>
+        <div className="flex w-full">
+          {setlist?.songs?.length > 0 && (
+            <>
+              <Button
+                variant="outlined"
+                color="black"
+                onClick={handleOpenInPresenter}
+                className="mb-2 flex-center md:hidden"
+                size="md"
+                full
+              >
+                <PlayIcon className="w-5 h-5 mr-4 text-purple-700 dark:text-purple-500" />
+                Perform
+              </Button>
+              <Button
+                variant="outlined"
+                color="black"
+                onClick={handleOpenInPresenter}
+                className="items-center justify-center hidden mb-2 md:flex"
+                size="xs"
+              >
+                <PlayIcon className="w-4 h-4 mr-1 text-purple-700 dark:text-purple-500" />
+                Perform
+              </Button>
+            </>
+          )}
+        </div>
+
+        <SetlistSongsList
+          songs={setlist?.songs}
+          onSongsAdded={handleSongsAdded}
+          onReordered={handleSongsReordered}
+          onSongRemoved={handleSongRemoved}
         />
         {currentSubscription.isPro && (
           <SetlistSessionsList
@@ -196,14 +180,10 @@ export default function SetlistDetailPage() {
             onJoinSession={handleJoinSession}
           />
         )}
-        {currentMember.can(DELETE_SETLISTS) && (
-          <div>
-            <SectionTitle title="Delete" underline />
-            <Button color="red" loading={deleting} onClick={handleDelete}>
-              Delete this set
-            </Button>
-          </div>
-        )}
+        <PublicSetlistSection
+          setlist={setlist}
+          onChange={handlePublicLinkToggled}
+        />
         <ChangeSetlistDateDialog
           open={showChangeDateDialog}
           onCloseDialog={() => setShowChangeDateDialog(false)}

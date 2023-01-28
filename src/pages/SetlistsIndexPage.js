@@ -1,108 +1,111 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ADD_SETLISTS } from "../utils/constants";
-import CreateSetlistDialog from "../components/CreateSetlistDialog";
-import MobileHeaderAndBottomButton from "../components/MobileHeaderAndBottomButton";
-import NoDataMessage from "../components/NoDataMessage";
-import PageTitle from "../components/PageTitle";
-import QuickAdd from "../components/QuickAdd";
-import SetlistApi from "../api/SetlistApi";
-import SetlistsList from "../components/SetlistsList";
-import { reportError } from "../utils/error";
-import { selectCurrentMember } from "../store/authSlice";
-import { useSelector } from "react-redux";
-import { isPast, sortDates } from "../utils/date";
+import { ADD_SETLISTS } from '../utils/constants';
+import CreateSetlistDialog from '../components/CreateSetlistDialog';
+import NoDataMessage from '../components/NoDataMessage';
+import QuickAdd from '../components/QuickAdd';
+import { selectCurrentMember } from '../store/authSlice';
+import { useSelector } from 'react-redux';
+import { isPast, sortDates } from '../utils/date';
+import useSetlists from '../hooks/api/useSetlists';
+import PageHeader from '../components/PageHeader';
+import PageLoading from '../components/PageLoading';
+import Alert from '../components/Alert';
+import useDialog from '../hooks/useDialog';
+import List from '../components/List';
+import SetlistRow from '../components/SetlistRow';
+import WellInput from '../components/inputs/WellInput';
+import FadeIn from '../components/FadeIn';
+import SetlistsTabs from '../components/SetlistsTabs';
 
 export default function SetlistsIndexPage() {
-  useEffect(() => (document.title = "Sets"));
-  const [setlists, setSetlists] = useState([]);
-  const [upcomingSetlists, setUpcomingSetlists] = useState([]);
-  const [pastSetlists, setPastSetlists] = useState([]);
-  const [showCreateSetlistDialog, setShowCreateSetlistDialog] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const currentMember = useSelector(selectCurrentMember);
+  useEffect(() => (document.title = 'Sets'));
+  const { data: setlists, isLoading, isError, isSuccess } = useSetlists();
+  const [selectedTab, setSelectedTab] = useState('upcoming');
 
-  useEffect(() => {
-    async function fetchSetlists() {
-      setLoading(true);
-      try {
-        let { data } = await SetlistApi.getAll();
-        setSetlists(data);
-      } catch (error) {
-        reportError(error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  const [query, setQuery] = useState('');
 
-    fetchSetlists();
-  }, []);
-
-  useEffect(() => {
+  const sortSetlists = useCallback(() => {
     let upcoming = [];
     let past = [];
 
-    setlists?.forEach((set) =>
-      isPast(set.scheduled_date) ? past.push(set) : upcoming.push(set)
-    );
+    if (setlists?.length) {
+      setlists.forEach(set =>
+        isPast(set.scheduled_date) ? past.push(set) : upcoming.push(set)
+      );
 
-    setUpcomingSetlists(
       upcoming.sort((setA, setB) =>
         sortDates(setA.scheduled_date, setB.scheduled_date)
-      )
-    );
-    setPastSetlists(
+      );
+
       past.sort((setA, setB) =>
         sortDates(setB.scheduled_date, setA.scheduled_date)
-      )
-    );
+      );
+    }
+
+    return { upcomingSetlists: upcoming, pastSetlists: past };
   }, [setlists]);
+  const { pastSetlists, upcomingSetlists } = useMemo(sortSetlists, [
+    sortSetlists,
+  ]);
 
-  const handleSetlistCreated = (newSetlist) => {
-    setSetlists([...setlists, newSetlist]);
-  };
+  const [isCreateOpen, showCreateDialog, hideCreateDialog] = useDialog();
+  const currentMember = useSelector(selectCurrentMember);
 
-  let content = null;
+  function searchSetlists() {
+    const selectedTabSetlists =
+      selectedTab === 'upcoming' ? upcomingSetlists : pastSetlists;
+    if (query?.length > 1) {
+      const lowercasedQuery = query.toLowerCase();
+      return selectedTabSetlists.filter(setlist =>
+        setlist.name?.toLowerCase().includes(lowercasedQuery)
+      );
+    }
 
-  if (setlists.length === 0) {
-    content = <NoDataMessage loading={loading} type="sets" />;
-  } else {
-    content = (
-      <SetlistsList
-        upcomingSetlists={upcomingSetlists}
-        pastSetlists={pastSetlists}
-      />
-    );
+    return selectedTabSetlists;
   }
 
   return (
-    <>
-      <div className="sm:hidden mt-14 mb-10">
-        <MobileHeaderAndBottomButton
-          buttonText="Add a set"
-          onAdd={() => setShowCreateSetlistDialog(true)}
-          pageTitle="Sets"
-          canAdd={currentMember.can(ADD_SETLISTS)}
-        />
-      </div>
-      <div className="hidden sm:block">
-        <PageTitle title="Sets" />
-      </div>
+    <div className="mb-10">
+      <PageHeader title="Sets" headerRightVisible={false} />
+      {isLoading && <PageLoading />}
+      {isError && (
+        <Alert color="red">There was an issue retrieving your sets.</Alert>
+      )}
 
-      {content}
+      {isSuccess && (
+        <>
+          <FadeIn>
+            <div className="mb-2">{setlists.length} total</div>
+            <WellInput
+              placeholder="Search your sets"
+              value={query}
+              onChange={setQuery}
+              className="mb-4 lg:text-sm"
+            />
+            <SetlistsTabs selectedTab={selectedTab} onChange={setSelectedTab} />
+          </FadeIn>
+          <FadeIn className="delay-100">
+            <List
+              ListEmpty={<NoDataMessage type="sets" />}
+              data={searchSetlists()}
+              renderItem={setlist => (
+                <SetlistRow setlist={setlist} key={setlist.id} />
+              )}
+            />
+          </FadeIn>
+        </>
+      )}
 
       {currentMember.can(ADD_SETLISTS) && (
         <>
-          <div className="hidden sm:block">
-            <QuickAdd onAdd={() => setShowCreateSetlistDialog(true)} />
-          </div>
           <CreateSetlistDialog
-            open={showCreateSetlistDialog}
-            onCloseDialog={() => setShowCreateSetlistDialog(false)}
-            onCreated={handleSetlistCreated}
+            open={isCreateOpen}
+            onCloseDialog={hideCreateDialog}
           />
+          <QuickAdd onAdd={showCreateDialog} />
         </>
       )}
-    </>
+    </div>
   );
 }
