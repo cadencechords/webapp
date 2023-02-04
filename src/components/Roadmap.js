@@ -58,7 +58,7 @@ export default function Roadmap({
       )}
       <div className="flex items-center mb-2">
         <Button
-          variant="outlined"
+          variant="accent"
           size="xs"
           className="mr-4 flex-center"
           onClick={handleAddSection}

@@ -35,7 +35,7 @@ export default function TeamLoginOptions({ teams }) {
       <div className="flex flex-col mt-6">
         <span className="mb-4">Or create a new team</span>
         <Link to="/login/teams/new">
-          <Button variant="outlined" size="md" full>
+          <Button variant="accent" size="md" full>
             Create
           </Button>
         </Link>

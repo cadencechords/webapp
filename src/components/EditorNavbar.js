@@ -1,4 +1,4 @@
-import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
+import AdjustmentsIcon from '@heroicons/react/solid/AdjustmentsIcon';
 import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import React from 'react';
 import { useDispatch } from 'react-redux';
@@ -27,8 +27,13 @@ export default function EditorNavbar({
       <div className="container px-3 py-2 mx-auto flex-between">
         <div className="flex items-center">
           <span className="mr-4 flex-center">
-            <Button variant="open" size="xs" onClick={handleGoBack}>
-              <ArrowNarrowLeftIcon className="w-6 h-6 text-gray-600" />
+            <Button
+              variant="icon"
+              size="md"
+              color="gray"
+              onClick={handleGoBack}
+            >
+              <ArrowNarrowLeftIcon className="w-6 h-6" />
             </Button>
           </span>
           <h1 className="text-base font-bold text-center dark:text-dark-gray-100">
@@ -37,7 +42,8 @@ export default function EditorNavbar({
         </div>
         <div className="flex items-center">
           <Button
-            variant="open"
+            variant="icon"
+            size="lg"
             color={isFormatOpen ? 'blue' : 'gray'}
             onClick={onToggleFormatOptions}
             className="sm:mr-4"

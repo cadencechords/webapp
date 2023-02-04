@@ -27,8 +27,8 @@ export default function SetlistOptionsPopover({ setlist, onPerform }) {
       <StyledPopover
         position="bottom-start"
         button={
-          <Button size="xs" variant="open" color="gray">
-            <DotsVerticalIcon className="w-5 h-5 text-gray-500" />
+          <Button variant="icon" color="gray" size="md">
+            <DotsVerticalIcon className="w-5 h-5" />
           </Button>
         }
       >

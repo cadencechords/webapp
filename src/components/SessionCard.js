@@ -35,7 +35,7 @@ export default function SessionCard({
     if (isUserSessionHost) {
       return (
         <Button
-          variant="outlined"
+          variant="accent"
           color="red"
           size="xs"
           loading={ending}
@@ -78,7 +78,7 @@ export default function SessionCard({
         <div className="pt-1">
           <ProfilePicture url={session.user?.image_url} size="xs" />
         </div>
-        <div className="text-left ml-4">
+        <div className="ml-4 text-left">
           <div className="font-semibold">
             {hasName(session.user)
               ? `${session.user.first_name} ${session.user.last_name}`

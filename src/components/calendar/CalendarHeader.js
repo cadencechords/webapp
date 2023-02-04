@@ -27,7 +27,7 @@ export default function CalendarHeader({
             <Button>
               <div className="flex-center">
                 <PlusIcon className="w-4 h-4 mr-1" />
-                Add
+                New event
               </div>
             </Button>
           </Link>

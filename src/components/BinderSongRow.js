@@ -24,9 +24,8 @@ export default function BinderSongRow({ song, binderId }) {
         <KeyBadge songKey={song.transposed_key || song.original_key} />
       </Link>
       <Button
-        variant="open"
-        color="black"
-        size="xs"
+        variant="icon"
+        color="gray"
         onClick={() => removeSongFromBinder({ binderId, songId: song.id })}
         loading={isRemoving}
         className="whitespace-nowrap"

@@ -19,9 +19,9 @@ export default function BottomSheet({
         style={{ boxShadow: '0 0px 50px -5px rgba(0, 0, 0, .25)' }}
       >
         <Button
-          variant="open"
+          variant="icon"
           className="absolute top-2 right-2"
-          size="xs"
+          size="md"
           color="gray"
           onClick={onClose}
         >

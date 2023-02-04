@@ -75,12 +75,12 @@ export default function EditCalendarEventPage() {
       <div className="flex-between">
         <PageTitle title="Edit Event" />
         <Button
-          className="hidden w-16 lg:block"
+          className="hidden w-32 lg:block"
           disabled={!isValid}
           onClick={handleSave}
           loading={isSaving}
         >
-          Save
+          Save event
         </Button>
       </div>
       <EventForm />
@@ -90,7 +90,7 @@ export default function EditCalendarEventPage() {
         onClick={handleSave}
         loading={isSaving}
       >
-        Save
+        Save event
       </Button>
       {isError && (
         <div className="mt-6 lg:hidden">

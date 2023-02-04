@@ -199,11 +199,11 @@ export default function SongDetailPage() {
             onChange={editedName => handleUpdate('name', editedName)}
           />
           <Button
-            size="xs"
-            variant="open"
+            variant="icon"
             color="gray"
+            size="md"
             onClick={() => setShowPrintDialog(true)}
-            className="hidden sm:block"
+            className="hidden mr-2 sm:block"
           >
             <PrinterIcon className="w-5 h-5" />
           </Button>
@@ -217,49 +217,39 @@ export default function SongDetailPage() {
         />
         <div className="items-center justify-between hidden mb-3 sm:flex">
           <span className="flex-center">
+            <Button variant="filled" size="xs" onClick={handlePresentSong}>
+              <div className="flex-center">
+                <PlayIcon className="w-4 h-4 mr-1.5" />
+                Perform
+              </div>
+            </Button>
             {currentMember.can(EDIT_SONGS) && (
               <Link to={{ pathname: `/songs/${id}/edit`, state: song }}>
-                <Button variant="outlined" size="xs" color="black">
-                  <div className="flex flex-row items-center">
-                    <span className="mr-1">
-                      <PencilIcon className="w-4 h-4 text-blue-700 dark:text-dark-blue" />
-                    </span>
-                    Edit Song
+                <Button variant="accent" size="xs" className="mx-3">
+                  <div className="flex-center">
+                    <PencilIcon className="w-4 h-4 mr-1.5" />
+                    Edit
                   </div>
                 </Button>
               </Link>
             )}
 
-            <Button
-              variant="outlined"
-              size="xs"
-              color="black"
-              className="mx-3"
-              onClick={handlePresentSong}
-            >
-              <div className="flex flex-row items-center">
-                <span className="mr-1">
-                  <PlayIcon className="w-4 h-4 text-purple-700 dark:text-purple-500" />
-                </span>
-                Perform Song
-              </div>
-            </Button>
-
             {song?.transposed_key && (
               <Button
                 size="xs"
-                color="purple"
+                color="blue"
                 onClick={() =>
                   handleUpdateSong('show_transposed', !song.show_transposed)
                 }
-                variant={song.show_transposed ? 'open' : 'filled'}
+                variant="open"
               >
                 {song.show_transposed ? 'Stop transposing' : 'Transpose'}
               </Button>
             )}
           </span>
           <Button
-            variant="open"
+            variant="icon"
+            size="md"
             onClick={() =>
               handleUpdateFormat('chords_hidden', !song?.format?.chords_hidden)
             }
@@ -278,26 +268,24 @@ export default function SongDetailPage() {
               className="w-full"
             >
               <Button
-                variant="outlined"
+                variant="accent"
                 size="medium"
-                color="black"
                 className="gap-3 flex-center"
                 full
               >
-                <PencilIcon className="w-5 h-5 text-blue-700 dark:text-dark-blue" />{' '}
+                <PencilIcon className="w-5 h-5" />
                 Edit
               </Button>
             </Link>
           )}
           <Button
-            variant="outlined"
+            variant="accent"
             size="medium"
-            color="black"
             className="gap-3 flex-center"
             onClick={handlePresentSong}
             full
           >
-            <PlayIcon className="w-5 h-5 text-purple-700 dark:text-purple-500" />{' '}
+            <PlayIcon className="w-5 h-5" />
             Perform
           </Button>
         </div>

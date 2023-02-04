@@ -61,28 +61,28 @@ export default function MemberDetail() {
   } else {
     return (
       <>
-        <div className="mx-auto max-w-sm mt-4">
+        <div className="max-w-sm mx-auto mt-4">
           {alert && (
             <div className="mb-4">
               <Alert color="yellow">{alert}</Alert>
             </div>
           )}
-          <div className="text-2xl font-bold mb-1 text-center">
+          <div className="mb-1 text-2xl font-bold text-center">
             {hasName() ? getFullName() : member.email}
           </div>
-          <div className="text-gray-600 dark:text-dark-gray-200 text-lg mb-4 text-center">
+          <div className="mb-4 text-lg text-center text-gray-600 dark:text-dark-gray-200">
             {hasName() ? member.email : 'No name provided yet'}
           </div>
           <div className="mb-2 flex-center">
             <ProfilePicture url={member.image_url} />
           </div>
 
-          <div className="text-sm mb-4">
-            <div className="text-gray-600 dark:text-dark-gray-200 flex-between border-b dark:border-dark-gray-600 pb-2">
+          <div className="mb-4 text-sm">
+            <div className="pb-2 text-gray-600 border-b dark:text-dark-gray-200 flex-between dark:border-dark-gray-600">
               <div className="font-semibold">Position:</div>
               {member?.position ? member.position : 'No position provided yet'}
             </div>
-            <div className="text-gray-600 dark:text-dark-gray-200 flex-between py-2">
+            <div className="py-2 text-gray-600 dark:text-dark-gray-200 flex-between">
               <div className="font-semibold">Joined:</div>
               {toMonthYearDate(member.created_at)}
             </div>
@@ -90,7 +90,7 @@ export default function MemberDetail() {
           {can(REMOVE_MEMBERS) && (
             <Button
               full
-              variant="outlined"
+              variant="accent"
               onClick={() => setMemberMenuOpen(true)}
             >
               Actions

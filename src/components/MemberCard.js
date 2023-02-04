@@ -60,17 +60,18 @@ export default function MemberCard({
       teamPosition = <div className="text-sm">{member.position}</div>;
     }
     return (
-      <div className="rounded-md bg-gray-50 dark:bg-dark-gray-800 py-3 px-5 text-center flex flex-col relative z-10">
+      <div className="relative z-10 flex flex-col px-5 py-3 text-center rounded-md bg-gray-50 dark:bg-dark-gray-800">
         {currentMember.can(REMOVE_MEMBERS) && (
           <Button
-            variant="open"
+            variant="icon"
+            size="md"
             className="absolute right-2 top-2"
             onClick={onShowMemberMenu}
           >
-            <DotsVerticalIcon className="text-gray-600 h-5" />
+            <DotsVerticalIcon className="h-5 text-gray-600" />
           </Button>
         )}
-        <div className="m-auto w-20 h-20 flex-center">
+        <div className="w-20 h-20 m-auto flex-center">
           <ProfilePicture url={member.image_url} />
         </div>
         <div>{currentUserBubble}</div>
@@ -82,7 +83,7 @@ export default function MemberCard({
         {teamPosition}
         <div className="flex-grow"></div>
         <Link to={`/members/${member.id}`}>
-          <Button variant="outlined" size="xs" full className="mt-2">
+          <Button variant="accent" size="xs" full className="mt-2">
             View profile
           </Button>
         </Link>

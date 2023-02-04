@@ -14,7 +14,7 @@ export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
   const currentMember = useSelector(selectCurrentMember);
 
   const button = (
-    <Button variant="open" color="gray">
+    <Button variant="icon" color="gray">
       <DotsVerticalIcon className="w-4 h-4" />
     </Button>
   );

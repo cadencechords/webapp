@@ -4,6 +4,7 @@ import Button from './Button';
 import KeyBadge from './KeyBadge';
 import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import { hasAnyKeysSet } from '../utils/SongUtils';
+import { Link } from 'react-router-dom';
 
 export default function DragAndDropTable({
   onReorder,
@@ -79,9 +80,9 @@ export default function DragAndDropTable({
                           provided.draggableProps.style
                         )}
                       >
-                        <span
-                          onClick={() => onClick(item.id)}
+                        <Link
                           className="flex items-center cursor-pointer hover:underline"
+                          to={`/songs/${item.id}`}
                         >
                           {item.name}
                           {hasAnyKeysSet(item) && (
@@ -89,13 +90,13 @@ export default function DragAndDropTable({
                               songKey={item.transposed_key || item.original_key}
                             />
                           )}
-                        </span>
+                        </Link>
 
                         {removeable && (
                           <Button
                             color="gray"
-                            size="xs"
-                            variant="open"
+                            size="md"
+                            variant="icon"
                             onClick={() => onRemove(item.id)}
                           >
                             <TrashIcon className="w-4 h-4" />

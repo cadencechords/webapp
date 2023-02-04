@@ -24,7 +24,7 @@ export default function SongOptionsPopover({ onPrintClick }) {
   });
 
   let button = (
-    <Button size="xs" variant="open" color="gray">
+    <Button variant="icon" color="gray" size="md">
       <DotsVerticalIcon className="w-5 h-5" />
     </Button>
   );

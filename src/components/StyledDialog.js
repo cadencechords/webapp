@@ -71,8 +71,8 @@ export default function StyledDialog({
               {showClose && (
                 <span className="absolute top-4 right-4">
                   <Button
-                    variant="open"
-                    size="xs"
+                    variant="icon"
+                    size="md"
                     onClick={onCloseDialog}
                     tabIndex={1}
                   >

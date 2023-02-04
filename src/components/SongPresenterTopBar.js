@@ -18,7 +18,7 @@ export default function SongPresenterTopBar({
       <nav className="px-1 py-2 border-b dark:border-0 bg-gray-50 dark:bg-dark-gray-800">
         <div className="max-w-3xl mx-auto flex-between">
           <Link to={`/songs/${id}`}>
-            <Button variant="open" color="gray">
+            <Button variant="icon" size="md" color="gray">
               <ArrowNarrowLeftIcon className="w-6 h-6" />
             </Button>
           </Link>
@@ -32,7 +32,12 @@ export default function SongPresenterTopBar({
                 song={song}
               />
             )}
-            <Button variant="open" onClick={onShowOptionsDrawer} color="gray">
+            <Button
+              variant="icon"
+              size="md"
+              onClick={onShowOptionsDrawer}
+              color="gray"
+            >
               <AdjustmentsIcon className="w-6 h-6" />
             </Button>
           </div>

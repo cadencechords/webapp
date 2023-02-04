@@ -74,7 +74,12 @@ export default function BinderSongsList({ binder }) {
         variant="open"
         className="fixed left-0 h-12 bg-white rounded-none rounded-b-none dark:bg-dark-gray-700 bottom-12 flex-center sm:hidden"
         full
-        style={{ boxShadow: 'rgba(0, 0, 0, 0.1) 0px -5px 17px 0px' }}
+        style={{
+          boxShadow: 'rgba(0, 0, 0, 0.1) 0px -5px 17px 0px',
+          borderRadius: '12px',
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+        }}
         onClick={showSearch}
       >
         <PlusCircleIcon className="w-4 h-4 mr-2" />

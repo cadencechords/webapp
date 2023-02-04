@@ -37,7 +37,7 @@ export default function BillingPage() {
           {isPro ? (
             <Button
               color="purple"
-              variant="outlined"
+              variant="accent"
               className="w-32 whitespace-nowrap"
               onClick={createCustomerPortalSession}
               loading={isCreatingSession}

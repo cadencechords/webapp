@@ -142,24 +142,22 @@ export default function SetlistDetailPage() {
           {setlist?.songs?.length > 0 && (
             <>
               <Button
-                variant="outlined"
-                color="black"
+                variant="accent"
                 onClick={handleOpenInPresenter}
                 className="mb-2 flex-center md:hidden"
                 size="md"
                 full
               >
-                <PlayIcon className="w-5 h-5 mr-4 text-purple-700 dark:text-purple-500" />
+                <PlayIcon className="w-5 h-5 mr-4" />
                 Perform
               </Button>
               <Button
-                variant="outlined"
-                color="black"
+                variant="filled"
                 onClick={handleOpenInPresenter}
                 className="items-center justify-center hidden mb-2 md:flex"
                 size="xs"
               >
-                <PlayIcon className="w-4 h-4 mr-1 text-purple-700 dark:text-purple-500" />
+                <PlayIcon className="w-4 h-4 mr-1.5" />
                 Perform
               </Button>
             </>

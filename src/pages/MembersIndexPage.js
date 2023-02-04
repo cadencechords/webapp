@@ -107,7 +107,10 @@ export default function MembersIndexPage() {
           <div className="flex-between">
             <SectionTitle title="Current members" />
             {currentMember.can(ADD_MEMBERS) && (
-              <Button onClick={() => setShowInvitationDialog(true)}>
+              <Button
+                onClick={() => setShowInvitationDialog(true)}
+                className="w-32"
+              >
                 Send an invite
               </Button>
             )}
@@ -115,7 +118,7 @@ export default function MembersIndexPage() {
           {currentMember.can(ADD_MEMBERS) && (
             <JoinLinkSection team={currentTeam} />
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 my-5">
+          <div className="grid grid-cols-1 my-5 sm:grid-cols-2 lg:grid-cols-3 gap-7">
             {memberCards}
           </div>
 

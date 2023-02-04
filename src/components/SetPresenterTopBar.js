@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 
-import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
+import AdjustmentsIcon from '@heroicons/react/solid/AdjustmentsIcon';
 import Button from './Button';
 import KeyCapoOptionsPopover from './KeyCapoOptionsPopover';
 import XIcon from '@heroicons/react/outline/XIcon';
@@ -19,7 +19,7 @@ export default function SetPresenterTopBar({
     <nav className="px-1 py-2 border-b dark:border-0 bg-gray-50 dark:bg-dark-gray-800">
       <div className="max-w-3xl mx-auto flex-between">
         <Link to={`/sets/${id}`}>
-          <Button variant="open" color="gray">
+          <Button variant="icon" size="md" color="gray">
             <XIcon className="w-5 h-5 sm:h-6 sm:w-6" />
           </Button>
         </Link>
@@ -33,7 +33,7 @@ export default function SetPresenterTopBar({
               onShowBottomSheet={onShowBottomSheet}
             />
           )}
-          <Button variant="open" color="gray" onClick={onShowDrawer}>
+          <Button variant="icon" size="md" color="gray" onClick={onShowDrawer}>
             <AdjustmentsIcon className="w-5 h-5 sm:h-6 sm:w-6" />
           </Button>
         </div>

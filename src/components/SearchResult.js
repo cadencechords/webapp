@@ -9,7 +9,7 @@ export default function SearchResult({ children, onClick, query, name }) {
       <Highlighter
         searchWords={[query]}
         textToHighlight={name}
-        highlightClassName="font-semibold bg-blue-100"
+        highlightClassName="font-semibold bg-blue-100 dark:bg-dark-gray-300"
       />
       {children}
     </div>

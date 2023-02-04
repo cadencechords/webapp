@@ -97,6 +97,8 @@ export default function BinderDetailPage() {
           <Button
             onClick={() => updateBinder({ id, updates })}
             loading={isSaving}
+            size="sm"
+            className="w-36"
           >
             Save Changes
           </Button>

@@ -1,8 +1,8 @@
 import { DELETE_EVENTS, EDIT_EVENTS } from '../utils/constants';
 
-import BellIcon from '@heroicons/react/outline/BellIcon';
+import BellIcon from '@heroicons/react/solid/BellIcon';
 import Button from '../components/Button';
-import MenuAlt2Icon from '@heroicons/react/outline/MenuAlt2Icon';
+import MenuAlt2Icon from '@heroicons/react/solid/MenuAlt2Icon';
 import PencilIcon from '@heroicons/react/outline/PencilIcon';
 import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import UsersIcon from '@heroicons/react/solid/UsersIcon';
@@ -82,14 +82,19 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
         <div className="flex justify-end mt-4">
           {currentMember?.can(EDIT_EVENTS) && (
             <Link to={`/calendar/${event.id}/edit`} onClick={handleEdit}>
-              <Button variant="open" color="gray" className="mr-2">
-                <PencilIcon className="w-5 h-5" />
+              <Button variant="icon" color="gray" size="md" className="mr-4">
+                <PencilIcon className="w-6 h-6" />
               </Button>
             </Link>
           )}
           {currentMember?.can(DELETE_EVENTS) && (
-            <Button variant="open" color="gray" onClick={handleDelete}>
-              <TrashIcon className="w-5 h-5" />
+            <Button
+              variant="icon"
+              color="gray"
+              size="md"
+              onClick={handleDelete}
+            >
+              <TrashIcon className="w-6 h-6" />
             </Button>
           )}
         </div>
