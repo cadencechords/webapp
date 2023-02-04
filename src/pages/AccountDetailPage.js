@@ -42,16 +42,16 @@ export default function AccountDetailPage() {
 
   return (
     <>
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-2xl mx-auto">
         <div className="text-gray-500 dark:text-dark-gray-200">
-          <div className="w-24 m-auto flex-center my-2">
+          <div className="w-24 m-auto my-2 flex-center">
             <ProfilePicture url={currentUser.image_url} />
           </div>
-          <div className="font-semibold text-sm text-center mb-1">
+          <div className="mb-1 text-sm font-semibold text-center">
             {currentUser.email}
           </div>
           {currentUser.first_name && (
-            <div className="font-semibold text-black dark:text-dark-gray-100 text-center text-xl mb-4">
+            <div className="mb-4 text-xl font-semibold text-center text-black dark:text-dark-gray-100">
               {currentUser.first_name} {currentUser.last_name}
             </div>
           )}
@@ -73,7 +73,7 @@ export default function AccountDetailPage() {
         <Link to="/account/notifications">
           <MobileMenuButton full className="border-b dark:border-dark-gray-600">
             <div className="flex items-center">
-              <BellIcon className="h-5 w-5 mr-4" /> Notifications
+              <BellIcon className="w-5 h-5 mr-4" /> Notifications
             </div>
           </MobileMenuButton>
         </Link>

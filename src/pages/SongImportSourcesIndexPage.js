@@ -1,7 +1,6 @@
 import { Link, useHistory } from 'react-router-dom';
 
 import { ADD_SONGS } from '../utils/constants';
-import Button from '../components/Button';
 import DocumentAddIcon from '@heroicons/react/outline/DocumentAddIcon';
 import OnsongLogo from '../images/onsong.svg';
 import PlanningCenterButton from '../components/buttons/PlanningCenterButton';
