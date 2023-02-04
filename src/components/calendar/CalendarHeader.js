@@ -15,10 +15,15 @@ export default function CalendarHeader({
       <div className="mb-4 flex-between">
         <div className="gap-2 flex-center">
           <h1 className="w-48 text-2xl font-semibold">{title}</h1>
-          <Button variant="open" color="gray" onClick={onPreviousMonth}>
+          <Button
+            variant="icon"
+            size="md"
+            color="gray"
+            onClick={onPreviousMonth}
+          >
             <ChevronLeftIcon className="w-5 h-5" />
           </Button>
-          <Button variant="open" color="gray" onClick={onNextMonth}>
+          <Button variant="icon" size="md" color="gray" onClick={onNextMonth}>
             <ChevronRightIcon className="w-5 h-5" />
           </Button>
         </div>
