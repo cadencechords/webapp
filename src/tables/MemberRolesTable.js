@@ -22,7 +22,7 @@ export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
         {members.map(member => (
           <div
             key={member.id}
-            className="px-1 py-3 border-b dark:border-dark-gray-600 flex-between last:border-0"
+            className="px-1 py-2 border-b dark:border-dark-gray-600 flex-between last:border-0"
           >
             {member.user.email}
             {currentMember.can(ASSIGN_ROLES) ? (

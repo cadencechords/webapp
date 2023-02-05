@@ -11,7 +11,7 @@ export default function RoleMemberRow({ role, member }) {
   const { run: removeMemberFromRole } = useRemoveMemberFromRole();
 
   return (
-    <div className="flex items-center justify-between h-12 px-3 border-b sm:h-10 dark:border-dark-gray-600 last:border-0">
+    <div className="flex items-center justify-between h-12 px-3 py-2 border-b sm:h-10 dark:border-dark-gray-600 last:border-0 sm:rounded-lg sm:hover:bg-gray-100 dark:hover:bg-dark-gray-800 sm:border-0">
       <div className="inline-block overflow-hidden whitespace-nowrap overflow-ellipsis">
         {member.user.email}
       </div>
