@@ -75,7 +75,7 @@ export default function MemberCard({
           <ProfilePicture url={member.image_url} />
         </div>
         <div>{currentUserBubble}</div>
-        <div className="font-semibold">
+        <div className="overflow-hidden font-semibold overflow-ellipsis">
           {member.first_name
             ? member.first_name + ' ' + member.last_name
             : member.email}
