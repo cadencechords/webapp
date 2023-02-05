@@ -1,19 +1,16 @@
 import { EDIT_ROLES } from '../utils/constants';
 import Permission from './Permission';
-import RolesApi from '../api/rolesApi';
-import SectionTitle from './SectionTitle';
-import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
-import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';
+import useAddPermission from '../hooks/api/useAddPermission';
+import useRemovePermission from '../hooks/api/useRemovePermission';
 
-export default function RolePermissions({
-  role,
-  permissions,
-  onPermissionToggled,
-}) {
+export default function RolePermissions({ role, onPermissionToggled }) {
+  const { permissions } = role;
   const currentMember = useSelector(selectCurrentMember);
-  const id = useParams().id;
+
+  const { run: addPermission } = useAddPermission();
+  const { run: removePermission } = useRemovePermission();
 
   function isPermissionEnabled(permissionName) {
     let permission = permissions?.find(
@@ -24,21 +21,19 @@ export default function RolePermissions({
   }
 
   function handlePermissionToggled(permissionName, checkedValue) {
-    try {
-      if (checkedValue) {
-        RolesApi.addPermission(id, permissionName);
-      } else {
-        RolesApi.removePermission(id, permissionName);
-      }
-    } catch (error) {
-      reportError(error);
-    }
     onPermissionToggled(permissionName, checkedValue);
+    if (checkedValue) {
+      addPermission({ roleId: role.id, permissionName });
+    } else {
+      removePermission({ roleId: role.id, permissionName });
+    }
   }
 
   return (
     <div>
-      <SectionTitle title="Song permissions" />
+      <div className="pt-3 mt-12 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Song permissions
+      </div>
       <div>
         <Permission
           checkable={
@@ -90,7 +85,9 @@ export default function RolePermissions({
         />
       </div>
 
-      <SectionTitle title="Binder permissions" />
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Binder permissions
+      </div>
       <div>
         <Permission
           checkable={
@@ -142,7 +139,9 @@ export default function RolePermissions({
         />
       </div>
 
-      <SectionTitle title="Set permissions" />
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Set permissions
+      </div>
       <div>
         <Permission
           checkable={
@@ -206,7 +205,9 @@ export default function RolePermissions({
         />
       </div>
 
-      <SectionTitle title="Sessions" />
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Session permissions
+      </div>
       <div>
         <Permission
           checkable={
@@ -222,7 +223,9 @@ export default function RolePermissions({
         />
       </div>
 
-      <SectionTitle title="Role permissions" />
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Role permissions
+      </div>
       <div>
         <Permission
           checkable={
@@ -286,7 +289,9 @@ export default function RolePermissions({
         />
       </div>
 
-      <SectionTitle title="Member permissions" />
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Member permissions
+      </div>
       <div>
         <Permission
           checkable={
@@ -314,7 +319,9 @@ export default function RolePermissions({
         />
       </div>
 
-      <SectionTitle title="Event permissions" />
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Event permissions
+      </div>
       <div>
         <Permission
           checkable={
@@ -364,74 +371,78 @@ export default function RolePermissions({
             handlePermissionToggled('View events', checkedValue)
           }
         />
+      </div>
 
-        <SectionTitle title="File permissions" />
-        <div>
-          <Permission
-            checkable={
-              currentMember.can(EDIT_ROLES) &&
-              !(role?.is_admin || role?.is_member)
-            }
-            checked={isPermissionEnabled('Add files')}
-            name="Add files"
-            description="User can add or attach files to a song"
-            onChange={checkedValue =>
-              handlePermissionToggled('Add files', checkedValue)
-            }
-          />
-          <Permission
-            checkable={
-              currentMember.can(EDIT_ROLES) &&
-              !(role?.is_admin || role?.is_member)
-            }
-            checked={isPermissionEnabled('Edit files')}
-            name="Edit files"
-            description="User can edit and change the name of existing file names"
-            onChange={checkedValue =>
-              handlePermissionToggled('Edit files', checkedValue)
-            }
-          />
-          <Permission
-            checkable={
-              currentMember.can(EDIT_ROLES) &&
-              !(role?.is_admin || role?.is_member)
-            }
-            checked={isPermissionEnabled('Delete files')}
-            name="Delete files"
-            description="User can delete/unattach files from a song"
-            onChange={checkedValue =>
-              handlePermissionToggled('Delete files', checkedValue)
-            }
-          />
-          <Permission
-            checkable={
-              currentMember.can(EDIT_ROLES) &&
-              !(role?.is_admin || role?.is_member)
-            }
-            checked={isPermissionEnabled('View files')}
-            name="View files"
-            description="User can view/download files attached to a song"
-            onChange={checkedValue =>
-              handlePermissionToggled('View files', checkedValue)
-            }
-          />
-        </div>
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        File permissions
+      </div>
+      <div>
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('Add files')}
+          name="Add files"
+          description="User can add or attach files to a song"
+          onChange={checkedValue =>
+            handlePermissionToggled('Add files', checkedValue)
+          }
+        />
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('Edit files')}
+          name="Edit files"
+          description="User can edit and change the name of existing file names"
+          onChange={checkedValue =>
+            handlePermissionToggled('Edit files', checkedValue)
+          }
+        />
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('Delete files')}
+          name="Delete files"
+          description="User can delete/unattach files from a song"
+          onChange={checkedValue =>
+            handlePermissionToggled('Delete files', checkedValue)
+          }
+        />
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('View files')}
+          name="View files"
+          description="User can view/download files attached to a song"
+          onChange={checkedValue =>
+            handlePermissionToggled('View files', checkedValue)
+          }
+        />
+      </div>
 
-        <SectionTitle title="Billing permissions" />
-        <div>
-          <Permission
-            checkable={
-              currentMember.can(EDIT_ROLES) &&
-              !(role?.is_admin || role?.is_member)
-            }
-            checked={isPermissionEnabled('Manage billing')}
-            name="Manage billing"
-            description="User can manage billing for the team as well as upgrade/downgrade tiers"
-            onChange={checkedValue =>
-              handlePermissionToggled('Manage billing', checkedValue)
-            }
-          />
-        </div>
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Billing permissions
+      </div>
+      <div>
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('Manage billing')}
+          name="Manage billing"
+          description="User can manage billing for the team as well as upgrade/downgrade tiers"
+          onChange={checkedValue =>
+            handlePermissionToggled('Manage billing', checkedValue)
+          }
+        />
       </div>
     </div>
   );

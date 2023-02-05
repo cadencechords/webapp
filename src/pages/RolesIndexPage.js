@@ -1,62 +1,48 @@
-import { useEffect, useState } from "react";
+import { useEffect } from 'react';
 
-import MemberRolesTable from "../tables/MemberRolesTable";
-import PageLoading from "../components/PageLoading";
-import PageTitle from "../components/PageTitle";
-import Roles from "../components/Roles";
-import RolesApi from "../api/rolesApi";
-import TeamApi from "../api/TeamApi";
-import { reportError } from "../utils/error";
+import MemberRolesTable from '../tables/MemberRolesTable';
+import PageLoading from '../components/PageLoading';
+import PageTitle from '../components/PageTitle';
+import Roles from '../components/Roles';
+import Alert from '../components/Alert';
+import useRoles from '../hooks/api/useRoles';
+import useTeamMembers from '../hooks/api/useTeamMembers';
 
 export default function RolesIndexPage() {
-	const [roles, setRoles] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const [members, setMembers] = useState([]);
+  const {
+    data: roles,
+    isLoading: isLoadingRoles,
+    isError: isErrorRoles,
+  } = useRoles();
 
-	useEffect(() => {
-		document.title = "Permissions";
-		async function fetchData() {
-			try {
-				setLoading(true);
-				let rolesResult = await RolesApi.getAll();
-				setRoles(rolesResult.data);
+  const {
+    data: teamMembers,
+    isLoading: isLoadingMembers,
+    isError: isErrorMembers,
+  } = useTeamMembers();
 
-				let membersResult = await TeamApi.getMemberships();
-				setMembers(membersResult.data);
-			} catch (error) {
-				reportError(error);
-			} finally {
-				setLoading(false);
-			}
-		}
+  useEffect(() => {
+    document.title = 'Permissions';
+  }, []);
 
-		fetchData();
-	}, []);
+  if (isLoadingRoles || isLoadingMembers) {
+    return <PageLoading />;
+  }
 
-	async function handleRoleAssigned(member, roleName) {
-		let role = roles.find((role) => role.name === roleName);
-		let memberIndex = members.findIndex((memberInList) => memberInList.id === member.id);
-		let updatedMember = { ...members[memberIndex], role: role };
+  if (isErrorRoles || isErrorMembers)
+    return (
+      <Alert color="red">
+        There was an issue getting the roles on this team
+      </Alert>
+    );
 
-		let updatedMembers = members.slice();
-		updatedMembers.splice(memberIndex, 1, updatedMember);
-
-		setMembers(updatedMembers);
-
-		let rolesResult = await RolesApi.getAll();
-		setRoles(rolesResult.data);
-	}
-
-	if (loading) {
-		return <PageLoading />;
-	} else {
-		return (
-			<>
-				<PageTitle title="Permissions" />A role provides a group of users a defined set of abilities
-				within the application. Each team has a default of at least two roles, admin and member.
-				<Roles roles={roles} />
-				<MemberRolesTable members={members} roles={roles} onRoleAssigned={handleRoleAssigned} />
-			</>
-		);
-	}
+  return (
+    <>
+      <PageTitle title="Permissions" />A role provides a group of users a
+      defined set of abilities within the application. Each team has a default
+      of at least two roles, admin and member.
+      <Roles roles={roles} />
+      <MemberRolesTable members={teamMembers} roles={roles} />
+    </>
+  );
 }
