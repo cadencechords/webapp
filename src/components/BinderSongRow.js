@@ -13,7 +13,7 @@ export default function BinderSongRow({ song, binderId }) {
     });
 
   return (
-    <div className="flex items-center justify-between h-12 px-3 border-b sm:h-10 sm:rounded-lg sm:hover:bg-gray-100 dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0">
+    <div className="flex items-center justify-between h-12 px-3 border-b sm:h-10 sm:rounded-lg sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0">
       <Link
         to={{ pathname: `/songs/${song.id}`, state: song }}
         className="flex items-center w-full h-full mr-5 overflow-hidden"

@@ -7,7 +7,7 @@ export default function BinderRow({ binder }) {
   return (
     <Link
       to={{ pathname: `/binders/${binder.id}`, state: binder }}
-      className="flex items-center h-16 px-3 border-b sm:rounded-lg sm:hover:bg-gray-100 dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0"
+      className="flex items-center h-16 px-3 border-b sm:rounded-lg sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0"
     >
       <BinderColor color={binder.color} />
       <div className="ml-4">
