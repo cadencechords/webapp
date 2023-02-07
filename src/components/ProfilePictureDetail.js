@@ -78,7 +78,6 @@ export default function ProfilePictureDetail({ url }) {
           <Button
             color="blue"
             variant="accent"
-            full
             size="xs"
             onClick={handleOpenFileDialog}
             loading={uploading}
