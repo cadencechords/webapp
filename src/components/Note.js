@@ -18,8 +18,9 @@ export default function Note({
 }) {
   const [content, setContent] = useState(note.content || '');
   const [color, setColor] = useState(note.color || '');
-
   const [showDialog, setShowDialog] = useState(false);
+
+  const numberOfLines = content?.split(/\r\n|\r|\n/).length;
 
   function handleUpdatesFromDialog(updates) {
     if (updates.color) setColor(updates.color);
@@ -82,7 +83,7 @@ export default function Note({
         onStop={handleDragStop}
         onStart={onDragStart}
       >
-        <div className="absolute flex w-56 h-20 shadow-md">
+        <div className="absolute flex w-56 shadow-md">
           <textarea
             className={
               `w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm text-black dark:text-black` +
@@ -90,7 +91,7 @@ export default function Note({
             }
             value={content}
             onChange={e => handleContentChange(e.target.value)}
-            rows={3}
+            rows={numberOfLines < 2 ? 2 : numberOfLines}
             placeholder="Type here"
           ></textarea>
           <div className={`w-9 ${NOTE_COLORS[color].side}`}>
