@@ -48,7 +48,7 @@ export default function SessionCard({
     } else if (isActive) {
       return (
         <Button
-          variant="outlined"
+          variant="accent"
           color="red"
           size="xs"
           loading={ending}
@@ -61,7 +61,7 @@ export default function SessionCard({
     } else {
       return (
         <Button
-          variant="outlined"
+          variant="accent"
           size="xs"
           full={true}
           onClick={() => onJoin(session)}

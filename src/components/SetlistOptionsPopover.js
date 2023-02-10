@@ -33,7 +33,7 @@ export default function SetlistOptionsPopover({ setlist, onPerform }) {
         }
       >
         <div className="overflow-hidden rounded-lg w-60">
-          {setlist.songs?.length && (
+          {setlist.songs?.length > 0 && (
             <MobileMenuButton
               full
               color="gray"
