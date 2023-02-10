@@ -18,6 +18,7 @@ export default function FormatPanelGeneralOptions() {
         <FormatOptionLabel>Font</FormatOptionLabel>
         <div className="w-44">
           <Select
+            style={{ fontFamily: font }}
             options={FONT_OPTIONS}
             selected={font}
             onChange={newFont => handleUpdateFormat('font', newFont)}

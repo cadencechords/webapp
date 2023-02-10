@@ -23,6 +23,7 @@ export default function FormatBottomSheetGeneralOptions() {
               selected={font}
               onChange={newFont => handleUpdateFormat('font', newFont)}
               className="h-8"
+              style={{ fontFamily: font }}
             />
           </div>
         </FormatOption>

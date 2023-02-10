@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 
-import AdjustmentsIcon from '@heroicons/react/solid/AdjustmentsIcon';
+import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
 import Button from './Button';
 import KeyCapoOptionsPopover from './KeyCapoOptionsPopover';
 import XIcon from '@heroicons/react/outline/XIcon';

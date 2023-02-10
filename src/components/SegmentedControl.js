@@ -10,14 +10,14 @@ export default function SegmentedControl({
   return (
     <fieldset
       id={name}
-      className={`flex items-center w-full ${SIZES[size].container} bg-gray-100 rounded-lg dark:bg-dark-gray-600`}
+      className={`flex items-center w-full ${SIZES[size].container} bg-gray-100 rounded-full dark:bg-dark-gray-600`}
     >
       {options.map((option, index) => (
         <span key={index} className="flex-1 p-1 flex-center">
           <input
             type="radio"
             name={name}
-            className="w-0 h-0"
+            className="hidden w-0 h-0"
             id={`${name}-segmented-control-${option}`}
             checked={selected === option}
             value={option}
@@ -28,7 +28,7 @@ export default function SegmentedControl({
               SIZES[size].label
             } select-none font-medium ${
               selected === option
-                ? 'bg-white dark:bg-dark-gray-700 rounded-md shadow-sm'
+                ? 'bg-white dark:bg-dark-gray-700 rounded-full shadow-sm'
                 : ''
             }`}
             htmlFor={`${name}-segmented-control-${option}`}

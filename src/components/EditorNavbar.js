@@ -1,4 +1,4 @@
-import AdjustmentsIcon from '@heroicons/react/solid/AdjustmentsIcon';
+import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
 import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import React from 'react';
 import { useDispatch } from 'react-redux';
