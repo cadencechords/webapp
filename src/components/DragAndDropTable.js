@@ -80,17 +80,19 @@ export default function DragAndDropTable({
                           provided.draggableProps.style
                         )}
                       >
-                        <Link
-                          className="flex items-center cursor-pointer hover:underline"
-                          to={`/songs/${item.id}`}
-                        >
-                          {item.name}
+                        <span className="flex items-center">
+                          <Link
+                            className="cursor-pointer hover:underline"
+                            to={`/songs/${item.id}`}
+                          >
+                            {item.name}
+                          </Link>
                           {hasAnyKeysSet(item) && (
                             <KeyBadge
                               songKey={item.transposed_key || item.original_key}
                             />
                           )}
-                        </Link>
+                        </span>
 
                         {removeable && (
                           <Button
@@ -116,12 +118,17 @@ export default function DragAndDropTable({
   } else {
     return items.map(item => (
       <div
-        className="px-2 py-2 bg-white border-b dark:border-dark-gray-600 hover:bg-gray-50 flex-between dark:bg-dark-gray-900"
+        className="flex items-center justify-between h-12 px-3 border-b sm:rounded-lg sm:h-10 sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-b-0 "
         key={item.id}
         onClick={() => onClick(item.id)}
       >
-        <span className="flex items-center gap-2 cursor-pointer hover:text-blue-600 dark:hover:text-dark-blue">
-          {item.name}
+        <span className="flex items-center">
+          <Link
+            className="cursor-pointer hover:underline"
+            to={`/songs/${item.id}`}
+          >
+            {item.name}
+          </Link>
           {hasAnyKeysSet(item) && (
             <KeyBadge songKey={item.transposed_key || item.original_key} />
           )}
