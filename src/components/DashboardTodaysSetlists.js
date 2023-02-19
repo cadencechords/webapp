@@ -27,16 +27,18 @@ export default function DashboardTodaysSetlists({ setlists }) {
           </div>
         </div>
         <div className="gap-4 flex-center">
-          <Link to={`/sets/${setlist.id}/present`}>
-            <Button
-              className="flex-center"
-              size="xs"
-              variant="filled"
-              color="blue"
-            >
-              Present
-            </Button>
-          </Link>
+          {setlist.scheduled_songs?.length > 0 && (
+            <Link to={`/sets/${setlist.id}/present`}>
+              <Button
+                className="flex-center"
+                size="xs"
+                variant="filled"
+                color="blue"
+              >
+                Present
+              </Button>
+            </Link>
+          )}
           <Link to={`/sets/${setlist.id}`}>
             <Button size="xs" variant="accent">
               Details
