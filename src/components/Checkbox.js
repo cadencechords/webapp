@@ -1,10 +1,17 @@
 import CheckIcon from '@heroicons/react/solid/CheckIcon';
 import PropTypes from 'prop-types';
 
-export default function Checkbox({ color, checked, onChange, className }) {
+export default function Checkbox({ color, checked, onChange, className, id }) {
   return (
     <>
-      <input type="checkbox" className="hidden" readOnly checked={checked} />
+      <input
+        type="checkbox"
+        className="hidden"
+        readOnly
+        checked={checked}
+        onChange={() => onChange(!checked)}
+        id={id}
+      />
       <button
         className={`w-5 h-5 ${RING_COLORS[color]}
 				shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 outline-none rounded-md cursor-pointer flex-center

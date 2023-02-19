@@ -5,10 +5,20 @@ import OutlinedInput from './inputs/OutlinedInput';
 import StyledDialog from './StyledDialog';
 import useCreateSetlist from '../hooks/api/useCreateSetlist';
 import { useHistory } from 'react-router-dom';
+import Checkbox from './Checkbox';
+import { useSelector } from 'react-redux';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import { selectCurrentMember } from '../store/authSlice';
+import { ADD_EVENTS } from '../utils/constants';
+import dayjs from 'dayjs';
 
 export default function CreateSetlistDialog({ open, onCloseDialog }) {
+  const currentSubscription = useSelector(selectCurrentSubscription);
+  const currentMember = useSelector(selectCurrentMember);
   const [name, setName] = useState('');
   const [scheduledDate, setScheduledDate] = useState('');
+  const [shouldAddToCalendar, setShouldAddToCalendar] = useState(true);
+
   const router = useHistory();
 
   const { isLoading: isCreating, run: createSetlist } = useCreateSetlist({
@@ -36,10 +46,16 @@ export default function CreateSetlistDialog({ open, onCloseDialog }) {
   const canCreate = name && isDateValid();
 
   function handleCreateSetlist() {
-    createSetlist({
+    const setlist = {
       name,
-      scheduledDate: new Date(scheduledDate).toISOString(),
-    });
+      scheduledDate: dayjs(scheduledDate).startOf('day').toDate(),
+    };
+
+    if (currentSubscription.isPro && currentMember.can(ADD_EVENTS)) {
+      setlist.shouldAddToCalendar = shouldAddToCalendar;
+    }
+
+    createSetlist(setlist);
   }
 
   function clearFields() {
@@ -78,6 +94,20 @@ export default function CreateSetlistDialog({ open, onCloseDialog }) {
           id="date-picker"
         />
       </div>
+
+      {currentSubscription.isPro && currentMember.can(ADD_EVENTS) && (
+        <div className="flex items-center pt-2 mb-6">
+          <Checkbox
+            checked={shouldAddToCalendar}
+            id="add-to-calendar"
+            onChange={setShouldAddToCalendar}
+            className="mr-2"
+          />
+          <label className="select-none" htmlFor="add-to-calendar">
+            Add as calendar event
+          </label>
+        </div>
+      )}
       <AddCancelActions
         onCancel={handleCloseDialog}
         addText="Create"

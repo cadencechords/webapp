@@ -30,6 +30,8 @@ export default class SetlistApi {
       if (newSetlist.name) allowedParams.name = newSetlist.name;
       if (newSetlist.scheduledDate)
         allowedParams.scheduled_date = newSetlist.scheduledDate;
+      if (newSetlist.shouldAddToCalendar)
+        allowedParams.should_add_to_calendar = newSetlist.shouldAddToCalendar;
 
       allowedParams.team_id = getTeamId();
 
