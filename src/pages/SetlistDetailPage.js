@@ -16,7 +16,7 @@ import _ from 'lodash';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { setSetlistBeingPresented } from '../store/presenterSlice';
-import { toShortDate } from '../utils/DateUtils';
+import { format } from '../utils/DateUtils';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SetlistSessionsList from '../components/SetlistSessionsList';
 import PublicSetlistSection from '../components/PublicSetlistSection';
@@ -135,7 +135,7 @@ export default function SetlistDetailPage() {
         >
           <CalendarIcon className="w-4 h-4 mr-2" />
           <span className="h-6 leading-6">
-            {toShortDate(setlist?.scheduled_date)}
+            {format('ddd MMM D', setlist?.scheduled_date)}
           </span>
         </div>
         <div className="flex w-full">

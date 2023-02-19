@@ -6,6 +6,7 @@ import SetlistApi from '../api/SetlistApi';
 import StyledDialog from './StyledDialog';
 import { reportError } from '../utils/error';
 import { useParams } from 'react-router';
+import { format } from '../utils/DateUtils';
 
 export default function ChangeSetlistDateDialog({
   open,
@@ -63,7 +64,11 @@ export default function ChangeSetlistDateDialog({
         <OutlinedInput
           type="date"
           onChange={handleDateChange}
-          value={editingScheduledDate}
+          value={
+            editingScheduledDate
+              ? format('YYYY-MM-DD', editingScheduledDate)
+              : ''
+          }
           label="Scheduled date"
           className="h-10"
           id="date-picker"

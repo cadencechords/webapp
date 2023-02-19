@@ -75,8 +75,8 @@ export default function SetlistsIndexPage() {
 
       {isSuccess && (
         <>
+          <div className="mb-2">{setlists.length} total</div>
           <FadeIn>
-            <div className="mb-2">{setlists.length} total</div>
             <WellInput
               placeholder="Search your sets"
               value={query}

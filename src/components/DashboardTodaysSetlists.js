@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import MusicNoteIcon from '@heroicons/react/solid/MusicNoteIcon';
 import NoDataMessage from './NoDataMessage';
 import SectionTitle from './SectionTitle';
-import { toShortDate } from '../utils/DateUtils';
+import { format } from '../utils/DateUtils';
 
 export default function DashboardTodaysSetlists({ setlists }) {
   function buildSetlists() {
@@ -18,7 +18,7 @@ export default function DashboardTodaysSetlists({ setlists }) {
           <div className="flex items-center text-sm text-gray-600 dark:text-dark-gray-200">
             <div className="flex items-center">
               <CalendarIcon className="w-4 h-4 mr-2" />
-              {toShortDate(setlist.scheduled_date)}
+              {format('ddd MMM D', setlist?.scheduled_date)}
             </div>
             <div className="flex items-center ml-5">
               <MusicNoteIcon className="w-4 h-4 mr-2" />
