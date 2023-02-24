@@ -49,7 +49,7 @@ function App() {
         <ToastContainer />
         <Sentry.ErrorBoundary
           showDialog
-          fallback={error => <AppFallback error={error} />}
+          fallback={({ error }) => <AppFallback error={error} />}
         >
           <Router>
             <Switch>
