@@ -47,7 +47,11 @@ function App() {
         }
       >
         <ToastContainer />
-        <Sentry.ErrorBoundary showDialog fallback={<AppFallback />}>
+        <Sentry.ErrorBoundary
+          showDialog
+          fallback={<AppFallback />}
+          onError={error => console.log('caught the error!', error)}
+        >
           <Router>
             <Switch>
               <Route path="/login" exact component={LoginPage} />
