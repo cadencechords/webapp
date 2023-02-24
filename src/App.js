@@ -22,6 +22,14 @@ const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
 
+// catch chunkloaderror
+window.addEventListener('error', function (e) {
+  console.log('the error!!!', e);
+  if (e.message === 'Loading chunk failed.') {
+    window.location.reload();
+  }
+});
+
 const queryClient = new QueryClient();
 
 function App() {
