@@ -22,14 +22,6 @@ const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
 
-// catch chunkloaderror
-window.addEventListener('error', function (e) {
-  console.log('the error!!!', e);
-  if (e.message === 'Loading chunk failed.') {
-    window.location.reload();
-  }
-});
-
 const queryClient = new QueryClient();
 
 function App() {
@@ -45,6 +37,14 @@ function App() {
     // window?.Beacon('init', 'e59a5584-73cb-4380-b0b2-be1d76ff7362');
   }, []);
 
+  function handleChunkError(error) {
+    console.log('Error name', error.name);
+    console.log('Error message', error.message);
+    if (error.name === 'ChunkLoadError') {
+      window.location.reload();
+    }
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense
@@ -58,7 +58,7 @@ function App() {
         <Sentry.ErrorBoundary
           showDialog
           fallback={<AppFallback />}
-          onError={error => console.log('caught the error!', error)}
+          onError={handleChunkError}
         >
           <Router>
             <Switch>
