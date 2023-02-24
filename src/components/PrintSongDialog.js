@@ -175,6 +175,7 @@ export default function PrintSongDialog({
         </div>
         <div className="col-span-8 md:col-span-6">
           <embed
+            key={`${instance.url}`}
             src={`${instance.url}#scrollbar=0`}
             width="100%"
             height="600px"

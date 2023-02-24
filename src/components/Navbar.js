@@ -5,7 +5,7 @@ import SearchBar from './SearchBar';
 
 export default function Navbar() {
   return (
-    <nav className="items-center justify-between hidden h-16 px-4 border-b md:flex md:ml-14 lg:ml-56 dark:border-dark-gray-400">
+    <nav className="items-center justify-between hidden h-16 px-4 border-b md:flex md:ml-14 lg:ml-56 dark:border-dark-gray-700">
       <SearchBar />
       <span className="flex-center">
         {/* <SupportButton /> */}
