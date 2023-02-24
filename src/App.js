@@ -37,14 +37,6 @@ function App() {
     // window?.Beacon('init', 'e59a5584-73cb-4380-b0b2-be1d76ff7362');
   }, []);
 
-  function handleChunkError(error) {
-    console.log('Error name', error.name);
-    console.log('Error message', error.message);
-    if (error.name === 'ChunkLoadError') {
-      window.location.reload();
-    }
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense
@@ -57,8 +49,7 @@ function App() {
         <ToastContainer />
         <Sentry.ErrorBoundary
           showDialog
-          fallback={<AppFallback />}
-          onError={handleChunkError}
+          fallback={error => <AppFallback error={error} />}
         >
           <Router>
             <Switch>
