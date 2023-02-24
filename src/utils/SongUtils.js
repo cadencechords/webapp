@@ -16,6 +16,8 @@ const SECTION_TITLE_REGEX = new RegExp(
 );
 
 export function isChordLine(line) {
+  if (line?.trim() === '') return false;
+
   if (line) {
     let parts = line.split(' ');
     parts = parts.map(part => part.replace(/\s/g, ''));
@@ -83,7 +85,6 @@ export function transpose(song) {
     (song?.original_key && song?.capo && song?.content)
   ) {
     let linesOfSong = song.content.split(/\r\n|\r|\n/);
-
     let transposedContent = '';
 
     linesOfSong.forEach((line, index) => {
@@ -165,10 +166,7 @@ export function html(song, onLineDoubleClick) {
       else {
         let lineClasses = determineClassesForLine(line, song.format);
 
-        if (
-          isChordLine(line)
-          // (song.format.highlight_color || song.format.chord_color)
-        ) {
+        if (isChordLine(line)) {
           let chordStyles = {};
           if (song.format.chord_color)
             chordStyles = { color: song.format.chord_color };
@@ -227,7 +225,7 @@ export function html(song, onLineDoubleClick) {
   return '';
 }
 
-function isChordPro(content) {
+export function isChordPro(content) {
   return CHORD_PRO_REGEX.test(content);
 }
 

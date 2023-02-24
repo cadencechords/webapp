@@ -1,5 +1,12 @@
 import { Document, Font, Page, Text, View } from '@react-pdf/renderer';
-import { formatChordPro, isChord, isChordLine, isNewLine } from './SongUtils';
+import {
+  formatChordPro,
+  isChord,
+  isChordLine,
+  isChordPro,
+  isNewLine,
+  transpose,
+} from './SongUtils';
 
 import OpenSansBold from '../fonts/OpenSans-Bold.ttf';
 import OpenSansBoldItalic from '../fonts/OpenSans-BoldItalic.ttf';
@@ -109,7 +116,14 @@ function constructChordStyles(format) {
 
 function constructPdfLines(song, showChords) {
   let chordStyles = constructChordStyles(song.format);
-  let linesOfSong = formatChordPro(song.content).split(/\r\n|\r|\n/);
+  let content = song.content;
+  if (isChordPro(content)) content = formatChordPro(content);
+
+  if (showChords && (song.show_transposed || song.capo)) {
+    content = transpose({ ...song, content });
+  }
+
+  let linesOfSong = content.split(/\r\n|\r|\n/);
   let pdfLines = linesOfSong.map((line, index) => {
     if (isNewLine(line)) {
       return <Text key={index}> &nbsp;</Text>;

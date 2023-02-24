@@ -1,9 +1,12 @@
 import React from 'react';
 
-export default function FormatOptionLabel({ children }) {
+export default function FormatOptionLabel({ children, ...props }) {
   return (
-    <div className="mr-3 text-xs font-semibold text-gray-700 dark:text-dark-gray-200">
+    <label
+      className="mr-3 text-xs font-semibold text-gray-700 dark:text-dark-gray-200"
+      {...props}
+    >
       {children}
-    </div>
+    </label>
   );
 }

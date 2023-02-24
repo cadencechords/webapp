@@ -7,6 +7,7 @@ export default function Select({
   onChange,
   style,
   className = '',
+  ...props
 }) {
   return (
     <span className="relative">
@@ -15,6 +16,7 @@ export default function Select({
         value={selected}
         style={style}
         className={`w-full p-1 text-xs transition-colors focus:outline-none bg-gray-100 dark:bg-dark-gray-600 rounded-md hover:bg-gray-200 focus:bg-gray-200 focus:ring-2 focus:ring-offset-1 focus:ring-blue-400 appearance-none dark:focus:ring-offset-dark-gray-700 ${className}`}
+        {...props}
       >
         {options.map((option, index) => (
           <option key={index} value={option.value}>
