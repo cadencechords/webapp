@@ -50,9 +50,9 @@ export default function Calendar({
     setYear(newMonth.get('year'));
   };
 
-  const handleEventUpdated = updated => {
-    setEventToShow(updated);
-    onEventUpdated(updated);
+  const handleEventUpdated = updatedEvent => {
+    setEventToShow(updatedEvent);
+    onEventUpdated(updatedEvent);
   };
 
   return (
