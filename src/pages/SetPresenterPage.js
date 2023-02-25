@@ -25,6 +25,7 @@ import SessionsProvider, {
 } from '../contexts/SessionsProvider';
 import useQuery from '../hooks/useQuery';
 import notesApi from '../api/notesApi';
+import { useCurrentUser } from '../hooks/api/currentUser.hooks';
 
 export default function Page() {
   return (
@@ -54,6 +55,19 @@ function SetPresenter() {
     activeSessionDetails,
     onTryToJoinAsMember,
   } = useContext(SessionsContext);
+  const { data: currentUser } = useCurrentUser({
+    onSuccess: ({ format_preferences }) => {
+      setSongs(previousSongs =>
+        previousSongs.map(song => ({
+          ...song,
+          format: {
+            ...song.format,
+            chords_hidden: format_preferences.hide_chords,
+          },
+        }))
+      );
+    },
+  });
 
   useEffect(() => {
     let intervalId;
@@ -200,7 +214,7 @@ function SetPresenter() {
     return <PageLoading />;
   }
 
-  if (setlist?.songs?.length > 0) {
+  if (setlist?.songs?.length > 0 && currentUser) {
     return (
       <>
         <SetPresenterTopBar

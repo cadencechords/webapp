@@ -33,6 +33,7 @@ import { setSongBeingPresented } from '../store/presenterSlice';
 import LastScheduledField from '../components/LastScheduledField';
 import { isPast, sortDates } from '../utils/date';
 import dayjs from 'dayjs';
+import { useCurrentUser } from '../hooks/api/currentUser.hooks';
 
 export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -43,6 +44,9 @@ export default function SongDetailPage() {
   const [showAddGenreDialog, setShowGenreDialog] = useState(false);
   const dispatch = useDispatch();
   const currentMember = useSelector(selectCurrentMember);
+  const { data: currentUser } = useCurrentUser({
+    onSuccess: mergeUserPreferencesWithSongFormat,
+  });
 
   useEffect(() => (document.title = song ? song.name : 'Songs'), [song]);
 
@@ -54,14 +58,21 @@ export default function SongDetailPage() {
       try {
         let { data } = await SongApi.getOneById(id);
 
+        if (currentUser) {
+          data.format.chords_hidden =
+            currentUser.format_preferences.hide_chords;
+        }
+
         setSong({ ...data, show_transposed: Boolean(data.transposed_key) });
       } catch (error) {
         reportError(error);
       }
     }
 
-    fetchSong();
-  }, [id]);
+    if (!song) {
+      fetchSong();
+    }
+  }, [id, currentUser, song]);
 
   if (!song) {
     return (
@@ -69,6 +80,18 @@ export default function SongDetailPage() {
         <PulseLoader color="#1f6feb" />
       </div>
     );
+  }
+
+  function mergeUserPreferencesWithSongFormat({ format_preferences }) {
+    if (song) {
+      setSong(previousSong => ({
+        ...previousSong,
+        format: {
+          ...previousSong.format,
+          chords_hidden: format_preferences.hide_chords,
+        },
+      }));
+    }
   }
 
   const handleUpdate = (field, value) => {

@@ -28,6 +28,7 @@ import EventFormProvider from '../contexts/EventFormProvider';
 import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { MANAGE_BILLING } from '../utils/constants';
+import AccountAppearancePage from '../pages/AccountAppearancePage';
 
 const PcoSongsIndexPage = lazy(() => import('../pages/PcoSongsIndexPage'));
 const RoleDetailPage = lazy(() => import('../pages/RoleDetailPage'));
@@ -96,6 +97,9 @@ export default function Content() {
           </Route>
           <Route path="/account/settings" exact>
             <AccountGeneralSettingsPage />
+          </Route>
+          <Route path="/account/appearance" exact>
+            <AccountAppearancePage />
           </Route>
           <Route path="/account/profile" exact>
             <AccountProfilePage />

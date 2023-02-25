@@ -5,6 +5,7 @@ import MobileMenuButton from '../components/buttons/MobileMenuButton';
 import ProfilePicture from '../components/ProfilePicture';
 import Toggle from '../components/Toggle';
 import UserCircleIcon from '@heroicons/react/outline/UserCircleIcon';
+import PhotographIcon from '@heroicons/react/outline/PhotographIcon';
 import { noop } from '../utils/constants';
 import { selectCurrentUser } from '../store/authSlice';
 import { useEffect } from 'react';
@@ -74,6 +75,13 @@ export default function AccountDetailPage() {
           <MobileMenuButton full className="border-b dark:border-dark-gray-600">
             <div className="flex items-center">
               <BellIcon className="w-5 h-5 mr-4" /> Notifications
+            </div>
+          </MobileMenuButton>
+        </Link>
+        <Link to="/account/appearance">
+          <MobileMenuButton full className="border-b dark:border-dark-gray-600">
+            <div className="flex items-center">
+              <PhotographIcon className="w-5 h-5 mr-4" /> Appearance
             </div>
           </MobileMenuButton>
         </Link>
