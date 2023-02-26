@@ -48,6 +48,7 @@ export default function SongDetailPage() {
   const currentMember = useSelector(selectCurrentMember);
   const { data: currentUser } = useCurrentUser({
     onSuccess: mergeUserPreferencesWithSongFormat,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => (document.title = song ? song.name : 'Songs'), [song]);
