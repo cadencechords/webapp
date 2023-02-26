@@ -10,8 +10,6 @@ import BpmField from '../components/BpmField';
 import Button from '../components/Button';
 import DetailSection from '../components/DetailSection';
 import { EDIT_SONGS } from '../utils/constants';
-import EyeIcon from '@heroicons/react/outline/EyeIcon';
-import EyeOffIcon from '@heroicons/react/outline/EyeOffIcon';
 import { Link } from 'react-router-dom';
 import MeterField from '../components/MeterField';
 import PageTitle from '../components/PageTitle';
@@ -34,6 +32,9 @@ import LastScheduledField from '../components/LastScheduledField';
 import { isPast, sortDates } from '../utils/date';
 import dayjs from 'dayjs';
 import { useCurrentUser } from '../hooks/api/currentUser.hooks';
+import Select from '../components/Select';
+import { hasAnyKeysSet } from '../utils/SongUtils';
+import FormatOptionLabel from '../components/FormatOptionLabel';
 
 export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -42,6 +43,7 @@ export default function SongDetailPage() {
   const [saving, setSaving] = useState(false);
   const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
   const [showAddGenreDialog, setShowGenreDialog] = useState(false);
+  const [keyType, setKeyType] = useState();
   const dispatch = useDispatch();
   const currentMember = useSelector(selectCurrentMember);
   const { data: currentUser } = useCurrentUser({
@@ -53,6 +55,28 @@ export default function SongDetailPage() {
   const router = useHistory();
   const { id } = useParams();
 
+  function getKeyTypeOptions() {
+    const options = [];
+
+    if (song.original_key)
+      options.push({
+        value: 'original',
+        display: `Original (${song.original_key})`,
+      });
+    if (song.transposed_key)
+      options.push({
+        value: 'transposed',
+        display: `Transposed (${song.transposed_key})`,
+      });
+    if (song.capo)
+      options.push({ value: 'capo', display: `Capo (${song.capo.capo_key})` });
+
+    if (options.length !== 0)
+      options.push({ value: 'none', display: 'Hide chords' });
+
+    return options;
+  }
+
   useEffect(() => {
     async function fetchSong() {
       try {
@@ -63,7 +87,23 @@ export default function SongDetailPage() {
             currentUser.format_preferences.hide_chords;
         }
 
-        setSong({ ...data, show_transposed: Boolean(data.transposed_key) });
+        let keyType;
+        if (data.format.chords_hidden) {
+          keyType = 'none';
+        } else if (data.capo) {
+          keyType = 'capo';
+          data.show_capo = true;
+        } else if (data.transposed_key) {
+          keyType = 'transposed';
+          data.show_transposed = true;
+        } else if (data.original_key) {
+          keyType = 'original';
+        } else {
+          keyType = 'none';
+        }
+
+        setKeyType(keyType);
+        setSong(data);
       } catch (error) {
         reportError(error);
       }
@@ -91,6 +131,10 @@ export default function SongDetailPage() {
           chords_hidden: format_preferences.hide_chords,
         },
       }));
+
+      if (format_preferences.hide_chords) {
+        setKeyType('none');
+      }
     }
   }
 
@@ -182,18 +226,6 @@ export default function SongDetailPage() {
     ),
   }));
 
-  function handleUpdateSong(field, value) {
-    setSong(currentSong => ({ ...currentSong, [field]: value }));
-  }
-
-  function handleUpdateFormat(field, value) {
-    setSong(currentSong => {
-      let updatedFormat = { ...currentSong.format };
-      updatedFormat[field] = value;
-      return { ...currentSong, format: updatedFormat };
-    });
-  }
-
   function findLatestSetlistDate() {
     let pastSetlists = song?.setlists?.filter(setlist =>
       isPast(setlist.scheduled_date)
@@ -210,6 +242,37 @@ export default function SongDetailPage() {
       ).format('MMM D, YYYY');
       return { date: latestDate, ...sortedSetlists[0] };
     }
+  }
+
+  const handleKeyTypeChange = keyType => {
+    setKeyType(keyType);
+    let songWithKeyType = { ...song };
+
+    delete songWithKeyType.format.chords_hidden;
+    delete songWithKeyType.show_capo;
+    delete songWithKeyType.show_transposed;
+    if (keyType === 'transposed') {
+      songWithKeyType.show_transposed = true;
+    }
+
+    if (keyType === 'capo') {
+      songWithKeyType.show_capo = true;
+    }
+
+    if (keyType === 'none') {
+      songWithKeyType.format.chords_hidden = true;
+    }
+
+    setSong(songWithKeyType);
+  };
+
+  function getSongForPreview() {
+    if (song.show_capo) return song;
+
+    let songForPreview = { ...song };
+
+    delete songForPreview.capo;
+    return songForPreview;
   }
 
   return (
@@ -256,33 +319,22 @@ export default function SongDetailPage() {
                 </Button>
               </Link>
             )}
-
-            {song?.transposed_key && (
-              <Button
-                size="xs"
-                color="blue"
-                onClick={() =>
-                  handleUpdateSong('show_transposed', !song.show_transposed)
-                }
-                variant="open"
-              >
-                {song.show_transposed ? 'Stop transposing' : 'Transpose'}
-              </Button>
-            )}
           </span>
-          <Button
-            variant="icon"
-            size="md"
-            onClick={() =>
-              handleUpdateFormat('chords_hidden', !song?.format?.chords_hidden)
-            }
-          >
-            {song?.format?.chords_hidden ? (
-              <EyeOffIcon className="h-5 text-gray-600" />
-            ) : (
-              <EyeIcon className="h-5" />
-            )}
-          </Button>
+          {hasAnyKeysSet(song) && (
+            <div className="flex-center">
+              <FormatOptionLabel htmlFor="song-key-type">
+                Displayed key:{' '}
+              </FormatOptionLabel>
+              <div className="w-40">
+                <Select
+                  id="song-key-type"
+                  options={getKeyTypeOptions()}
+                  selected={keyType}
+                  onChange={handleKeyTypeChange}
+                />
+              </div>
+            </div>
+          )}
         </div>
         <div className="flex justify-between gap-3 mx-auto mb-4 sm:hidden">
           {currentMember.can(EDIT_SONGS) && (
@@ -312,7 +364,7 @@ export default function SongDetailPage() {
             Perform
           </Button>
         </div>
-        <SongPreview song={song} />
+        <SongPreview song={getSongForPreview()} />
       </div>
       <div className="col-span-4 pl-2 lg:col-span-1 lg:pl-5">
         <div className="py-6 mt-1 border-b dark:border-dark-gray-700">

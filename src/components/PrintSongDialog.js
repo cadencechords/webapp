@@ -38,7 +38,6 @@ export default function PrintSongDialog({
     delete songWithKeyType.capo;
     delete songWithKeyType.show_transposed;
     if (keyType === 'transposed' && song.transposed_key) {
-      console.log({ keyType });
       songWithKeyType.show_transposed = true;
     }
 
