@@ -1,12 +1,9 @@
 import React from 'react';
-import { useSongOnScreen } from '../hooks/songBeingPresented.hooks';
 import CheckIcon from '@heroicons/react/outline/CheckIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import classNames from 'classnames';
 
-export default function KeyOptionsSheet({ onChangeSheet, className }) {
-  const { song } = useSongOnScreen();
-
+export default function KeyOptionsSheet({ onChangeSheet, className, song }) {
   const iconClasses = 'h-4 w-4 text-green-500 dark:text-dark-green ml-2';
 
   return (

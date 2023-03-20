@@ -35,6 +35,7 @@ export default function KeyOptionsPopover({ song, onUpdateSong }) {
     >
       <div className={classNames(SHEET_WIDTHS[sheet])}>
         <KeyOptionsSheet
+          song={song}
           onChangeSheet={setSheet}
           className={sheet !== 'options' && 'hidden'}
         />

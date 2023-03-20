@@ -2,18 +2,24 @@ import { Link, useParams } from 'react-router-dom';
 
 import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
 import Button from './Button';
-import KeyCapoOptionsPopover from './KeyCapoOptionsPopover';
 import XIcon from '@heroicons/react/outline/XIcon';
 import { hasAnyKeysSet } from '../utils/SongUtils';
+import KeyOptionsPopover from './KeyOptionsPopover';
 
 export default function SetPresenterTopBar({
   song,
-  onShowBottomSheet,
+  onUpdateSong,
   onShowDrawer,
 }) {
   const { id } = useParams();
 
   if (!song) return null;
+
+  function handleUpdateSong(updates) {
+    Object.entries(updates).forEach(([field, value]) => {
+      onUpdateSong(field, value);
+    });
+  }
 
   return (
     <nav className="px-1 py-2 border-b dark:border-0 bg-gray-50 dark:bg-dark-gray-800">
@@ -28,9 +34,10 @@ export default function SetPresenterTopBar({
         </h1>
         <div className="flex items-center">
           {hasAnyKeysSet(song) && (
-            <KeyCapoOptionsPopover
+            <KeyOptionsPopover
               song={song}
-              onShowBottomSheet={onShowBottomSheet}
+              onUpdateSong={handleUpdateSong}
+              key={song.id}
             />
           )}
           <Button variant="icon" size="md" color="gray" onClick={onShowDrawer}>

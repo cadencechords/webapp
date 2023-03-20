@@ -219,7 +219,7 @@ function SetPresenter() {
       <>
         <SetPresenterTopBar
           song={songs[songBeingViewedIndex]}
-          onShowBottomSheet={handleBottomSheetChange}
+          onUpdateSong={handleSongUpdate}
           onShowDrawer={() => setShowDrawer(true)}
         />
         <div className="max-w-4xl p-3 mx-auto mb-12 whitespace-pre-wrap">

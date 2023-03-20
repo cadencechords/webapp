@@ -85,7 +85,6 @@ export default function SongPresenterPage() {
         <SongPresenterTopBar
           song={song}
           onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
-          onShowBottomSheet={handleShowBottomSheet}
           onUpdateSong={handleUpdateSong}
         />
 
