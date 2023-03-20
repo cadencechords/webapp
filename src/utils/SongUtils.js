@@ -2,48 +2,12 @@ import * as Transposer from 'chord-transposer';
 
 import ChordSheetJS from 'chordsheetjs';
 import TextAutosize from '../components/TextAutosize';
+import { build, isChord, isChordLine } from '@cadencechords/chord-kit';
 
-// const CHORD_REGEX = new RegExp(
-//   /^([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?$/
-// );
-
-const CHORD_PRO_REGEX = new RegExp(
-  /[[]([A-G]|[A-G]b|[A-G]#)(maj|min|[Mm+°])?6?(aug|d[io]m|ø)?7?(\/([A-G]|[A-G]b|[A-G]#))?[\]]/
-);
 const LINES_REGEX = new RegExp(/\r\n|\r|\n/);
 const SECTION_TITLE_REGEX = new RegExp(
   '^(\\[)?(verse|chorus|interlude|prechorus|vamp|tag|outro|intro|break|pre chorus|bridge)( )*([0-9])*(:|])?( )*$'
 );
-
-export function isChordLine(line) {
-  if (line?.trim() === '') return false;
-
-  if (line) {
-    let parts = line.split(' ');
-    parts = parts.map(part => part.replace(/\s/g, ''));
-    parts = parts.filter(part => part !== '');
-    let numChordMatches = 0;
-
-    parts?.forEach(part => {
-      if (isChord(part)) {
-        ++numChordMatches;
-      }
-    });
-
-    return numChordMatches >= parts.length / 2;
-  } else {
-    return false;
-  }
-}
-
-export function isChord(potentialChord) {
-  try {
-    Transposer.Chord.parse(potentialChord);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export function isNewLine(line) {
   return line === '';
@@ -79,56 +43,6 @@ export function parseNote(key) {
   }
 }
 
-export function transpose(song) {
-  if (
-    (song?.original_key && song?.transposed_key && song?.content) ||
-    (song?.original_key && song?.capo && song?.content)
-  ) {
-    let linesOfSong = song.content.split(/\r\n|\r|\n/);
-    let transposedContent = '';
-
-    linesOfSong.forEach((line, index) => {
-      let transposedLine;
-      if (isChordLine(line)) {
-        if (song.capo) {
-          if (song.show_transposed && song.transposed_key) {
-            transposedLine = Transposer.transpose(line)
-              .fromKey(song.original_key)
-              .toKey(song.transposed_key)
-              .toString();
-            transposedLine = Transposer.transpose(transposedLine)
-              .fromKey(song.transposed_key)
-              .toKey(song.capo.capo_key)
-              .toString();
-          } else {
-            transposedLine = Transposer.transpose(line)
-              .fromKey(song.original_key)
-              .toKey(song.capo.capo_key)
-              .toString();
-          }
-        } else {
-          transposedLine = Transposer.transpose(line)
-            .fromKey(song.original_key)
-            .toKey(song.transposed_key)
-            .toString();
-        }
-
-        transposedContent += transposedLine;
-      } else {
-        transposedContent += line;
-      }
-
-      if (index < linesOfSong.length - 1) {
-        transposedContent += '\n';
-      }
-    });
-
-    return transposedContent;
-  } else {
-    return song?.content ? song.content : '';
-  }
-}
-
 export function getHalfStepHigher(key) {
   return Transposer.transpose(key).up(1).toString();
 }
@@ -147,11 +61,7 @@ export function html(song, onLineDoubleClick) {
     if (song.roadmap?.length > 0 && song.show_roadmap)
       content = fromRoadmap(song);
 
-    if (isChordPro(content)) content = formatChordPro(content);
-
-    if (!song.format.chords_hidden && (song.show_transposed || song.capo)) {
-      content = transpose({ ...song, content: content });
-    }
+    content = build({ ...song, content });
 
     let linesOfSong = content.split(/\r\n|\r|\n/);
 
@@ -223,10 +133,6 @@ export function html(song, onLineDoubleClick) {
   }
 
   return '';
-}
-
-export function isChordPro(content) {
-  return CHORD_PRO_REGEX.test(content);
 }
 
 function determineClassesForLine(line, format) {

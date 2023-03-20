@@ -9,10 +9,10 @@ export default function BoldItalicButtonGroup({ isBold, isItalic, onChange }) {
     isItalic && 'italic_chords',
   ].filter(selectedValue => !!selectedValue);
 
-  function handleChange(newSelection = []) {
-    onChange('bold_chords', newSelection.includes('bold_chords'));
-    onChange('italic_chords', newSelection.includes('italic_chords'));
+  function handleChange({ selected, option }) {
+    onChange?.(option.value, selected);
   }
+
   return (
     <ButtonGroup
       options={OPTIONS}

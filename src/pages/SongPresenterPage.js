@@ -3,7 +3,7 @@ import {
   selectSongBeingPresented,
 } from '../store/presenterSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import { useRef, useState } from 'react';
 
 import NotesList from '../components/NotesList';
@@ -18,7 +18,6 @@ import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useCurrentUser } from '../hooks/api/currentUser.hooks';
 
 export default function SongPresenterPage() {
-  const router = useHistory();
   const id = useParams().id;
   const song = useSelector(selectSongBeingPresented);
   const dispatch = useDispatch();
@@ -27,6 +26,7 @@ export default function SongPresenterPage() {
   const [bottomSheet, setBottomSheet] = useState();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const { data: currentUser } = useCurrentUser({
+    refetchOnWindowFocus: false,
     onSuccess: ({ format_preferences }) => {
       dispatch(
         adjustSongBeingPresented({
@@ -75,6 +75,10 @@ export default function SongPresenterPage() {
     dispatch(adjustSongBeingPresented({ show_roadmap: !song.show_roadmap }));
   }
 
+  function handleUpdateSong(updates) {
+    dispatch(adjustSongBeingPresented(updates));
+  }
+
   if (song && song.format && currentUser) {
     return (
       <div ref={pageRef} id="page">
@@ -82,6 +86,7 @@ export default function SongPresenterPage() {
           song={song}
           onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
           onShowBottomSheet={handleShowBottomSheet}
+          onUpdateSong={handleUpdateSong}
         />
 
         <div className="max-w-6xl p-3 mx-auto">
@@ -120,7 +125,6 @@ export default function SongPresenterPage() {
       </div>
     );
   } else {
-    router.push(`/songs/${id}`);
-    return null;
+    return <Redirect to={`/songs/${id}`} />;
   }
 }

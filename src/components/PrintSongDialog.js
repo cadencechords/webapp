@@ -21,7 +21,7 @@ export default function PrintSongDialog({
   const showChords = keyType !== 'none';
 
   function determineInitialKeyType() {
-    if (initialSong.capo) {
+    if (initialSong.capo?.capo_key) {
       return 'capo';
     }
 
@@ -41,7 +41,7 @@ export default function PrintSongDialog({
       songWithKeyType.show_transposed = true;
     }
 
-    if (keyType === 'capo' && song.capo) {
+    if (keyType === 'capo' && song.capo?.capo_key) {
       songWithKeyType.capo = song.capo;
     }
 
@@ -77,7 +77,7 @@ export default function PrintSongDialog({
         value: 'transposed',
         display: `Transposed (${song.transposed_key})`,
       });
-    if (song.capo)
+    if (song.capo?.capo_key)
       options.push({ value: 'capo', display: `Capo (${song.capo.capo_key})` });
 
     if (options.length !== 0)

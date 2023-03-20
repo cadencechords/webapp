@@ -38,3 +38,16 @@ export const DELETE_FILES = 'Delete files';
 export const MANAGE_BILLING = 'Manage billing';
 
 export function noop() {}
+
+export const SPEEDS = {
+  1: { px: 1, interval: 15 },
+  2: { px: 1, interval: 13 },
+  3: { px: 1, interval: 11 },
+  4: { px: 1, interval: 9 },
+  5: { px: 1, interval: 7 },
+  6: { px: 1, interval: 5 },
+  7: { px: 1, interval: 4 },
+  8: { px: 1, interval: 3 },
+  9: { px: 2, interval: 4 },
+  10: { px: 3, interval: 3 },
+};

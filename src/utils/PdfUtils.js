@@ -1,12 +1,6 @@
 import { Document, Font, Page, Text, View } from '@react-pdf/renderer';
-import {
-  formatChordPro,
-  isChord,
-  isChordLine,
-  isChordPro,
-  isNewLine,
-  transpose,
-} from './SongUtils';
+import { isNewLine } from './SongUtils';
+import { build, isChord, isChordLine } from '@cadencechords/chord-kit';
 
 import OpenSansBold from '../fonts/OpenSans-Bold.ttf';
 import OpenSansBoldItalic from '../fonts/OpenSans-BoldItalic.ttf';
@@ -116,12 +110,10 @@ function constructChordStyles(format) {
 
 function constructPdfLines(song, showChords) {
   let chordStyles = constructChordStyles(song.format);
-  let content = song.content;
-  if (isChordPro(content)) content = formatChordPro(content);
-
-  if (showChords && (song.show_transposed || song.capo)) {
-    content = transpose({ ...song, content });
-  }
+  let content = build({
+    ...song,
+    format: { ...song.format, chords_hidden: !showChords },
+  });
 
   let linesOfSong = content.split(/\r\n|\r|\n/);
   let pdfLines = linesOfSong.map((line, index) => {

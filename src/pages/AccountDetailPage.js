@@ -29,9 +29,21 @@ export default function AccountDetailPage() {
 
       if (updatedValue) {
         document.querySelector('html').classList.add('dark');
+        document
+          .querySelector(':root')
+          .style.setProperty('--rsbs-handle-bg', '#8b949e');
+        document
+          .querySelector(':root')
+          .style.setProperty('--rsbs-bg', '#0d1117');
         localStorage.setItem('theme', 'dark');
       } else {
         document.querySelector('html').classList.remove('dark');
+        document
+          .querySelector(':root')
+          .style.setProperty('--rsbs-handle-bg', 'hsla(0, 0%, 0%, 0.14)');
+        document
+          .querySelector(':root')
+          .style.setProperty('--rsbs-bg', '#ffffff');
         localStorage.setItem('theme', 'light');
       }
 

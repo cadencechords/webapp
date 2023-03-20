@@ -69,7 +69,7 @@ export default function SongDetailPage() {
         value: 'transposed',
         display: `Transposed (${song.transposed_key})`,
       });
-    if (song.capo)
+    if (song.capo?.capo_key)
       options.push({ value: 'capo', display: `Capo (${song.capo.capo_key})` });
 
     if (options.length !== 0)
@@ -163,7 +163,13 @@ export default function SongDetailPage() {
   };
 
   const handlePresentSong = () => {
-    dispatch(setSongBeingPresented(song));
+    dispatch(
+      setSongBeingPresented({
+        ...song,
+        show_transposed: !!song.transposed_key,
+        show_capo: !!song.capo?.capo_key,
+      })
+    );
     router.push(`/songs/${id}/present`);
   };
 
@@ -267,15 +273,6 @@ export default function SongDetailPage() {
     setSong(songWithKeyType);
   };
 
-  function getSongForPreview() {
-    if (song.show_capo) return song;
-
-    let songForPreview = { ...song };
-
-    delete songForPreview.capo;
-    return songForPreview;
-  }
-
   return (
     <div className="grid grid-cols-4">
       <div className="col-span-4 lg:border-r lg:dark:border-dark-gray-700 lg:pr-4 lg:col-span-3">
@@ -365,7 +362,7 @@ export default function SongDetailPage() {
             Perform
           </Button>
         </div>
-        <SongPreview song={getSongForPreview()} />
+        <SongPreview song={song} />
       </div>
       <div className="col-span-4 pl-2 lg:col-span-1 lg:pl-5">
         <div className="py-6 mt-1 border-b dark:border-dark-gray-700">

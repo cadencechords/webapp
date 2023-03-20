@@ -10,11 +10,7 @@ export default function ButtonGroup({ options = [], selected = [], onChange }) {
   }
 
   function handleClick(option) {
-    const newSelectedValues = isSelected(option)
-      ? selected.filter(selectedValue => selectedValue !== option.value)
-      : [...selected, option.value];
-
-    onChange?.(newSelectedValues);
+    onChange?.({ selected: !isSelected(option), option });
   }
 
   function isFirst(index) {

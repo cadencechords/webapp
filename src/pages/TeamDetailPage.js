@@ -40,7 +40,6 @@ export default function TeamDetailPage() {
 
     try {
       setShowImageDialog(false);
-      console.log(e.target.files[0]);
       try {
         await FileApi.addImageToTeam(e.target.files[0]);
       } catch (error) {

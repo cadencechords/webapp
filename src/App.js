@@ -30,6 +30,10 @@ function App() {
 
     if (theme === 'dark') {
       document.querySelector('html').className += ' dark';
+      document.querySelector(':root').style.setProperty('--rsbs-bg', '#0d1117');
+      document
+        .querySelector(':root')
+        .style.setProperty('--rsbs-handle-bg', '#8b949e');
     }
   }, []);
 

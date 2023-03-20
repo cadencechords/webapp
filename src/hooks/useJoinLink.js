@@ -26,7 +26,6 @@ export default function useJoinLink(code) {
         setData(data);
         setStatus(RESOLVED);
       } catch (error) {
-        console.log(error);
         reportError(error);
         setError(error?.response?.data);
         setStatus(ERRORED);
