@@ -8,6 +8,7 @@ export default function MobileMenuButton({
   disabled,
   className,
   size,
+  style,
 }) {
   let classes =
     ' font-semibold outline-none focus:outline-none text-sm transition-colors whitespace-nowrap overflow-hidden overflow-ellipsis';
@@ -21,7 +22,12 @@ export default function MobileMenuButton({
   classes += SIZES[size];
   classes += ` ${className}`;
   return (
-    <button onClick={onClick} className={classes} disabled={disabled}>
+    <button
+      onClick={onClick}
+      className={classes}
+      disabled={disabled}
+      style={style}
+    >
       {children}
     </button>
   );

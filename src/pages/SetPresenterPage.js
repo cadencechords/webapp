@@ -221,6 +221,7 @@ function SetPresenter() {
           song={songs[songBeingViewedIndex]}
           onUpdateSong={handleSongUpdate}
           onShowDrawer={() => setShowDrawer(true)}
+          onAddNote={handleAddNote}
         />
         <div className="max-w-4xl p-3 mx-auto mb-12 whitespace-pre-wrap">
           <SongsCarousel

@@ -85,6 +85,7 @@ export default function SongPresenterPage() {
         <SongPresenterTopBar
           song={song}
           onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
+          onAddNote={handleAddNote}
           onUpdateSong={handleUpdateSong}
         />
 

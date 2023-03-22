@@ -5,12 +5,17 @@ import Button from './Button';
 import XIcon from '@heroicons/react/outline/XIcon';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import KeyOptionsPopover from './KeyOptionsPopover';
+import { useSelector } from 'react-redux';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import MarkupPopover from './MarkupPopover';
 
 export default function SetPresenterTopBar({
   song,
   onUpdateSong,
   onShowDrawer,
+  onAddNote,
 }) {
+  const currentSubscription = useSelector(selectCurrentSubscription);
   const { id } = useParams();
 
   if (!song) return null;
@@ -32,7 +37,7 @@ export default function SetPresenterTopBar({
         <h1 className="w-1/3 overflow-hidden font-semibold text-center overflow-ellipsis whitespace-nowrap">
           {song.name}
         </h1>
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           {hasAnyKeysSet(song) && (
             <KeyOptionsPopover
               song={song}
@@ -43,6 +48,7 @@ export default function SetPresenterTopBar({
           <Button variant="icon" size="md" color="gray" onClick={onShowDrawer}>
             <AdjustmentsIcon className="w-5 h-5 sm:h-6 sm:w-6" />
           </Button>
+          {currentSubscription.isPro && <MarkupPopover onAddNote={onAddNote} />}
         </div>
       </div>
     </nav>

@@ -5,13 +5,18 @@ import { hasAnyKeysSet } from '../utils/SongUtils';
 import { useParams } from 'react-router-dom';
 import KeyOptionsPopover from './KeyOptionsPopover';
 import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import { useSelector } from 'react-redux';
+import MarkupPopover from './MarkupPopover';
 
 export default function SongPresenterTopBar({
   song,
   onShowOptionsDrawer,
   onUpdateSong,
+  onAddNote,
 }) {
   const { id } = useParams();
+  const currentSubscription = useSelector(selectCurrentSubscription);
 
   if (song) {
     return (
@@ -37,6 +42,9 @@ export default function SongPresenterTopBar({
             >
               <AdjustmentsIcon className="w-6 h-6" />
             </Button>
+            {currentSubscription.isPro && (
+              <MarkupPopover onAddNote={onAddNote} />
+            )}
           </div>
         </div>
       </nav>
