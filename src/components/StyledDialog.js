@@ -4,6 +4,7 @@ import Button from './Button';
 import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import XIcon from '@heroicons/react/outline/XIcon';
+import classNames from 'classnames';
 
 export default function StyledDialog({
   open,
@@ -14,6 +15,7 @@ export default function StyledDialog({
   showClose,
   fullscreen,
   borderedTop,
+  className,
 }) {
   let sizeClasses = fullscreen
     ? `min-h-screen sm:min-h-full w-full ${SM_MAX_WIDTHS[size]} `
@@ -27,9 +29,10 @@ export default function StyledDialog({
     <Transition show={open} as={Fragment}>
       <Dialog
         as="div"
-        className={`fixed inset-0 z-50 max-h-full ${
-          fullscreen ? 'mx-0' : 'mx-3'
-        }`}
+        className={classNames(
+          `fixed inset-0 z-50 max-h-full ${fullscreen ? 'mx-0' : 'mx-3'}`,
+          className
+        )}
         static
         open={open}
         onClose={onCloseDialog}
