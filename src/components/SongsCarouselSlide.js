@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { html } from '../utils/SongUtils';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
+import Marking from './Marking';
 
 export default function SongsCarouselSlide({
   song,
@@ -55,6 +56,11 @@ export default function SongsCarouselSlide({
             onDragStart={onDisableSwipe}
           />
         )}
+        {currentSubscription?.isPro &&
+          song.markings?.length > 0 &&
+          song.markings.map(marking => (
+            <Marking marking={marking} key={marking.id} />
+          ))}
         <div id="song" className="pb-24 mr-0">
           {html(song)}
         </div>

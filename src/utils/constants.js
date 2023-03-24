@@ -1,3 +1,10 @@
+import {
+  BlockArrow,
+  BoldArrow,
+  NarrowArrow,
+  ShortArrow,
+} from '../icons/markings';
+
 export const ADD_SONGS = 'Add songs';
 export const DELETE_SONGS = 'Delete songs';
 export const EDIT_SONGS = 'Edit songs';
@@ -53,3 +60,9 @@ export const SPEEDS = {
 };
 
 export const markingTabs = ['Dynamics', 'Roadmap', 'Singers', 'Shapes'];
+export const shapeOptions = {
+  'block-arrow': BlockArrow,
+  'bold-arrow': BoldArrow,
+  'short-arrow': ShortArrow,
+  'narrow-arrow': NarrowArrow,
+};

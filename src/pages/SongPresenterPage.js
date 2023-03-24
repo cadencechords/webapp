@@ -17,6 +17,7 @@ import { reportError } from '../utils/error';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useCurrentUser } from '../hooks/api/currentUser.hooks';
 import AddMarkingsModal from '../components/AddMarkingsModal';
+import Marking from '../components/Marking';
 
 export default function SongPresenterPage() {
   const id = useParams().id;
@@ -67,6 +68,11 @@ export default function SongPresenterPage() {
     }
   }
 
+  function handleMarkingAdded(marking) {
+    const markings = [...song.markings, marking];
+    dispatch(adjustSongBeingPresented({ markings }));
+  }
+
   function handleShowBottomSheet(sheet) {
     setShowBottomSheet(true);
     setShowOptionsDrawer(false);
@@ -102,6 +108,11 @@ export default function SongPresenterPage() {
             {currentSubscription?.isPro && song.notes?.length > 0 && (
               <NotesList song={song} onDelete={handleDeleteNote} />
             )}
+            {currentSubscription?.isPro &&
+              song.markings?.length > 0 &&
+              song.markings.map(marking => (
+                <Marking marking={marking} key={marking.id} />
+              ))}
             <div id="song" className="mr-0">
               {html(song)}
             </div>
@@ -129,6 +140,8 @@ export default function SongPresenterPage() {
           <AddMarkingsModal
             open={isAddMarkingsVisible}
             onClose={() => setIsAddMarkingsVisible(false)}
+            onMarkingAdded={handleMarkingAdded}
+            song={song}
           />
         )}
       </div>

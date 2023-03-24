@@ -199,6 +199,16 @@ function SetPresenter() {
     }
   }
 
+  function handleMarkingAdded(marking) {
+    setSongs(currentSongs => {
+      return currentSongs.map((song, index) => {
+        return index === songBeingViewedIndex
+          ? { ...song, markings: [...song.markings, marking] }
+          : song;
+      });
+    });
+  }
+
   const handleSongUpdate = useCallback(
     (field, value) => {
       setSongs(currentSongs => {
@@ -251,6 +261,8 @@ function SetPresenter() {
         <AddMarkingsModal
           open={isAddMarkingsVisible}
           onClose={() => setIsAddMarkingsVisible(false)}
+          song={songs[songBeingViewedIndex]}
+          onMarkingAdded={handleMarkingAdded}
         />
         <SetlistAdjustmentsDrawer
           song={songs[songBeingViewedIndex]}
