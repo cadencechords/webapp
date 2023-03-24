@@ -51,3 +51,5 @@ export const SPEEDS = {
   9: { px: 2, interval: 4 },
   10: { px: 3, interval: 3 },
 };
+
+export const markingTabs = ['Dynamics', 'Roadmap', 'Singers', 'Shapes'];

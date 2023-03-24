@@ -14,6 +14,7 @@ export default function SongPresenterTopBar({
   onShowOptionsDrawer,
   onUpdateSong,
   onAddNote,
+  onShowMarkingsModal,
 }) {
   const { id } = useParams();
   const currentSubscription = useSelector(selectCurrentSubscription);
@@ -43,7 +44,10 @@ export default function SongPresenterTopBar({
               <AdjustmentsIcon className="w-6 h-6" />
             </Button>
             {currentSubscription.isPro && (
-              <MarkupPopover onAddNote={onAddNote} />
+              <MarkupPopover
+                onAddNote={onAddNote}
+                onShowMarkingsModal={onShowMarkingsModal}
+              />
             )}
           </div>
         </div>

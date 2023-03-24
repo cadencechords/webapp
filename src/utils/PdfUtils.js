@@ -127,6 +127,7 @@ function constructPdfLines(song, showChords) {
 
         return (
           <View
+            key={index}
             style={{
               display: 'flex',
               flexDirection: 'row',

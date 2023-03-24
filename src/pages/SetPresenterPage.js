@@ -26,6 +26,7 @@ import SessionsProvider, {
 import useQuery from '../hooks/useQuery';
 import notesApi from '../api/notesApi';
 import { useCurrentUser } from '../hooks/api/currentUser.hooks';
+import AddMarkingsModal from '../components/AddMarkingsModal';
 
 export default function Page() {
   return (
@@ -47,6 +48,7 @@ function SetPresenter() {
   const [bottomSheet, setBottomSheet] = useState('');
   const [showDrawer, setShowDrawer] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isAddMarkingsVisible, setIsAddMarkingsVisible] = useState(false);
   const currentSubscription = useSelector(selectCurrentSubscription);
   const {
     initializeHostSessionIfExists,
@@ -222,6 +224,7 @@ function SetPresenter() {
           onUpdateSong={handleSongUpdate}
           onShowDrawer={() => setShowDrawer(true)}
           onAddNote={handleAddNote}
+          onShowMarkingsModal={() => setIsAddMarkingsVisible(true)}
         />
         <div className="max-w-4xl p-3 mx-auto mb-12 whitespace-pre-wrap">
           <SongsCarousel
@@ -244,6 +247,10 @@ function SetPresenter() {
           onClose={() => setShowBottomSheet(false)}
           song={songs[songBeingViewedIndex]}
           onSongUpdate={handleSongUpdate}
+        />
+        <AddMarkingsModal
+          open={isAddMarkingsVisible}
+          onClose={() => setIsAddMarkingsVisible(false)}
         />
         <SetlistAdjustmentsDrawer
           song={songs[songBeingViewedIndex]}

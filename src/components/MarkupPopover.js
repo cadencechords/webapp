@@ -4,7 +4,7 @@ import Button from './Button';
 import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
 
-export default function MarkupPopover({ onAddNote }) {
+export default function MarkupPopover({ onAddNote, onShowMarkingsModal }) {
   return (
     <StyledPopover
       position="bottom-end"
@@ -26,6 +26,7 @@ export default function MarkupPopover({ onAddNote }) {
           <AddStickyNoteIcon className="w-5 h-5" />
         </MobileMenuButton>
         <MobileMenuButton
+          onClick={onShowMarkingsModal}
           full
           className="h-11 flex-between"
           color="black"

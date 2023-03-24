@@ -14,6 +14,7 @@ export default function SetPresenterTopBar({
   onUpdateSong,
   onShowDrawer,
   onAddNote,
+  onShowMarkingsModal,
 }) {
   const currentSubscription = useSelector(selectCurrentSubscription);
   const { id } = useParams();
@@ -48,7 +49,12 @@ export default function SetPresenterTopBar({
           <Button variant="icon" size="md" color="gray" onClick={onShowDrawer}>
             <AdjustmentsIcon className="w-5 h-5 sm:h-6 sm:w-6" />
           </Button>
-          {currentSubscription.isPro && <MarkupPopover onAddNote={onAddNote} />}
+          {currentSubscription.isPro && (
+            <MarkupPopover
+              onAddNote={onAddNote}
+              onShowMarkingsModal={onShowMarkingsModal}
+            />
+          )}
         </div>
       </div>
     </nav>

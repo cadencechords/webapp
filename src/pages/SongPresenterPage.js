@@ -16,6 +16,7 @@ import notesApi from '../api/notesApi';
 import { reportError } from '../utils/error';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useCurrentUser } from '../hooks/api/currentUser.hooks';
+import AddMarkingsModal from '../components/AddMarkingsModal';
 
 export default function SongPresenterPage() {
   const id = useParams().id;
@@ -23,6 +24,7 @@ export default function SongPresenterPage() {
   const dispatch = useDispatch();
   const currentSubscription = useSelector(selectCurrentSubscription);
   const pageRef = useRef();
+  const [isAddMarkingsVisible, setIsAddMarkingsVisible] = useState(false);
   const [bottomSheet, setBottomSheet] = useState();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const { data: currentUser } = useCurrentUser({
@@ -87,6 +89,7 @@ export default function SongPresenterPage() {
           onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
           onAddNote={handleAddNote}
           onUpdateSong={handleUpdateSong}
+          onShowMarkingsModal={() => setIsAddMarkingsVisible(true)}
         />
 
         <div className="max-w-6xl p-3 mx-auto">
@@ -122,6 +125,12 @@ export default function SongPresenterPage() {
           song={song}
           onSongChange={handleSongChange}
         />
+        {currentSubscription?.isPro && (
+          <AddMarkingsModal
+            open={isAddMarkingsVisible}
+            onClose={() => setIsAddMarkingsVisible(false)}
+          />
+        )}
       </div>
     );
   } else {

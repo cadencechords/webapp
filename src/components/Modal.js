@@ -13,14 +13,14 @@ export default function Modal({ open, onClose, children }) {
           borderedTop={false}
           onCloseDialog={onClose}
           open={open}
-          size="2xl"
+          size="xl"
         >
           {children}
         </StyledDialog>
       )}
       {!isSm && (
         <BottomSheet open={open} onDismiss={onClose}>
-          {children}
+          <div className="p-3">{children}</div>
         </BottomSheet>
       )}
     </>
