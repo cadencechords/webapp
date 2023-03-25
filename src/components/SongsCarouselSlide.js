@@ -59,7 +59,7 @@ export default function SongsCarouselSlide({
         {currentSubscription?.isPro &&
           song.markings?.length > 0 &&
           song.markings.map(marking => (
-            <Marking marking={marking} key={marking.id} />
+            <Marking marking={marking} key={marking.id} song={song} />
           ))}
         <div id="song" className="pb-24 mr-0">
           {html(song)}

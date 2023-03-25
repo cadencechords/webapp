@@ -4,7 +4,7 @@ import {
 } from '../store/presenterSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import NotesList from '../components/NotesList';
 import Roadmap from '../components/Roadmap';
@@ -43,6 +43,18 @@ export default function SongPresenterPage() {
   });
 
   const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
+
+  useEffect(() => {
+    const handler = e => e.preventDefault();
+    document.addEventListener('gesturestart', handler);
+    document.addEventListener('gesturechange', handler);
+    document.addEventListener('gestureend', handler);
+    return () => {
+      document.removeEventListener('gesturestart', handler);
+      document.removeEventListener('gesturechange', handler);
+      document.removeEventListener('gestureend', handler);
+    };
+  }, []);
 
   function handleFormatChange(field, value) {
     let updatedFormat = { ...song.format, [field]: value };
@@ -111,7 +123,7 @@ export default function SongPresenterPage() {
             {currentSubscription?.isPro &&
               song.markings?.length > 0 &&
               song.markings.map(marking => (
-                <Marking marking={marking} key={marking.id} />
+                <Marking marking={marking} key={marking.id} song={song} />
               ))}
             <div id="song" className="mr-0">
               {html(song)}

@@ -12,4 +12,14 @@ export default class MarkingsApi {
       }
     );
   }
+
+  static update(songId, markingId, updates) {
+    return api().put(
+      `/songs/${songId}/markings/${markingId}?team_id=${getTeamId()}`,
+      updates,
+      {
+        headers: constructAuthHeaders(),
+      }
+    );
+  }
 }
