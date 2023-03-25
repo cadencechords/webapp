@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
 import { useUpdateMarking } from '../hooks/api/markings.hooks';
+import classNames from 'classnames';
+import ShapeMarking from './ShapeMarking';
 export default function Marking({ marking, song }) {
   const markingRef = useRef();
   const [initialCoordinates] = useState({
@@ -74,12 +76,25 @@ export default function Marking({ marking, song }) {
         transform: `translate(${coordinates.x}px, ${coordinates.y}px) rotate(${rotation}deg) scale(${scale})`,
       }}
     >
-      <div
-        className="text-center"
-        style={{ fontSize: '60px', paddingLeft: '10px', paddingRight: '10px' }}
-      >
-        {marking.content}
-      </div>
+      {marking.marking_type === 'shapes' ? (
+        <ShapeMarking marking={marking} />
+      ) : (
+        <div
+          className={classNames(
+            'text-center',
+            marking.marking_type === 'dynamics' && 'font-bold italic'
+          )}
+          style={{
+            fontSize: '60px',
+            paddingLeft: '10px',
+            paddingRight: '10px',
+            fontFamily:
+              marking.marking_type === 'dynamics' && 'Times New Roman',
+          }}
+        >
+          {marking.content}
+        </div>
+      )}
     </button>
   );
 }
