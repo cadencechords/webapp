@@ -38,6 +38,13 @@ export default function SongsCarouselSlide({
     debounce('notes', updatedNotes);
   }
 
+  function handleMarkingDeleted(deletedId) {
+    let updatedMarkings = song.markings?.filter(
+      marking => marking.id !== deletedId
+    );
+    onSongUpdate('markings', updatedMarkings);
+  }
+
   return (
     <div key={song?.id} className="block mb-4">
       <Roadmap
@@ -59,7 +66,12 @@ export default function SongsCarouselSlide({
         {currentSubscription?.isPro &&
           song.markings?.length > 0 &&
           song.markings.map(marking => (
-            <Marking marking={marking} key={marking.id} song={song} />
+            <Marking
+              marking={marking}
+              key={marking.id}
+              song={song}
+              onDeleted={handleMarkingDeleted}
+            />
           ))}
         <div id="song" className="pb-24 mr-0">
           {html(song)}

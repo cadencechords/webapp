@@ -70,6 +70,13 @@ export default function SongPresenterPage() {
     dispatch(adjustSongBeingPresented({ notes: filteredNotes }));
   }
 
+  function handleMarkingDeleted(deletedId) {
+    const filteredMarkings = song.markings.filter(
+      marking => marking.id !== deletedId
+    );
+    dispatch(adjustSongBeingPresented({ markings: filteredMarkings }));
+  }
+
   async function handleAddNote() {
     try {
       let { data } = await notesApi.create(song.id);
@@ -123,7 +130,12 @@ export default function SongPresenterPage() {
             {currentSubscription?.isPro &&
               song.markings?.length > 0 &&
               song.markings.map(marking => (
-                <Marking marking={marking} key={marking.id} song={song} />
+                <Marking
+                  marking={marking}
+                  key={marking.id}
+                  song={song}
+                  onDeleted={handleMarkingDeleted}
+                />
               ))}
             <div id="song" className="mr-0">
               {html(song)}

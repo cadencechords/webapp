@@ -56,3 +56,32 @@ export function useUpdateMarking({ onSuccess } = {}) {
 
   return { isLoading, isSuccess, isError, error, run };
 }
+
+export function useDeleteMarking({ onSuccess } = {}) {
+  const queryClient = useQueryClient();
+  const {
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    mutate: run,
+  } = useMutation({
+    mutationFn: async ({ markingId, songId }) => {
+      await MarkingsApi.delete(songId, markingId);
+    },
+    onSuccess: (_data, { songId, markingId }) => {
+      queryClient.removeQueries([
+        'songs',
+        `${songId}`,
+        'markings',
+        `${markingId}`,
+      ]);
+      onSuccess?.();
+    },
+    onError: error => {
+      reportError(error);
+    },
+  });
+
+  return { isLoading, isSuccess, isError, error, run };
+}

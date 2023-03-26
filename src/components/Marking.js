@@ -1,9 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
-import { useUpdateMarking } from '../hooks/api/markings.hooks';
+import {
+  useDeleteMarking,
+  useUpdateMarking,
+} from '../hooks/api/markings.hooks';
 import classNames from 'classnames';
 import ShapeMarking from './ShapeMarking';
-export default function Marking({ marking, song }) {
+import MarkingOptionsPopover from './MarkingOptionsPopover';
+
+export default function Marking({ marking, song, onDeleted }) {
+  const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const markingRef = useRef();
   const [initialCoordinates] = useState({
     x: parseFloat(marking.x),
@@ -16,6 +22,9 @@ export default function Marking({ marking, song }) {
   const [scale, setScale] = useState(parseFloat(marking.scale));
   const [rotation, setRotation] = useState(parseFloat(marking.rotation));
   const { run: updateMarking } = useUpdateMarking();
+  const { run: deleteMarking } = useDeleteMarking({
+    onSuccess: () => onDeleted(marking.id),
+  });
 
   function handleSaveUpdates(updates) {
     updateMarking({
@@ -23,6 +32,13 @@ export default function Marking({ marking, song }) {
       songId: song.id,
       updates,
     });
+  }
+
+  function handleClick(e) {
+    if (e.type === 'contextmenu') {
+      e.preventDefault();
+      setIsContextMenuVisible(true);
+    }
   }
 
   useGesture(
@@ -64,37 +80,51 @@ export default function Marking({ marking, song }) {
   );
 
   return (
-    <button
-      ref={markingRef}
-      className="absolute outline-none focus:outline-none whitespace-nowrap"
-      style={{
-        touchAction: 'none',
-        paddingLeft: '30px',
-        paddingRight: '30px',
-        paddingTop: '15px',
-        paddingBottom: '15px',
-        transform: `translate(${coordinates.x}px, ${coordinates.y}px) rotate(${rotation}deg) scale(${scale})`,
-      }}
+    <span
+      className="absolute"
+      style={{ transform: `translate(${coordinates.x}px, ${coordinates.y}px)` }}
     >
-      {marking.marking_type === 'shapes' ? (
-        <ShapeMarking marking={marking} />
-      ) : (
-        <div
-          className={classNames(
-            'text-center',
-            marking.marking_type === 'dynamics' && 'font-bold italic'
-          )}
-          style={{
-            fontSize: '60px',
-            paddingLeft: '10px',
-            paddingRight: '10px',
-            fontFamily:
-              marking.marking_type === 'dynamics' && 'Times New Roman',
-          }}
-        >
-          {marking.content}
-        </div>
-      )}
-    </button>
+      <button
+        onClick={handleClick}
+        onContextMenu={handleClick}
+        ref={markingRef}
+        className="outline-none focus:outline-none whitespace-nowrap"
+        style={{
+          touchAction: 'none',
+          paddingLeft: '30px',
+          paddingRight: '30px',
+          paddingTop: '15px',
+          paddingBottom: '15px',
+          transform: `rotate(${rotation}deg) scale(${scale})`,
+        }}
+      >
+        {marking.marking_type === 'shapes' ? (
+          <ShapeMarking marking={marking} />
+        ) : (
+          <div
+            className={classNames(
+              'text-center',
+              marking.marking_type === 'dynamics' && 'font-bold italic'
+            )}
+            style={{
+              fontSize: '60px',
+              paddingLeft: '10px',
+              paddingRight: '10px',
+              fontFamily:
+                marking.marking_type === 'dynamics' && 'Times New Roman',
+            }}
+          >
+            {marking.content}
+          </div>
+        )}
+      </button>
+      <MarkingOptionsPopover
+        onDelete={() =>
+          deleteMarking({ markingId: marking.id, songId: song.id })
+        }
+        onClose={() => setIsContextMenuVisible(false)}
+        isOpen={isContextMenuVisible}
+      />
+    </span>
   );
 }

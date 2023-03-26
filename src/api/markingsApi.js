@@ -22,4 +22,13 @@ export default class MarkingsApi {
       }
     );
   }
+
+  static delete(songId, markingId) {
+    return api().delete(
+      `/songs/${songId}/markings/${markingId}?team_id=${getTeamId()}`,
+      {
+        headers: constructAuthHeaders(),
+      }
+    );
+  }
 }
