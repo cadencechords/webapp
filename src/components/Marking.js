@@ -74,9 +74,6 @@ export default function Marking({ marking, song, onDeleted }) {
       },
       drag: {
         delay: true,
-        bounds: {
-          left: -40 * scale,
-        },
       },
     }
   );
