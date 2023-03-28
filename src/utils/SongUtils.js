@@ -84,7 +84,7 @@ export function html(song, onLineDoubleClick) {
           let tokens = line.split(/(\s+)/);
           tokens = tokens.map((token, index) =>
             isChord(token) ? (
-              <span key={index} style={chordStyles} className="relative">
+              <span key={index} style={chordStyles} className="relative z-10">
                 {token}
                 {song.format.highlight_color && (
                   <span

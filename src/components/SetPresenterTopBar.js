@@ -28,7 +28,7 @@ export default function SetPresenterTopBar({
   }
 
   return (
-    <nav className="px-1 py-2 border-b dark:border-0 bg-gray-50 dark:bg-dark-gray-800">
+    <nav className="relative z-30 px-1 py-2 border-b dark:border-0 bg-gray-50 dark:bg-dark-gray-800">
       <div className="max-w-3xl mx-auto flex-between">
         <Link to={`/sets/${id}`}>
           <Button variant="icon" size="md" color="gray">

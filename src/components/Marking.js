@@ -46,7 +46,6 @@ export default function Marking({ marking, song, onDeleted }) {
       onDrag: ({ offset: [newX, newY] }) => {
         const calculatedX = newX + initialCoordinates.x;
         const calculatedY = newY + initialCoordinates.y;
-
         setCoordinates({ x: calculatedX, y: calculatedY });
       },
       onDragEnd: () => handleSaveUpdates(coordinates),
@@ -75,13 +74,16 @@ export default function Marking({ marking, song, onDeleted }) {
       },
       drag: {
         delay: true,
+        bounds: {
+          left: -40 * scale,
+        },
       },
     }
   );
 
   return (
     <span
-      className="absolute"
+      className="absolute z-20"
       style={{ transform: `translate(${coordinates.x}px, ${coordinates.y}px)` }}
     >
       <button
@@ -103,7 +105,7 @@ export default function Marking({ marking, song, onDeleted }) {
         ) : (
           <div
             className={classNames(
-              'text-center',
+              'text-center leading-none',
               marking.marking_type === 'dynamics' && 'font-bold italic'
             )}
             style={{
