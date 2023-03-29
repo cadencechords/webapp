@@ -21,7 +21,7 @@ export default function Modal({ open, onClose, children, headerRight }) {
         </StyledDialog>
       )}
       {!isSm && (
-        <BottomSheet open={open} onDismiss={onClose}>
+        <BottomSheet open={open} onDismiss={onClose} className="relative z-50">
           <div className="p-3 pt-0">
             <div className="px-3 mb-4 flex-between">
               <Button variant="icon" size="md" onClick={onClose} tabIndex={1}>

@@ -149,6 +149,12 @@ const dynamicOptions = [
   'mezzo forte',
   'forte',
   'fortissimo',
+  'crescendo',
+  'cresc',
+  'decrescendo',
+  'decresc',
+  'diminuendo',
+  'dim',
 ];
 
 const volumeOptions = [

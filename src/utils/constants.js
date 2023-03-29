@@ -1,7 +1,10 @@
 import {
   BlockArrow,
   BoldArrow,
+  Crescendo,
+  Decrescendo,
   NarrowArrow,
+  RoundedArrow,
   ShortArrow,
 } from '../icons/markings';
 
@@ -65,4 +68,7 @@ export const shapeOptions = {
   'bold-arrow': BoldArrow,
   'short-arrow': ShortArrow,
   'narrow-arrow': NarrowArrow,
+  'rounded-arrow': RoundedArrow,
+  crescendo: Crescendo,
+  decrescendo: Decrescendo,
 };
