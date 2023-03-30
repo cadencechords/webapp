@@ -55,7 +55,7 @@ export function hasAnyKeysSet(song) {
   return song.original_key || song.transposed_key || song.capo?.capo_key;
 }
 
-export function html(song, onLineDoubleClick) {
+export function html(song) {
   let content = song?.content;
   if (content && song?.format) {
     if (song.roadmap?.length > 0 && song.show_roadmap)
@@ -66,20 +66,17 @@ export function html(song, onLineDoubleClick) {
     let linesOfSong = content.split(/\r\n|\r|\n/);
 
     let htmlLines = linesOfSong.map((line, index) => {
-      if (isNewLine(line))
-        return (
-          <br
-            key={index}
-            onDoubleClick={() => onLineDoubleClick?.(line, index)}
-          />
-        );
+      if (isNewLine(line)) return <br key={index} />;
       else {
         let lineClasses = determineClassesForLine(line, song.format);
 
         if (isChordLine(line)) {
           let chordStyles = {};
-          if (song.format.chord_color)
-            chordStyles = { color: song.format.chord_color };
+          if (song.format.chord_color) {
+            chordStyles = {
+              color: determineChordColor(song.format),
+            };
+          }
 
           let tokens = line.split(/(\s+)/);
           tokens = tokens.map((token, index) =>
@@ -109,12 +106,7 @@ export function html(song, onLineDoubleClick) {
         }
 
         return (
-          <p
-            key={index}
-            className={lineClasses}
-            style={{ lineHeight: '1.5' }}
-            onDoubleClick={() => onLineDoubleClick?.(line, index)}
-          >
+          <p key={index} className={lineClasses} style={{ lineHeight: '1.5' }}>
             {line}
           </p>
         );
@@ -218,3 +210,28 @@ function isSectionTitle(line) {
   let lowercasedLine = line.toLowerCase();
   return SECTION_TITLE_REGEX.test(lowercasedLine);
 }
+
+function determineChordColor({ chord_color, highlight_color }) {
+  const isDarkTheme = localStorage.getItem('theme') === 'dark';
+  let highlightColor = highlight_color;
+  if (!highlight_color) {
+    highlightColor = transparent;
+  }
+
+  if (
+    (chord_color === white || chord_color === black) &&
+    isHighlightTransparent(highlightColor)
+  ) {
+    return isDarkTheme ? white : black;
+  }
+
+  return chord_color;
+}
+
+function isHighlightTransparent(highlight_color) {
+  return highlight_color.charAt(highlight_color.length - 2) === '0';
+}
+
+const white = 'rgba(255, 255, 255, 1)';
+const black = 'rgba(0, 0, 0, 1)';
+const transparent = 'rgba(255, 255, 255, 0)';
