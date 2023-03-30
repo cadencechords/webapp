@@ -234,6 +234,6 @@ function isHighlightTransparent(highlight_color) {
   return highlight_color.charAt(highlight_color.length - 2) === '0';
 }
 
-const white = 'rgba(255, 255, 255, 1)';
-const black = 'rgba(0, 0, 0, 1)';
-const transparent = 'rgba(255, 255, 255, 0)';
+const white = 'rgba(255,255,255,1)';
+const black = 'rgba(0,0,0,1)';
+const transparent = 'rgba(255,255,255,0)';
