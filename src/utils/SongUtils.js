@@ -213,13 +213,15 @@ function isSectionTitle(line) {
 
 function determineChordColor({ chord_color, highlight_color }) {
   const isDarkTheme = localStorage.getItem('theme') === 'dark';
+  const normalizedChordColor = chord_color.replace(/ /g, '');
+
   let highlightColor = highlight_color;
   if (!highlight_color) {
     highlightColor = transparent;
   }
 
   if (
-    (chord_color === white || chord_color === black) &&
+    (normalizedChordColor === white || normalizedChordColor === black) &&
     isHighlightTransparent(highlightColor)
   ) {
     return isDarkTheme ? white : black;
