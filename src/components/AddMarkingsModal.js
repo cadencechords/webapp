@@ -132,6 +132,17 @@ function ShapeOptionsPanel({ onAddMarking }) {
           <ShapeSvg className="w-12 h-12 text-black dark:text-white" />
         </button>
       ))}
+      {symbolOptions.map(option => (
+        <button
+          className={classNames(defaultOptionClasses, 'text-4xl')}
+          key={option}
+          onClick={() =>
+            onAddMarking({ content: option, markingType: 'symbols' })
+          }
+        >
+          {option}
+        </button>
+      ))}
     </Tab.Panel>
   );
 }
@@ -179,6 +190,8 @@ const roadmapOptions = [
 ];
 
 const singerOptions = ['UNISON', 'HARMONY', 'SOLO', 'LEAD SINGER', 'EVERYONE'];
+
+const symbolOptions = ['{', '}', '[', ']', '(', ')'];
 
 const defaultOptionClasses =
   'h-24 overflow-hidden text-lg whitespace-nowrap overflow-ellipsis dark:hover:bg-dark-gray-600 hover:bg-gray-100 rounded-lg focus:bg-gray-100 dark:focus:bg-dark-gray-600 p-2';
