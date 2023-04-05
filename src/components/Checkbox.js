@@ -1,12 +1,27 @@
 import CheckIcon from '@heroicons/react/solid/CheckIcon';
 import PropTypes from 'prop-types';
+import { useRef } from 'react';
 
-export default function Checkbox({ color, checked, onChange, className, id }) {
+export default function Checkbox({
+  color,
+  checked,
+  onChange,
+  className,
+  id,
+  standAlone = true,
+}) {
+  const ref = useRef();
+
+  function handleClick() {
+    ref.current.click();
+  }
+
   return (
     <>
       <input
+        ref={ref}
         type="checkbox"
-        className="hidden"
+        className="absolute w-5 h-5 opacity-0"
         readOnly
         checked={checked}
         onChange={() => onChange(!checked)}
@@ -20,7 +35,7 @@ export default function Checkbox({ color, checked, onChange, className, id }) {
             ? BACKGROUND_COLORS[color]
             : ' border border-gray-300 dark:border-dark-gray-400 '
         } ${className}`}
-        onClick={() => onChange(!checked)}
+        onClick={standAlone ? handleClick : null}
       >
         {checked && <CheckIcon className="w-4 h-4 font-semibold text-white" />}
       </button>

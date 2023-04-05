@@ -80,6 +80,8 @@ export const selectTeamId = state => state?.auth.teamId;
 export const selectCurrentUser = state => state.auth.currentUser;
 export const selectCurrentTeam = state => state.auth.currentTeam;
 export const selectCurrentMember = state => {
+  if (!state.auth.currentUser.role) return null;
+
   let permissions = state.auth.currentUser.role?.permissions?.map(
     permission => permission.name
   );

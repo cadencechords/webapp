@@ -6,7 +6,14 @@ import useBreakPoints from '../hooks/useBreakPoints';
 import Button from './Button';
 import XIcon from '@heroicons/react/outline/XIcon';
 
-export default function Modal({ open, onClose, children, headerRight }) {
+export default function Modal({
+  open,
+  onClose,
+  children,
+  headerRight,
+  dialogSize = 'xl',
+  title,
+}) {
   const { isSm } = useBreakPoints();
   return (
     <>
@@ -15,7 +22,8 @@ export default function Modal({ open, onClose, children, headerRight }) {
           borderedTop={false}
           onCloseDialog={onClose}
           open={open}
-          size="xl"
+          size={dialogSize}
+          title={title}
         >
           {children}
         </StyledDialog>

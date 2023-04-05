@@ -21,7 +21,7 @@ import SetlistDetailPage from '../pages/SetlistDetailPage';
 import SetlistsIndexPage from '../pages/SetlistsIndexPage';
 import Sidenav from './Sidenav';
 import SongDetailPage from '../pages/SongDetailPage';
-import SongImportSourcesIndexPage from '../pages/SongImportSourcesIndexPage';
+import ImportSongsPage from '../pages/ImportSongsPage';
 import SongsIndexPage from '../pages/SongsIndexPage';
 import TeamDetailPage from '../pages/TeamDetailPage';
 import EventFormProvider from '../contexts/EventFormProvider';
@@ -30,7 +30,9 @@ import { selectCurrentMember } from '../store/authSlice';
 import { MANAGE_BILLING } from '../utils/constants';
 import AccountAppearancePage from '../pages/AccountAppearancePage';
 
-const PcoSongsIndexPage = lazy(() => import('../pages/PcoSongsIndexPage'));
+const PlanningCenterSongsPage = lazy(() =>
+  import('../pages/PlanningCenterSongsPage')
+);
 const RoleDetailPage = lazy(() => import('../pages/RoleDetailPage'));
 const RolesIndexPage = lazy(() => import('../pages/RolesIndexPage'));
 const CalendarPage = lazy(() => import('../pages/CalendarPage'));
@@ -44,6 +46,8 @@ const BillingPage = lazy(() => import('../pages/BillingPage'));
 
 export default function Content() {
   const currentMember = useSelector(selectCurrentMember);
+
+  if (!currentMember) return null;
 
   return (
     <>
@@ -69,16 +73,16 @@ export default function Content() {
           </Route>
           <Suspense fallback={<PageLoading />}>
             <Route
-              path="/import/pco/songs"
+              path="/import/planning-center"
               exact
-              component={PcoSongsIndexPage}
+              component={PlanningCenterSongsPage}
             />
           </Suspense>
           <Route path="/import/pco_redirect" exact>
             <PcoRedirectPage />
           </Route>
           <Route path="/import" exact>
-            <SongImportSourcesIndexPage />
+            <ImportSongsPage />
           </Route>
           <Route path="/songs/:id" exact>
             <SongDetailPage />
