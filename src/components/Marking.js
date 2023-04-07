@@ -7,6 +7,7 @@ import {
 import classNames from 'classnames';
 import ShapeMarking from './ShapeMarking';
 import MarkingOptionsPopover from './MarkingOptionsPopover';
+import Draggable from 'react-draggable';
 
 export default function Marking({ marking, song, onDeleted }) {
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
@@ -15,10 +16,7 @@ export default function Marking({ marking, song, onDeleted }) {
     x: parseFloat(marking.x),
     y: parseFloat(marking.y),
   });
-  const [coordinates, setCoordinates] = useState({
-    x: parseFloat(marking.x),
-    y: parseFloat(marking.y),
-  });
+
   const [scale, setScale] = useState(parseFloat(marking.scale));
   const [rotation, setRotation] = useState(parseFloat(marking.rotation));
   const { run: updateMarking } = useUpdateMarking();
@@ -43,12 +41,6 @@ export default function Marking({ marking, song, onDeleted }) {
 
   useGesture(
     {
-      onDrag: ({ offset: [newX, newY] }) => {
-        const calculatedX = newX + initialCoordinates.x;
-        const calculatedY = newY + initialCoordinates.y;
-        setCoordinates({ x: calculatedX, y: calculatedY });
-      },
-      onDragEnd: () => handleSaveUpdates(coordinates),
       onPinch: ({ offset: [s, newRotation], memo }) => {
         const newScale = 1 + s / 40;
         if (newScale >= 0.2 && newScale <= 6) {
@@ -72,58 +64,67 @@ export default function Marking({ marking, song, onDeleted }) {
       eventOptions: {
         passive: false,
       },
-      drag: {
-        delay: true,
-      },
     }
   );
 
   return (
-    <span
-      className="absolute z-20"
-      style={{ transform: `translate(${coordinates.x}px, ${coordinates.y}px)` }}
+    <Draggable
+      defaultPosition={initialCoordinates}
+      onStop={(_e, data) => handleSaveUpdates({ x: data.x, y: data.y })}
     >
-      <button
-        onClick={handleClick}
-        onContextMenu={handleClick}
-        ref={markingRef}
-        className="outline-none focus:outline-none whitespace-nowrap"
-        style={{
-          touchAction: 'none',
-          paddingLeft: '30px',
-          paddingRight: '30px',
-          paddingTop: '15px',
-          paddingBottom: '15px',
-          transform: `rotate(${rotation}deg) scale(${scale})`,
-        }}
-      >
+      <span className="absolute z-20">
         {marking.marking_type === 'shapes' ? (
-          <ShapeMarking marking={marking} />
+          <div
+            onClick={handleClick}
+            onContextMenu={handleClick}
+            style={{
+              paddingLeft: '40px',
+              paddingRight: '40px',
+              paddingTop: '15px',
+              paddingBottom: '15px',
+            }}
+          >
+            <ShapeMarking
+              marking={marking}
+              ref={markingRef}
+              style={{
+                transform: `rotate(${rotation}deg) scale(${scale})`,
+                touchAction: 'none',
+              }}
+            />
+          </div>
         ) : (
           <div
+            onClick={handleClick}
+            ref={markingRef}
+            onContextMenu={handleClick}
             className={classNames(
-              'text-center leading-none',
+              'whitespace-nowrap text-center leading-none',
               marking.marking_type === 'dynamics' && 'font-bold italic'
             )}
             style={{
+              touchAction: 'none',
+              paddingLeft: '40px',
+              paddingRight: '40px',
+              paddingTop: '15px',
+              paddingBottom: '15px',
               fontSize: '60px',
-              paddingLeft: '10px',
-              paddingRight: '10px',
               fontFamily:
                 marking.marking_type === 'dynamics' && 'Times New Roman',
+              transform: `rotate(${rotation}deg) scale(${scale})`,
             }}
           >
             {marking.content}
           </div>
         )}
-      </button>
-      <MarkingOptionsPopover
-        onDelete={() =>
-          deleteMarking({ markingId: marking.id, songId: song.id })
-        }
-        onClose={() => setIsContextMenuVisible(false)}
-        isOpen={isContextMenuVisible}
-      />
-    </span>
+        <MarkingOptionsPopover
+          onDelete={() =>
+            deleteMarking({ markingId: marking.id, songId: song.id })
+          }
+          onClose={() => setIsContextMenuVisible(false)}
+          isOpen={isContextMenuVisible}
+        />
+      </span>
+    </Draggable>
   );
 }

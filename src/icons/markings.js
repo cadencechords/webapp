@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-export function BlockArrow({ className, style }) {
+const BlockArrow = forwardRef(({ className, style }, ref) => {
   return (
     <svg
+      ref={ref}
       width="60"
       height="60"
       viewBox="0 0 60 60"
@@ -16,11 +17,12 @@ export function BlockArrow({ className, style }) {
       />
     </svg>
   );
-}
+});
 
-export function BoldArrow({ className, style }) {
+const BoldArrow = forwardRef(({ className, style }, ref) => {
   return (
     <svg
+      ref={ref}
       width="60"
       height="60"
       viewBox="0 0 60 60"
@@ -34,11 +36,12 @@ export function BoldArrow({ className, style }) {
       />
     </svg>
   );
-}
+});
 
-export function RoundedArrow({ className, style }) {
+const RoundedArrow = forwardRef(({ className, style }, ref) => {
   return (
     <svg
+      ref={ref}
       width="60"
       height="60"
       viewBox="0 0 60 60"
@@ -52,11 +55,12 @@ export function RoundedArrow({ className, style }) {
       />
     </svg>
   );
-}
+});
 
-export function ShortArrow({ className, style }) {
+const ShortArrow = forwardRef(({ className, style }, ref) => {
   return (
     <svg
+      ref={ref}
       width="60"
       height="60"
       viewBox="0 0 60 60"
@@ -70,11 +74,12 @@ export function ShortArrow({ className, style }) {
       />
     </svg>
   );
-}
+});
 
-export function NarrowArrow({ className, style }) {
+const NarrowArrow = forwardRef(({ className, style }, ref) => {
   return (
     <svg
+      ref={ref}
       width="60"
       height="60"
       viewBox="0 0 60 60"
@@ -90,11 +95,12 @@ export function NarrowArrow({ className, style }) {
       </g>
     </svg>
   );
-}
+});
 
-export function Crescendo({ className, style }) {
+const Crescendo = forwardRef(({ className, style }, ref) => {
   return (
     <svg
+      ref={ref}
       width="60"
       height="60"
       viewBox="0 0 60 60"
@@ -110,7 +116,7 @@ export function Crescendo({ className, style }) {
           x2="71.8182"
           y2="11.7301"
           stroke="currentColor"
-          stroke-width="5"
+          strokeWidth="5"
         />
         <line
           x1="-5.13251"
@@ -118,16 +124,17 @@ export function Crescendo({ className, style }) {
           x2="73.3977"
           y2="44.7101"
           stroke="currentColor"
-          stroke-width="5"
+          strokeWidth="5"
         />
       </g>
     </svg>
   );
-}
+});
 
-export function Decrescendo({ className, style }) {
+const Decrescendo = forwardRef(({ className, style }, ref) => {
   return (
     <svg
+      ref={ref}
       width="60"
       height="60"
       viewBox="0 0 60 60"
@@ -143,7 +150,7 @@ export function Decrescendo({ className, style }) {
           y2="-2.5"
           transform="matrix(-0.97437 -0.224951 -0.224951 0.97437 65.6815 31.6749)"
           stroke="currentColor"
-          stroke-width="5"
+          strokeWidth="5"
         />
         <line
           y1="-2.5"
@@ -151,9 +158,19 @@ export function Decrescendo({ className, style }) {
           y2="-2.5"
           transform="matrix(-0.981627 0.190809 0.190809 0.981627 65.5141 31.4086)"
           stroke="currentColor"
-          stroke-width="5"
+          strokeWidth="5"
         />
       </g>
     </svg>
   );
-}
+});
+
+export {
+  BlockArrow,
+  ShortArrow,
+  NarrowArrow,
+  Crescendo,
+  Decrescendo,
+  RoundedArrow,
+  BoldArrow,
+};
