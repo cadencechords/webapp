@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import Button from './Button';
 import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
+import PlusIcon from '@heroicons/react/outline/PlusIcon';
+import MinusIcon from '@heroicons/react/outline/MinusIcon';
 import Toggle from './Toggle';
 import { isMinor } from '../utils/SongUtils';
-import { MAJOR_KEYS, MINOR_KEYS } from '../utils/music';
+import {
+  MAJOR_KEYS,
+  MINOR_KEYS,
+  getHalfStepHigher,
+  getHalfStepLower,
+} from '../utils/music';
 import classNames from 'classnames';
 import useUpdateSong from '../hooks/api/songs.hooks';
 
@@ -28,6 +35,24 @@ export default function TransposeKeySheet({
 
   function handleSave() {
     saveSongUpdates({ id: song.id, updates: { transposed_key: updatedKey } });
+  }
+
+  function handleTransposeUpHalfStep() {
+    let halfStepHigher = getHalfStepHigher(
+      song.transposed_key || song.original_key
+    );
+
+    onUpdateSong({ transposed_key: halfStepHigher });
+    setUpdatedKey(halfStepHigher);
+  }
+
+  function handleTransposeDownHalfStep() {
+    let halfStepLower = getHalfStepLower(
+      song.transposed_key || song.original_key
+    );
+
+    onUpdateSong({ transposed_key: halfStepLower });
+    setUpdatedKey(halfStepLower);
   }
 
   return (
@@ -65,6 +90,15 @@ export default function TransposeKeySheet({
             {key}
           </button>
         ))}
+      </div>
+
+      <div className="flex items-center justify-end gap-4 my-4">
+        <Button variant="icon" onClick={handleTransposeUpHalfStep}>
+          <PlusIcon className="w-5 h-5" />
+        </Button>
+        <Button variant="icon" onClick={handleTransposeDownHalfStep}>
+          <MinusIcon className="w-5 h-5" />
+        </Button>
       </div>
 
       {updatedKey && (
