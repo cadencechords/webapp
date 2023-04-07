@@ -9,7 +9,7 @@ const ShapeMarking = forwardRef(({ marking, style, className }, ref) => {
   return (
     <ShapeSvg
       ref={ref}
-      style={{ height: '100px', width: '100px', ...style }}
+      style={{ height: '60px', width: '60px', ...style }}
       className={classNames('text-black dark:text-white', className)}
     />
   );
