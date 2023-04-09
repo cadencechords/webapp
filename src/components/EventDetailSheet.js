@@ -13,8 +13,15 @@ import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import useEventForm from '../hooks/forms/useEventForm';
+import PlaylistIcon from '../icons/PlaylistIcon';
+import useSetlist from '../hooks/api/useSetlist';
+import { pluralize } from '../utils/StringUtils';
 
 export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
+  const { data: setlist } = useSetlist(event?.setlist_id, {
+    enabled: !!event?.setlist_id,
+  });
+
   const currentMember = useSelector(selectCurrentMember);
   const { setForm } = useEventForm();
 
@@ -78,6 +85,28 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
               </div>
             )}
           </div>
+
+          {event.setlist && (
+            <>
+              <div className="flex items-start justify-end col-span-1">
+                <PlaylistIcon className="flex-shrink-0 w-6 h-6 text-gray-600 dark:text-dark-gray-200" />
+              </div>
+              <Link
+                className="flex flex-col items-start justify-start col-span-9"
+                to={`/sets/${event.setlist.id}`}
+              >
+                <span className="hover:underline">{event.setlist.name}</span>
+                <span className="text-sm subtext">
+                  {setlist.songs && (
+                    <>
+                      {setlist.songs?.length}{' '}
+                      {pluralize('song', setlist.songs.length)}
+                    </>
+                  )}
+                </span>
+              </Link>
+            </>
+          )}
         </div>
         <div className="flex justify-end mt-4">
           {currentMember?.can(EDIT_EVENTS) && (

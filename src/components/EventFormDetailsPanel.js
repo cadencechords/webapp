@@ -34,6 +34,7 @@ export default function EventFormDetailsPanel() {
             placeholder="Date"
             className="h-10"
             type="date"
+            id="date-picker"
           />
         </div>
 
