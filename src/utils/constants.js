@@ -11,6 +11,7 @@ import {
 export const ADD_SONGS = 'Add songs';
 export const DELETE_SONGS = 'Delete songs';
 export const EDIT_SONGS = 'Edit songs';
+export const EXPORT_SONGS = 'Export songs';
 
 export const ADD_BINDERS = 'Add binders';
 export const DELETE_BINDERS = 'Delete binders';

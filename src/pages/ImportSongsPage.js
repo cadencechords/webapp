@@ -39,8 +39,9 @@ export default function ImportSongsPage() {
             Upload your OnSong library and choose which songs you'd like to
             import.
           </ImportSourceCard>
-          {/* <ImportSourceCard
+          <ImportSourceCard
             title="Cadence"
+            to="/import/cadence"
             image={
               <img
                 src="/apple-touch-icon.png"
@@ -52,7 +53,7 @@ export default function ImportSongsPage() {
             }
           >
             Import songs from other teams you're on in Cadence
-          </ImportSourceCard> */}
+          </ImportSourceCard>
           <ImportSourceCard
             title="File"
             to="/import/files"

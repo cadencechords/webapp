@@ -83,6 +83,18 @@ export default function RolePermissions({ role, onPermissionToggled }) {
             handlePermissionToggled('View songs', checkedValue)
           }
         />
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('Export songs')}
+          name="Export songs"
+          description="Allow user to export songs from this team to another team"
+          onChange={checkedValue =>
+            handlePermissionToggled('Export songs', checkedValue)
+          }
+        />
       </div>
 
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">

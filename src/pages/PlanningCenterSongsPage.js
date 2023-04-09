@@ -165,7 +165,7 @@ function SaveButton({ children, loading, onClick }) {
         {children}
       </Button>
       <Button
-        className="fixed hidden w-32 bottom-8 right-8 md:inline-block whitespace-nowrap"
+        className="fixed hidden w-40 bottom-8 right-8 md:inline-block whitespace-nowrap"
         loading={loading}
         onClick={onClick}
       >

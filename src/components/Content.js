@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { MANAGE_BILLING } from '../utils/constants';
 import AccountAppearancePage from '../pages/AccountAppearancePage';
+import ImportCadenceSongsPage from '../pages/ImportCadenceSongsPage';
 
 const PlanningCenterSongsPage = lazy(() =>
   import('../pages/PlanningCenterSongsPage')
@@ -78,6 +79,9 @@ export default function Content() {
               component={PlanningCenterSongsPage}
             />
           </Suspense>
+          <Route path="/import/cadence" exact>
+            <ImportCadenceSongsPage />
+          </Route>
           <Route path="/import/pco_redirect" exact>
             <PcoRedirectPage />
           </Route>
