@@ -26,11 +26,16 @@ export default function ImportCadenceSongsPage() {
     setCurrentStep(0);
   }
 
+  function handleChooseTeam(team) {
+    setSelectedTeam(team);
+    setSelectedSongs([]);
+  }
+
   return (
     <div className="container max-w-2xl mx-auto mt-10">
       <ImportCadenceSongsChooseTeamStep
         selectedTeam={selectedTeam}
-        setSelectedTeam={setSelectedTeam}
+        setSelectedTeam={handleChooseTeam}
         currentStep={currentStep}
         onGoToStep={setCurrentStep}
       />
