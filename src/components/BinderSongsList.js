@@ -1,9 +1,7 @@
 import Button from './Button';
 import { EDIT_BINDERS } from '../utils/constants';
 import NoDataMessage from './NoDataMessage';
-import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon';
 import SearchSongsDialog from './SearchSongsDialog';
-import SectionTitle from './SectionTitle';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import useDialog from '../hooks/useDialog';
