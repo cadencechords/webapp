@@ -13,8 +13,8 @@ export default function CalendarHeader({
   return (
     <>
       <div className="mb-4 flex-between">
-        <div className="gap-2 flex-center">
-          <h1 className="w-48 text-2xl font-semibold">{title}</h1>
+        <div className="flex-1 gap-2 mr-2 flex-center">
+          <h1 className="flex-grow text-2xl font-semibold">{title}</h1>
           <Button
             variant="icon"
             size="md"
@@ -29,7 +29,7 @@ export default function CalendarHeader({
         </div>
         {canCreate && (
           <Link to="/calendar/new">
-            <Button>
+            <Button className="whitespace-nowrap">
               <div className="flex-center">
                 <PlusIcon className="w-4 h-4 mr-1" />
                 New event
