@@ -5,6 +5,7 @@ import KeyOptionsSheet from './KeyOptionsSheet';
 import classNames from 'classnames';
 import TransposeKeySheet from './TransposeKeySheet';
 import CapoKeySheet from './CapoKeySheet';
+import { determineCapoNumber } from '../utils/capo';
 
 export default function KeyOptionsPopover({ song, onUpdateSong }) {
   const [sheet, setSheet] = useState('options');
@@ -21,15 +22,28 @@ export default function KeyOptionsPopover({ song, onUpdateSong }) {
     return song.original_key;
   }
 
+  function getNonCapoKey() {
+    if (song.show_transposed && song.transposed_key) {
+      return song.transposed_key;
+    }
+
+    return song.original_key;
+  }
+
   return (
     <StyledPopover
       position="bottom-end"
       button={
         <Button
-          className="w-10 mr-2 h-9"
-          style={{ borderRadius: '10px', padding: 0 }}
+          className="gap-2 mr-2 h-9 flex-center"
+          style={{ borderRadius: '12px', padding: '0 10px', minWidth: '40px' }}
         >
           {getDisplayKey()}
+          {song.capo && song.show_capo && (
+            <span className="text-xs">
+              {determineCapoNumber(getNonCapoKey(), song.capo.capo_key)}
+            </span>
+          )}
         </Button>
       }
     >

@@ -9,15 +9,25 @@ import { isMinor, parseNote } from './SongUtils';
 export function determineCapos(currentKey) {
   let keys = isMinor(currentKey) ? MINOR_KEYS : MAJOR_KEYS;
 
-  let chromaticScale = buildChromaticScale(parseNote(currentKey));
-
   let capoedKeys = keys.map(key => ({
     capoKey: key,
-    capoNumber:
-      12 - semitonesAway(parseNote(currentKey), parseNote(key), chromaticScale),
+    capoNumber: determineCapoNumber(currentKey, key),
   }));
 
   return splitByCommonKeys(capoedKeys);
+}
+
+export function determineCapoNumber(currentKey, capoKey) {
+  let chromaticScale = buildChromaticScale(parseNote(currentKey));
+  return (
+    (12 -
+      semitonesAway(
+        parseNote(currentKey),
+        parseNote(capoKey),
+        chromaticScale
+      )) %
+    12
+  );
 }
 
 function splitByCommonKeys(capoOptions) {
