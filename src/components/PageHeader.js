@@ -17,7 +17,6 @@ export default function PageHeader({
       <div className="mb-2 sm:hidden h-14">
         <MobileHeader
           title={title}
-          className="shadow-inner"
           onAdd={onHeaderRightClick}
           canAdd={headerRightVisible}
         />
