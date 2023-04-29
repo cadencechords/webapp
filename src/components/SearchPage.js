@@ -55,7 +55,7 @@ export default function SearchPage() {
   return (
     <>
       <PageTitle title="Search" />
-      <div className="fixed left-0 w-full bottom-12 md:bottom-0">
+      <div className="fixed left-0 w-full bottom-14 md:bottom-0">
         <BarLoader
           color="#1D4ED8"
           css="display: block"

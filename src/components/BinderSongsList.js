@@ -33,20 +33,12 @@ export default function BinderSongsList({ binder }) {
 
   return (
     <>
-      <div className="flex-between">
-        <SectionTitle title="Songs in this binder" />
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Songs
         {currentMember.can(EDIT_BINDERS) && (
-          <div className="hidden sm:block">
-            <Button
-              variant="open"
-              size="xs"
-              onClick={showSearch}
-              bold
-              color="blue"
-            >
-              Add Songs
-            </Button>
-          </div>
+          <Button size="xs" variant="open" onClick={showSearch}>
+            Add Songs
+          </Button>
         )}
       </div>
 
@@ -70,21 +62,6 @@ export default function BinderSongsList({ binder }) {
         onCloseDialog={hideSearch}
         binder={binder}
       />
-      <Button
-        variant="open"
-        className="fixed left-0 h-12 bg-white rounded-none rounded-b-none dark:bg-dark-gray-700 bottom-12 flex-center sm:hidden"
-        full
-        style={{
-          boxShadow: 'rgba(0, 0, 0, 0.1) 0px -5px 17px 0px',
-          borderRadius: '12px',
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
-        }}
-        onClick={showSearch}
-      >
-        <PlusCircleIcon className="w-4 h-4 mr-2" />
-        Add more songs
-      </Button>
     </>
   );
 }

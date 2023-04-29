@@ -423,14 +423,7 @@ export default function SongDetailPage() {
         </div>
       </div>
       {currentMember.can(EDIT_SONGS) && !isEmpty(pendingUpdates) && (
-        <Button
-          bold
-          onClick={handleSaveChanges}
-          loading={saving}
-          className="fixed bottom-16 right-4 md:right-6 md:bottom-6"
-        >
-          Save Changes
-        </Button>
+        <SaveButton onSave={handleSaveChanges} isSaving={saving} />
       )}
       <SongTabs
         song={song}
@@ -450,5 +443,28 @@ export default function SongDetailPage() {
         onThemesAdded={handleThemesAdded}
       />
     </div>
+  );
+}
+
+function SaveButton({ isSaving, onSave }) {
+  return (
+    <>
+      <Button
+        className="fixed left-0 right-0 z-30 md:hidden bottom-14"
+        style={{ borderRadius: 0 }}
+        loading={isSaving}
+        onClick={onSave}
+      >
+        Save Changes
+      </Button>
+      <Button
+        className="fixed hidden w-36 bottom-8 right-8 md:inline-block whitespace-nowrap"
+        loading={isSaving}
+        onClick={onSave}
+        size="sm"
+      >
+        Save Changes
+      </Button>
+    </>
   );
 }

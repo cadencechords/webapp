@@ -157,7 +157,7 @@ function SaveButton({ children, loading, onClick }) {
   return (
     <>
       <Button
-        className="fixed left-0 right-0 md:hidden bottom-12"
+        className="fixed left-0 right-0 md:hidden bottom-14"
         style={{ borderRadius: 0 }}
         loading={loading}
         onClick={onClick}

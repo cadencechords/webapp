@@ -94,16 +94,35 @@ export default function BinderDetailPage() {
 
       {currentMember.can(EDIT_BINDERS) && !isEmpty(updates) && (
         <div className="fixed shadow-md bottom-8 right-8">
-          <Button
-            onClick={() => updateBinder({ id, updates })}
-            loading={isSaving}
-            size="sm"
-            className="w-36"
-          >
-            Save Changes
-          </Button>
+          <SaveButton
+            onSave={() => updateBinder({ id, updates })}
+            isSaving={isSaving}
+          />
         </div>
       )}
     </div>
+  );
+}
+
+function SaveButton({ isSaving, onSave }) {
+  return (
+    <>
+      <Button
+        className="fixed left-0 right-0 md:hidden bottom-14"
+        style={{ borderRadius: 0 }}
+        loading={isSaving}
+        onClick={onSave}
+      >
+        Save Changes
+      </Button>
+      <Button
+        className="fixed hidden w-36 bottom-8 right-8 md:inline-block whitespace-nowrap"
+        loading={isSaving}
+        onClick={onSave}
+        size="sm"
+      >
+        Save Changes
+      </Button>
+    </>
   );
 }
