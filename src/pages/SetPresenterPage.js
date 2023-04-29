@@ -149,6 +149,7 @@ function SetPresenter() {
         setlist.songs.map(song => ({
           ...song,
           show_transposed: Boolean(song.transposed_key),
+          show_capo: Boolean(song.capo),
           show_roadmap: song.roadmap?.length > 0,
         }))
       );
