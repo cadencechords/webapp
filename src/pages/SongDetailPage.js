@@ -35,6 +35,7 @@ import { useCurrentUser } from '../hooks/api/currentUser.hooks';
 import Select from '../components/Select';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import FormatOptionLabel from '../components/FormatOptionLabel';
+import { determineCapoNumber } from '../utils/capo';
 
 export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -69,8 +70,16 @@ export default function SongDetailPage() {
         value: 'transposed',
         display: `Transposed (${song.transposed_key})`,
       });
-    if (song.capo?.capo_key)
-      options.push({ value: 'capo', display: `Capo (${song.capo.capo_key})` });
+    if (song.capo?.capo_key) {
+      const currentKey = song.transposed_key || song.original_key;
+      options.push({
+        value: 'capo',
+        display: `Capo ${determineCapoNumber(
+          currentKey,
+          song.capo.capo_key
+        )} (${song.capo.capo_key})`,
+      });
+    }
 
     if (options.length !== 0)
       options.push({ value: 'none', display: 'Hide chords' });

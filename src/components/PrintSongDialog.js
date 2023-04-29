@@ -9,6 +9,7 @@ import Select from './Select';
 import FormatOption from './FormatOption';
 import FormatOptionLabel from './FormatOptionLabel';
 import { FONT_OPTIONS, FONT_SIZES } from './FormatPanelGeneralOptions';
+import { determineCapoNumber } from '../utils/capo';
 
 export default function PrintSongDialog({
   song: initialSong,
@@ -77,8 +78,16 @@ export default function PrintSongDialog({
         value: 'transposed',
         display: `Transposed (${song.transposed_key})`,
       });
-    if (song.capo?.capo_key)
-      options.push({ value: 'capo', display: `Capo (${song.capo.capo_key})` });
+    if (song.capo?.capo_key) {
+      const currentKey = song.transposed_key || song.original_key;
+      options.push({
+        value: 'capo',
+        display: `Capo ${determineCapoNumber(
+          currentKey,
+          song.capo.capo_key
+        )} (${song.capo.capo_key})`,
+      });
+    }
 
     if (options.length !== 0)
       options.push({ value: 'none', display: 'Hide chords' });
