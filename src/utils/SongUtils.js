@@ -6,7 +6,7 @@ import { build, isChord, isChordLine } from '@cadencechords/chord-kit';
 
 const LINES_REGEX = new RegExp(/\r\n|\r|\n/);
 const SECTION_TITLE_REGEX = new RegExp(
-  '^(\\[)?(verse|chorus|interlude|prechorus|vamp|tag|outro|intro|break|pre chorus|bridge)( )*([0-9])*(:|])?( )*$'
+  '^(\\[)?(verse|chorus|interlude|refrain|prechorus|vamp|tag|outro|intro|break|pre chorus|bridge)( )*([0-9])*(:|])?( )*$'
 );
 
 export function isNewLine(line) {
