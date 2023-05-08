@@ -75,26 +75,15 @@ export default function useSongEditor() {
       }
     }
 
-    let createdFormat;
     if (editedFormat) {
       try {
-        if (song?.format.id) {
-          await FormatApi.updateOneById(song.format.id, editedFormat);
-        } else {
-          let newFormat = { ...editedFormat, song_id: song.id };
-          let { data } = await FormatApi.createOne(newFormat);
-          createdFormat = data;
-          setSong(previousSong => ({ ...previousSong, format: data }));
-        }
-
+        await FormatApi.updateSongFormat(song.id, editedFormat);
+        router.replace(`/songs/${song.id}/edit`, song);
         setEditedFormat(null);
       } catch (error) {
         reportError(error);
       }
     }
-    let updatedSong = createdFormat ? { ...song, format: createdFormat } : song;
-    router.replace(`/songs/${song.id}/edit`, updatedSong);
-
     setSaving(false);
   }
 
