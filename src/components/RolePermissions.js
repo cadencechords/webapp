@@ -440,6 +440,47 @@ export default function RolePermissions({ role, onPermissionToggled }) {
       </div>
 
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
+        Saved formats
+      </div>
+      <div>
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('Add default formats')}
+          name="Save default format"
+          description="User can save formats that can be applied to other songs, sets or the entire library"
+          onChange={checkedValue =>
+            handlePermissionToggled('Add default formats', checkedValue)
+          }
+        />
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('Edit default formats')}
+          name="Edit default format"
+          description="User can edit a saved format"
+          onChange={checkedValue =>
+            handlePermissionToggled('Edit default formats', checkedValue)
+          }
+        />
+        <Permission
+          checkable={
+            currentMember.can(EDIT_ROLES) &&
+            !(role?.is_admin || role?.is_member)
+          }
+          checked={isPermissionEnabled('Delete default formats')}
+          name="Delete default format"
+          description="User can delete a saved format"
+          onChange={checkedValue =>
+            handlePermissionToggled('Delete default formats', checkedValue)
+          }
+        />
+      </div>
+      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Billing permissions
       </div>
       <div>
