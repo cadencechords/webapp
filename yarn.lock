@@ -1108,10 +1108,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cadencechords/chord-kit@^1.0.15":
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@cadencechords/chord-kit/-/chord-kit-1.0.15.tgz#7d461729b2806b272b3703a8a12df26435f0f01a"
-  integrity sha512-8b7hclJnr4Gm3c4y4uFavlw4wKzXLIrUi7hw3Z0nvzk0o8e/Zq1JmgGz2balY3wgB8dnn7gVH7GR4gg9j/mj+w==
+"@cadencechords/chord-kit@^1.0.17":
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/@cadencechords/chord-kit/-/chord-kit-1.0.17.tgz#35c02ff94b0ea20a8034d4095614b1deb3acd73e"
+  integrity sha512-KFhJf6+wly1K6N1pdQlseRkbbTZNQ8U7zTCacRSS1ys5oBUb27Wv0uAvVDauAQG6gXwLzcJBM4iXiP4fJQ+ogA==
   dependencies:
     chord-transposer "^3.0.1"
     chordsheetjs "^7.16.0"
