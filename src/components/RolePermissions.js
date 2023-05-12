@@ -448,11 +448,11 @@ export default function RolePermissions({ role, onPermissionToggled }) {
             currentMember.can(EDIT_ROLES) &&
             !(role?.is_admin || role?.is_member)
           }
-          checked={isPermissionEnabled('Add default formats')}
-          name="Save default format"
+          checked={isPermissionEnabled('Add format presets')}
+          name="Save format preset"
           description="User can save formats that can be applied to other songs, sets or the entire library"
           onChange={checkedValue =>
-            handlePermissionToggled('Add default formats', checkedValue)
+            handlePermissionToggled('Add format presets', checkedValue)
           }
         />
         <Permission
@@ -460,11 +460,11 @@ export default function RolePermissions({ role, onPermissionToggled }) {
             currentMember.can(EDIT_ROLES) &&
             !(role?.is_admin || role?.is_member)
           }
-          checked={isPermissionEnabled('Edit default formats')}
-          name="Edit default format"
+          checked={isPermissionEnabled('Edit format presets')}
+          name="Edit format preset"
           description="User can edit a saved format"
           onChange={checkedValue =>
-            handlePermissionToggled('Edit default formats', checkedValue)
+            handlePermissionToggled('Edit format presets', checkedValue)
           }
         />
         <Permission
@@ -472,11 +472,11 @@ export default function RolePermissions({ role, onPermissionToggled }) {
             currentMember.can(EDIT_ROLES) &&
             !(role?.is_admin || role?.is_member)
           }
-          checked={isPermissionEnabled('Delete default formats')}
-          name="Delete default format"
+          checked={isPermissionEnabled('Delete format presets')}
+          name="Delete format preset"
           description="User can delete a saved format"
           onChange={checkedValue =>
-            handlePermissionToggled('Delete default formats', checkedValue)
+            handlePermissionToggled('Delete format presets', checkedValue)
           }
         />
       </div>
