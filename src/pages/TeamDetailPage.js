@@ -17,6 +17,7 @@ import { format } from '../utils/date';
 import { reportError } from '../utils/error';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import Badge from '../components/Badge';
+import FormatPresets from '../components/FormatPresets';
 
 export default function TeamDetailPage() {
   const currentTeam = useSelector(selectCurrentTeam);
@@ -87,53 +88,62 @@ export default function TeamDetailPage() {
 
   if (currentTeam && currentSubscription) {
     return (
-      <div className="flex flex-col items-center max-w-sm pt-4 mx-auto">
-        <ProfilePicture
-          url={currentTeam.image_url}
-          size="lg"
-          onClick={handleTeamImageClick}
-        />
-        <PageTitle
-          title={currentTeam.name}
-          align="center"
-          editable={currentMember.can(EDIT_TEAM)}
-          className="text-center"
-          onChange={handleNameChange}
-        />
-        {currentMember.can(EDIT_TEAM) && (
-          <>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageSelected}
-              className="hidden"
-              ref={inputRef}
-            />
-            <MobileProfilePictureMenu
-              open={showImageDialog}
-              onCloseDialog={() => setShowImageDialog(false)}
-              onOpenFileDialog={handleOpenFileDialog}
-              onDeleteImage={handleDeleteImage}
-            />
-          </>
-        )}
-        <div className="w-full text-gray-600 dark:text-dark-gray-200">
-          <div className="py-2 flex-between">
-            <div className="font-semibold">Created:</div>
-            {format(currentTeam.created_at, 'MMM D YYYY')}
-          </div>
-          <div className="py-2 flex-between">
-            <div className="font-semibold">Plan:</div>
-            <div>
-              {currentSubscription.status === 'trialing' && (
-                <Badge color="green" className="mr-2">
-                  Trialing
-                </Badge>
-              )}
-              {currentSubscription.plan_name}
+      <div className="flex flex-col items-center pt-4 mx-auto">
+        <div className="flex flex-col items-center w-full max-w-md">
+          <ProfilePicture
+            url={currentTeam.image_url}
+            size="lg"
+            onClick={handleTeamImageClick}
+          />
+          <PageTitle
+            title={currentTeam.name}
+            align="center"
+            editable={currentMember.can(EDIT_TEAM)}
+            className="text-center"
+            onChange={handleNameChange}
+          />
+          {currentMember.can(EDIT_TEAM) && (
+            <>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelected}
+                className="hidden"
+                ref={inputRef}
+              />
+              <MobileProfilePictureMenu
+                open={showImageDialog}
+                onCloseDialog={() => setShowImageDialog(false)}
+                onOpenFileDialog={handleOpenFileDialog}
+                onDeleteImage={handleDeleteImage}
+              />
+            </>
+          )}
+          <div className="w-full text-gray-600 dark:text-dark-gray-200">
+            <div className="py-2 flex-between">
+              <div className="font-semibold">Created:</div>
+              {format(currentTeam.created_at, 'MMM D YYYY')}
+            </div>
+            <div className="py-2 flex-between">
+              <div className="font-semibold">Plan:</div>
+              <div>
+                {currentSubscription.status === 'trialing' && (
+                  <Badge color="green" className="mr-2">
+                    Trialing
+                  </Badge>
+                )}
+                {currentSubscription.plan_name}
+              </div>
             </div>
           </div>
         </div>
+
+        {currentSubscription.isPro && (
+          <FormatPresets
+            defaultFormatPreset={currentTeam.default_format}
+            currentMember={currentMember}
+          />
+        )}
       </div>
     );
   } else {

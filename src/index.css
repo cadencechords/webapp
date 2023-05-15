@@ -89,4 +89,8 @@ button {
   .subtext {
     @apply text-gray-600 dark:text-dark-gray-200;
   }
+
+  .section-border {
+    @apply pt-3 mt-8 mb-3 border-t flex-between dark:border-dark-gray-600;
+  }
 }

@@ -35,4 +35,12 @@ export default class TeamApi {
       headers: constructAuthHeaders(),
     });
   }
+
+  static setDefaultFormat(formatPresetId) {
+    return axios.post(
+      `${TEAMS_URL}/${getTeamId()}/default_format`,
+      { format_preset_id: formatPresetId },
+      { headers: constructAuthHeaders() }
+    );
+  }
 }
