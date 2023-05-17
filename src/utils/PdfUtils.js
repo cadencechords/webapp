@@ -21,10 +21,14 @@ export function toPdf(song, showChords) {
     pdfLines = <Text></Text>;
   }
 
+  function getFontName(font) {
+    return isAllowedFont(font) ? font : undefined;
+  }
+
   let pdf = (
     <Document creator="Cadence" producer="Cadence" author="Cadence">
       <Page size="A4" style={PDF_STYLES}>
-        <View style={{ fontFamily: song.format.font }}>
+        <View style={{ fontFamily: getFontName() }}>
           <View style={{ marginBottom: '.25in', fontWeight: 'bold' }}>
             <Text>{song.name}</Text>
           </View>
@@ -71,7 +75,7 @@ function constructFontStyles(format) {
 }
 
 function constructNormalFontStyle(font) {
-  let importedFontSrc = FONT_IMPORTS[font].regular;
+  let importedFontSrc = FONT_IMPORTS[font]?.regular;
   return { src: importedFontSrc };
 }
 
