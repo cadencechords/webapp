@@ -7,6 +7,7 @@ import { html } from '../utils/SongUtils';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
 import Marking from './Marking';
+import Annotations from './Annotations';
 
 export default function SongsCarouselSlide({
   song,
@@ -73,6 +74,9 @@ export default function SongsCarouselSlide({
               onDeleted={handleMarkingDeleted}
             />
           ))}
+        {currentSubscription?.isPro && (
+          <Annotations annotations={song.annotations} />
+        )}
         <div id="song" className="pb-24 mr-0">
           {html(song)}
         </div>

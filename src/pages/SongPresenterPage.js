@@ -18,6 +18,7 @@ import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useCurrentUser } from '../hooks/api/currentUser.hooks';
 import AddMarkingsModal from '../components/AddMarkingsModal';
 import Marking from '../components/Marking';
+import Annotations from '../components/Annotations';
 
 export default function SongPresenterPage() {
   const id = useParams().id;
@@ -137,6 +138,9 @@ export default function SongPresenterPage() {
                   onDeleted={handleMarkingDeleted}
                 />
               ))}
+            {currentSubscription?.isPro && song.annotations?.length > 0 && (
+              <Annotations annotations={song.annotations} />
+            )}
             <div id="song" className="mr-0">
               {html(song)}
             </div>
