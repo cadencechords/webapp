@@ -39,6 +39,12 @@
   align-items: center;
 }
 
+.flex-around {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -121,4 +127,32 @@ button {
   src: local('Inter'), url(./fonts/Inter-Italic.woff2) format('woff2');
   font-weight: 400;
   font-style: italic;
+}
+
+.stroke-width .react-colorful__alpha,
+.color-picker .react-colorful__alpha,
+.color-picker .react-colorful__hue {
+  border-radius: 5px !important;
+  height: 18px;
+  margin-top: 10px;
+}
+
+.color-picker .react-colorful__saturation {
+  border-radius: 5px !important;
+  margin-top: 10px;
+}
+
+.stroke-width .react-colorful__hue,
+.stroke-width .react-colorful__saturation {
+  display: none;
+}
+
+.stroke-width .react-colorful {
+  height: auto;
+}
+
+.stroke-width .react-colorful__pointer,
+.color-picker .react-colorful__pointer {
+  width: 20px;
+  height: 20px;
 }

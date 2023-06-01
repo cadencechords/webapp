@@ -73,3 +73,8 @@ export const shapeOptions = {
   crescendo: Crescendo,
   decrescendo: Decrescendo,
 };
+
+export const performanceModes = {
+  PERFORM: 'perform',
+  ANNOTATE: 'annotate',
+};

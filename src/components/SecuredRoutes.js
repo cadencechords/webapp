@@ -21,6 +21,8 @@ import UserApi from '../api/UserApi';
 import { reportError } from '../utils/error';
 import { setSubscription } from '../store/subscriptionSlice';
 import { useHistory } from 'react-router';
+import PerformanceModeProvider from '../contexts/PerformanceModeProvider';
+import AnnotationsToolbarProvider from '../contexts/AnnotationsToolbarProvider';
 
 const SongEditorPage = lazy(() => import('../pages/SongEditorPage'));
 const CustomerPortalSessionGeneratorPage = lazy(() =>
@@ -94,12 +96,20 @@ export default function SecuredRoutes() {
       <>
         <Switch>
           <Route path="/songs/:id/edit" exact component={SongEditorPage} />
-          <Route
-            path="/songs/:id/present"
-            exact
-            component={SongPresenterPage}
-          />
-          <Route path="/sets/:id/present" exact component={SetPresenterPage} />
+          <Route path="/songs/:id/present" exact>
+            <PerformanceModeProvider>
+              <AnnotationsToolbarProvider>
+                <SongPresenterPage />
+              </AnnotationsToolbarProvider>
+            </PerformanceModeProvider>
+          </Route>
+          <Route path="/sets/:id/present" exact>
+            <PerformanceModeProvider>
+              <AnnotationsToolbarProvider>
+                <SetPresenterPage />
+              </AnnotationsToolbarProvider>
+            </PerformanceModeProvider>
+          </Route>
           <Route
             path="/customer_portal_session"
             exact

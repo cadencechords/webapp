@@ -27,6 +27,9 @@ import useQuery from '../hooks/useQuery';
 import notesApi from '../api/notesApi';
 import { useCurrentUser } from '../hooks/api/currentUser.hooks';
 import AddMarkingsModal from '../components/AddMarkingsModal';
+import AnnotationsToolbar from '../components/AnnotationsToolbar';
+import usePerformanceMode from '../hooks/usePerformanceMode';
+import classNames from 'classnames';
 
 export default function Page() {
   return (
@@ -37,6 +40,7 @@ export default function Page() {
 }
 
 function SetPresenter() {
+  const { isPerforming, isAnnotating } = usePerformanceMode();
   const defaultSessionId = useQuery().get('session_id');
   const setlist = useSelector(selectSetlistBeingPresented);
   const [songs, setSongs] = useState([]);
@@ -237,7 +241,12 @@ function SetPresenter() {
           onAddNote={handleAddNote}
           onShowMarkingsModal={() => setIsAddMarkingsVisible(true)}
         />
-        <div className="max-w-4xl p-3 mx-auto mb-12 whitespace-pre-wrap">
+        <div
+          className={classNames(
+            'max-w-4xl p-3 mx-auto mb-12 whitespace-pre-wrap',
+            isAnnotating && 'select-none'
+          )}
+        >
           <SongsCarousel
             songs={songs}
             onIndexChange={handleSongBeingViewedIndexChange}
@@ -247,11 +256,13 @@ function SetPresenter() {
           />
         </div>
 
-        <SetlistNavigation
-          songs={setlist.songs}
-          onIndexChange={handleSongBeingViewedIndexChange}
-          index={songBeingViewedIndex}
-        />
+        {isPerforming && (
+          <SetlistNavigation
+            songs={setlist.songs}
+            onIndexChange={handleSongBeingViewedIndexChange}
+            index={songBeingViewedIndex}
+          />
+        )}
         <SetPresenterBottomSheet
           sheet={bottomSheet}
           open={showBottomSheet}
@@ -265,6 +276,7 @@ function SetPresenter() {
           song={songs[songBeingViewedIndex]}
           onMarkingAdded={handleMarkingAdded}
         />
+        {currentSubscription?.isPro && <AnnotationsToolbar />}
         <SetlistAdjustmentsDrawer
           song={songs[songBeingViewedIndex]}
           open={showDrawer}

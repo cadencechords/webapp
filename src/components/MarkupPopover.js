@@ -3,8 +3,12 @@ import StyledPopover from './StyledPopover';
 import Button from './Button';
 import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
+import PencilIcon from '@heroicons/react/solid/PencilIcon';
+import usePerformanceMode from '../hooks/usePerformanceMode';
 
 export default function MarkupPopover({ onAddNote, onShowMarkingsModal }) {
+  const { beginAnnotating } = usePerformanceMode();
+
   return (
     <StyledPopover
       position="bottom-end"
@@ -28,7 +32,7 @@ export default function MarkupPopover({ onAddNote, onShowMarkingsModal }) {
         <MobileMenuButton
           onClick={onShowMarkingsModal}
           full
-          className="h-11 flex-between"
+          className="border-b dark:border-dark-gray-400 h-11 flex-between"
           color="black"
           style={{ paddingTop: 0, paddingBottom: 0 }}
         >
@@ -39,6 +43,16 @@ export default function MarkupPopover({ onAddNote, onShowMarkingsModal }) {
           >
             f
           </span>
+        </MobileMenuButton>
+        <MobileMenuButton
+          onClick={beginAnnotating}
+          full
+          className="h-11 flex-between"
+          color="black"
+          style={{ paddingTop: 0, paddingBottom: 0 }}
+        >
+          Annotate
+          <PencilIcon className="w-5 h-5" />
         </MobileMenuButton>
       </div>
     </StyledPopover>

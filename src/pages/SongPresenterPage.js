@@ -19,10 +19,14 @@ import { useCurrentUser } from '../hooks/api/currentUser.hooks';
 import AddMarkingsModal from '../components/AddMarkingsModal';
 import Marking from '../components/Marking';
 import Annotations from '../components/Annotations';
+import AnnotationsToolbar from '../components/AnnotationsToolbar';
+import usePerformanceMode from '../hooks/usePerformanceMode';
+import classNames from 'classnames';
 
 export default function SongPresenterPage() {
   const id = useParams().id;
   const song = useSelector(selectSongBeingPresented);
+  const { isAnnotating } = usePerformanceMode();
   const dispatch = useDispatch();
   const currentSubscription = useSelector(selectCurrentSubscription);
   const pageRef = useRef();
@@ -118,7 +122,12 @@ export default function SongPresenterPage() {
           onShowMarkingsModal={() => setIsAddMarkingsVisible(true)}
         />
 
-        <div className="max-w-6xl p-3 mx-auto">
+        <div
+          className={classNames(
+            'max-w-6xl p-3 mx-auto',
+            isAnnotating && 'select-none'
+          )}
+        >
           <Roadmap
             song={song}
             onSongChange={handleSongChange}
@@ -138,10 +147,10 @@ export default function SongPresenterPage() {
                   onDeleted={handleMarkingDeleted}
                 />
               ))}
-            {currentSubscription?.isPro && song.annotations?.length > 0 && (
+            {currentSubscription?.isPro && song.annotations && (
               <Annotations annotations={song.annotations} />
             )}
-            <div id="song" className="mr-0">
+            <div id="song" className="relative mr-0">
               {html(song)}
             </div>
           </div>
@@ -164,6 +173,8 @@ export default function SongPresenterPage() {
           song={song}
           onSongChange={handleSongChange}
         />
+
+        {currentSubscription?.isPro && <AnnotationsToolbar />}
         {currentSubscription?.isPro && (
           <AddMarkingsModal
             open={isAddMarkingsVisible}

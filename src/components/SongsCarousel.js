@@ -3,6 +3,7 @@ import 'react-alice-carousel/lib/alice-carousel.css';
 import AliceCarousel from 'react-alice-carousel';
 import SongsCarouselSlide from './SongsCarouselSlide';
 import { useState } from 'react';
+import usePerformanceMode from '../hooks/usePerformanceMode';
 
 export default function SongsCarousel({
   songs,
@@ -10,6 +11,7 @@ export default function SongsCarousel({
   onIndexChange,
   onSongUpdate,
 }) {
+  const { isPerforming } = usePerformanceMode();
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(true);
 
   function buildTemplates() {
@@ -48,7 +50,7 @@ export default function SongsCarousel({
     <>
       <AliceCarousel
         mouseTracking={false}
-        touchTracking={isSwipeEnabled}
+        touchTracking={isSwipeEnabled && isPerforming}
         disableButtonsControls
         disableDotsControls
         disableSlideInfo
