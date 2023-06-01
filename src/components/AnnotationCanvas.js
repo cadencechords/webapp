@@ -1,11 +1,14 @@
 import { useGesture } from '@use-gesture/react';
 import React, { useRef, useState } from 'react';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
+import { getThemeAwareAnnotationColor } from '../utils/color.utils';
+import useTheme from '../hooks/useTheme';
 
 export default function AnnotationCanvas({
   defaultAnnotations = [],
   onChange,
 }) {
+  const { isDark } = useTheme();
   const ref = useRef();
   const { color, strokeWidth, utensil } = useAnnotationsToolbar();
   const [eraserPosition, setEraserPosition] = useState();
@@ -108,7 +111,7 @@ export default function AnnotationCanvas({
           d={path.path}
           fill="transparent"
           key={index}
-          stroke={path.color}
+          stroke={getThemeAwareAnnotationColor(path.color, isDark)}
           strokeWidth={path.stroke_width}
         />
       ))}
