@@ -10,46 +10,15 @@ import { noop } from '../utils/constants';
 import { selectCurrentUser } from '../store/authSlice';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import useTheme from '../hooks/useTheme';
 
 export default function AccountDetailPage() {
   const currentUser = useSelector(selectCurrentUser);
-  const [isDark, setIsDark] = useState(() => {
-    let theme = localStorage.getItem('theme');
+  const { isDark, setIsDark } = useTheme();
 
-    return theme === 'dark';
-  });
   useEffect(() => {
     document.title = 'Account Details';
   }, []);
-
-  function handleToggleDarkTheme() {
-    setIsDark(currentValue => {
-      let updatedValue = !currentValue;
-
-      if (updatedValue) {
-        document.querySelector('html').classList.add('dark');
-        document
-          .querySelector(':root')
-          .style.setProperty('--rsbs-handle-bg', '#8b949e');
-        document
-          .querySelector(':root')
-          .style.setProperty('--rsbs-bg', '#0d1117');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.querySelector('html').classList.remove('dark');
-        document
-          .querySelector(':root')
-          .style.setProperty('--rsbs-handle-bg', 'hsla(0, 0%, 0%, 0.14)');
-        document
-          .querySelector(':root')
-          .style.setProperty('--rsbs-bg', '#ffffff');
-        localStorage.setItem('theme', 'light');
-      }
-
-      return updatedValue;
-    });
-  }
 
   if (!currentUser) return 'Loading...';
 
@@ -98,7 +67,7 @@ export default function AccountDetailPage() {
           </MobileMenuButton>
         </Link>
 
-        <MobileMenuButton full onClick={handleToggleDarkTheme}>
+        <MobileMenuButton full onClick={() => setIsDark(!isDark)}>
           <div className="flex-between">
             Dark theme <Toggle enabled={isDark} onChange={noop} />
           </div>
