@@ -15,12 +15,18 @@ export default function ThemeProvider(props) {
       document
         .querySelector(':root')
         .style.setProperty('--rsbs-handle-bg', '#8b949e');
+      document
+        .querySelector('meta[name="theme-color"]')
+        .setAttribute('content', 'rgb(13, 17, 23)');
     } else {
       document.querySelector('html').classList.remove('dark');
       document
         .querySelector(':root')
         .style.setProperty('--rsbs-handle-bg', 'hsla(0, 0%, 0%, 0.14)');
       document.querySelector(':root').style.setProperty('--rsbs-bg', '#ffffff');
+      document
+        .querySelector('meta[name="theme-color"]')
+        .setAttribute('content', '#FFFFFF');
     }
   }, [isDark]);
 
