@@ -33,6 +33,10 @@ export const authSlice = createSlice({
       state.currentUser = action.payload;
     },
 
+    updateCurrentUser: (state, action) => {
+      state.currentUser = { ...state.currentUser, ...action.payload };
+    },
+
     setCurrentTeam: (state, action) => {
       state.currentTeam = action.payload;
     },
@@ -64,6 +68,7 @@ export const {
   setCurrentTeam,
   logOut,
   setMembership,
+  updateCurrentUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;
