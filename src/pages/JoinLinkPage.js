@@ -25,6 +25,7 @@ export default function JoinLinkPage() {
     joinLoading,
     error,
   } = useJoinLink(code);
+
   const {
     currentUser,
     loading: verifyingCredentials,
@@ -63,8 +64,8 @@ export default function JoinLinkPage() {
     dispatch(setTeamId(team.id));
   }
 
-  function handleJoinTeam() {
-    join();
+  async function handleJoinTeam() {
+    await join();
     localStorage.setItem('teamId', team.id);
     dispatch(setTeamId(team.id));
     router.push('/');

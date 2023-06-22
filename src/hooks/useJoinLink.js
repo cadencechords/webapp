@@ -13,10 +13,10 @@ export default function useJoinLink(code) {
   const errored = status === ERRORED;
   const idle = status === IDLE;
 
-  const joinLoading = status === LOADING;
-  const joinResolved = status === RESOLVED;
-  const joinErrored = status === ERRORED;
-  const joinIdle = status === IDLE;
+  const joinLoading = joinStatus === LOADING;
+  const joinResolved = joinStatus === RESOLVED;
+  const joinErrored = joinStatus === ERRORED;
+  const joinIdle = joinStatus === IDLE;
 
   useEffect(() => {
     async function fetchData() {
