@@ -32,7 +32,7 @@ export function toPdf(song, showChords) {
   let pdf = (
     <Document creator="Cadence" producer="Cadence" author="Cadence">
       <Page size="A4" style={PDF_STYLES}>
-        <View style={{ fontFamily: getFontName() }}>
+        <View style={{ fontFamily: getFontName(song.format.font) }}>
           <View style={{ marginBottom: '.25in', fontWeight: 'bold' }}>
             <Text>{song.name}</Text>
           </View>
@@ -56,6 +56,7 @@ function registerFonts(format) {
   const fontStyles = isAllowedFont(format.font)
     ? constructFontStyles(format)
     : constructFontStyles({ ...format, font: 'Liberation Sans' });
+
   Font.register({ family: format.font, fonts: fontStyles });
 }
 
