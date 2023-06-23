@@ -6,6 +6,10 @@ import OpenSansBold from '../fonts/OpenSans-Bold.ttf';
 import OpenSansBoldItalic from '../fonts/OpenSans-BoldItalic.ttf';
 import OpenSansItalic from '../fonts/OpenSans-Italic.ttf';
 import OpenSansRegular from '../fonts/OpenSans-Regular.ttf';
+import LiberationSansBold from '../fonts/LiberationSans-Bold.ttf';
+import LiberationSansBoldItalic from '../fonts/LiberationSans-BoldItalic.ttf';
+import LiberationSansItalic from '../fonts/LiberationSans-Italic.ttf';
+import LiberationSansRegular from '../fonts/LiberationSans-Regular.ttf';
 import RobotoBold from '../fonts/RobotoMono-Bold.ttf';
 import RobotoBoldItalic from '../fonts/RobotoMono-BoldItalic.ttf';
 import RobotoItalic from '../fonts/RobotoMono-Italic.ttf';
@@ -22,7 +26,7 @@ export function toPdf(song, showChords) {
   }
 
   function getFontName(font) {
-    return isAllowedFont(font) ? font : undefined;
+    return isAllowedFont(font) ? font : 'Liberation Sans';
   }
 
   let pdf = (
@@ -49,14 +53,14 @@ export function toPdf(song, showChords) {
 }
 
 function registerFonts(format) {
-  if (isAllowedFont(format.font)) {
-    let fontStyles = constructFontStyles(format);
-    Font.register({ family: format.font, fonts: fontStyles });
-  }
+  const fontStyles = isAllowedFont(format.font)
+    ? constructFontStyles(format)
+    : constructFontStyles({ ...format, font: 'Liberation Sans' });
+  Font.register({ family: format.font, fonts: fontStyles });
 }
 
 function isAllowedFont(font) {
-  return Boolean(ALLOWED_FONTS[font]);
+  return ALLOWED_FONTS.includes(font);
 }
 
 function constructFontStyles(format) {
@@ -180,10 +184,7 @@ function buildHighlightedLine(line, { backgroundColor } = {}) {
   return tokens;
 }
 
-const ALLOWED_FONTS = {
-  'Roboto Mono': 'Roboto Mono',
-  'Open Sans': 'Open Sans',
-};
+const ALLOWED_FONTS = ['Roboto Mono', 'Open Sans', 'Liberation Sans'];
 
 const FONT_IMPORTS = {
   'Roboto Mono': {
@@ -197,6 +198,12 @@ const FONT_IMPORTS = {
     boldItalic: OpenSansBoldItalic,
     bold: OpenSansBold,
     italic: OpenSansItalic,
+  },
+  'Liberation Sans': {
+    regular: LiberationSansRegular,
+    boldItalic: LiberationSansBoldItalic,
+    bold: LiberationSansBold,
+    italic: LiberationSansItalic,
   },
 };
 

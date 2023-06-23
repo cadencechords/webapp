@@ -44,7 +44,7 @@ export default function FormatPanelGeneralOptions() {
 export const FONT_OPTIONS = [
   { value: 'Roboto Mono', display: 'Roboto Mono' },
   { value: 'Open Sans', display: 'Open Sans' },
-  { value: 'Inter', display: 'Inter' },
+  // { value: 'Liberation Sans', display: 'Liberation Sans' },
 ];
 
 export const FONT_SIZES = [
