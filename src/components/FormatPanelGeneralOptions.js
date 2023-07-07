@@ -48,6 +48,10 @@ export const FONT_OPTIONS = [
 ];
 
 export const FONT_SIZES = [
+  { value: '10', display: '10' },
+  { value: '11', display: '11' },
+  { value: '12', display: '12' },
+  { value: '13', display: '13' },
   { value: '14', display: '14' },
   { value: '15', display: '15' },
   { value: '16', display: '16' },
