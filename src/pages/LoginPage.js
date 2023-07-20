@@ -10,6 +10,7 @@ import { setAuth, setCurrentUser } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useQuery } from './ClaimInvitationPage';
 import UserApi from '../api/UserApi';
+import classNames from 'classnames';
 
 export default function LoginPage() {
   useEffect(() => (document.title = 'Login'));
@@ -22,6 +23,7 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useHistory();
   const targetUrl = useQuery().get('target_url');
+  const [focusedElement, setFocusedElement] = useState('email');
 
   const handlePasswordChange = passwordValue => {
     setPassword(passwordValue);
@@ -71,7 +73,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex w-screen h-screen">
-      <div className="w-full max-w-xl px-3 m-auto lg:w-2/5 sm:w-3/4 md:w-3/5">
+      <div className="w-full max-w-xl px-3 m-auto">
         <h1 className="mb-1 text-3xl font-bold text-center">
           Login to your account
         </h1>
@@ -86,25 +88,33 @@ export default function LoginPage() {
           </Link>
         </div>
         <form onSubmit={handleLogin}>
-          <div className="pt-5 pb-3">
+          <div className="relative pt-5 pb-3">
             <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-b-none outline-none appearance-none rounded-t-xl dark:border-dark-gray-400 focus:outline-none focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
+              className={classNames(
+                focusedElement === 'email' ? 'z-10' : 'border-b-0',
+                'relative w-full px-4 py-3 border border-gray-300 rounded-b-none outline-none appearance-none rounded-t-xl dark:border-dark-gray-400 focus:outline-none focus:ring-2 ring-offset-1 ring-blue-400 dark:bg-dark-gray-700'
+              )}
               placeholder="email"
               type="email"
               autoComplete="off"
               autoCapitalize="off"
               onChange={e => handleEmailChange(e.target.value)}
               value={email}
+              onFocus={() => setFocusedElement('email')}
             />
 
             <input
-              className="w-full px-3 py-2 border border-t-0 border-gray-300 rounded-t-none shadow-sm outline-none appearance-none rounded-b-xl focus:outline-none dark:border-dark-gray-400 focus:ring-inset focus:ring-2 focus:ring-blue-400 dark:bg-dark-gray-700"
+              className={classNames(
+                focusedElement === 'password' ? 'z-10' : 'border-t-0',
+                'relative w-full px-4 py-3 border border-gray-300 rounded-t-none shadow-sm outline-none appearance-none rounded-b-xl focus:outline-none dark:border-dark-gray-400 focus:ring-2 ring-offset-1 ring-blue-400 dark:bg-dark-gray-700'
+              )}
               placeholder="password"
               type="password"
               autoComplete="off"
               autoCapitalize="off"
               onChange={e => handlePasswordChange(e.target.value)}
               value={password}
+              onFocus={() => setFocusedElement('password')}
             />
           </div>
           <div className="mb-4 font-semibold text-right text-blue-600 dark:text-dark-blue">
