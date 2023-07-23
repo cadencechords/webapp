@@ -33,6 +33,7 @@ export default function useOneSignal() {
 
   const switchTeams = useCallback(
     async newTeamId => {
+      console.log('switching teams');
       dispatch(setTeamId(newTeamId));
       localStorage.setItem('teamId');
       queryClient.removeQueries();
@@ -58,6 +59,7 @@ export default function useOneSignal() {
   useEffect(() => {
     async function setupOneSignal() {
       if (isProSubscription && userId === 3) {
+        console.log('setting up onesignal');
         if (!isConfigured.current) {
           await OneSignal.init({
             appId: 'e74ed29a-0bb3-4484-9403-45b6271b7f94',
@@ -68,6 +70,7 @@ export default function useOneSignal() {
         await OneSignal.setExternalUserId(uid);
         OneSignal.showSlidedownPrompt();
         OneSignal.addListenerForNotificationOpened(async ({ data }) => {
+          console.log(data);
           let { team_id, message_id, type } = data || {};
           if (team_id) team_id = parseInt(team_id);
 
@@ -76,6 +79,7 @@ export default function useOneSignal() {
               await switchTeams(team_id);
             }
 
+            console.log('pushing');
             router.push(`/chat?message_id=${message_id}`);
           }
         });
@@ -85,6 +89,7 @@ export default function useOneSignal() {
     setupOneSignal();
 
     return () => {
+      console.log('removing listener');
       OneSignal.removeExternalUserId();
       OneSignal.addListenerForNotificationOpened(() => {});
     };
