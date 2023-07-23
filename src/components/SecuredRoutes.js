@@ -104,6 +104,7 @@ export default function SecuredRoutes() {
         });
 
         OneSignal.setExternalUserId(currentUser.uid);
+        OneSignal.showSlidedownPrompt();
       }
     }
 
