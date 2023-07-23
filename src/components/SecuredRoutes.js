@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
 
 import { Route, Switch } from 'react-router-dom';
-import { lazy, useEffect, useState } from 'react';
+import { lazy, useEffect } from 'react';
 import {
   selectCurrentTeam,
   selectCurrentUser,
@@ -12,7 +12,6 @@ import {
   setMembership,
 } from '../store/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import OneSignal from 'react-onesignal';
 
 import CenteredPage from './CenteredPage';
 import Content from './Content';
@@ -20,13 +19,11 @@ import PageLoading from './PageLoading';
 import TeamApi from '../api/TeamApi';
 import UserApi from '../api/UserApi';
 import { reportError } from '../utils/error';
-import {
-  selectCurrentSubscription,
-  setSubscription,
-} from '../store/subscriptionSlice';
+import { setSubscription } from '../store/subscriptionSlice';
 import { useHistory } from 'react-router';
 import PerformanceModeProvider from '../contexts/PerformanceModeProvider';
 import AnnotationsToolbarProvider from '../contexts/AnnotationsToolbarProvider';
+import useOneSignal from '../hooks/useOneSignal';
 
 const SongEditorPage = lazy(() => import('../pages/SongEditorPage'));
 const CustomerPortalSessionGeneratorPage = lazy(() =>
@@ -42,8 +39,7 @@ export default function SecuredRoutes() {
   const router = useHistory();
   const currentUser = useSelector(selectCurrentUser);
   const currentTeam = useSelector(selectCurrentTeam);
-  const currentSubscription = useSelector(selectCurrentSubscription);
-  const [notificationsConfigured, setNotificationsConfigured] = useState(false);
+  useOneSignal();
 
   useEffect(() => {
     if (!hasCredentials) {
@@ -96,31 +92,6 @@ export default function SecuredRoutes() {
       await UserApi.updateCurrentUser({ timezone: currentTimeZone });
     }
   }
-
-  useEffect(() => {
-    async function setupOneSignal() {
-      if (currentSubscription?.isPro && currentUser?.id === 3) {
-        if (!notificationsConfigured) {
-          await OneSignal.init({
-            appId: 'e74ed29a-0bb3-4484-9403-45b6271b7f94',
-          });
-          setNotificationsConfigured(true);
-        }
-
-        await OneSignal.setExternalUserId(currentUser.uid);
-        OneSignal.showSlidedownPrompt();
-        OneSignal.addListenerForNotificationOpened(notification => {
-          console.log(notification);
-        });
-      }
-    }
-
-    setupOneSignal();
-
-    return () => {
-      OneSignal.removeExternalUserId();
-    };
-  }, [currentSubscription, currentUser, notificationsConfigured]);
 
   if (currentUser && currentTeam) {
     return (
