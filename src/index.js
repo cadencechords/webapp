@@ -1,7 +1,6 @@
 import './index.css';
 
 import * as Sentry from '@sentry/react';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import App from './App';
 import { Integrations } from '@sentry/tracing';
@@ -27,5 +26,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-serviceWorkerRegistration.unregister();

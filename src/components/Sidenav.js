@@ -65,13 +65,13 @@ export default function Sidenav() {
               icon={<CalendarIcon className={iconClasses} />}
             />
           )}
-          {currentSubscription?.isPro && (
+          {/* {currentSubscription?.isPro && (
             <SidenavLink
               text="Chat"
               to="/chat"
               icon={<ChatIcon className={iconClasses} />}
             />
-          )}
+          )} */}
           {currentMember.can(VIEW_ROLES) && (
             <>
               <hr className="my-4 dark:border-dark-gray-400" />

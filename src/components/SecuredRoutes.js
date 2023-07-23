@@ -12,6 +12,7 @@ import {
   setMembership,
 } from '../store/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import OneSignal from 'react-onesignal';
 
 import CenteredPage from './CenteredPage';
 import Content from './Content';
@@ -19,7 +20,10 @@ import PageLoading from './PageLoading';
 import TeamApi from '../api/TeamApi';
 import UserApi from '../api/UserApi';
 import { reportError } from '../utils/error';
-import { setSubscription } from '../store/subscriptionSlice';
+import {
+  selectCurrentSubscription,
+  setSubscription,
+} from '../store/subscriptionSlice';
 import { useHistory } from 'react-router';
 import PerformanceModeProvider from '../contexts/PerformanceModeProvider';
 import AnnotationsToolbarProvider from '../contexts/AnnotationsToolbarProvider';
@@ -38,6 +42,7 @@ export default function SecuredRoutes() {
   const router = useHistory();
   const currentUser = useSelector(selectCurrentUser);
   const currentTeam = useSelector(selectCurrentTeam);
+  const currentSubscription = useSelector(selectCurrentSubscription);
 
   useEffect(() => {
     if (!hasCredentials) {
@@ -90,6 +95,21 @@ export default function SecuredRoutes() {
       await UserApi.updateCurrentUser({ timezone: currentTimeZone });
     }
   }
+
+  useEffect(() => {
+    if (currentUser) {
+      OneSignal.setExternalUserId(currentUser.uid);
+    }
+    return () => {
+      OneSignal.removeExternalUserId();
+    };
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (currentSubscription?.isPro && currentUser?.id === 3) {
+      OneSignal.showSlidedownPrompt();
+    }
+  }, [currentSubscription, currentUser]);
 
   if (currentUser && currentTeam) {
     return (

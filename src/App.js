@@ -2,7 +2,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import * as Sentry from '@sentry/react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy } from 'react';
 
 import AppFallback from './components/AppFallback';
 import CenteredPage from './components/CenteredPage';
@@ -15,6 +15,7 @@ import { ToastContainer } from 'react-toastify';
 import JoinLinkPage from './pages/JoinLinkPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ThemeProvider from './contexts/ThemeProvider';
+import OneSignal from 'react-onesignal';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const TeamLoginPage = lazy(() => import('./pages/TeamLoginPage'));
@@ -23,13 +24,13 @@ const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
 
+OneSignal.init({
+  appId: 'e74ed29a-0bb3-4484-9403-45b6271b7f94',
+});
+
 const queryClient = new QueryClient();
 
 function App() {
-  useEffect(() => {
-    // window?.Beacon('init', 'e59a5584-73cb-4380-b0b2-be1d76ff7362');
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
