@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
 
 import { Route, Switch } from 'react-router-dom';
-import { lazy, useEffect } from 'react';
+import { lazy, useEffect, useState } from 'react';
 import {
   selectCurrentTeam,
   selectCurrentUser,
@@ -43,6 +43,7 @@ export default function SecuredRoutes() {
   const currentUser = useSelector(selectCurrentUser);
   const currentTeam = useSelector(selectCurrentTeam);
   const currentSubscription = useSelector(selectCurrentSubscription);
+  const [notificationsConfigured, setNotificationsConfigured] = useState(false);
 
   useEffect(() => {
     if (!hasCredentials) {
@@ -99,9 +100,12 @@ export default function SecuredRoutes() {
   useEffect(() => {
     async function setupOneSignal() {
       if (currentSubscription?.isPro && currentUser?.id === 3) {
-        await OneSignal.init({
-          appId: 'e74ed29a-0bb3-4484-9403-45b6271b7f94',
-        });
+        if (!notificationsConfigured) {
+          await OneSignal.init({
+            appId: 'e74ed29a-0bb3-4484-9403-45b6271b7f94',
+          });
+          setNotificationsConfigured(true);
+        }
 
         await OneSignal.setExternalUserId(currentUser.uid);
         OneSignal.showSlidedownPrompt();
@@ -113,7 +117,7 @@ export default function SecuredRoutes() {
     return () => {
       OneSignal.removeExternalUserId();
     };
-  }, [currentSubscription, currentUser]);
+  }, [currentSubscription, currentUser, notificationsConfigured]);
 
   if (currentUser && currentTeam) {
     return (
