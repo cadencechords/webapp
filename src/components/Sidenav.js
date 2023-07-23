@@ -13,7 +13,7 @@ import TeamOptionsPopover from './TeamOptionsPopover';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
 import UserIcon from '@heroicons/react/solid/UserIcon';
-import ChatIcon from '@heroicons/react/solid/ChatIcon';
+// import ChatIcon from '@heroicons/react/solid/ChatIcon';
 
 export default function Sidenav() {
   let iconClasses = 'h-5 w-5';
