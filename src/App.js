@@ -15,7 +15,6 @@ import { ToastContainer } from 'react-toastify';
 import JoinLinkPage from './pages/JoinLinkPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ThemeProvider from './contexts/ThemeProvider';
-import OneSignal from 'react-onesignal';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const TeamLoginPage = lazy(() => import('./pages/TeamLoginPage'));
@@ -23,10 +22,6 @@ const EmailConfirmedPage = lazy(() => import('./pages/EmailConfirmedPage'));
 const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
-
-OneSignal.init({
-  appId: 'e74ed29a-0bb3-4484-9403-45b6271b7f94',
-});
 
 const queryClient = new QueryClient();
 

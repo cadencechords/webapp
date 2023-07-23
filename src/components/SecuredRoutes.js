@@ -97,18 +97,22 @@ export default function SecuredRoutes() {
   }
 
   useEffect(() => {
-    if (currentUser) {
-      OneSignal.setExternalUserId(currentUser.uid);
+    async function setupOneSignal() {
+      if (currentSubscription?.isPro && currentUser?.id === 3) {
+        await OneSignal.init({
+          appId: 'e74ed29a-0bb3-4484-9403-45b6271b7f94',
+          allowLocalhostAsSecureOrigin: true,
+        });
+
+        OneSignal.setExternalUserId(currentUser.uid);
+      }
     }
+
+    setupOneSignal();
+
     return () => {
       OneSignal.removeExternalUserId();
     };
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (currentSubscription?.isPro && currentUser?.id === 3) {
-      OneSignal.showSlidedownPrompt();
-    }
   }, [currentSubscription, currentUser]);
 
   if (currentUser && currentTeam) {
