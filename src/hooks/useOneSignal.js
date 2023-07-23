@@ -91,7 +91,6 @@ export default function useOneSignal() {
     return () => {
       console.log('removing listener');
       OneSignal.removeExternalUserId();
-      OneSignal.addListenerForNotificationOpened(() => {});
     };
   }, [userId, isProSubscription, uid, teamId, switchTeams, router]);
 }
