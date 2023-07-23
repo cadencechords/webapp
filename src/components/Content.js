@@ -37,6 +37,7 @@ const PlanningCenterSongsPage = lazy(() =>
 const RoleDetailPage = lazy(() => import('../pages/RoleDetailPage'));
 const RolesIndexPage = lazy(() => import('../pages/RolesIndexPage'));
 const CalendarPage = lazy(() => import('../pages/CalendarPage'));
+const ChatPage = lazy(() => import('../pages/ChatPage'));
 const EditCalendarEventPage = lazy(() =>
   import('../pages/EditCalendarEventPage')
 );
@@ -154,6 +155,9 @@ export default function Content() {
                 component={EditCalendarEventPage}
               />
             </EventFormProvider>
+          </Suspense>
+          <Suspense fallback={<PageLoading>Loading chat</PageLoading>}>
+            <Route path="/chat" exact component={ChatPage} />
           </Suspense>
         </div>
         <div className="h-12 md:h-0"></div>
