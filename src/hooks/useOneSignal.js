@@ -68,13 +68,16 @@ export default function useOneSignal() {
         await OneSignal.setExternalUserId(uid);
         OneSignal.showSlidedownPrompt();
         OneSignal.addListenerForNotificationOpened(async ({ data }) => {
+          console.log(data);
           let { team_id, message_id, type } = data || {};
 
           if (type === 'chat') {
             if (team_id !== teamId) {
+              console.log('switching teams');
               await switchTeams(team_id);
             }
 
+            console.log('navigating');
             router.push(`/chat?message_id=${message_id}`);
           }
         });
