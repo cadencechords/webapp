@@ -109,6 +109,9 @@ export default function SecuredRoutes() {
 
         await OneSignal.setExternalUserId(currentUser.uid);
         OneSignal.showSlidedownPrompt();
+        OneSignal.addListenerForNotificationOpened(notification => {
+          console.log(notification);
+        });
       }
     }
 
