@@ -103,7 +103,7 @@ export default function SecuredRoutes() {
           appId: 'e74ed29a-0bb3-4484-9403-45b6271b7f94',
         });
 
-        OneSignal.setExternalUserId(currentUser.uid);
+        await OneSignal.setExternalUserId(currentUser.uid);
         OneSignal.showSlidedownPrompt();
       }
     }
