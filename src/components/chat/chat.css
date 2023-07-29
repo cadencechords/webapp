@@ -1,0 +1,37 @@
+@import '~stream-chat-react/dist/css/v2/index.css';
+
+.str-chat {
+  --str-chat__message-textarea-border-radius: 20px;
+  --str-chat__message-input-background-color: transparent;
+}
+
+.str-chat__theme-light {
+  --str-chat__message-textarea-background-color: rgb(243, 244, 246);
+}
+
+.str-chat__theme-dark {
+  --str-chat__message-textarea-background-color: rgb(22, 27, 34);
+  --str-chat__message-bubble-background-color: rgb(22, 27, 34);
+}
+
+.str-chat__message-textarea-container {
+  border: 0 !important;
+}
+
+.str-chat__message-textarea-with-emoji-picker {
+  padding: 5px 15px !important;
+}
+
+.str-chat__send-button,
+.str-chat__file-input-container {
+  height: 37px !important;
+}
+
+.str-chat__send-button svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.str-chat__message-input .str-chat__file-input-container svg path {
+  fill: currentColor;
+}

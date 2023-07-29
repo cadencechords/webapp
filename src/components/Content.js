@@ -30,6 +30,8 @@ import { selectCurrentMember } from '../store/authSlice';
 import { MANAGE_BILLING } from '../utils/constants';
 import AccountAppearancePage from '../pages/AccountAppearancePage';
 import ImportCadenceSongsPage from '../pages/ImportCadenceSongsPage';
+import { useLocation } from 'react-router-dom';
+import classNames from 'classnames';
 
 const PlanningCenterSongsPage = lazy(() =>
   import('../pages/PlanningCenterSongsPage')
@@ -48,6 +50,8 @@ const BillingPage = lazy(() => import('../pages/BillingPage'));
 
 export default function Content() {
   const currentMember = useSelector(selectCurrentMember);
+  const location = useLocation();
+  const isChat = location.pathname?.startsWith('/chat');
 
   if (!currentMember) return null;
 
@@ -56,8 +60,10 @@ export default function Content() {
       <Sidenav />
       <Navbar />
       <MobileNav />
-      <div className="px-3 py-3 md:ml-14 lg:ml-56 md:px-10">
-        <div className="container mx-auto">
+      <div
+        className={classNames(!isChat && 'p-3 md:px-10', 'md:ml-14 lg:ml-56')}
+      >
+        <div className={classNames(!isChat && 'container', 'mx-auto')}>
           <Route path="/" exact>
             <DashboardPage />
           </Route>

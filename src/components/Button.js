@@ -1,191 +1,209 @@
 import classNames from 'classnames';
+import { forwardRef } from 'react';
 import PulseLoader from 'react-spinners/PulseLoader';
 
-export default function Button({
-  children,
-  variant = 'filled',
-  color,
-  size,
-  full,
-  bold,
-  onClick,
-  loading,
-  disabled,
-  className,
-  onKeyUp,
-  style,
-  tabIndex,
-  onFocus,
-  onBlur,
-  name,
-  type = 'button',
-}) {
-  const props = {
-    children,
-    color,
-    size,
-    full,
-    bold,
-    onClick,
-    loading,
-    disabled,
-    className,
-    onKeyUp,
-    style,
-    tabIndex,
-    onFocus,
-    onBlur,
-    name,
-    type,
-  };
-  if (variant === 'filled') {
-    return <PrimaryButton {...props} />;
-  }
-
-  if (variant === 'accent') {
-    return <AccentButton {...props} />;
-  }
-
-  if (variant === 'icon') {
-    return <IconButton {...props} />;
-  }
-  let defaultClasses = ` outline-none focus:outline-none transition-colors text-sm ${
-    className ? className : ''
-  } `;
-  let colorClasses = '';
-  let disabledClasses = ' cursor-default ';
-  let roundedClasses = ' rounded-full ';
-  let sizeClasses = ` ${sizePaddings[size]} ${full ? ' w-full ' : ''}`;
-  let fontClasses = ` ${bold ? ' font-semibold ' : ''} `;
-  let loadingColor = color;
-
-  if (color === 'blue' || color === 'black') loadingColor = '#1f6feb';
-
-  if (variant === 'filled') {
-    if (color === 'black') {
-      colorClasses += ` text-white bg-black `;
-    } else {
-      colorClasses += ` text-white ${BACKGROUND_COLORS[color]} shadow-sm `;
+const Button = forwardRef(
+  (
+    {
+      children,
+      variant = 'filled',
+      color,
+      size,
+      full,
+      bold,
+      onClick,
+      loading,
+      disabled,
+      className,
+      onKeyUp,
+      style,
+      tabIndex,
+      onFocus,
+      onBlur,
+      name,
+      type = 'button',
+    },
+    ref
+  ) => {
+    const props = {
+      children,
+      color,
+      size,
+      full,
+      bold,
+      onClick,
+      loading,
+      disabled,
+      className,
+      onKeyUp,
+      style,
+      tabIndex,
+      onFocus,
+      onBlur,
+      name,
+      type,
+    };
+    if (variant === 'filled') {
+      return <PrimaryButton {...props} ref={ref} />;
     }
-    loadingColor = 'white';
-    disabledClasses += ` bg-gray-100 text-gray-600 dark:bg-dark-gray-400 dark:text-dark-gray-200`;
-  } else if (variant === 'open') {
-    colorClasses += ` ${TEXT_COLORS[color]}`;
-    disabledClasses += ` text-gray-500 `;
-  } else if (variant === 'outlined') {
-    colorClasses += `  border-gray-300 dark:border-dark-gray-400 ${TEXT_COLORS[color]} bg-gray-100 focus:bg-gray-100 dark:bg-dark-gray-700 `;
-    disabledClasses += `  border-gray-300 text-gray-500 dark:border-dark-gray-400 dark:text-dark-gray-200 `;
-  }
 
-  return (
-    <button
-      className={`
+    if (variant === 'accent') {
+      return <AccentButton {...props} ref={ref} />;
+    }
+
+    if (variant === 'icon') {
+      return <IconButton {...props} ref={ref} />;
+    }
+    let defaultClasses = ` outline-none focus:outline-none transition-colors text-sm ${
+      className ? className : ''
+    } `;
+    let colorClasses = '';
+    let disabledClasses = ' cursor-default ';
+    let roundedClasses = ' rounded-full ';
+    let sizeClasses = ` ${sizePaddings[size]} ${full ? ' w-full ' : ''}`;
+    let fontClasses = ` ${bold ? ' font-semibold ' : ''} `;
+    let loadingColor = color;
+
+    if (color === 'blue' || color === 'black') loadingColor = '#1f6feb';
+
+    if (variant === 'filled') {
+      if (color === 'black') {
+        colorClasses += ` text-white bg-black `;
+      } else {
+        colorClasses += ` text-white ${BACKGROUND_COLORS[color]} shadow-sm `;
+      }
+      loadingColor = 'white';
+      disabledClasses += ` bg-gray-100 text-gray-600 dark:bg-dark-gray-400 dark:text-dark-gray-200`;
+    } else if (variant === 'open') {
+      colorClasses += ` ${TEXT_COLORS[color]}`;
+      disabledClasses += ` text-gray-500 `;
+    } else if (variant === 'outlined') {
+      colorClasses += `  border-gray-300 dark:border-dark-gray-400 ${TEXT_COLORS[color]} bg-gray-100 focus:bg-gray-100 dark:bg-dark-gray-700 `;
+      disabledClasses += `  border-gray-300 text-gray-500 dark:border-dark-gray-400 dark:text-dark-gray-200 `;
+    }
+
+    return (
+      <button
+        className={`
             ${disabled ? disabledClasses : colorClasses} 
             ${sizeClasses} ${fontClasses} ${roundedClasses} ${defaultClasses}`}
-      onClick={loading ? null : onClick}
-      disabled={disabled}
-      onKeyUp={onKeyUp}
-      style={style}
-      tabIndex={tabIndex}
-      onFocus={onFocus?.()}
-      onBlur={onBlur?.()}
-      aria-label={name}
-      type={type}
-    >
-      {loading ? <PulseLoader color={loadingColor} size={6} /> : children}
-    </button>
-  );
-}
+        onClick={loading ? null : onClick}
+        disabled={disabled}
+        onKeyUp={onKeyUp}
+        style={style}
+        tabIndex={tabIndex}
+        onFocus={onFocus?.()}
+        onBlur={onBlur?.()}
+        aria-label={name}
+        type={type}
+        ref={ref}
+      >
+        {loading ? <PulseLoader color={loadingColor} size={6} /> : children}
+      </button>
+    );
+  }
+);
 
-function IconButton({
-  size = 'md',
-  className,
-  children,
-  disabled,
-  color = 'gray',
-  ...props
-}) {
-  return (
-    <button
-      disabled={disabled}
-      className={classNames(
-        defaultClasses,
-        iconSizes[size],
-        'rounded-full',
-        !disabled && iconColors[color],
-        disabled
-          ? 'text-gray-500 dark:text-dark-gray-200 cursor-default'
-          : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
+export default Button;
 
-function PrimaryButton({
-  size = 'md',
-  className,
-  children,
-  loading,
-  color = 'blue',
-  full,
-  disabled,
-  ...props
-}) {
-  return (
-    <button
-      disabled={disabled || loading}
-      className={classNames(
-        defaultClasses,
-        sizePaddings[size],
-        'text-white',
-        disabled
-          ? 'bg-gray-100 text-gray-500 dark:bg-dark-gray-400 dark:text-dark-gray-200 cursor-default'
-          : BACKGROUND_COLORS[color],
-        full && 'w-full',
+const IconButton = forwardRef(
+  (
+    { size = 'md', className, children, disabled, color = 'gray', ...props },
+    ref
+  ) => {
+    return (
+      <button
+        disabled={disabled}
+        className={classNames(
+          defaultClasses,
+          iconSizes[size],
+          'rounded-full',
+          !disabled && iconColors[color],
+          disabled
+            ? 'text-gray-500 dark:text-dark-gray-200 cursor-default'
+            : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
+);
 
-        className
-      )}
-      {...props}
-    >
-      {loading ? <PulseLoader color="white" size={6} /> : children}
-    </button>
-  );
-}
+const PrimaryButton = forwardRef(
+  (
+    {
+      size = 'md',
+      className,
+      children,
+      loading,
+      color = 'blue',
+      full,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <button
+        disabled={disabled || loading}
+        className={classNames(
+          defaultClasses,
+          sizePaddings[size],
+          'text-white',
+          disabled
+            ? 'bg-gray-100 text-gray-500 dark:bg-dark-gray-400 dark:text-dark-gray-200 cursor-default'
+            : BACKGROUND_COLORS[color],
+          full && 'w-full',
 
-function AccentButton({
-  size,
-  className,
-  children,
-  loading,
-  color = 'blue',
-  full,
-  disabled,
-  ...props
-}) {
-  return (
-    <button
-      disabled={disabled || loading}
-      className={classNames(
-        defaultClasses,
-        sizePaddings[size],
-        accentColors[color],
-        disabled
-          ? 'bg-gray-100 text-gray-500 dark:bg-dark-gray-400 dark:text-dark-gray-200 cursor-default'
-          : 'bg-gray-100 focus:bg-gray-200 hover:bg-gray-200 dark:bg-dark-gray-700 dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600',
-        full && 'w-full',
+          className
+        )}
+        {...props}
+      >
+        {loading ? <PulseLoader color="white" size={6} /> : children}
+      </button>
+    );
+  }
+);
 
-        className
-      )}
-      {...props}
-    >
-      {loading ? <PulseLoader color="currentColor" size={6} /> : children}
-    </button>
-  );
-}
+const AccentButton = forwardRef(
+  (
+    {
+      size,
+      className,
+      children,
+      loading,
+      color = 'blue',
+      full,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <button
+        ref={ref}
+        disabled={disabled || loading}
+        className={classNames(
+          defaultClasses,
+          sizePaddings[size],
+          accentColors[color],
+          disabled
+            ? 'bg-gray-100 text-gray-500 dark:bg-dark-gray-400 dark:text-dark-gray-200 cursor-default'
+            : 'bg-gray-100 focus:bg-gray-200 hover:bg-gray-200 dark:bg-dark-gray-700 dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600',
+          full && 'w-full',
+
+          className
+        )}
+        {...props}
+      >
+        {loading ? <PulseLoader color="currentColor" size={6} /> : children}
+      </button>
+    );
+  }
+);
 
 Button.defaultProps = {
   bold: true,

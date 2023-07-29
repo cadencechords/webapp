@@ -68,23 +68,20 @@ export default function useOneSignal() {
         await OneSignal.setExternalUserId(uid);
         OneSignal.showSlidedownPrompt();
         OneSignal.addListenerForNotificationOpened(async ({ data }) => {
-          console.log(data);
-          let { team_id, message_id, type } = data || {};
+          let { team_id, type, message_id } = data || {};
 
           if (type === 'chat') {
             if (team_id !== teamId) {
-              console.log('switching teams');
               await switchTeams(team_id);
             }
 
-            console.log('navigating');
-            router.push(`/chat?message_id=${message_id}`);
+            router.push(`/chat?messageId=${message_id}`);
           }
         });
       }
     }
 
-    setupOneSignal();
+    if (window.location.hostname !== 'localhost') setupOneSignal();
 
     return () => {
       OneSignal.removeExternalUserId();
