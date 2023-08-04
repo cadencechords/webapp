@@ -11,7 +11,6 @@ import EmojiIcon from '@heroicons/react/solid/EmojiHappyIcon';
 import {
   EmojiPicker,
   SendButton as DefaultSendButton,
-  UploadIcon as DefaultUploadIcon,
   QuotedMessagePreview as DefaultQuotedMessagePreview,
   QuotedMessagePreviewHeader,
   AttachmentPreviewList,
@@ -47,7 +46,7 @@ export const MessageInput = () => {
       channel?.off('message.deleted', handleQuotedMessageUpdate);
       channel?.off('message.updated', handleQuotedMessageUpdate);
     };
-  }, [channel, quotedMessage]);
+  }, [channel, quotedMessage, setQuotedMessage]);
 
   return <MessageInputV2 />;
 };
@@ -78,7 +77,6 @@ const MessageInputV2 = () => {
 
   const {
     CooldownTimer = DefaultCooldownTimer,
-    FileUploadIcon = DefaultUploadIcon,
     QuotedMessagePreview = DefaultQuotedMessagePreview,
     SendButton = DefaultSendButton,
   } = useComponentContext('MessageInputV2');
