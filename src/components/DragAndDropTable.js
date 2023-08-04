@@ -82,7 +82,7 @@ export default function DragAndDropTable({
                       >
                         <span className="flex items-center">
                           <Link
-                            className="cursor-pointer hover:underline"
+                            className="whitespace-pre-wrap cursor-pointer hover:underline"
                             to={`/songs/${item.id}`}
                           >
                             {item.name}

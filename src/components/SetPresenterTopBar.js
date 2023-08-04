@@ -164,7 +164,7 @@ function AnnotationsTopBar({ song, onUpdateSong }) {
 
 function HeaderTitle({ children }) {
   return (
-    <h1 className="w-1/3 overflow-hidden font-semibold text-center overflow-ellipsis whitespace-nowrap">
+    <h1 className="w-1/3 overflow-hidden font-semibold text-center whitespace-pre overflow-ellipsis">
       {children}
     </h1>
   );
