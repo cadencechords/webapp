@@ -61,7 +61,7 @@
   },
   "scripts": {
     "start": "craco --openssl-legacy-provider start",
-    "build": "craco build",
+    "build": "NODE_OPTIONS='--openssl-legacy-provider' craco build",
     "test": "craco test",
     "e2e": "cypress open",
     "e2e:headless": "cypress run",
