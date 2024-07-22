@@ -62,7 +62,7 @@ export default function BillingPage() {
           <span className="text-2xl font-bold">{plan_name} Plan</span>
           {isTrialing && (
             <Badge color="green" className="inline-block ml-3">
-              Trialing until {format(trialEndDate, 'MMM d')}
+              Trialing until {format(trialEndDate, 'MMM D')}
             </Badge>
           )}
         </div>
