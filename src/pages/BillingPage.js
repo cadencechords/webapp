@@ -12,12 +12,12 @@ import useCreateCustomerPortalSession from '../hooks/api/useCreateCustomerProtal
 
 export default function BillingPage() {
   const { data: subscription, isLoading } = useSubscription();
-  const { status, plan_name, price, trial_end } = subscription;
+  const { status, plan_name, price, expires_at } = subscription;
   const { isLoading: isCreatingSession, run: createCustomerPortalSession } =
     useCreateCustomerPortalSession();
 
   const isPro = plan_name === 'Pro';
-  const trialEndDate = trial_end ? new Date(trial_end * 1000) : null;
+  const trialEndDate = expires_at ? new Date(expires_at) : null;
   const isTrialing = status === 'trialing' && trialEndDate;
 
   const checkIcon = (
