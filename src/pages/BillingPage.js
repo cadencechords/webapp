@@ -12,11 +12,12 @@ import useCreateCustomerPortalSession from '../hooks/api/useCreateCustomerProtal
 
 export default function BillingPage() {
   const { data: subscription, isLoading } = useSubscription();
-  const { status, plan_name, price, expires_at } = subscription;
+  const { status, plan_name, price, expires_at, store } = subscription;
   const { isLoading: isCreatingSession, run: createCustomerPortalSession } =
     useCreateCustomerPortalSession();
 
   const isPro = plan_name === 'Pro';
+  const isStripe = store === 'stripe';
   const trialEndDate = expires_at ? new Date(expires_at) : null;
   const isTrialing = status === 'trialing' && trialEndDate;
 
@@ -34,17 +35,18 @@ export default function BillingPage() {
       <div className="mb-8 flex-between">
         <PageTitle title="Billing" />
         <div className="hidden md:block">
-          {isPro ? (
+          {isStripe && isPro && (
             <Button
               color="purple"
               variant="accent"
-              className="w-32 whitespace-nowrap"
+              className="w-24 whitespace-nowrap"
               onClick={createCustomerPortalSession}
               loading={isCreatingSession}
             >
-              Change Plan
+              Manage
             </Button>
-          ) : (
+          )}
+          {!isPro && (
             <Button
               color="purple"
               className="w-24"
@@ -122,7 +124,7 @@ export default function BillingPage() {
         </div>
       </Card>
       <div className="mt-8 md:hidden">
-        {isPro ? (
+        {isStripe && isPro && (
           <Button
             full={true}
             color="purple"
@@ -130,9 +132,10 @@ export default function BillingPage() {
             onClick={createCustomerPortalSession}
             loading={isCreatingSession}
           >
-            Change Plan
+            Manage
           </Button>
-        ) : (
+        )}
+        {!isPro && (
           <Button
             full={true}
             color="purple"
