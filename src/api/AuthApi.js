@@ -17,6 +17,7 @@ export default class AuthApi {
       password_confirmation: passwordConfirmation,
       first_name: firstName,
       last_name: lastName,
+      sign_up_source: 'web'
     });
   }
 
