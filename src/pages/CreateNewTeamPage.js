@@ -46,7 +46,7 @@ export default function CreateNewTeamPage() {
 
   return (
     <CenteredPage>
-      <div className="font-bold text-xl mb-6 text-center">Your New Team</div>
+      <div className="mb-6 text-xl font-bold text-center">Your New Team</div>
       <TeamPlanOption
         name="Starter"
         onClick={setSelectedPlan}
@@ -65,7 +65,7 @@ export default function CreateNewTeamPage() {
             $10.00<span className="text-sm"> / month</span>
           </div>
         }
-        trialMessage="30 Day Free Trial"
+        trialMessage="7 Day Free Trial"
       />
       <div className="mb-1 font-semibold text-left">Your team's name</div>
       <OutlinedInput
