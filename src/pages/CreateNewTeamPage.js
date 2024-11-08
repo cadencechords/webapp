@@ -62,7 +62,7 @@ export default function CreateNewTeamPage() {
         className="mb-8"
         pricing={
           <div>
-            $10.00<span className="text-sm"> / month</span>
+            $20.00<span className="text-sm"> / month</span>
           </div>
         }
         trialMessage="7 Day Free Trial"
