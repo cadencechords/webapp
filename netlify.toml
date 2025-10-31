@@ -25,3 +25,4 @@ REACT_APP_PUBLIC_URL        = "https://public.mezzochords.com"
   to = "https://app.mezzochords.com/:splat"
   status = 301
   force = true
+  conditions = { Host = ["app.cadencechords.com"] }
