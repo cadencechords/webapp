@@ -18,3 +18,10 @@ REACT_APP_SESSIONS_URL      = "https://chords-sessions-dev.herokuapp.com"
 REACT_APP_URL               = "https://dev.app.mezzochords.com"
 REACT_APP_SENTRY_ENVIRONMENT= "dev"
 REACT_APP_PUBLIC_URL        = "https://public.mezzochords.com"
+
+
+[[redirects]]
+  from = "https://app.cadencechords.com/*"
+  to = "https://app.mezzochords.com/:splat"
+  status = 301
+  force = true
