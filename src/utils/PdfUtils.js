@@ -30,7 +30,7 @@ export function toPdf(song, showChords) {
   }
 
   let pdf = (
-    <Document creator="Cadence" producer="Cadence" author="Cadence">
+    <Document creator="Mezzo" producer="Mezzo" author="Mezzo">
       <Page size="A4" style={PDF_STYLES}>
         <View style={{ fontFamily: getFontName(song.format.font) }}>
           <View style={{ marginBottom: '.25in', fontWeight: 'bold' }}>

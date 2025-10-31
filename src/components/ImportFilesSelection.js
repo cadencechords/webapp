@@ -11,8 +11,8 @@ export default function ImportFilesSelection({ filesToImport, onFilesChange, onI
 	return (
 		<>
 			<PageTitle title="Import songs" />
-			<p className="text-sm leading-relaxed mb-8">
-				You can import song files from your device and add it to your library in Cadence. Click the
+			<p className="mb-8 text-sm leading-relaxed">
+				You can import song files from your device and add it to your library in Mezzo. Click the
 				button below to browse and select files on your device. You can import Word documents, PDF
 				files or regular text files.
 			</p>

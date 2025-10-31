@@ -1,20 +1,20 @@
 [context.production.environment]
 REACT_APP_API_URL           = "https://chords-api.herokuapp.com"
 REACT_APP_PCO_CLIENT_ID     = "fb5fe2aa8e69d8e2fc436b5a07ce22cac022aa92d7e2070ff1edd6efdf41d4f5"
-REACT_APP_PCO_REDIRECT_URI  = "https://app.cadencechords.com/import/pco_redirect"
+REACT_APP_PCO_REDIRECT_URI  = "https://app.mezzochords.com/import/pco_redirect"
 REACT_APP_SENTRY_URL        = "https://d8ae4d03e076479fbe4dd2588eaccecb@o486136.ingest.sentry.io/6036697"
 REACT_APP_SESSIONS_URL      = "https://chords-sessions.herokuapp.com"
-REACT_APP_URL               = "https://app.cadencechords.com"
+REACT_APP_URL               = "https://app.mezzochords.com"
 REACT_APP_SENTRY_ENVIRONMENT= "production"
-REACT_APP_PUBLIC_URL        = "https://public.cadencechords.com"
+REACT_APP_PUBLIC_URL        = "https://public.mezzochords.com"
 
 
 [context.dev.environment]
 REACT_APP_API_URL           = "https://api-cfyh.onrender.com"
 REACT_APP_PCO_CLIENT_ID     = "fb5fe2aa8e69d8e2fc436b5a07ce22cac022aa92d7e2070ff1edd6efdf41d4f5"
-REACT_APP_PCO_REDIRECT_URI  = "https://dev.app.cadencechords.com/import/pco_redirect"
+REACT_APP_PCO_REDIRECT_URI  = "https://dev.app.mezzochords.com/import/pco_redirect"
 REACT_APP_SENTRY_URL        = "https://d8ae4d03e076479fbe4dd2588eaccecb@o486136.ingest.sentry.io/6036697"
 REACT_APP_SESSIONS_URL      = "https://chords-sessions-dev.herokuapp.com"
-REACT_APP_URL               = "https://dev.app.cadencechords.com"
+REACT_APP_URL               = "https://dev.app.mezzochords.com"
 REACT_APP_SENTRY_ENVIRONMENT= "dev"
-REACT_APP_PUBLIC_URL        = "https://public.cadencechords.com"
+REACT_APP_PUBLIC_URL        = "https://public.mezzochords.com"

@@ -40,19 +40,19 @@ export default function ImportSongsPage() {
             import.
           </ImportSourceCard>
           <ImportSourceCard
-            title="Cadence"
+            title="Mezzo"
             to="/import/cadence"
             image={
               <img
                 src="/apple-touch-icon.png"
                 width="48"
                 height="48"
-                alt="Cadence"
+                alt="Mezzo"
                 className="shadow-sm rounded-xl"
               />
             }
           >
-            Import songs from other teams you're on in Cadence
+            Import songs from other teams you're on in Mezzo
           </ImportSourceCard>
           <ImportSourceCard
             title="File"

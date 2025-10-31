@@ -38,9 +38,9 @@ export default function ForgotPasswordPage() {
 	return (
 		<CenteredPage>
 			<PageTitle title="Reset Password" align="center" />
-			<div className="font-semibold text-gray-600 dark:text-dark-gray-200 text-lg mb-6">
-				Enter the email address you used to register with Cadence. If the email matches an account
-				in Cadence, we'll send you instructions to reset your password.
+			<div className="mb-6 text-lg font-semibold text-gray-600 dark:text-dark-gray-200">
+				Enter the email address you used to register with Mezzo. If the email matches an account
+				in Mezzo, we'll send you instructions to reset your password.
 			</div>
 			<OutlinedInput
 				className="mb-6"
@@ -51,7 +51,7 @@ export default function ForgotPasswordPage() {
 			/>
 			{showSuccess && (
 				<Alert className="mb-6">
-					If you have an account with Cadence, you should receive an email soon!
+					If you have an account with Mezzo, you should receive an email soon!
 				</Alert>
 			)}
 			<Button full disabled={!email} loading={sending} onClick={handleSendInstructions}>
