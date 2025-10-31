@@ -21,7 +21,7 @@ REACT_APP_PUBLIC_URL        = "https://public.mezzochords.com"
 
 
 [[redirects]]
-  from = "https://app.cadencechords.com/*"
+  from = "/*"
   to = "https://app.mezzochords.com/:splat"
   status = 301
   force = true
