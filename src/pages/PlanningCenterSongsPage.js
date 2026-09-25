@@ -118,7 +118,7 @@ export default function PlanningCenterSongsPage() {
                 <MobileMenuButton
                   color="blue"
                   full={true}
-                  onClick={fetchNextPage}
+                  onClick={() => fetchNextPage()}
                   disabled={isFetchingNextPage}
                 >
                   {isFetchingNextPage ? (

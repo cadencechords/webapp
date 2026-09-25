@@ -24,7 +24,7 @@ export default function Navbar() {
           <Button
             color="purple"
             className="w-24 mr-8"
-            onClick={createCustomerPortalSession}
+            onClick={() => createCustomerPortalSession()}
             loading={isCreatingSession}
           >
             Upgrade
