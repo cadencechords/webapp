@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__.*create_pull_request",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/require-adversarial-review.mjs\"",
+            "timeout": 20,
+            "statusMessage": "Checking for an adversarial review"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(gh pr create*)",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/require-adversarial-review.mjs\"",
+            "timeout": 20,
+            "statusMessage": "Checking for an adversarial review"
+          }
+        ]
+      }
+    ]
+  }
+}
