@@ -54,3 +54,7 @@ team selection. Keep these two workarounds:
   1.5 seconds, then use `pressSequentially`.
 
 Login flow: `/login`, then `/login/teams` (team picker), then `/` (dashboard).
+
+For screenshots of every route, or to check that flows still work, use the
+Playwright suite instead: `yarn e2e:catalog` and `yarn e2e:smoke` (see
+`e2e/README.md`). It applies the same proxy-CA and typing workarounds.
