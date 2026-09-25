@@ -1,0 +1,28 @@
+{
+  // TypeScript that runs in Node rather than the browser: scripts, e2e,
+  // .claude hooks and config files. Node runs these with its built-in type
+  // stripping, which ignores types, so this is what checks them.
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
+    "lib": ["es2023"],
+    "types": ["node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": [
+    "scripts/**/*.ts",
+    "scripts/**/*.mts",
+    "e2e/**/*.ts",
+    "e2e/**/*.mts",
+    ".claude/**/*.ts",
+    ".claude/**/*.mts",
+    "*.config.ts",
+    "*.config.mts"
+  ]
+}

@@ -13,6 +13,10 @@ Converting a file means renaming it to `.ts`/`.tsx`, typing it, and running
 Only `public/` (served as-is) is exempt.
 
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
+`tsconfig.json` covers `src`. `tsconfig.node.json` covers TypeScript that
+Node runs directly (`scripts/`, `e2e/`, `.claude/`, config files), is
+`strict`, and has no baseline. Node strips types without checking them, so
+`yarn typecheck` is what catches errors there.
 ESLint parses TypeScript with the TypeScript 6 API from
 `@typescript/typescript6`, because TypeScript 7 has no JavaScript API (see
 `eslint.config.mjs`). TypeScript files get typescript-eslint's recommended
@@ -21,7 +25,7 @@ rules (the ones that don't need type information), such as `no-explicit-any`.
 ## Checks (same as CI)
 
 ```bash
-yarn typecheck      # TypeScript over the JS; fails only on errors beyond typecheck-baseline.json
+yarn typecheck      # TypeScript over src (fails only on errors beyond typecheck-baseline.json) and Node-side TS
 yarn ts-only        # no new JavaScript files; the existing ones are in js-allowlist.json
 yarn lint           # ESLint; existing violations are in eslint-suppressions.json
 yarn format:check   # Prettier

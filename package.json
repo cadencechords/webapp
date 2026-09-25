@@ -90,6 +90,7 @@
     "@tailwindcss/node": "^4",
     "@tailwindcss/vite": "^4",
     "@testing-library/cypress": "^8.0.3",
+    "@types/node": "^22",
     "@types/react": "^17",
     "@types/react-dom": "^17",
     "@typescript/typescript6": "^6.0.2",

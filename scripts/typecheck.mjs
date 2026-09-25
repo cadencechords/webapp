@@ -1,6 +1,7 @@
 // Type-checks src with tsc (allowJs + checkJs) against a baseline of known
 // errors per file, so CI catches new type errors while the ~1,200 existing
-// ones get fixed over time.
+// ones get fixed over time. Also checks the Node-side TypeScript
+// (tsconfig.node.json), which has no baseline, so any error there fails.
 //
 //   yarn typecheck           fail if any file has more errors than its baseline
 //   yarn typecheck --update  rewrite the baseline (after fixing errors)
@@ -11,14 +12,17 @@ const BASELINE = new URL('../typecheck-baseline.json', import.meta.url);
 const update = process.argv.includes('--update');
 
 let output = '';
-try {
-  output = execFileSync('npx', ['tsc', '-p', '.', '--pretty', 'false'], {
-    encoding: 'utf8',
-    maxBuffer: 64 * 1024 * 1024,
-  });
-} catch (error) {
-  output = error.stdout ?? ''; // tsc exits non-zero when it reports errors
-  if (!output) throw error;
+for (const project of ['tsconfig.json', 'tsconfig.node.json']) {
+  try {
+    output += execFileSync('npx', ['tsc', '-p', project, '--pretty', 'false'], {
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+    });
+  } catch (error) {
+    // tsc exits non-zero when it reports errors
+    if (!error.stdout) throw error;
+    output += error.stdout;
+  }
 }
 
 // Paths can contain spaces and parentheses (src/components/mobile menus/...).
