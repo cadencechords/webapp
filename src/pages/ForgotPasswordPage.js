@@ -9,7 +9,9 @@ import PageTitle from '../components/PageTitle';
 import { reportError } from '../utils/error';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState(
+    /** @type {string | undefined} */ (undefined)
+  );
   const [sending, setSending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 

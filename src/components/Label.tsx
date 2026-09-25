@@ -1,4 +1,8 @@
-export default function Label({ children, className }) {
+import type { ReactNode } from 'react';
+
+type LabelProps = { children?: ReactNode; className?: string };
+
+export default function Label({ children, className }: LabelProps) {
   return (
     <div
       className={

@@ -1,7 +1,22 @@
-import { BACKGROUND_COLORS } from './Button';
+import type { ReactNode } from 'react';
+import { BACKGROUND_COLORS, type ButtonColor } from './Button';
 import { Switch } from '@headlessui/react';
 
-export default function Toggle({ enabled, onChange, label, color, spacing }) {
+type ToggleProps = {
+  enabled?: boolean;
+  onChange?: (enabled: boolean) => void;
+  label?: ReactNode;
+  color?: ButtonColor;
+  spacing?: keyof typeof SPACING;
+};
+
+export default function Toggle({
+  enabled,
+  onChange,
+  label,
+  color = 'blue',
+  spacing = 'none',
+}: ToggleProps) {
   return (
     <Switch.Group>
       <div className={`flex items-center ${SPACING[spacing]}`}>
@@ -25,11 +40,6 @@ export default function Toggle({ enabled, onChange, label, color, spacing }) {
     </Switch.Group>
   );
 }
-
-Toggle.defaultProps = {
-  color: 'blue',
-  spacing: 'none',
-};
 
 const SPACING = {
   between: 'justify-between',

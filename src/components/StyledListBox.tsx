@@ -1,13 +1,25 @@
+import type { ReactNode } from 'react';
 import { Listbox } from '@headlessui/react';
 import Icon from './Icon';
 
-export default function StyledListBox({
+type ListBoxOption<T> = { value: T; template: ReactNode };
+
+type StyledListBoxProps<T> = {
+  options?: ListBoxOption<T>[];
+  onChange?: (value: T) => void;
+  selectedOption: ListBoxOption<T>;
+  // 'white', or a Tailwind color name used as bg-<name>-200
+  background?: string;
+  relative?: boolean;
+};
+
+export default function StyledListBox<T>({
   options,
   onChange,
   selectedOption,
-  background,
+  background = 'transparent',
   relative,
-}) {
+}: StyledListBoxProps<T>) {
   return (
     <Listbox value={selectedOption.value} onChange={onChange}>
       <div className="relative">
@@ -55,5 +67,3 @@ export default function StyledListBox({
     </Listbox>
   );
 }
-
-StyledListBox.defaultProps = { background: 'transparent' };

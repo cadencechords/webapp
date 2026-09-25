@@ -1,26 +1,36 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ChangeEvent } from 'react';
 
 import Button from './Button';
 import Icon from './Icon';
 
-export default function FileInput({ onChange, accept, onRemove }) {
-  const input = useRef();
-  const [file, setFile] = useState();
+type FileInputProps = {
+  onChange: (file: File) => void;
+  accept?: string;
+  onRemove: () => void;
+};
 
-  const handleFileChosen = e => {
-    let uploadedFile = e.target.files[0];
+export default function FileInput({
+  onChange,
+  accept = '',
+  onRemove,
+}: FileInputProps) {
+  const input = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>();
+
+  const handleFileChosen = (e: ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = e.target.files[0];
     onChange(uploadedFile);
     setFile(uploadedFile);
   };
 
   const handleClick = () => {
-    input.current.click();
+    input.current?.click();
   };
 
   const handleRemoveChosenFile = () => {
     setFile(null);
     onRemove();
-    input.current.value = '';
+    if (input.current) input.current.value = '';
   };
 
   return (
@@ -46,7 +56,3 @@ export default function FileInput({ onChange, accept, onRemove }) {
     </>
   );
 }
-
-FileInput.defaultProps = {
-  accept: '',
-};

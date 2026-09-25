@@ -14,15 +14,21 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const ALLOWLIST = new URL('../js-allowlist.json', import.meta.url);
 const JS = /\.(js|jsx|mjs|cjs)$/;
 
+const git = (...args: string[]) =>
+  execFileSync('git', ['ls-files', '-z', ...args], {
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+  }).split('\0');
+
+// The index still lists a file deleted or renamed without git (plain `mv`).
+// `--deleted` reports those, but not files a sparse checkout leaves off disk.
+const deleted = new Set(git('--deleted'));
+
 // Tracked files plus untracked ones that aren't ignored, so a new file is
 // caught before it's committed.
-const files = execFileSync(
-  'git',
-  ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
-  { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
-)
-  .split('\0')
-  .filter(file => JS.test(file) && !file.startsWith('public/'));
+const files = git('--cached', '--others', '--exclude-standard').filter(
+  file => JS.test(file) && !file.startsWith('public/') && !deleted.has(file)
+);
 const present = new Set(files);
 
 const allowed: string[] = JSON.parse(readFileSync(ALLOWLIST, 'utf8'));

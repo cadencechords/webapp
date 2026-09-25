@@ -1,19 +1,27 @@
-import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import Icon from './Icon';
 
+type CheckboxProps = {
+  color?: keyof typeof RING_COLORS;
+  checked?: boolean;
+  onChange: (checked: boolean) => void;
+  className?: string;
+  id?: string;
+  standAlone?: boolean;
+};
+
 export default function Checkbox({
-  color,
+  color = 'blue',
   checked,
   onChange,
-  className,
+  className = '',
   id,
   standAlone = true,
-}) {
-  const ref = useRef();
+}: CheckboxProps) {
+  const ref = useRef<HTMLInputElement>(null);
 
   function handleClick() {
-    ref.current.click();
+    ref.current?.click();
   }
 
   return (
@@ -35,7 +43,7 @@ export default function Checkbox({
             ? BACKGROUND_COLORS[color]
             : ' border border-gray-300 dark:border-dark-gray-400 '
         } ${className}`}
-        onClick={standAlone ? handleClick : null}
+        onClick={standAlone ? handleClick : undefined}
       >
         {checked && (
           <Icon
@@ -48,16 +56,6 @@ export default function Checkbox({
     </>
   );
 }
-
-Checkbox.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  color: PropTypes.string,
-};
-
-Checkbox.defaultProps = {
-  color: 'blue',
-  className: '',
-};
 
 const RING_COLORS = {
   red: 'ring-red-300',
