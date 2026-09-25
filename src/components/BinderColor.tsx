@@ -1,6 +1,21 @@
 import Icon from './Icon';
 
-export default function BinderColor({ color, onClick, block, size, editable }) {
+type BinderColorProps = {
+  // A key of COLORS, 'none' (a crossed-out swatch) or 'white' (no fill).
+  color?: string;
+  onClick?: (color: string) => void;
+  block?: boolean;
+  size?: keyof typeof HEIGHT_SIZES | `${keyof typeof HEIGHT_SIZES}`;
+  editable?: boolean;
+};
+
+export default function BinderColor({
+  color = 'white',
+  onClick,
+  block,
+  size = '4',
+  editable = true,
+}: BinderColorProps) {
   const handleClick = () => {
     if (onClick && editable) {
       onClick(color);
@@ -26,12 +41,6 @@ export default function BinderColor({ color, onClick, block, size, editable }) {
   );
 }
 
-BinderColor.defaultProps = {
-  color: 'white',
-  size: '4',
-  editable: true,
-};
-
 const HEIGHT_SIZES = {
   3: 'h-3',
   4: 'h-4',
@@ -42,7 +51,7 @@ const WIDTH_SIZES = {
   4: 'w-4',
 };
 
-const COLORS = {
+const COLORS: Record<string, string> = {
   red: 'bg-red-400',
   blue: 'bg-blue-400',
   green: 'bg-green-400',

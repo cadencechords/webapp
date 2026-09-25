@@ -10,8 +10,13 @@ export default function MeterDialog({
   meter,
   onMeterChange,
 }) {
-  const [numerator, setNumerator] = useState(4);
-  const [denominator, setDenominator] = useState(4);
+  // EditableData hands back strings, so these hold strings after an edit.
+  const [numerator, setNumerator] = useState(
+    /** @type {number | string} */ (4)
+  );
+  const [denominator, setDenominator] = useState(
+    /** @type {number | string} */ (4)
+  );
 
   const handleChooseCommonMeter = (num, denom) => {
     setNumerator(num);

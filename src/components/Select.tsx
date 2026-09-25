@@ -1,5 +1,16 @@
-import React from 'react';
+import type { CSSProperties, ReactNode, SelectHTMLAttributes } from 'react';
 import Icon from './Icon';
+
+type SelectProps = Omit<
+  SelectHTMLAttributes<HTMLSelectElement>,
+  'onChange' | 'value'
+> & {
+  options?: { value: string | number; display: ReactNode }[];
+  selected?: string | number;
+  onChange?: (value: string) => void;
+  style?: CSSProperties;
+  className?: string;
+};
 
 export default function Select({
   options = [],
@@ -8,7 +19,7 @@ export default function Select({
   style,
   className = '',
   ...props
-}) {
+}: SelectProps) {
   return (
     <span className="relative">
       <select

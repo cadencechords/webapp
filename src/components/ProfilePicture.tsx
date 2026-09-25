@@ -1,6 +1,17 @@
+import type { MouseEventHandler } from 'react';
 import Icon from './Icon';
 
-export default function ProfilePicture({ url, size, onClick }) {
+type ProfilePictureProps = {
+  url?: string | null;
+  size?: keyof typeof SIZES;
+  onClick?: MouseEventHandler<HTMLDivElement>;
+};
+
+export default function ProfilePicture({
+  url,
+  size = 'base',
+  onClick,
+}: ProfilePictureProps) {
   if (url) {
     return (
       <div
@@ -36,10 +47,6 @@ export default function ProfilePicture({ url, size, onClick }) {
     );
   }
 }
-
-ProfilePicture.defaultProps = {
-  size: 'base',
-};
 
 const SIZES = {
   xs: '30px',

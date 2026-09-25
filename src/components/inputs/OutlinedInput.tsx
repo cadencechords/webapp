@@ -1,15 +1,37 @@
 import Label from '../Label';
-import PropTypes from 'prop-types';
 import PulseLoader from 'react-spinners/PulseLoader';
-import React from 'react';
+import {
+  forwardRef,
+  type FocusEventHandler,
+  type HTMLInputTypeAttribute,
+  type KeyboardEvent,
+  type MouseEventHandler,
+  type ReactNode,
+} from 'react';
 
-const OutlinedInput = React.forwardRef(
+type OutlinedInputProps = {
+  placeholder?: string;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
+  onFocus?: FocusEventHandler<HTMLInputElement>;
+  type?: HTMLInputTypeAttribute;
+  onChange: (value: string) => void;
+  value?: string | number;
+  label?: ReactNode;
+  button?: ReactNode;
+  onButtonClick?: MouseEventHandler<HTMLButtonElement>;
+  buttonLoading?: boolean;
+  className?: string;
+  onEnter?: () => void;
+  id?: string;
+};
+
+const OutlinedInput = forwardRef<HTMLInputElement, OutlinedInputProps>(
   (
     {
       placeholder,
       onBlur,
       onFocus,
-      type,
+      type = 'text',
       onChange,
       value,
       label,
@@ -22,9 +44,9 @@ const OutlinedInput = React.forwardRef(
     },
     ref
   ) => {
-    let roundedClasses = ' rounded-lg ';
+    const roundedClasses = ' rounded-lg ';
 
-    const handleOnKeyUp = e => {
+    const handleOnKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.keyCode === 13) {
         onEnter?.();
       }
@@ -62,7 +84,7 @@ const OutlinedInput = React.forwardRef(
                     : ' hover:bg-gray-200 focus:bg-gray-200'
                 }`
               }
-              onClick={!buttonLoading ? onButtonClick : null}
+              onClick={!buttonLoading ? onButtonClick : undefined}
             >
               {buttonLoading ? <PulseLoader size={4} color="gray" /> : button}
             </button>
@@ -72,13 +94,5 @@ const OutlinedInput = React.forwardRef(
     );
   }
 );
-
-OutlinedInput.defaultProps = {
-  type: 'text',
-};
-
-OutlinedInput.propTypes = {
-  onChange: PropTypes.func.isRequired,
-};
 
 export default OutlinedInput;

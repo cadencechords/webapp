@@ -1,13 +1,31 @@
+import type {
+  HTMLInputTypeAttribute,
+  MouseEventHandler,
+  ReactNode,
+} from 'react';
+
+type EditableDataProps = {
+  // Text when editable; anything renderable (e.g. a link) when not.
+  value?: ReactNode;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+  centered?: boolean;
+  onClick?: MouseEventHandler<HTMLInputElement>;
+  className?: string;
+  type?: HTMLInputTypeAttribute;
+  editable?: boolean;
+};
+
 export default function EditableData({
   value,
   onChange,
   placeholder,
-  centered,
+  centered = false,
   onClick,
   className,
-  type,
-  editable,
-}) {
+  type = 'text',
+  editable = true,
+}: EditableDataProps) {
   if (editable) {
     return (
       <input
@@ -17,7 +35,7 @@ export default function EditableData({
           ` ${centered ? ' text-center ' : ''}` +
           ` ${className} `
         }
-        value={value}
+        value={value as string | number | undefined}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         onClick={onClick}
@@ -32,9 +50,3 @@ export default function EditableData({
     );
   }
 }
-
-EditableData.defaultProps = {
-  centered: false,
-  type: 'text',
-  editable: true,
-};
