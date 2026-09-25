@@ -52,6 +52,12 @@
    would otherwise clear them. */
 @import './styles/color-tokens.css';
 @import './styles/type-tokens.css';
+@import './styles/shape-elevation-state.css';
+
+/* Utilities the /dev/tokens page builds dynamically (the scanner can't see them). */
+@source inline('text-{display,headline,title,body,label}-{large,medium,small}{,-emphasized}');
+@source inline('rounded-{extra-small,small,medium,large,large-increased,extra-large,extra-large-increased,extra-extra-large,full}');
+@source inline('elevation-{0,1,2,3,4,5}');
 
 @utility transition-size {
   transition-property: width, height;
