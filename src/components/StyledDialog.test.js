@@ -6,7 +6,7 @@ import StyledDialog from './StyledDialog';
 // it (taps dismiss the dialog) and the close button pins to the viewport.
 test('the panel is positioned and contains the close button', () => {
   render(
-    <StyledDialog open onCloseDialog={() => {}} title="Title">
+    <StyledDialog open onCloseDialog={() => {}} title="Title" className="">
       <p>Body</p>
     </StyledDialog>
   );
