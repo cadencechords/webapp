@@ -38,5 +38,7 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/setupTests.js',
     include: ['src/**/*.test.js'],
+    // Its 0.4.0 ESM build has extensionless imports that Node can't load directly.
+    server: { deps: { inline: ['@material/material-color-utilities'] } },
   },
 });

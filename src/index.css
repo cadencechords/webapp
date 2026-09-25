@@ -48,10 +48,21 @@
   --spacing-84: 22rem;
 }
 
+/* M3 color roles. Imported after the block above, whose `--color-*: initial`
+   would otherwise clear them. */
+@import './styles/color-tokens.css';
+
 @utility transition-size {
   transition-property: width, height;
   transition-timing-function: var(--default-transition-timing-function);
   transition-duration: var(--default-transition-duration);
+}
+
+/* react-spring-bottom-sheet colors, on the color tokens. :root:root beats the
+   library's own :root defaults regardless of stylesheet order. */
+:root:root {
+  --rsbs-bg: var(--md-sys-color-surface-container-low);
+  --rsbs-handle-bg: --alpha(var(--md-sys-color-on-surface-variant) / 40%);
 }
 
 /* v2 defaults that v4 changed. */

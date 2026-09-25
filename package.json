@@ -66,7 +66,8 @@
     "e2e:catalog": "playwright test -c e2e/playwright.config.js --project=catalog",
     "e2e:smoke": "playwright test -c e2e/playwright.config.js --project=smoke",
     "e2e:unit": "node --test e2e/routes.test.js",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tokens:color": "vite-node --options.deps.inline=@material/material-color-utilities scripts/generate-color-tokens.mjs"
   },
   "browserslist": [
     ">0.2%",
@@ -74,7 +75,9 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@material/material-color-utilities": "^0.4.0",
     "@playwright/test": "1.56.1",
+    "@tailwindcss/node": "^4",
     "@tailwindcss/vite": "^4",
     "@testing-library/cypress": "^8.0.3",
     "@vitejs/plugin-react": "^4",
