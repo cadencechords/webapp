@@ -51,6 +51,7 @@
 /* M3 color roles. Imported after the block above, whose `--color-*: initial`
    would otherwise clear them. */
 @import './styles/color-tokens.css';
+@import './styles/type-tokens.css';
 
 @utility transition-size {
   transition-property: width, height;

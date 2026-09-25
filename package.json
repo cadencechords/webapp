@@ -67,7 +67,8 @@
     "e2e:smoke": "playwright test -c e2e/playwright.config.js --project=smoke",
     "e2e:unit": "node --test e2e/routes.test.js",
     "preview": "vite preview",
-    "tokens:color": "vite-node --options.deps.inline=@material/material-color-utilities scripts/generate-color-tokens.mjs"
+    "tokens:color": "vite-node --options.deps.inline=@material/material-color-utilities scripts/generate-color-tokens.mjs",
+    "tokens:type": "node scripts/generate-type-tokens.mjs"
   },
   "browserslist": [
     ">0.2%",
