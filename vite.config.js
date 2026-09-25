@@ -44,8 +44,9 @@ export default defineConfig({
     watch: { ignored: ['**/e2e/**', '**/cypress/**', '**/build/**'] },
   },
   preview: { port: 3000 },
-  // Netlify publishes build/, as it did with CRA.
-  build: { outDir: 'build', sourcemap: true },
+  // Netlify publishes build/, as it did with CRA. No sourcemaps: generating
+  // them for the ~4 MB main chunk pushed the build past Node's default heap.
+  build: { outDir: 'build' },
   test: {
     environment: 'jsdom',
     globals: true,
