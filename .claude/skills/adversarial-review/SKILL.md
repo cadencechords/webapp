@@ -10,25 +10,25 @@ the branch is wrong and tries to prove it: fresh-context reviewers attack the
 diff, a separate pass tries to disprove each finding, and only what survives
 counts. A PR can't be opened until a passing review is recorded for the
 **exact commit** it will contain. `.claude/hooks/require-adversarial-review.mjs`
-enforces this for the GitHub MCP `create_pull_request` tool and `gh pr create`.
+enforces this; see "What the gate guarantees" at the end for its limits.
 
 ## 0. Preconditions
 
-- Everything is committed and pushed. `git status` is clean, and
-  `origin/<branch>` equals `HEAD`.
+- Everything is committed and pushed. `git status` shows no changes to
+  tracked files, and the branch's remote copy equals `HEAD`.
 - You know the **base** the PR will target (for a stacked PR, the branch below
   it) and the **intent**: the Linear issue's scope and acceptance criteria.
 
 ## 1. Mechanical checks (fail fast)
 
-Run each one and record `pass` or `fail`:
+Run the same checks as CI:
 
 ```bash
-yarn typecheck && yarn lint && yarn format:check && yarn vitest run && yarn build
+yarn typecheck && yarn lint && yarn format:check && yarn vitest run && yarn test:hooks && yarn build
 ```
 
 Fix any failure before going on. A reviewer's time is wasted on a branch that
-CI would reject anyway.
+CI would reject anyway. (`record.mjs` runs these again itself in step 5.)
 
 ## 2. Attack: independent reviewers
 
@@ -85,20 +85,15 @@ Stop when a round produces no confirmed blocker or major finding.
 
 ## 5. Record
 
-Write the summary to a temp file (not in the repo) and record it:
+Write the summary to a temp file (not in the repo) and record it. Every
+blocker or major finding must be `confirmed` or `refuted`; minors may be
+`unverified`. There's no `checks` field: `record.mjs` runs the checks itself.
 
 ```json
 {
   "base": "<base branch>",
   "lenses": ["correctness", "tests", "integration", "honesty"],
   "rounds": 2,
-  "checks": {
-    "typecheck": "pass",
-    "lint": "pass",
-    "format": "pass",
-    "tests": "pass",
-    "build": "pass"
-  },
   "findings": [
     {
       "lens": "correctness",
@@ -124,12 +119,14 @@ Write the summary to a temp file (not in the repo) and record it:
 node .claude/skills/adversarial-review/record.mjs pass /path/to/summary.json
 ```
 
-`record.mjs` refuses to record `pass` in any of these cases:
+`record.mjs` runs the checks from step 1 itself and refuses to record `pass`
+in any of these cases:
 
-- the tree is dirty
-- `HEAD` isn't pushed
-- a check failed
-- a confirmed blocker or major finding isn't `fixed`
+- tracked files have uncommitted changes
+- `HEAD` is detached, or isn't what's on the remote branch (it fetches first)
+- the summary has fewer than two lenses, no `findings` array, or no `base`
+- a blocker or major finding is unverified, or confirmed and not `fixed`
+- any check fails
 
 Records are stored under `.git/adversarial-reviews/<sha>.json`. They aren't
 committed, and they only unlock that one commit.
@@ -146,3 +143,37 @@ Add an **Adversarial review** section to the PR description:
 Then open the PR. The hook checks the record for the head commit. If you
 push again later, a PR that's already open isn't blocked, but review the new
 commits with the same process before asking for another review.
+
+## What the gate guarantees, and what it doesn't
+
+The hook blocks opening a PR unless a `pass` record written by `record.mjs`
+exists for the commit currently on the remote head branch. It fetches that
+branch first, so a stale local ref can't be used. It covers:
+
+- the GitHub MCP `create_pull_request` tool (owner and repo must match this
+  checkout's remote)
+- Bash commands that run `gh pr create` or `gh pr new`: with `-H`/`--head`,
+  `-R`, env prefixes, `env`/`time` wrappers, `sh -c`, and `$(…)` or backticks
+- `gh api` POSTs to `…/pulls`, which are always blocked: open PRs with
+  `gh pr create` instead
+
+It also blocks when it can't tell what the PR contains: a `cd` or checkout
+before `gh pr create` without `--head`, a detached HEAD, a fork's head
+branch, another repo, `create_pull_request_with_copilot`, an unparseable
+command, a corrupt record, or the hook itself failing, including `node`
+missing from PATH. Mentions of the command in quoted text or heredocs are
+ignored. `gh pr create --help` is allowed.
+
+**Limits:**
+
+- **The review's content is self-reported.** The checks are real, because
+  `record.mjs` runs them. Whether reviewer agents actually ran, and what they
+  found, is only as good as the summary. Nothing stops a session from writing
+  a summary without doing the review. The PR's **Adversarial review** section
+  is where human reviewers can see what was attacked and fixed, and
+  challenge it.
+- **It's a guardrail, not a security boundary.** Someone set on bypassing it
+  can: edit `.claude/settings.json`, open the PR from the GitHub UI, or use a
+  shell construct the parser doesn't follow, such as `eval` or a script file.
+  A hook timeout (30s) is treated by Claude Code as non-blocking.
+- **Only opening a PR is gated.** Pushing more commits to an open PR isn't.

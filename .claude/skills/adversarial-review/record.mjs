@@ -4,14 +4,39 @@
 //
 //   node .claude/skills/adversarial-review/record.mjs <pass|fail> <summary.json>
 //
-// The summary is the JSON described in SKILL.md. Records live in
-// <git-common-dir>/adversarial-reviews/<sha>.json: local to this clone, never
-// committed, and tied to one commit, so any later commit needs a new review.
-import { execFileSync } from 'node:child_process';
+// It runs the repo's checks itself (the same ones as CI) rather than trusting
+// a reported result, and validates the review summary described in SKILL.md.
+// The summary's contents (what the reviewers found) are self-reported; the PR
+// description's "Adversarial review" section is where humans can check them.
+//
+// Records live in <git-common-dir>/adversarial-reviews/<sha>.json: local to
+// this clone, never committed, and tied to one commit.
+import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
+// Overridable for this script's own tests only.
+const CHECKS = process.env.ADVERSARIAL_REVIEW_CHECKS
+  ? JSON.parse(process.env.ADVERSARIAL_REVIEW_CHECKS)
+  : {
+      typecheck: 'yarn -s typecheck',
+      lint: 'yarn -s lint',
+      format: 'yarn -s format:check',
+      tests: 'yarn -s vitest run',
+      hooks: 'yarn -s test:hooks',
+      build: 'yarn -s build',
+    };
+const SEVERITIES = ['blocker', 'major', 'minor'];
+const VERDICTS = ['confirmed', 'refuted', 'unverified'];
+
 const git = (...args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
+const tryGit = (...args) => {
+  try {
+    return git(...args);
+  } catch {
+    return null;
+  }
+};
 const fail = message => {
   console.error(`record: ${message}`);
   process.exit(1);
@@ -22,62 +47,114 @@ if (!['pass', 'fail'].includes(verdict) || !summaryFile) {
   fail('usage: record.mjs <pass|fail> <summary.json>');
 }
 
-// The review must cover exactly what the PR will contain.
-if (git('status', '--porcelain')) {
-  fail('working tree has uncommitted changes; commit them and review again');
+// The review must cover exactly what the PR will contain. Untracked files
+// aren't part of the PR, so they don't count as changes.
+if (git('status', '--porcelain', '--untracked-files=no')) {
+  fail('there are uncommitted changes; commit them and review again');
 }
 const sha = git('rev-parse', 'HEAD');
-const branch = git('rev-parse', '--abbrev-ref', 'HEAD');
-let pushed = '';
-try {
-  pushed = git('rev-parse', `origin/${branch}`);
-} catch {
-  fail(`origin/${branch} doesn't exist; push the branch first`);
+const branch = tryGit('symbolic-ref', '--quiet', '--short', 'HEAD');
+if (!branch) fail('HEAD is detached; check out the PR branch');
+const remote = tryGit('config', `branch.${branch}.remote`) || 'origin';
+if (
+  tryGit(
+    'fetch',
+    '--quiet',
+    '--no-tags',
+    remote,
+    `+refs/heads/${branch}:refs/remotes/${remote}/${branch}`
+  ) === null
+) {
+  fail(`couldn't fetch ${remote}/${branch}; push the branch first`);
 }
+const pushed = git('rev-parse', `refs/remotes/${remote}/${branch}`);
 if (pushed !== sha) {
   fail(
-    `origin/${branch} (${pushed.slice(0, 7)}) isn't HEAD (${sha.slice(0, 7)}); push first`
+    `${remote}/${branch} (${pushed.slice(0, 7)}) isn't HEAD (${sha.slice(0, 7)}); push first`
   );
 }
 
-const summary = JSON.parse(readFileSync(summaryFile, 'utf8'));
-for (const key of ['base', 'lenses', 'findings', 'checks']) {
-  if (!(key in summary)) fail(`summary is missing "${key}"`);
+let summary;
+try {
+  summary = JSON.parse(readFileSync(summaryFile, 'utf8'));
+} catch (error) {
+  fail(`can't read the summary: ${error.message}`);
 }
-const openBlocking = summary.findings.filter(
+if (typeof summary.base !== 'string' || !summary.base)
+  fail('summary.base must name the PR base branch');
+const lenses = Array.isArray(summary.lenses)
+  ? [...new Set(summary.lenses.map(String))]
+  : [];
+if (lenses.length < 2)
+  fail('summary.lenses must list at least two distinct review lenses');
+if (!Array.isArray(summary.findings))
+  fail('summary.findings must be an array (empty if nothing was found)');
+const findings = summary.findings.map((f, i) => {
+  const severity = String(f.severity || '').toLowerCase();
+  const status = String(f.verdict || '').toLowerCase();
+  if (!SEVERITIES.includes(severity))
+    fail(`finding ${i + 1}: severity must be one of ${SEVERITIES.join(', ')}`);
+  if (!VERDICTS.includes(status))
+    fail(`finding ${i + 1}: verdict must be one of ${VERDICTS.join(', ')}`);
+  if (severity !== 'minor' && status === 'unverified')
+    fail(
+      `finding ${i + 1}: blocker/major findings must be verified (confirmed or refuted)`
+    );
+  return {
+    ...f,
+    severity,
+    verdict: status,
+    resolution: String(f.resolution || '').toLowerCase(),
+  };
+});
+const open = findings.filter(
   f =>
     f.verdict === 'confirmed' &&
-    ['blocker', 'major'].includes(f.severity) &&
+    f.severity !== 'minor' &&
     f.resolution !== 'fixed'
 );
-if (verdict === 'pass' && openBlocking.length) {
+if (verdict === 'pass' && open.length)
   fail(
-    `can't pass with ${openBlocking.length} confirmed blocker/major finding(s) not fixed`
+    `can't pass with ${open.length} confirmed blocker/major finding(s) not fixed`
   );
+
+// Run the checks here instead of trusting reported results.
+const checks = {};
+for (const [name, command] of Object.entries(CHECKS)) {
+  process.stdout.write(`check ${name}: `);
+  const result = spawnSync(command, { shell: true, stdio: 'ignore' });
+  checks[name] = result.status === 0 ? 'pass' : 'fail';
+  console.log(checks[name]);
 }
-const failedChecks = Object.entries(summary.checks).filter(
-  ([, result]) => result !== 'pass'
-);
-if (verdict === 'pass' && failedChecks.length) {
+const failed = Object.keys(checks).filter(name => checks[name] !== 'pass');
+if (verdict === 'pass' && failed.length)
+  fail(`can't pass with failing checks: ${failed.join(', ')}`);
+if (
+  git('rev-parse', 'HEAD') !== sha ||
+  git('status', '--porcelain', '--untracked-files=no')
+) {
   fail(
-    `can't pass with failing checks: ${failedChecks.map(([name]) => name).join(', ')}`
+    'the checks changed the working tree or HEAD; commit or discard that and review again'
   );
 }
 
-const dir = path.join(
+const dir = path.resolve(
   git('rev-parse', '--git-common-dir'),
   'adversarial-reviews'
 );
 mkdirSync(dir, { recursive: true });
 const file = path.join(dir, `${sha}.json`);
-writeFileSync(
-  file,
-  JSON.stringify(
-    { sha, branch, verdict, recordedAt: new Date().toISOString(), ...summary },
-    null,
-    2
-  ) + '\n'
-);
+const record = {
+  sha,
+  branch,
+  verdict,
+  recordedAt: new Date().toISOString(),
+  ...summary,
+  lenses,
+  findings,
+  checks,
+};
+writeFileSync(file, JSON.stringify(record, null, 2) + '\n');
 console.log(
   `Recorded "${verdict}" review for ${sha.slice(0, 7)} (${branch}) in ${file}`
 );
