@@ -11,23 +11,47 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const BASELINE = new URL('../typecheck-baseline.json', import.meta.url);
 const update = process.argv.includes('--update');
 
-let output = '';
-for (const project of ['tsconfig.json', 'tsconfig.node.json']) {
+function tsc(project) {
   try {
-    output += execFileSync('npx', ['tsc', '-p', project, '--pretty', 'false'], {
-      encoding: 'utf8',
-      maxBuffer: 64 * 1024 * 1024,
-    });
+    const output = execFileSync(
+      'npx',
+      ['tsc', '-p', project, '--pretty', 'false'],
+      { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
+    );
+    return { ok: true, output };
   } catch (error) {
     // tsc exits non-zero when it reports errors
     if (!error.stdout) throw error;
-    output += error.stdout;
+    return { ok: false, output: error.stdout };
   }
 }
 
+// The Node-side project has no baseline, with or without --update.
+const node = tsc('tsconfig.node.json');
+if (!node.ok) {
+  console.error('Type errors in tsconfig.node.json (it has no baseline):\n');
+  console.error(node.output);
+  process.exit(1);
+}
+
+const { ok, output } = tsc('tsconfig.json');
+
 // Paths can contain spaces and parentheses (src/components/mobile menus/...).
 const ERROR_LINE = /^(.+?)\(\d+,\d+\): error TS\d+/;
-const errors = output.split('\n').filter(line => ERROR_LINE.test(line));
+const lines = output.split('\n');
+const errors = lines.filter(line => ERROR_LINE.test(line));
+
+// Errors without a file position (a bad compiler option, a missing types
+// package) can't be baselined, and would otherwise pass unnoticed.
+const unplaced = lines.filter(
+  line => /error TS\d+/.test(line) && !ERROR_LINE.test(line)
+);
+if (unplaced.length || (!ok && !errors.length)) {
+  console.error('tsc failed:\n');
+  console.error(output);
+  process.exit(1);
+}
+
 const counts = {};
 for (const line of errors) {
   const file = line.match(ERROR_LINE)[1];
