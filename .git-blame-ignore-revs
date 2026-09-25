@@ -1,0 +1,5 @@
+# Bulk formatting commits, skipped by `git blame` (GitHub does this automatically;
+# locally: git config blame.ignoreRevsFile .git-blame-ignore-revs)
+
+# Prettier reformat (CAD-109)
+28b923a9d05dfa0e5416e66a68a2f894076884f7
