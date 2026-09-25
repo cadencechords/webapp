@@ -1,17 +1,27 @@
+import type { ReactNode } from 'react';
 import { Popover } from '@headlessui/react';
+import type { Placement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
 import { useState } from 'react';
+
+type StyledPopoverProps = {
+  children?: ReactNode;
+  button?: ReactNode;
+  position?: Placement;
+  className?: string;
+};
 
 export default function StyledPopover({
   children,
   button,
   position,
-  className,
-}) {
-  let [referenceElement, setReferenceElement] = useState();
-  let [popperElement, setPopperElement] = useState();
+  className = '',
+}: StyledPopoverProps) {
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLButtonElement | null>();
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>();
 
-  let { styles, attributes } = usePopper(referenceElement, popperElement, {
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: position,
     strategy: 'fixed',
   });
@@ -36,7 +46,3 @@ export default function StyledPopover({
     </Popover>
   );
 }
-
-StyledPopover.defaultProps = {
-  className: '',
-};

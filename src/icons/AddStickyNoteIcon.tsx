@@ -1,4 +1,10 @@
-export default function AddStickyNoteIcon({ className }) {
+type AddStickyNoteIconProps = {
+  className?: string;
+};
+
+export default function AddStickyNoteIcon({
+  className = '',
+}: AddStickyNoteIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24">
       <path
@@ -8,7 +14,3 @@ export default function AddStickyNoteIcon({ className }) {
     </svg>
   );
 }
-
-AddStickyNoteIcon.defaultProps = {
-  className: '',
-};

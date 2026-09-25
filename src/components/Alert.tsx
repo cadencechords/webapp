@@ -1,13 +1,22 @@
+import type { ReactNode } from 'react';
 import Button from './Button';
 import Icon from './Icon';
 
+type AlertProps = {
+  dismissable?: boolean;
+  color?: keyof typeof COLOR_CLASSES;
+  onDismiss?: () => void;
+  children?: ReactNode;
+  className?: string;
+};
+
 export default function Alert({
-  dismissable,
-  color,
+  dismissable = false,
+  color = 'blue',
   onDismiss,
   children,
   className,
-}) {
+}: AlertProps) {
   return (
     <div
       className={`rounded-lg ${COLOR_CLASSES[color]} flex-between p-2 ${className}`}
@@ -21,11 +30,6 @@ export default function Alert({
     </div>
   );
 }
-
-Alert.defaultProps = {
-  color: 'blue',
-  dismissable: false,
-};
 
 const COLOR_CLASSES = {
   red: 'bg-red-100 text-red-800 dark:bg-dark-red dark:text-red-900',

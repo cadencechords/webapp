@@ -1,15 +1,27 @@
+import type { MouseEventHandler, ReactNode } from 'react';
 import Button from './Button';
 import Icon from './Icon';
+
+type TableRowProps = {
+  columns?: ReactNode[];
+  editable?: boolean;
+  /** Called when the first column is clicked. */
+  onClick?: MouseEventHandler<HTMLSpanElement>;
+  removable?: boolean;
+  onRemove?: () => void;
+  removing?: boolean;
+  actions?: ReactNode;
+};
 
 export default function TableRow({
   columns,
   editable,
   onClick,
-  removable,
+  removable = false,
   onRemove,
   removing,
   actions,
-}) {
+}: TableRowProps) {
   return (
     <tr className="border-b dark:border-dark-gray-700">
       {columns?.map((column, index) => (
@@ -44,7 +56,3 @@ export default function TableRow({
     </tr>
   );
 }
-
-TableRow.defaultProps = {
-  removable: false,
-};

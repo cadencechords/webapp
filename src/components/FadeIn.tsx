@@ -1,7 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 
-export default function FadeIn({ children, className }) {
-  const ref = useRef(/** @type {HTMLDivElement | null} */ (null));
+type FadeInProps = {
+  children?: ReactNode;
+  className?: string;
+};
+
+export default function FadeIn({ children, className }: FadeInProps) {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setTimeout(() => {

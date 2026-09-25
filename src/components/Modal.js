@@ -11,7 +11,7 @@ export default function Modal({
   onClose,
   children,
   headerRight,
-  dialogSize = 'xl',
+  dialogSize = /** @type {import('./StyledDialog').DialogSize} */ ('xl'),
   title,
 }) {
   const { isSm } = useBreakPoints();

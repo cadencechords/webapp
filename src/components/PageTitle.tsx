@@ -1,11 +1,20 @@
+type PageTitleProps = {
+  title?: string;
+  editable?: boolean;
+  onChange?: (title: string) => void;
+  align?: keyof typeof ALIGNMENTS;
+  placeholder?: string;
+  className?: string;
+};
+
 export default function PageTitle({
   title,
-  editable,
+  editable = false,
   onChange,
-  align,
+  align = 'left',
   placeholder,
-  className,
-}) {
+  className = '',
+}: PageTitleProps) {
   if (editable) {
     return (
       <input
@@ -15,7 +24,7 @@ export default function PageTitle({
           ` ${className}`
         }
         value={title || ''}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => onChange?.(e.target.value)}
         placeholder={placeholder}
       />
     );
@@ -30,12 +39,6 @@ export default function PageTitle({
     );
   }
 }
-
-PageTitle.defaultProps = {
-  editable: false,
-  align: 'left',
-  className: '',
-};
 
 const ALIGNMENTS = {
   left: 'justify-left',

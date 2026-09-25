@@ -1,14 +1,22 @@
 import Alert from './Alert';
 import Icon from './Icon';
 
-export default function PasswordRequirements({ isLongEnough, isUncommon }) {
-  let checkIcon = (
+type PasswordRequirementsProps = {
+  isLongEnough?: boolean;
+  isUncommon?: boolean;
+};
+
+export default function PasswordRequirements({
+  isLongEnough = false,
+  isUncommon = false,
+}: PasswordRequirementsProps) {
+  const checkIcon = (
     <Icon
       name="check_circle"
       className="w-4 h-4 mx-3 text-green-600 dark:text-dark-green"
     />
   );
-  let xIcon = (
+  const xIcon = (
     <Icon
       name="cancel"
       className="w-4 h-4 mx-3 text-red-600 dark:text-dark-red"
@@ -34,8 +42,3 @@ export default function PasswordRequirements({ isLongEnough, isUncommon }) {
     </div>
   );
 }
-
-PasswordRequirements.defaultProps = {
-  isLongEnough: false,
-  isUncommon: false,
-};

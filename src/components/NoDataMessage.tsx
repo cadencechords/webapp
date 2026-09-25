@@ -1,6 +1,18 @@
+import type { ReactNode } from 'react';
 import PulseLoader from 'react-spinners/PulseLoader';
 
-export default function NoDataMessage({ type, children, loading }) {
+type NoDataMessageProps = {
+  /** What there's none of, e.g. "songs" shows "No songs to show". */
+  type?: string;
+  children?: ReactNode;
+  loading?: boolean;
+};
+
+export default function NoDataMessage({
+  type,
+  children,
+  loading,
+}: NoDataMessageProps) {
   if (loading) {
     return (
       <div className="text-center">

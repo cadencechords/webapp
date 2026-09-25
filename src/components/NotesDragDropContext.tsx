@@ -9,6 +9,23 @@ import { reportError } from '../utils/error';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import type { Song, SongNote } from '../types';
+
+type NoteUpdates = Partial<Omit<SongNote, 'id'>>;
+
+type NotesDragDropContextProps = {
+  song: Song;
+  onAddTempNote: (note: SongNote) => void;
+  onReplaceTempNote: (tempId: number, note: SongNote) => void;
+  onUpdateNote: (noteId: number, updates: NoteUpdates) => void;
+  onDeleteNote: (noteId: number) => void;
+  rearrangable?: boolean;
+};
+
+type DragResult = {
+  source: { index: number };
+  destination?: { index: number } | null;
+};
 
 export default function NotesDragDropContext({
   song,
@@ -16,8 +33,8 @@ export default function NotesDragDropContext({
   onReplaceTempNote,
   onUpdateNote,
   onDeleteNote,
-  rearrangable,
-}) {
+  rearrangable = true,
+}: NotesDragDropContextProps) {
   const [lineCount] = useState(() => {
     let highestLineNumber = 0;
     song.notes?.forEach(note => {
@@ -28,25 +45,29 @@ export default function NotesDragDropContext({
     return max(highestLineNumber, countLines(song.content));
   });
 
-  const [lines, setLines] = useState(new Array(lineCount).fill(null));
+  const [lines, setLines] = useState<(SongNote | null)[]>(
+    new Array(lineCount).fill(null)
+  );
 
   useEffect(() => {
-    let newLines = new Array(lineCount).fill(null);
+    const newLines: (SongNote | null)[] = new Array(lineCount).fill(null);
     song.notes?.forEach(note => (newLines[note.line_number] = note));
     setLines(newLines);
   }, [song, lineCount]);
 
-  function handleDragEnd({ source, destination }) {
+  function handleDragEnd({ source, destination }: DragResult) {
     if (!destination) return;
 
-    let noteBeingUpdated = lines[source.index];
+    // Only notes are draggable (empty lines have isDragDisabled), so the
+    // source line always holds a note.
+    const noteBeingUpdated = lines[source.index] as SongNote;
     handleUpdateNote(noteBeingUpdated, { line_number: destination.index });
     setLines(currentLines =>
       reorder(currentLines, source.index, destination.index)
     );
   }
 
-  async function handleAddNewNote(lineNumber) {
+  async function handleAddNewNote(lineNumber: number) {
     const tempId = Math.random();
     const note = {
       id: tempId,
@@ -58,14 +79,14 @@ export default function NotesDragDropContext({
     onAddTempNote(note);
 
     try {
-      let { data } = await notesApi.create(lineNumber, song.id);
+      const { data } = await notesApi.create(lineNumber, song.id);
       onReplaceTempNote(tempId, data);
     } catch (error) {
       reportError(error);
     }
   }
 
-  function reorder(list, startIndex, endIndex) {
+  function reorder<T>(list: T[], startIndex: number, endIndex: number) {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -73,15 +94,15 @@ export default function NotesDragDropContext({
     return result;
   }
 
-  function getNotesColumnStyles(snapshot) {
+  function getNotesColumnStyles(snapshot: { isDraggingOver: boolean }) {
     return snapshot.isDraggingOver
       ? 'bg-gray-100 dark:bg-dark-gray-700'
       : 'bg-white dark:bg-dark-gray-900';
   }
 
-  function handleUpdateNote(note, updates) {
+  function handleUpdateNote(note: SongNote, updates: NoteUpdates) {
     setLines(currentLines => {
-      let updatedLines = currentLines.map((line, index) =>
+      const updatedLines = currentLines.map((line, index) =>
         index === note.line_number ? { ...note, ...updates } : line
       );
       return updatedLines;
@@ -92,20 +113,17 @@ export default function NotesDragDropContext({
 
   // eslint-disable-next-line
   const debounce = useCallback(
-    _.debounce(
-      (noteId, updates) => {
-        try {
-          notesApi.update(song.id, noteId, updates);
-        } catch (error) {
-          reportError(error);
-        }
-      },
-      [1200]
-    ),
+    _.debounce((noteId: number, updates: NoteUpdates) => {
+      try {
+        notesApi.update(song.id, noteId, updates);
+      } catch (error) {
+        reportError(error);
+      }
+    }, 1200),
     []
   );
 
-  async function handleDelete(noteId) {
+  async function handleDelete(noteId: number) {
     onDeleteNote(noteId);
     try {
       await notesApi.delete(song.id, noteId);
@@ -127,7 +145,6 @@ export default function NotesDragDropContext({
               line ? (
                 <Note
                   note={line}
-                  inde={index}
                   key={index}
                   onUpdate={handleUpdateNote}
                   onDelete={handleDelete}
@@ -168,7 +185,3 @@ export default function NotesDragDropContext({
     </DragDropContext>
   );
 }
-
-NotesDragDropContext.defaultProps = {
-  rearrangable: true,
-};

@@ -1,18 +1,25 @@
 import { Link, useHistory } from 'react-router-dom';
 
 import Button from './Button';
+import type { Team } from '../types';
 import TeamLoginOption from './TeamLoginOption';
 import { setTeamId } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useQueryClient } from '@tanstack/react-query';
 
-export default function TeamLoginOptions({ teams }) {
+type TeamLoginOptionsProps = {
+  teams?: Team[];
+};
+
+export default function TeamLoginOptions({
+  teams = [],
+}: TeamLoginOptionsProps) {
   const router = useHistory();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
-  const handleLoginTeam = teamId => {
-    localStorage.setItem('teamId', teamId);
+  const handleLoginTeam = (teamId: number) => {
+    localStorage.setItem('teamId', String(teamId));
     dispatch(setTeamId(teamId));
     queryClient.removeQueries();
     router.push('/');
@@ -43,7 +50,3 @@ export default function TeamLoginOptions({ teams }) {
     </>
   );
 }
-
-TeamLoginOptions.defaultProps = {
-  teams: [],
-};

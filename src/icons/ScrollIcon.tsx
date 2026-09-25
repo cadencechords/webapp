@@ -1,4 +1,8 @@
-export default function ScrollIcon({ className }) {
+type ScrollIconProps = {
+  className?: string;
+};
+
+export default function ScrollIcon({ className = '' }: ScrollIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24">
       <path
@@ -8,7 +12,3 @@ export default function ScrollIcon({ className }) {
     </svg>
   );
 }
-
-ScrollIcon.defaultProps = {
-  className: '',
-};
