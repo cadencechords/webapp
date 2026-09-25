@@ -11,13 +11,6 @@ const hook = fileURLToPath(
 );
 const cwd = path.resolve(path.dirname(hook), '../..');
 const git = (...a) => execFileSync('git', a, { cwd, encoding: 'utf8' }).trim();
-const tryGit = (...a) => {
-  try {
-    return git(...a);
-  } catch {
-    return null;
-  }
-};
 
 // A throwaway local branch at HEAD, so the tests work anywhere (including
 // CI's detached checkout) and never depend on what's been pushed.
