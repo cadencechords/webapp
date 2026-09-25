@@ -7,15 +7,16 @@
 //   yarn typecheck --update  rewrite the baseline (after fixing errors)
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
 
 const BASELINE = new URL('../typecheck-baseline.json', import.meta.url);
 const update = process.argv.includes('--update');
 
-function tsc(project) {
+function tsc(project, ...args) {
   try {
     const output = execFileSync(
       'npx',
-      ['tsc', '-p', project, '--pretty', 'false'],
+      ['tsc', '-p', project, '--pretty', 'false', ...args],
       { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
     );
     return { ok: true, output };
@@ -31,6 +32,31 @@ const node = tsc('tsconfig.node.json');
 if (!node.ok) {
   console.error('Type errors in tsconfig.node.json (it has no baseline):\n');
   console.error(node.output);
+  process.exit(1);
+}
+
+// Every TypeScript file outside src must be in that project. Its include
+// globs skip dot-directories, so check against what git sees (tracked, or
+// untracked and not ignored) rather than trust them.
+const root = process.cwd();
+const checked = new Set(
+  tsc('tsconfig.node.json', '--listFilesOnly')
+    .output.split('\n')
+    .filter(file => file.startsWith(root + path.sep))
+    .map(file => path.relative(root, file).split(path.sep).join('/'))
+);
+const unchecked = execFileSync(
+  'git',
+  ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
+  { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
+)
+  .split('\0')
+  .filter(file => /\.(ts|mts|cts|tsx)$/.test(file) && !file.startsWith('src/'))
+  .filter(file => !checked.has(file));
+if (unchecked.length) {
+  console.error('TypeScript files that no tsconfig checks:\n');
+  for (const file of unchecked) console.error(`  ${file}`);
+  console.error('\nAdd them to the include list in tsconfig.node.json.');
   process.exit(1);
 }
 
