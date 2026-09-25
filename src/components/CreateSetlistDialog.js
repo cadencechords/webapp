@@ -28,7 +28,7 @@ export default function CreateSetlistDialog({ open, onCloseDialog }) {
     },
   });
 
-  const inputRef = useRef();
+  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
 
   useEffect(() => {
     setTimeout(() => {

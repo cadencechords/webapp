@@ -22,7 +22,9 @@ import SetlistOptionsPopover from '../components/SetlistOptionsPopover';
 import Icon from '../components/Icon';
 
 export default function SetlistDetailPage() {
-  const [setlist, setSetlist] = useState();
+  const [setlist, setSetlist] = useState(
+    /** @type {import('../types').Setlist | undefined} */ (undefined)
+  );
   const [loading, setLoading] = useState(true);
   const [showChangeDateDialog, setShowChangeDateDialog] = useState(false);
   const router = useHistory();

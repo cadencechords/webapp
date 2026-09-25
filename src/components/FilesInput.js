@@ -4,7 +4,7 @@ import Button from './Button';
 import Icon from './Icon';
 
 export default function FilesInput({ onChange, onRemove, accept, buttonText }) {
-  const input = useRef();
+  const input = useRef(/** @type {HTMLInputElement | null} */ (null));
   const [files, setFiles] = useState([]);
 
   function handleFilesChosen(e) {

@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 
 export default function FadeIn({ children, className }) {
-  const ref = useRef();
+  const ref = useRef(/** @type {HTMLDivElement | null} */ (null));
 
   useEffect(() => {
     setTimeout(() => {
       ref.current?.classList.toggle('translate-y-6');
       ref.current?.classList.toggle('opacity-0');
-    }, [20]);
+    }, 20);
   }, []);
 
   return (

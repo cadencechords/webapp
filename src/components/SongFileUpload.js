@@ -9,7 +9,7 @@ import Icon from './Icon';
 
 export default function SongFileUpload({ onFilesUploaded }) {
   const [filesBeingUploaded, setFilesBeingUploaded] = useState([]);
-  const inputRef = useRef();
+  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
   const { id } = useParams();
 
   async function handleFilesSelected(e) {

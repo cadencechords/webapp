@@ -7,7 +7,9 @@ export default function useJoinLink(code) {
   const [status, setStatus] = useState(IDLE);
   const [joinStatus, setJoinStatus] = useState(IDLE);
   const [error, setError] = useState();
-  const [data, setData] = useState();
+  const [data, setData] = useState(
+    /** @type {import('../types').Team | undefined} */ (undefined)
+  );
   const loading = status === LOADING;
   const resolved = status === RESOLVED;
   const errored = status === ERRORED;

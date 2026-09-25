@@ -22,7 +22,9 @@ export default function OnsongImportPage() {
   const [wizardStep, setWizardStep] = useState(0);
   const [binders, setBinders] = useState();
   const [importId, setImportId] = useState();
-  const [selectedBinder, setSelectedBinder] = useState();
+  const [selectedBinder, setSelectedBinder] = useState(
+    /** @type {import('../types').Binder | null | undefined} */ (undefined)
+  );
   const router = useHistory();
   const currentMember = useSelector(selectCurrentMember);
 

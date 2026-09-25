@@ -11,7 +11,7 @@ export default function CreateBinderDialog({ open, onCloseDialog }) {
   const [description, setDescription] = useState('');
   const [color, setColor] = useState('none');
   const router = useHistory();
-  const inputRef = useRef();
+  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
 
   const handleCloseDialog = () => {
     setName('');
