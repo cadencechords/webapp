@@ -49,6 +49,8 @@ function ColorScheme({ name }) {
 
 export default function TokensPage() {
   const [dragging, setDragging] = useState(false);
+  const [moved, setMoved] = useState(false);
+  const [selected, setSelected] = useState(false);
 
   return (
     <div className="min-h-screen p-6 bg-surface text-on-surface font-plain">
@@ -118,6 +120,31 @@ export default function TokensPage() {
             className="px-6 py-2.5 state-layer focus-ring rounded-medium elevation-1 text-on-surface text-label-large"
           >
             {dragging ? 'Dragging' : 'Drag me'}
+          </button>
+        </div>
+      </Section>
+
+      <Section title="Motion">
+        <div className="flex flex-wrap items-center gap-6">
+          <button
+            onClick={() => setMoved(m => !m)}
+            className="px-6 py-2.5 state-layer focus-ring rounded-full bg-primary text-on-primary text-label-large"
+          >
+            Move (default spatial)
+          </button>
+          <div className="relative h-12 w-72 rounded-full bg-surface-container-high">
+            <div
+              className={`absolute top-1 left-1 h-10 w-10 rounded-full bg-tertiary transition-default-spatial ${
+                moved ? 'translate-x-60' : 'translate-x-0'
+              }`}
+            />
+          </div>
+          <button
+            aria-pressed={selected}
+            onClick={() => setSelected(s => !s)}
+            className="px-6 py-2.5 shape-morph state-layer focus-ring rounded-full bg-secondary-container text-on-secondary-container text-label-large"
+          >
+            Shape morph {selected ? '(selected)' : ''}
           </button>
         </div>
       </Section>
