@@ -13,10 +13,9 @@ import useBreakPoints from '../hooks/useBreakPoints';
 import useTheme from '../hooks/useTheme';
 import '../components/chat/chat.css';
 import Button from '../components/Button';
-import DotsHorizontalIcon from '@heroicons/react/solid/DotsHorizontalIcon';
-import BellIcon from '@heroicons/react/solid/BellIcon';
 import { MessageInput as CustomMessageInput } from '../components/chat/MessageInput';
 import { MessageOptions } from '../components/chat/MessageOptions';
+import Icon from '../components/Icon';
 
 const client = new StreamChat('svcbduxgv7sw');
 
@@ -63,10 +62,10 @@ export default function ChatPage() {
                       size="md"
                       className="mr-2"
                     >
-                      <BellIcon className="w-5 h-5" />
+                      <Icon name="notifications" filled className="w-5 h-5" />
                     </Button>
                     <Button variant="icon" color="blue" size="md">
-                      <DotsHorizontalIcon className="w-5 h-5" />
+                      <Icon name="more_horiz" filled className="w-5 h-5" />
                     </Button>
                   </div>
                 </div>

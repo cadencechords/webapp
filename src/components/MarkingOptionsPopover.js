@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { noop } from '../utils/constants';
 import MobileMenuButton from './buttons/MobileMenuButton';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
+import Icon from './Icon';
 
 export default function MarkingOptionsPopover({
   onDelete,
@@ -54,7 +54,7 @@ export default function MarkingOptionsPopover({
               onClick={onDelete}
             >
               Delete
-              <TrashIcon className="w-4 h-4" />
+              <Icon name="delete" className="w-4 h-4" />
             </MobileMenuButton>
           </div>
         </Popover.Panel>

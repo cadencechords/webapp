@@ -1,5 +1,5 @@
 import Button from './Button';
-import XIcon from '@heroicons/react/outline/XIcon';
+import Icon from './Icon';
 
 export default function BottomSheet({
   open,
@@ -25,7 +25,7 @@ export default function BottomSheet({
           color="gray"
           onClick={onClose}
         >
-          <XIcon className="w-5 h-5" />
+          <Icon name="close" className="w-5 h-5" />
         </Button>
         {children}
       </div>

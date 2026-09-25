@@ -1,4 +1,4 @@
-import XCircleIcon from "@heroicons/react/outline/XCircleIcon";
+import Icon from './Icon';
 
 export default function CapoOption({ className, selected, capoNumber, capoKey, onClick }) {
 	return (
@@ -12,7 +12,7 @@ export default function CapoOption({ className, selected, capoNumber, capoKey, o
 				}
 			>
 				{capoKey === "None" ? (
-					<XCircleIcon className={`w-6 h-6 ${selected ? "text-white" : "text-gray-600"}`} />
+					<Icon name="cancel" className={`w-6 h-6 ${selected ? "text-white" : "text-gray-600"}`} />
 				) : (
 					capoKey
 				)}

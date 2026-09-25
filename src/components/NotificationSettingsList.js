@@ -1,5 +1,5 @@
-import CalendarIcon from "@heroicons/react/outline/CalendarIcon";
 import NotificationSetting from "./NotificationSetting";
+import Icon from './Icon';
 
 export default function NotificationSettingsList({ settings, onSettingChanged }) {
 	function getSetting(notificationType) {
@@ -10,7 +10,7 @@ export default function NotificationSettingsList({ settings, onSettingChanged })
 		<div className="border dark:border-dark-gray-600 rounded-md p-2">
 			<NotificationSetting
 				setting={getSetting("Event reminder")}
-				icon={<CalendarIcon className="w-8 h-8" />}
+				icon={<Icon name="calendar_month" className="w-8 h-8" />}
 				onChange={onSettingChanged}
 			/>
 		</div>

@@ -1,5 +1,5 @@
-import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import Button from "./Button";
+import Icon from './Icon';
 
 export default function OnsongReviewImport({
 	selectedBinder,
@@ -25,7 +25,7 @@ export default function OnsongReviewImport({
 			<div className="flex-between">
 				<Button variant="open" color="gray" bold onClick={onBackClick}>
 					<div className="flex-center">
-						<ArrowNarrowLeftIcon className="w-5 h-5 mr-2" /> Back
+						<Icon name="arrow_back" className="w-5 h-5 mr-2" /> Back
 					</div>
 				</Button>
 				<Button onClick={onConfirm}>

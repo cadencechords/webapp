@@ -1,12 +1,9 @@
-import ChatIcon from "@heroicons/react/outline/ChatIcon";
-import ChevronDownIcon from "@heroicons/react/outline/ChevronDownIcon";
-import DeviceMobileIcon from "@heroicons/react/outline/DeviceMobileIcon";
-import MailIcon from "@heroicons/react/outline/MailIcon";
 import Toggle from "./Toggle";
 import { noop } from "../utils/constants";
 import { reportError } from "../utils/error";
 import settingsApi from "../api/settingsApi";
 import { useState } from "react";
+import Icon from './Icon';
 
 export default function NotificationSetting({ onChange, setting, icon }) {
   const [open, setOpen] = useState(false);
@@ -51,7 +48,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
           <div className="font-semibold text-xl flex items-center gap-2">
             {icon} {setting?.notification_type}
           </div>
-          <ChevronDownIcon
+          <Icon name="keyboard_arrow_down"
             className={
               `w-4 h-4 text-gray-600 dark:text-dark-gray-200 transition-transform transform ` +
               ` ${open ? "rotate-180" : ""}`
@@ -65,7 +62,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
           onClick={handleToggleEmail}
         >
           <div className="flex items-center gap-2">
-            <MailIcon className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" />
+            <Icon name="mail" className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" />
             Email
           </div>
           <Toggle enabled={setting?.email_enabled} onChange={noop} />
@@ -75,7 +72,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
           onClick={handleToggleSms}
         >
           <div className="flex items-center gap-2">
-            <ChatIcon className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" />{" "}
+            <Icon name="chat" className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" />{" "}
             Text message
           </div>
           <Toggle enabled={setting?.sms_enabled} onChange={noop} />
@@ -85,7 +82,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
           onClick={handleTogglePush}
         >
           <div className="flex items-center gap-2">
-            <DeviceMobileIcon className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" />{" "}
+            <Icon name="mobile" className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" />{" "}
             App (Push)
           </div>
           <Toggle enabled={setting?.push_enabled} onChange={noop} />

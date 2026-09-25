@@ -2,18 +2,13 @@ import { MANAGE_BILLING, VIEW_EVENTS, VIEW_ROLES } from '../utils/constants';
 import { selectCurrentMember, selectCurrentTeam } from '../store/authSlice';
 
 import BinderIcon from '../icons/BinderIcon';
-import CalendarIcon from '@heroicons/react/solid/CalendarIcon';
 import DashboardIcon from '../icons/DashboardIcon';
-import LockClosedIcon from '@heroicons/react/solid/LockClosedIcon';
-import CreditCardIcon from '@heroicons/react/solid/CreditCardIcon';
-import MusicNoteIcon from '@heroicons/react/solid/MusicNoteIcon';
 import PlaylistIcon from '../icons/PlaylistIcon';
 import SidenavLink from './SidenavLink';
 import TeamOptionsPopover from './TeamOptionsPopover';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
-import UserIcon from '@heroicons/react/solid/UserIcon';
-// import ChatIcon from '@heroicons/react/solid/ChatIcon';
+import Icon from './Icon';
 
 export default function Sidenav() {
   let iconClasses = 'h-5 w-5';
@@ -41,7 +36,7 @@ export default function Sidenav() {
           <SidenavLink
             text="Songs"
             to="/songs"
-            icon={<MusicNoteIcon className={iconClasses} />}
+            icon={<Icon name="music_note" filled className={iconClasses} />}
           />
           <SidenavLink
             text="Sets"
@@ -56,13 +51,13 @@ export default function Sidenav() {
           <SidenavLink
             text="Team members"
             to="/members"
-            icon={<UserIcon className={iconClasses} />}
+            icon={<Icon name="person" filled className={iconClasses} />}
           />
           {currentSubscription?.isPro && currentMember?.can(VIEW_EVENTS) && (
             <SidenavLink
               text="Calendar"
               to="/calendar"
-              icon={<CalendarIcon className={iconClasses} />}
+              icon={<Icon name="calendar_month" filled className={iconClasses} />}
             />
           )}
           {/* {currentSubscription?.isPro && (
@@ -78,7 +73,7 @@ export default function Sidenav() {
               <SidenavLink
                 to="/permissions"
                 text="Permissions"
-                icon={<LockClosedIcon className={iconClasses} />}
+                icon={<Icon name="lock" filled className={iconClasses} />}
               />
             </>
           )}
@@ -86,7 +81,7 @@ export default function Sidenav() {
             <SidenavLink
               to="/billing"
               text="Billing"
-              icon={<CreditCardIcon className={iconClasses} />}
+              icon={<Icon name="credit_card" filled className={iconClasses} />}
             />
           )}
         </div>

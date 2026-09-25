@@ -2,13 +2,12 @@ import React from 'react';
 import PageTitle from '../components/PageTitle';
 import Button from '../components/Button';
 import Card from '../components/Card';
-import CheckIcon from '@heroicons/react/outline/CheckIcon';
-import XIcon from '@heroicons/react/outline/XIcon';
 import Badge from '../components/Badge';
 import { format } from '../utils/date';
 import useSubscription from '../hooks/api/useSubscription';
 import PageLoading from '../components/PageLoading';
 import useCreateCustomerPortalSession from '../hooks/api/useCreateCustomerProtalSession';
+import Icon from '../components/Icon';
 
 export default function BillingPage() {
   const { data: subscription, isLoading } = useSubscription();
@@ -22,10 +21,10 @@ export default function BillingPage() {
   const isTrialing = status === 'trialing' && trialEndDate;
 
   const checkIcon = (
-    <CheckIcon className="w-4 h-4 mr-3 text-green-600 dark:text-dark-green" />
+    <Icon name="check" className="w-4 h-4 mr-3 text-green-600 dark:text-dark-green" />
   );
   const xIcon = (
-    <XIcon className="w-4 h-4 mr-3 text-gray-600 dark:text-dark-gray-200" />
+    <Icon name="close" className="w-4 h-4 mr-3 text-gray-600 dark:text-dark-gray-200" />
   );
 
   if (isLoading) return <PageLoading />;

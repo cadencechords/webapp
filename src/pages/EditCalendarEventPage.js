@@ -17,7 +17,7 @@ import {
 } from '../utils/event.utils';
 import { getModifiedFields } from '../utils/ObjectUtils';
 import useUpdateCalendarEvent from '../hooks/api/useUpdateCalendarEvent';
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
+import Icon from '../components/Icon';
 
 export default function EditCalendarEventPage() {
   const { form, setForm, clearForm, isValid } = useEventForm();
@@ -62,7 +62,7 @@ export default function EditCalendarEventPage() {
       <Link to="/calendar" className="inline-block mb-4">
         <Button variant="open" color="gray">
           <div className="flex-center">
-            <ArrowNarrowLeftIcon className="w-4 h-4 mr-4" />
+            <Icon name="arrow_back" className="w-4 h-4 mr-4" />
             Calendar
           </div>
         </Button>

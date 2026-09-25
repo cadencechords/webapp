@@ -5,11 +5,9 @@ import { useHistory, useParams } from 'react-router';
 
 import Alert from '../components/Alert';
 import Button from '../components/Button';
-import CalendarIcon from '@heroicons/react/solid/CalendarIcon';
 import ChangeSetlistDateDialog from '../components/ChangeSetlistDateDialog';
 import PageLoading from '../components/PageLoading';
 import PageTitle from '../components/PageTitle';
-import PlayIcon from '@heroicons/react/solid/PlayIcon';
 import SetlistApi from '../api/SetlistApi';
 import SetlistSongsList from '../components/SetlistSongsList';
 import _ from 'lodash';
@@ -21,6 +19,7 @@ import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SetlistSessionsList from '../components/SetlistSessionsList';
 import PublicSetlistSection from '../components/PublicSetlistSection';
 import SetlistOptionsPopover from '../components/SetlistOptionsPopover';
+import Icon from '../components/Icon';
 
 export default function SetlistDetailPage() {
   const [setlist, setSetlist] = useState();
@@ -133,7 +132,7 @@ export default function SetlistDetailPage() {
           className="inline-flex items-center grow-0 mb-4 text-gray-500 cursor-pointer"
           onClick={handleClickDateDialog}
         >
-          <CalendarIcon className="w-4 h-4 mr-2" />
+          <Icon name="calendar_month" filled className="w-4 h-4 mr-2" />
           <span className="h-6 leading-6">
             {format('ddd MMM D', setlist?.scheduled_date)}
           </span>
@@ -148,7 +147,7 @@ export default function SetlistDetailPage() {
                 size="md"
                 full
               >
-                <PlayIcon className="w-5 h-5 mr-4" />
+                <Icon name="play_circle" filled className="w-5 h-5 mr-4" />
                 Perform
               </Button>
               <Button
@@ -157,7 +156,7 @@ export default function SetlistDetailPage() {
                 className="items-center justify-center hidden mb-2 md:flex"
                 size="xs"
               >
-                <PlayIcon className="w-4 h-4 mr-1.5" />
+                <Icon name="play_circle" filled className="w-4 h-4 mr-1.5" />
                 Perform
               </Button>
             </>

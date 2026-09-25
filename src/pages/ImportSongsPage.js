@@ -1,10 +1,10 @@
 import { useHistory } from 'react-router-dom';
 import { ADD_SONGS } from '../utils/constants';
-import DocumentTextIcon from '@heroicons/react/outline/DocumentTextIcon';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import PageHeader from '../components/PageHeader';
 import ImportSourceCard from '../components/ImportSourceCard';
+import Icon from '../components/Icon';
 
 export default function ImportSongsPage() {
   const currentMember = useSelector(selectCurrentMember);
@@ -59,7 +59,7 @@ export default function ImportSongsPage() {
             to="/import/files"
             image={
               <div className="self-start w-12 h-12 bg-white shadow-xs rounded-xl flex-center">
-                <DocumentTextIcon className="w-6 h-6 text-blue-600" />
+                <Icon name="description" className="w-6 h-6 text-blue-600" />
               </div>
             }
           >

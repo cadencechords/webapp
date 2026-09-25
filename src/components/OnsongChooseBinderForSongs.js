@@ -1,5 +1,3 @@
-import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
-import ArrowNarrowRightIcon from "@heroicons/react/outline/ArrowNarrowRightIcon";
 import BinderApi from "../api/BinderApi";
 import Button from "./Button";
 import Checkbox from "./Checkbox";
@@ -7,6 +5,7 @@ import PageLoading from "./PageLoading";
 import { reportError } from "../utils/error";
 import { useEffect } from "react";
 import { useState } from "react";
+import Icon from './Icon';
 
 export default function OnsongChooseBinderForSongs({
 	binders,
@@ -70,13 +69,13 @@ export default function OnsongChooseBinderForSongs({
 			<div className="flex-between">
 				<Button variant="open" color="gray" bold onClick={onBackClick}>
 					<div className="flex-center">
-						<ArrowNarrowLeftIcon className="w-5 h-5 mr-2" /> Back
+						<Icon name="arrow_back" className="w-5 h-5 mr-2" /> Back
 					</div>
 				</Button>
 				<Button onClick={onNextClick}>
 					<div className="flex-center">
 						Review
-						<ArrowNarrowRightIcon className="w-5 h-5 ml-2" />
+						<Icon name="arrow_forward" className="w-5 h-5 ml-2" />
 					</div>
 				</Button>
 			</div>

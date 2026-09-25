@@ -3,8 +3,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import Button from './Button';
 import { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import XIcon from '@heroicons/react/outline/XIcon';
 import classNames from 'classnames';
+import Icon from './Icon';
 
 export default function StyledDialog({
   open,
@@ -79,7 +79,7 @@ export default function StyledDialog({
                     onClick={onCloseDialog}
                     tabIndex={1}
                   >
-                    <XIcon className="w-4 h-4 text-gray-700 dark:text-dark-gray-200" />
+                    <Icon name="close" className="w-4 h-4 text-gray-700 dark:text-dark-gray-200" />
                   </Button>
                 </span>
               )}

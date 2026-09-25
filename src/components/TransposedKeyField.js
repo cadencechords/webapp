@@ -4,9 +4,8 @@ import Button from './Button';
 import DetailTitle from './DetailTitle';
 import EditableData from './inputs/EditableData';
 import KeyTransposerDialog from './KeyTransposerDialog';
-import MinusIcon from '@heroicons/react/outline/MinusIcon';
-import PlusIcon from '@heroicons/react/outline/PlusIcon';
 import { useState } from 'react';
+import Icon from './Icon';
 
 export default function TransposedKeyField({
   transposedKey,
@@ -47,7 +46,7 @@ export default function TransposedKeyField({
         onClick={handleTransposeUpHalfKey}
         className="mr-1"
       >
-        <PlusIcon className="w-4 h-4" />
+        <Icon name="add" className="w-4 h-4" />
       </Button>
       <Button
         size="sm"
@@ -55,7 +54,7 @@ export default function TransposedKeyField({
         disabled={!originalKey}
         onClick={handleTransposeDownHalfKey}
       >
-        <MinusIcon className="w-4 h-4" />
+        <Icon name="remove" className="w-4 h-4" />
       </Button>
       <KeyTransposerDialog
         open={showKeyTransposerDialog}

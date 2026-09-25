@@ -8,7 +8,7 @@ import { Link, useHistory } from 'react-router-dom';
 import Alert from '../components/Alert';
 import useClearForm from '../hooks/useClearForm';
 import { fromEventForm } from '../utils/event.utils';
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
+import Icon from '../components/Icon';
 
 export default function CreateCalendarEventPage() {
   const router = useHistory();
@@ -31,7 +31,7 @@ export default function CreateCalendarEventPage() {
       <Link to="/calendar" className="inline-block mb-4">
         <Button variant="open" color="gray">
           <div className="flex-center">
-            <ArrowNarrowLeftIcon className="w-4 h-4 mr-4" />
+            <Icon name="arrow_back" className="w-4 h-4 mr-4" />
             Calendar
           </div>
         </Button>

@@ -1,8 +1,8 @@
 import React from 'react';
-import CheckIcon from '@heroicons/react/outline/CheckIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import classNames from 'classnames';
 import { determineCapoNumber } from '../utils/capo';
+import Icon from './Icon';
 
 export default function KeyOptionsSheet({ onChangeSheet, className, song }) {
   const iconClasses = 'h-5 w-5 text-green-500 dark:text-dark-green ml-2';
@@ -24,7 +24,7 @@ export default function KeyOptionsSheet({ onChangeSheet, className, song }) {
           )}
         </span>
         {song.show_transposed && song.transposed_key && (
-          <CheckIcon className={iconClasses} />
+          <Icon name="check" className={iconClasses} />
         )}
       </MobileMenuButton>
       <MobileMenuButton
@@ -43,7 +43,7 @@ export default function KeyOptionsSheet({ onChangeSheet, className, song }) {
           )}
         </span>
         {song.capo?.capo_key && song.show_capo && (
-          <CheckIcon className={iconClasses} />
+          <Icon name="check" className={iconClasses} />
         )}
       </MobileMenuButton>
     </div>

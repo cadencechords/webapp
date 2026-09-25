@@ -1,8 +1,7 @@
-import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
-import ArrowNarrowRightIcon from "@heroicons/react/outline/ArrowNarrowRightIcon";
 import Button from "../components/Button";
 import OnsongsSongsList from "../components/OnsongSongsList";
 import PageLoading from "./PageLoading";
+import Icon from './Icon';
 
 export default function OnsongChooseSongsFromBackup({
 	uploading,
@@ -30,7 +29,7 @@ export default function OnsongChooseSongsFromBackup({
 				<div className="flex-between">
 					<Button variant="open" color="gray" bold onClick={onBackClick}>
 						<div className="flex-center">
-							<ArrowNarrowLeftIcon className="w-5 h-5 mr-2" /> Back
+							<Icon name="arrow_back" className="w-5 h-5 mr-2" /> Back
 						</div>
 					</Button>
 					<Button
@@ -40,7 +39,7 @@ export default function OnsongChooseSongsFromBackup({
 					>
 						<div className="flex-center">
 							Choose Binder
-							<ArrowNarrowRightIcon className="w-5 h-5 ml-2" />
+							<Icon name="arrow_forward" className="w-5 h-5 ml-2" />
 						</div>
 					</Button>
 				</div>

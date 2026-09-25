@@ -1,5 +1,4 @@
 import Button from './Button';
-import DotsVerticalIcon from '@heroicons/react/outline/DotsVerticalIcon';
 import EditableData from './inputs/EditableData';
 import { Link } from 'react-router-dom';
 import ProfilePicture from './ProfilePicture';
@@ -10,6 +9,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { REMOVE_MEMBERS } from '../utils/constants';
+import Icon from './Icon';
 
 export default function MemberCard({
   member,
@@ -68,7 +68,7 @@ export default function MemberCard({
             className="absolute right-2 top-2"
             onClick={onShowMemberMenu}
           >
-            <DotsVerticalIcon className="h-5 text-gray-600" />
+            <Icon name="more_vert" className="h-5 text-gray-600" />
           </Button>
         )}
         <div className="w-20 h-20 m-auto flex-center">

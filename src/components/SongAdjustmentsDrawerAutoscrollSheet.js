@@ -1,8 +1,6 @@
-import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
 import MobileMenuButton from "./buttons/MobileMenuButton";
-import PlayIcon from "@heroicons/react/solid/PlayIcon";
 import Range from "./Range";
-import StopIcon from "@heroicons/react/solid/StopIcon";
+import Icon from './Icon';
 
 export default function SongAdjustmentsDrawerAutoscrollSheet({
 	onShowMainSheet,
@@ -15,7 +13,7 @@ export default function SongAdjustmentsDrawerAutoscrollSheet({
 	return (
 		<div>
 			<MobileMenuButton full className="text-left flex items-center" onClick={onShowMainSheet}>
-				<ArrowNarrowLeftIcon className="w-5 h-5 mr-3" /> Back
+				<Icon name="arrow_back" className="w-5 h-5 mr-3" /> Back
 			</MobileMenuButton>
 			<h1 className="px-6 font-medium py-3">Auto scroll</h1>
 			<MobileMenuButton
@@ -25,12 +23,12 @@ export default function SongAdjustmentsDrawerAutoscrollSheet({
 			>
 				{autoScrolling ? (
 					<>
-						<StopIcon className={iconClasses} />
+						<Icon name="stop_circle" filled className={iconClasses} />
 						Stop
 					</>
 				) : (
 					<>
-						<PlayIcon className={iconClasses} />
+						<Icon name="play_circle" filled className={iconClasses} />
 						Start
 					</>
 				)}

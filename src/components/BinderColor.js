@@ -1,4 +1,4 @@
-import XIcon from "@heroicons/react/solid/XIcon";
+import Icon from './Icon';
 
 export default function BinderColor({ color, onClick, block, size, editable }) {
 	const handleClick = () => {
@@ -17,7 +17,7 @@ export default function BinderColor({ color, onClick, block, size, editable }) {
 				${color === "none" ? " border border-gray-300 dark:border-dark-gray-400 " : ""}
 			`}
 		>
-			{color === "none" ? <XIcon className="w-3 h-3 text-gray-600" /> : ""}
+			{color === "none" ? <Icon name="close" filled className="w-3 h-3 text-gray-600" /> : ""}
 		</div>
 	);
 }

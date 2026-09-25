@@ -1,16 +1,15 @@
 import React from 'react';
 import StyledPopover from './StyledPopover';
 import Button from './Button';
-import DotsVerticalIcon from '@heroicons/react/outline/DotsVerticalIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import useDialog from '../hooks/useDialog';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog';
 import useDeleteSetlist from '../hooks/api/useDeleteSetlist';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { DELETE_SETLISTS } from '../utils/constants';
+import Icon from './Icon';
 
 export default function SetlistOptionsPopover({ setlist, onPerform }) {
   const [isConfirmationOpen, showConfirmation, hideConfirmation] = useDialog();
@@ -28,7 +27,7 @@ export default function SetlistOptionsPopover({ setlist, onPerform }) {
         position="bottom-start"
         button={
           <Button variant="icon" color="gray" size="md">
-            <DotsVerticalIcon className="w-5 h-5" />
+            <Icon name="more_vert" className="w-5 h-5" />
           </Button>
         }
       >
@@ -51,7 +50,7 @@ export default function SetlistOptionsPopover({ setlist, onPerform }) {
               onClick={showConfirmation}
             >
               Delete
-              <TrashIcon className="w-5 h-5" />
+              <Icon name="delete" className="w-5 h-5" />
             </MobileMenuButton>
           )}
         </div>

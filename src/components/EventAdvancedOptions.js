@@ -1,8 +1,8 @@
 import Button from "./Button";
-import ChevronDownIcon from "@heroicons/react/outline/ChevronDownIcon";
 import EventColorOptions from "./EventColorOptions";
 import EventReminders from "./EventReminders";
 import { useState } from "react";
+import Icon from './Icon';
 
 export default function EventAdvancedOptions({ event, onFieldChange, onMembersLoaded, members }) {
 	const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
@@ -15,7 +15,7 @@ export default function EventAdvancedOptions({ event, onFieldChange, onMembersLo
 			<div className="flex justify-end my-2">
 				<Button variant="open" className="flex-center gap-2" onClick={handleToggle}>
 					Advanced options
-					<ChevronDownIcon
+					<Icon name="keyboard_arrow_down"
 						className={`w-4 h-4 transition-transform transform ${
 							showAdvancedOptions && "-rotate-180"
 						}`}

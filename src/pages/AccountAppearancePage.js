@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import PageTitle from '../components/PageTitle';
 import SectionHeading from '../components/SectionHeading';
 import {
@@ -11,6 +10,7 @@ import {
 import Alert from '../components/Alert';
 import PageLoading from '../components/PageLoading';
 import SongPreferencesForm from '../components/SongPreferencesForm';
+import Icon from '../components/Icon';
 
 export default function AccountAppearancePage() {
   const { data: currentUser, error } = useCurrentUser({
@@ -31,7 +31,7 @@ export default function AccountAppearancePage() {
         <Link to="/account">
           <Button variant="open" color="gray">
             <div className="flex-center">
-              <ArrowNarrowLeftIcon className="w-4 h-4 mr-4" />
+              <Icon name="arrow_back" className="w-4 h-4 mr-4" />
               Menu
             </div>
           </Button>

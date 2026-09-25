@@ -1,4 +1,3 @@
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import Button from '../components/Button';
 import { Link } from 'react-router-dom';
 import NotificationSettingsList from '../components/NotificationSettingsList';
@@ -8,6 +7,7 @@ import { reportError } from '../utils/error';
 import settingsApi from '../api/settingsApi';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import Icon from '../components/Icon';
 
 export default function AccountNotificationSettingsPage() {
   const [settings, setSettings] = useState([]);
@@ -45,7 +45,7 @@ export default function AccountNotificationSettingsPage() {
       <Link to="/account">
         <Button variant="open" color="gray">
           <div className="flex-center">
-            <ArrowNarrowLeftIcon className="w-4 h-4 mr-4" />
+            <Icon name="arrow_back" className="w-4 h-4 mr-4" />
             Menu
           </div>
         </Button>

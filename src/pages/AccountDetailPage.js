@@ -1,16 +1,13 @@
-import BellIcon from '@heroicons/react/outline/BellIcon';
-import CogIcon from '@heroicons/react/outline/CogIcon';
 import { Link } from 'react-router-dom';
 import MobileMenuButton from '../components/buttons/MobileMenuButton';
 import ProfilePicture from '../components/ProfilePicture';
 import Toggle from '../components/Toggle';
-import UserCircleIcon from '@heroicons/react/outline/UserCircleIcon';
-import PhotographIcon from '@heroicons/react/outline/PhotographIcon';
 import { noop } from '../utils/constants';
 import { selectCurrentUser } from '../store/authSlice';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import useTheme from '../hooks/useTheme';
+import Icon from '../components/Icon';
 
 export default function AccountDetailPage() {
   const currentUser = useSelector(selectCurrentUser);
@@ -41,28 +38,28 @@ export default function AccountDetailPage() {
         <Link to="/account/settings">
           <MobileMenuButton full className="border-b dark:border-dark-gray-600">
             <div className="flex items-center">
-              <CogIcon className="w-5 h-5 mr-4" /> General
+              <Icon name="settings" className="w-5 h-5 mr-4" /> General
             </div>
           </MobileMenuButton>
         </Link>
         <Link to="/account/profile">
           <MobileMenuButton full className="border-b dark:border-dark-gray-600">
             <div className="flex items-center">
-              <UserCircleIcon className="w-5 h-5 mr-4" /> Profile
+              <Icon name="account_circle" className="w-5 h-5 mr-4" /> Profile
             </div>
           </MobileMenuButton>
         </Link>
         <Link to="/account/notifications">
           <MobileMenuButton full className="border-b dark:border-dark-gray-600">
             <div className="flex items-center">
-              <BellIcon className="w-5 h-5 mr-4" /> Notifications
+              <Icon name="notifications" className="w-5 h-5 mr-4" /> Notifications
             </div>
           </MobileMenuButton>
         </Link>
         <Link to="/account/appearance">
           <MobileMenuButton full className="border-b dark:border-dark-gray-600">
             <div className="flex items-center">
-              <PhotographIcon className="w-5 h-5 mr-4" /> Appearance
+              <Icon name="image" className="w-5 h-5 mr-4" /> Appearance
             </div>
           </MobileMenuButton>
         </Link>

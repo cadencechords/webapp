@@ -1,4 +1,3 @@
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import Button from '../components/Button';
 import Integrations from '../components/Integrations';
 import { Link } from 'react-router-dom';
@@ -6,6 +5,7 @@ import ProfilePicture from '../components/ProfilePicture';
 import SignOutOptions from '../components/SignOutOptions';
 import { selectCurrentUser } from '../store/authSlice';
 import { useSelector } from 'react-redux';
+import Icon from '../components/Icon';
 
 export default function AccountGeneralSettingsPage() {
   const currentUser = useSelector(selectCurrentUser);
@@ -15,7 +15,7 @@ export default function AccountGeneralSettingsPage() {
       <Link to="/account">
         <Button variant="open" color="gray">
           <div className="flex-center">
-            <ArrowNarrowLeftIcon className="w-4 h-4 mr-4" />
+            <Icon name="arrow_back" className="w-4 h-4 mr-4" />
             Menu
           </div>
         </Button>

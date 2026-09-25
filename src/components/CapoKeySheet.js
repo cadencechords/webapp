@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import Button from './Button';
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import Toggle from './Toggle';
 import classNames from 'classnames';
 import { determineCapos } from '../utils/capo';
-import XCircleIcon from '@heroicons/react/solid/XCircleIcon';
 import {
   useCreateCapo,
   useDeleteCapo,
   useUpdateCapo,
 } from '../hooks/api/capo.hooks';
+import Icon from './Icon';
 
 export default function CapoKeySheet({
   onChangeSheet,
@@ -81,7 +80,7 @@ export default function CapoKeySheet({
             size="md"
             onClick={() => onChangeSheet('options')}
           >
-            <ArrowNarrowLeftIcon className="w-5 h-5" />
+            <Icon name="arrow_back" className="w-5 h-5" />
           </Button>
           Capo
         </div>
@@ -101,7 +100,7 @@ export default function CapoKeySheet({
               : 'dark:hover:bg-dark-gray-400 hover:bg-gray-200'
           )}
         >
-          <XCircleIcon className={classNames('w-6 h-6')} />
+          <Icon name="cancel" filled className={classNames('w-6 h-6')} />
         </button>
         {keys.map(key => (
           <button

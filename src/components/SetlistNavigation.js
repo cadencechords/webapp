@@ -1,6 +1,5 @@
-import ArrowNarrowLeftIcon from "@heroicons/react/outline/ArrowNarrowLeftIcon";
-import ArrowNarrowRightIcon from "@heroicons/react/outline/ArrowNarrowRightIcon";
 import MobileMenuButton from "./buttons/MobileMenuButton";
+import Icon from './Icon';
 
 export default function SetlistNavigation({ songs, onIndexChange, index }) {
 	return (
@@ -16,7 +15,7 @@ export default function SetlistNavigation({ songs, onIndexChange, index }) {
 						<span className="text-gray-500 dark:text-dark-gray-400">Beginning</span>
 					) : (
 						<>
-							<ArrowNarrowLeftIcon className="h-4 w-4 mr-2 shrink-0" />
+							<Icon name="arrow_back" className="h-4 w-4 mr-2 shrink-0" />
 							{songs[index - 1]?.name}
 						</>
 					)}
@@ -32,7 +31,7 @@ export default function SetlistNavigation({ songs, onIndexChange, index }) {
 					) : (
 						<>
 							{songs[index + 1]?.name}
-							<ArrowNarrowRightIcon className="h-4 w-4 ml-2 shrink-0" />
+							<Icon name="arrow_forward" className="h-4 w-4 ml-2 shrink-0" />
 						</>
 					)}
 				</MobileMenuButton>

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import svgr from 'vite-plugin-svgr';
 
 // The source is plain .js files containing JSX (a CRA convention).
 const jsxInJs = /src\/.*\.js$/;
@@ -13,6 +14,9 @@ export default defineConfig({
   plugins: [
     react({ include: /\.(js|jsx)$/ }),
     tailwindcss(),
+    // `import X from './icon.svg?react'` -> React component. Material Symbols
+    // SVGs have no fill or size: color follows currentColor, size follows CSS.
+    svgr({ svgrOptions: { dimensions: false, svgProps: { fill: 'currentColor' } } }),
     // @react-pdf/renderer needs these Node built-ins, which webpack 4 (CRA) polyfilled automatically.
     nodePolyfills({
       include: ['buffer', 'process', 'stream', 'util', 'events', 'zlib'],

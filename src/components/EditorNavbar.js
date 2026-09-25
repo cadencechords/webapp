@@ -1,10 +1,9 @@
-import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { setSetlistBeingPresented } from '../store/presenterSlice';
 import Button from './Button';
+import Icon from './Icon';
 
 export default function EditorNavbar({
   dirty,
@@ -33,7 +32,7 @@ export default function EditorNavbar({
               color="gray"
               onClick={handleGoBack}
             >
-              <ArrowNarrowLeftIcon className="w-6 h-6" />
+              <Icon name="arrow_back" className="w-6 h-6" />
             </Button>
           </span>
           <h1 className="text-base font-bold text-center dark:text-dark-gray-100">
@@ -48,7 +47,7 @@ export default function EditorNavbar({
             onClick={onToggleFormatOptions}
             className="sm:mr-4"
           >
-            <AdjustmentsIcon className="w-5 h-5" />
+            <Icon name="tune" className="w-5 h-5" />
           </Button>
           <span className="fixed bottom-0 left-0 z-20 w-full p-3 sm:p-0 sm:w-auto sm:relative">
             <div className="w-full sm:w-20">

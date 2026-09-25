@@ -1,10 +1,9 @@
 import Alert from "./Alert";
-import CheckCircleIcon from "@heroicons/react/outline/CheckCircleIcon";
-import XCircleIcon from "@heroicons/react/outline/XCircleIcon";
+import Icon from './Icon';
 
 export default function PasswordRequirements({ isLongEnough, isUncommon }) {
-	let checkIcon = <CheckCircleIcon className="w-4 h-4 mx-3 text-green-600 dark:text-dark-green" />;
-	let xIcon = <XCircleIcon className="w-4 h-4 mx-3 text-red-600 dark:text-dark-red" />;
+	let checkIcon = <Icon name="check_circle" className="w-4 h-4 mx-3 text-green-600 dark:text-dark-green" />;
+	let xIcon = <Icon name="cancel" className="w-4 h-4 mx-3 text-red-600 dark:text-dark-red" />;
 	return (
 		<div className="mb-4">
 			<Alert color="gray">

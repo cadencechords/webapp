@@ -1,11 +1,10 @@
 import { isMinor, parseNote } from '../utils/SongUtils';
 import { useEffect, useState } from 'react';
 
-import ArrowNarrowRightIcon from '@heroicons/react/outline/ArrowNarrowRightIcon';
 import Button from './Button';
 import SongKeyButton from './buttons/SongKeyButton';
 import StyledDialog from './StyledDialog';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
+import Icon from './Icon';
 
 export default function KeyTransposerDialog({
   open,
@@ -80,14 +79,14 @@ export default function KeyTransposerDialog({
           <>
             <div className="flex-col text-xs flex-center">
               {calculateTonesTransposed()}
-              <ArrowNarrowRightIcon className="w-6 h-6 mt-1 transform -translate-y-2" />
+              <Icon name="arrow_forward" className="w-6 h-6 mt-1 transform -translate-y-2" />
             </div>
             <div className="relative flex-col flex-center">
               <button
                 className="absolute outline-hidden -top-1 -right-1 focus:outline-hidden"
                 onClick={() => handleKeyChange(null)}
               >
-                <TrashIcon className="w-4 h-4 text-red-600 dark:text-dark-red" />
+                <Icon name="delete" className="w-4 h-4 text-red-600 dark:text-dark-red" />
               </button>
               <h1 className="mb-2 text-3xl font-bold text-center">
                 {workingTransposedKey}

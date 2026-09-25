@@ -2,8 +2,8 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import KeyBadge from './KeyBadge';
 import Button from './Button';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import useRemoveSongFromBinder from '../hooks/api/useRemoveSongFromBinder';
+import Icon from './Icon';
 
 export default function BinderSongRow({ song, binderId }) {
   const router = useHistory();
@@ -30,7 +30,7 @@ export default function BinderSongRow({ song, binderId }) {
         loading={isRemoving}
         className="whitespace-nowrap"
       >
-        <TrashIcon className="w-4 h-4" />
+        <Icon name="delete" className="w-4 h-4" />
       </Button>
     </div>
   );

@@ -1,7 +1,7 @@
 import Button from './Button';
-import CheckIcon from '@heroicons/react/outline/CheckIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import StyledPopover from './StyledPopover';
+import Icon from './Icon';
 
 export default function KeyCapoOptionsPopover({ song, onShowBottomSheet }) {
   if (!song) return null;
@@ -29,7 +29,7 @@ export default function KeyCapoOptionsPopover({ song, onShowBottomSheet }) {
       >
         Transpose
         {song.show_transposed && song.transposed_key && (
-          <CheckIcon className={iconClasses} />
+          <Icon name="check" className={iconClasses} />
         )}
       </MobileMenuButton>
       <MobileMenuButton
@@ -39,7 +39,7 @@ export default function KeyCapoOptionsPopover({ song, onShowBottomSheet }) {
         onClick={() => onShowBottomSheet('capo')}
       >
         Capo
-        {song.capo && <CheckIcon className={iconClasses} />}
+        {song.capo && <Icon name="check" className={iconClasses} />}
       </MobileMenuButton>
     </StyledPopover>
   );

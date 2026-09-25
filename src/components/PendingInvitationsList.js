@@ -5,10 +5,10 @@ import NoDataMessage from './NoDataMessage';
 import SectionTitle from './SectionTitle';
 import TableHead from './TableHead';
 import TableRow from './TableRow';
-import XIcon from '@heroicons/react/outline/XIcon';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
+import Icon from './Icon';
 
 export default function PendingInvitationsList({
   invitations,
@@ -60,7 +60,7 @@ export default function PendingInvitationsList({
                     color="gray"
                     onClick={() => handleDeleteInvitation(invitation.id)}
                   >
-                    <XIcon className="h-4" />
+                    <Icon name="close" className="h-4" />
                   </Button>
                 </div>
               );

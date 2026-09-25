@@ -2,10 +2,10 @@ import MobileMenuButton from '../buttons/MobileMenuButton';
 import { REMOVE_MEMBERS } from '../../utils/constants';
 import StyledDialog from '../StyledDialog';
 import UserApi from '../../api/UserApi';
-import UserRemoveIcon from '@heroicons/react/outline/UserRemoveIcon';
 import { reportError } from '../../utils/error';
 import { selectCurrentMember } from '../../store/authSlice';
 import { useSelector } from 'react-redux';
+import Icon from '../Icon';
 
 export default function MemberMenu({ onCloseDialog, open, member, onRemoved }) {
   const currentMember = useSelector(selectCurrentMember);
@@ -22,7 +22,7 @@ export default function MemberMenu({ onCloseDialog, open, member, onRemoved }) {
   let removeFromTeamButton = currentMember.can(REMOVE_MEMBERS) && (
     <MobileMenuButton full color="red" onClick={handleRemoveFromTeam}>
       <div className="flex items-center">
-        <UserRemoveIcon className="mr-4 h-5" />
+        <Icon name="person_remove" className="mr-4 h-5" />
         Remove from team
       </div>
     </MobileMenuButton>

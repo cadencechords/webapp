@@ -1,9 +1,8 @@
-import InformationCircleIcon from '@heroicons/react/outline/InformationCircleIcon';
 import { Link } from 'react-router-dom';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import ProfilePicture from './ProfilePicture';
 import StyledPopover from './StyledPopover';
-import SwitchHorizontalIcon from '@heroicons/react/outline/SwitchHorizontalIcon';
+import Icon from './Icon';
 
 export default function TeamOptionsPopover({ team }) {
   let button = (
@@ -25,7 +24,7 @@ export default function TeamOptionsPopover({ team }) {
         >
           <MobileMenuButton full className="flex-between">
             View details
-            <InformationCircleIcon className="w-4 h-4" />
+            <Icon name="info" className="w-4 h-4" />
           </MobileMenuButton>
         </Link>
         <Link
@@ -34,7 +33,7 @@ export default function TeamOptionsPopover({ team }) {
         >
           <MobileMenuButton full className="flex-between">
             Switch teams
-            <SwitchHorizontalIcon className="w-4 h-4" />
+            <Icon name="swap_horiz" className="w-4 h-4" />
           </MobileMenuButton>
         </Link>
       </div>

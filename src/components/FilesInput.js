@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
 import Button from "./Button";
-import TrashIcon from "@heroicons/react/outline/TrashIcon";
+import Icon from './Icon';
 
 export default function FilesInput({ onChange, onRemove, accept, buttonText }) {
 	const input = useRef();
@@ -41,7 +41,7 @@ export default function FilesInput({ onChange, onRemove, accept, buttonText }) {
 					>
 						{file.name}
 						<Button variant="open" size="xs" className="ml-3" onClick={() => handleRemove(file)}>
-							<TrashIcon className="w-4 h-4 text-gray-500 shrink-0" />
+							<Icon name="delete" className="w-4 h-4 text-gray-500 shrink-0" />
 						</Button>
 					</div>
 				))}

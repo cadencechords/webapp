@@ -1,8 +1,6 @@
 import Button from '../Button';
-import ChevronLeftIcon from '@heroicons/react/outline/ChevronLeftIcon';
-import ChevronRightIcon from '@heroicons/react/outline/ChevronRightIcon';
-import PlusIcon from '@heroicons/react/outline/PlusIcon';
 import { Link } from 'react-router-dom';
+import Icon from '../Icon';
 
 export default function CalendarHeader({
   title,
@@ -21,17 +19,17 @@ export default function CalendarHeader({
             color="gray"
             onClick={onPreviousMonth}
           >
-            <ChevronLeftIcon className="w-5 h-5" />
+            <Icon name="chevron_left" className="w-5 h-5" />
           </Button>
           <Button variant="icon" size="md" color="gray" onClick={onNextMonth}>
-            <ChevronRightIcon className="w-5 h-5" />
+            <Icon name="chevron_right" className="w-5 h-5" />
           </Button>
         </div>
         {canCreate && (
           <Link to="/calendar/new">
             <Button className="whitespace-nowrap">
               <div className="flex-center">
-                <PlusIcon className="w-4 h-4 mr-1" />
+                <Icon name="add" className="w-4 h-4 mr-1" />
                 New event
               </div>
             </Button>

@@ -6,9 +6,9 @@ import Button from './Button';
 import FileApi from '../api/FileApi';
 import Label from './Label';
 import MobileProfilePictureMenu from './mobile menus/MobileProfilePictureMenu';
-import PencilIcon from '@heroicons/react/outline/PencilIcon';
 import ProfilePicture from './ProfilePicture';
 import { reportError } from '../utils/error';
+import Icon from './Icon';
 
 export default function ProfilePictureDetail({ url }) {
   const [showMobileActionsDialog, setShowMobileActionsDialog] = useState(false);
@@ -62,7 +62,7 @@ export default function ProfilePictureDetail({ url }) {
           onClick={() => setShowMobileActionsDialog(true)}
           className="focus:outline-hidden outline-hidden absolute bottom-0 left-1/2 ml-3 mb-1 border border-white bg-blue-700 p-1.5 rounded-full md:hidden"
         >
-          <PencilIcon className="h-4 text-white" />
+          <Icon name="edit" className="h-4 text-white" />
         </button>
       </div>
 

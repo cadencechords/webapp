@@ -1,5 +1,5 @@
 import { Listbox } from '@headlessui/react';
-import SelectorIcon from '@heroicons/react/solid/SelectorIcon';
+import Icon from './Icon';
 
 export default function StyledListBox({
   options,
@@ -25,7 +25,7 @@ export default function StyledListBox({
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
             {selectedOption.template}
           </div>
-          <SelectorIcon className="shrink-0 w-4 h-4 text-gray-500" />
+          <Icon name="unfold_more" filled className="shrink-0 w-4 h-4 text-gray-500" />
         </Listbox.Button>
         <Listbox.Options
           className={

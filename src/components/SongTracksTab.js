@@ -1,9 +1,9 @@
 import Track from "./Track";
 import Button from "./Button";
-import PlusIcon from "@heroicons/react/outline/PlusIcon";
 import AddTracksDialog from "../dialogs/AddTracksDialog";
 import { useState } from "react";
 import NoDataMessage from "./NoDataMessage";
+import Icon from './Icon';
 
 export default function SongTracksTab({ song, onDeleted, onTracksAdded }) {
   const [showAddTracks, setShowAddTracks] = useState(false);
@@ -17,7 +17,7 @@ export default function SongTracksTab({ song, onDeleted, onTracksAdded }) {
           className="flex-center"
           onClick={() => setShowAddTracks(true)}
         >
-          <PlusIcon className="w-4 h-4 text-blue-600 dark:text-dark-blue mr-2" />
+          <Icon name="add" className="w-4 h-4 text-blue-600 dark:text-dark-blue mr-2" />
           Add track
         </Button>
       </div>

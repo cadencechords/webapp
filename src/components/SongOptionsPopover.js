@@ -4,14 +4,12 @@ import { useHistory, useParams } from 'react-router-dom';
 import Button from './Button';
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog';
 import { DELETE_SONGS } from '../utils/constants';
-import DotsVerticalIcon from '@heroicons/react/outline/DotsVerticalIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
-import PrinterIcon from '@heroicons/react/outline/PrinterIcon';
 import StyledPopover from './StyledPopover';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import { selectCurrentMember } from '../store/authSlice';
 import { useState } from 'react';
 import useDeleteSong from '../hooks/api/useDeleteSong';
+import Icon from './Icon';
 
 export default function SongOptionsPopover({ onPrintClick }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -25,7 +23,7 @@ export default function SongOptionsPopover({ onPrintClick }) {
 
   let button = (
     <Button variant="icon" color="gray" size="md">
-      <DotsVerticalIcon className="w-5 h-5" />
+      <Icon name="more_vert" className="w-5 h-5" />
     </Button>
   );
 
@@ -50,7 +48,7 @@ export default function SongOptionsPopover({ onPrintClick }) {
             className="border-b flex-between last:border-0 dark:border-dark-gray-400"
           >
             Print
-            <PrinterIcon className="w-5 h-5" />
+            <Icon name="print" className="w-5 h-5" />
           </MobileMenuButton>
           {currentMember.can(DELETE_SONGS) && (
             <MobileMenuButton
@@ -60,7 +58,7 @@ export default function SongOptionsPopover({ onPrintClick }) {
               onClick={() => setShowDeleteDialog(true)}
             >
               Delete
-              <TrashIcon className="w-5 h-5" />
+              <Icon name="delete" className="w-5 h-5" />
             </MobileMenuButton>
           )}
         </div>

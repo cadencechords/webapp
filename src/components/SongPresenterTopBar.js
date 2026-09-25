@@ -1,10 +1,8 @@
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import Button from './Button';
 import { Link } from 'react-router-dom';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import { useParams } from 'react-router-dom';
 import KeyOptionsPopover from './KeyOptionsPopover';
-import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
 import MarkupPopover from './MarkupPopover';
@@ -16,6 +14,7 @@ import {
   useCreateBulkAnnotations,
   useDeleteBulkAnnotations,
 } from '../hooks/api/annotations.hooks';
+import Icon from './Icon';
 
 export default function SongPresenterTopBar({
   song,
@@ -62,7 +61,7 @@ function DefaultTopBar({
     <>
       <Link to={`/songs/${id}`}>
         <Button variant="icon" size="md" color="gray">
-          <ArrowNarrowLeftIcon className="w-6 h-6" />
+          <Icon name="arrow_back" className="w-6 h-6" />
         </Button>
       </Link>
       <HeaderTitle>{song.name}</HeaderTitle>
@@ -76,7 +75,7 @@ function DefaultTopBar({
           onClick={onShowOptionsDrawer}
           color="gray"
         >
-          <AdjustmentsIcon className="w-6 h-6" />
+          <Icon name="tune" className="w-6 h-6" />
         </Button>
         {currentSubscription.isPro && (
           <MarkupPopover

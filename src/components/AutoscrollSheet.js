@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 
 import Button from "./Button";
 import { EDIT_SONGS } from "../utils/constants";
-import PauseIcon from "@heroicons/react/solid/PauseIcon";
-import PlayIcon from "@heroicons/react/solid/PlayIcon";
 import Range from "./Range";
 import SectionTitle from "./SectionTitle";
 import SongApi from "../api/SongApi";
-import XCircleIcon from "@heroicons/react/outline/XCircleIcon";
 import { reportError } from "../utils/error";
 import { selectCurrentMember } from "../store/authSlice";
 import { useSelector } from "react-redux";
+import Icon from './Icon';
 
 export default function AutoscrollSheet({
 	song,
@@ -143,9 +141,9 @@ export default function AutoscrollSheet({
 				<div className="flex-center mb-4">
 					<button className="outline-hidden focus:outline-hidden" onClick={handleToggleScroll}>
 						{isScrolling ? (
-							<PauseIcon className={iconClasses} />
+							<Icon name="pause_circle" filled className={iconClasses} />
 						) : (
-							<PlayIcon className={iconClasses} />
+							<Icon name="play_circle" filled className={iconClasses} />
 						)}
 					</button>
 				</div>
@@ -168,13 +166,13 @@ export default function AutoscrollSheet({
 						className="focus:outline-hidden outline-hidden"
 					>
 						{isScrolling ? (
-							<PauseIcon className={iconClasses} />
+							<Icon name="pause_circle" filled className={iconClasses} />
 						) : (
-							<PlayIcon className={iconClasses} />
+							<Icon name="play_circle" filled className={iconClasses} />
 						)}
 					</button>
 					<button className="focus:outline-hidden outline-hidden" onClick={handleStopScrolling}>
-						<XCircleIcon className="w-10 h-10 text-gray-500 dark:text-dark-gray-200" />
+						<Icon name="cancel" className="w-10 h-10 text-gray-500 dark:text-dark-gray-200" />
 					</button>
 				</div>
 			)}

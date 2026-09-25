@@ -1,7 +1,6 @@
-import ArrowNarrowRightIcon from "@heroicons/react/outline/ArrowNarrowRightIcon";
 import Button from "../components/Button";
 import FileInput from "./FileInput";
-import XIcon from "@heroicons/react/outline/XIcon";
+import Icon from './Icon';
 
 export default function OnsongChooseBackupFile({
 	onBackupFileChosen,
@@ -33,7 +32,7 @@ export default function OnsongChooseBackupFile({
 					<div className="flex-between border dark:border-dark-gray-600 rounded-md p-3 my-4">
 						{backup.name}
 						<Button size="xs" variant="open" onClick={onReset} color="gray">
-							<XIcon className="w-5 h-5" />
+							<Icon name="close" className="w-5 h-5" />
 						</Button>
 					</div>
 				)}
@@ -45,7 +44,7 @@ export default function OnsongChooseBackupFile({
 				<Button disabled={!backup} onClick={onChooseSongs}>
 					<div className="flex-center">
 						Choose songs
-						<ArrowNarrowRightIcon className="w-5 h-5 ml-2" />
+						<Icon name="arrow_forward" className="w-5 h-5 ml-2" />
 					</div>
 				</Button>
 			</div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import ChevronDownIcon from '@heroicons/react/solid/ChevronDownIcon';
+import Icon from './Icon';
 
 export default function Select({
   options = [],
@@ -24,7 +24,7 @@ export default function Select({
           </option>
         ))}
       </select>
-      <ChevronDownIcon className="absolute w-3 h-3 transform -translate-y-1/2 right-1 top-1/2" />
+      <Icon name="keyboard_arrow_down" filled className="absolute w-3 h-3 transform -translate-y-1/2 right-1 top-1/2" />
     </span>
   );
 }

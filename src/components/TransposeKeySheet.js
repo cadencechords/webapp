@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import Button from './Button';
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
-import PlusIcon from '@heroicons/react/outline/PlusIcon';
-import MinusIcon from '@heroicons/react/outline/MinusIcon';
 import Toggle from './Toggle';
 import { isMinor } from '../utils/SongUtils';
 import {
@@ -13,6 +10,7 @@ import {
 } from '../utils/music';
 import classNames from 'classnames';
 import useUpdateSong from '../hooks/api/songs.hooks';
+import Icon from './Icon';
 
 export default function TransposeKeySheet({
   onChangeSheet,
@@ -65,7 +63,7 @@ export default function TransposeKeySheet({
             size="md"
             onClick={() => onChangeSheet('options')}
           >
-            <ArrowNarrowLeftIcon className="w-5 h-5" />
+            <Icon name="arrow_back" className="w-5 h-5" />
           </Button>
           Transpose
         </div>
@@ -94,10 +92,10 @@ export default function TransposeKeySheet({
 
       <div className="flex items-center justify-end gap-4 my-4">
         <Button variant="icon" onClick={handleTransposeUpHalfStep}>
-          <PlusIcon className="w-5 h-5" />
+          <Icon name="add" className="w-5 h-5" />
         </Button>
         <Button variant="icon" onClick={handleTransposeDownHalfStep}>
-          <MinusIcon className="w-5 h-5" />
+          <Icon name="remove" className="w-5 h-5" />
         </Button>
       </div>
 

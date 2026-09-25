@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 
 import Button from './Button';
 import MetronomeTool from '../tools/metronome';
-import MinusIcon from '@heroicons/react/outline/MinusIcon';
 import OpenInput from './inputs/OpenInput';
-import PauseIcon from '@heroicons/react/solid/PauseIcon';
-import PlayIcon from '@heroicons/react/solid/PlayIcon';
-import PlusIcon from '@heroicons/react/outline/PlusIcon';
 import TapTempo from './TapTempo';
+import Icon from './Icon';
 
 export default function Metronome({ bpm, onBpmChange }) {
   const [isOn, setIsOn] = useState(false);
@@ -59,7 +56,7 @@ export default function Metronome({ bpm, onBpmChange }) {
           className="mr-2 text-2xl"
           onClick={() => onBpmChange(bpm > 0 ? bpm - 1 : bpm)}
         >
-          <MinusIcon className="w-4 h-4" />
+          <Icon name="remove" className="w-4 h-4" />
         </Button>
         <div className="w-20">
           <OpenInput
@@ -75,7 +72,7 @@ export default function Metronome({ bpm, onBpmChange }) {
           className="ml-2 text-2xl"
           onClick={() => onBpmChange(bpm + 1)}
         >
-          <PlusIcon className="w-4 h-4" />
+          <Icon name="add" className="w-4 h-4" />
         </Button>
       </div>
       <div className="relative flex-center">
@@ -84,9 +81,9 @@ export default function Metronome({ bpm, onBpmChange }) {
           onClick={handleToggleMetronome}
         >
           {isOn ? (
-            <PauseIcon className={iconClasses} />
+            <Icon name="pause_circle" filled className={iconClasses} />
           ) : (
-            <PlayIcon className={iconClasses} />
+            <Icon name="play_circle" filled className={iconClasses} />
           )}
         </button>
         <TapTempo onBpmChange={handleBpmEdited} onTap={handlePauseMetronome} />

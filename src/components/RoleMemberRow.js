@@ -1,11 +1,11 @@
 import React from 'react';
 import Button from './Button';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { ASSIGN_ROLES } from '../utils/constants';
 import useRemoveMemberFromRole from '../hooks/api/useRemoveMemberFromRole';
 import classNames from 'classnames';
+import Icon from './Icon';
 
 export default function RoleMemberRow({ role, member }) {
   const currentMember = useSelector(selectCurrentMember);
@@ -35,7 +35,7 @@ export default function RoleMemberRow({ role, member }) {
           size="md"
           className="whitespace-nowrap"
         >
-          <TrashIcon className="w-4 h-4" />
+          <Icon name="delete" className="w-4 h-4" />
         </Button>
       )}
     </div>

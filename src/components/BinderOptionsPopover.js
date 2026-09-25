@@ -3,15 +3,14 @@ import { useHistory, useParams } from 'react-router-dom';
 import BinderApi from '../api/BinderApi';
 import Button from './Button';
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog';
-import DotsVerticalIcon from '@heroicons/react/outline/DotsVerticalIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import StyledPopover from './StyledPopover';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import { reportError } from '../utils/error';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { DELETE_BINDERS } from '../utils/constants';
+import Icon from './Icon';
 
 export default function BinderOptionsPopover({ onChangeColorClick }) {
   const currentMember = useSelector(selectCurrentMember);
@@ -21,7 +20,7 @@ export default function BinderOptionsPopover({ onChangeColorClick }) {
 
   let button = (
     <Button variant="icon" color="gray" size="md">
-      <DotsVerticalIcon className="w-5 h-5" />
+      <Icon name="more_vert" className="w-5 h-5" />
     </Button>
   );
 
@@ -63,7 +62,7 @@ export default function BinderOptionsPopover({ onChangeColorClick }) {
               onClick={() => setShowDeleteDialog(true)}
             >
               Delete
-              <TrashIcon className="w-5 h-5" />
+              <Icon name="delete" className="w-5 h-5" />
             </MobileMenuButton>
           )}
         </div>

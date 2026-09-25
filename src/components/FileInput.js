@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
 import Button from "./Button";
-import XIcon from "@heroicons/react/outline/XIcon";
+import Icon from './Icon';
 
 export default function FileInput({ onChange, accept, onRemove }) {
 	const input = useRef();
@@ -39,7 +39,7 @@ export default function FileInput({ onChange, accept, onRemove }) {
 				<div className="flex-between border rounded-md p-3 mt-4">
 					{file.name}
 					<Button size="xs" variant="open" onClick={handleRemoveChosenFile}>
-						<XIcon className="w-5 h-5 text-gray-500" />
+						<Icon name="close" className="w-5 h-5 text-gray-500" />
 					</Button>
 				</div>
 			)}
