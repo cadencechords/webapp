@@ -290,11 +290,6 @@
       "count": 1
     }
   },
-  "src/components/Select.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/SessionCard.js": {
     "no-unused-vars": {
       "count": 1
