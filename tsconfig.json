@@ -4,6 +4,7 @@
     "checkJs": true,
     "noEmit": true,
     "isolatedModules": true,
+    "allowUnreachableCode": false,
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
