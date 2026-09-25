@@ -1,9 +1,18 @@
+import type { MouseEventHandler, ReactNode } from 'react';
+
+type TransposeOptionProps = {
+  selected?: boolean;
+  children?: ReactNode;
+  className?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+};
+
 export default function TransposeOption({
   selected,
   children,
-  className,
+  className = '',
   onClick,
-}) {
+}: TransposeOptionProps) {
   return (
     <button
       onClick={onClick}
@@ -17,7 +26,3 @@ export default function TransposeOption({
     </button>
   );
 }
-
-TransposeOption.defaultProps = {
-  className: '',
-};
