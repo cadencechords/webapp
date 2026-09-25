@@ -41,7 +41,8 @@ export interface Track {
 export interface SongFormat {
   chords_hidden?: boolean;
   font?: string;
-  font_size?: number;
+  /** A number, or a string such as '14' once edited in the format panel. */
+  font_size?: number | string;
 }
 
 /** A sticky note on one line of a song. */
@@ -50,6 +51,9 @@ export interface SongNote {
   content: string;
   color: string;
   line_number: number;
+  /** Position of the note after it's dragged. */
+  x?: number;
+  y?: number;
 }
 
 export interface Song {

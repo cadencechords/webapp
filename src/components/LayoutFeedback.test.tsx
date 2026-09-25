@@ -92,9 +92,9 @@ test('TableRow is not removable by default', () => {
 
 test('list components render with no data', () => {
   render(<Table />);
-  expect(screen.getByRole('table').querySelectorAll('tbody tr')).toHaveLength(
-    0
-  );
+  const table = screen.getByRole('table');
+  expect(table.querySelectorAll('thead th')).toHaveLength(0);
+  expect(table.querySelectorAll('tbody tr')).toHaveLength(0);
   render(<SelectedPcoSongsTable onRemove={() => {}} />);
   renderWithProvider(
     <MemoryRouter>

@@ -97,8 +97,9 @@ export default function AutoscrollSheet({
   function handleStartScrolling() {
     setIsScrolling(true);
     const { px, interval } = SPEEDS[song?.scroll_speed || 1];
-    // This passes an updater, not a frame id: React calls it right away, which
-    // starts scrolling, and stores its `undefined` return as the id.
+    // This passes an updater, not a frame id: React calls it when it processes
+    // the update (twice under StrictMode), which starts scrolling, and stores
+    // its `undefined` return as the id.
     setAnimationFrameId(() => {
       scroll(0, px, interval);
       return undefined;
