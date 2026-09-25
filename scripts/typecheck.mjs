@@ -38,26 +38,33 @@ if (!node.ok) {
 // Every TypeScript file outside src must be in that project. Its include
 // globs skip dot-directories, so check against what git sees (tracked, or
 // untracked and not ignored) rather than trust them.
-// Compare real paths: tsc (a Go binary) can print paths through a symlinked
-// working directory where Node's cwd is the real path, and on Windows it
-// prints forward slashes.
+//
+// Both sides are compared as real paths: tsc (a Go binary) can print paths
+// through a symlinked working directory where Node's cwd is the real path,
+// it prints forward slashes on Windows, and a file may itself be a symlink.
 const root = realpathSync(process.cwd());
-function repoPath(file) {
+function realPath(file) {
   try {
-    const relative = path.relative(root, realpathSync(file));
-    return relative.startsWith('..') || path.isAbsolute(relative)
-      ? null
-      : relative.split(path.sep).join('/');
+    return realpathSync(file);
   } catch {
-    return null; // not a file on disk (a blank line, a library path, …)
+    return null; // not a file on disk (a blank line, …)
   }
 }
 const checked = new Set(
   tsc('tsconfig.node.json', '--listFilesOnly')
     .output.split('\n')
-    .map(line => repoPath(line.trim()))
-    .filter(Boolean)
+    .map(line => realPath(line.trim()))
+    .filter(file => {
+      if (!file) return false;
+      const relative = path.relative(root, file);
+      // The repo's own files, not TypeScript's libs or @types in node_modules.
+      return !/^(\.\.|node_modules)([\\/]|$)/.test(relative);
+    })
 );
+if (!checked.size) {
+  console.error('Could not match tsc --listFilesOnly output to this repo.');
+  process.exit(1);
+}
 const unchecked = execFileSync(
   'git',
   ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
@@ -71,13 +78,7 @@ const unchecked = execFileSync(
       !/(^|\/)node_modules\//.test(file) &&
       existsSync(file) // deleted but not yet staged
   )
-  .filter(file => !checked.has(file));
-if (unchecked.length && !checked.size) {
-  // Nothing tsc listed maps into the repo: a path problem in this script,
-  // not a missing include.
-  console.error('Could not match tsc --listFilesOnly output to this repo.');
-  process.exit(1);
-}
+  .filter(file => !checked.has(realpathSync(file)));
 if (unchecked.length) {
   console.error('TypeScript files that no tsconfig checks:\n');
   for (const file of unchecked) console.error(`  ${file}`);
