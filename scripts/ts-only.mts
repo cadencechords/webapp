@@ -9,7 +9,7 @@
 // public/ is exempt: files there are served as-is (the OneSignal service
 // worker must be JavaScript).
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 const ALLOWLIST = new URL('../js-allowlist.json', import.meta.url);
 const JS = /\.(js|jsx|mjs|cjs)$/;
@@ -22,7 +22,9 @@ const files = execFileSync(
   { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
 )
   .split('\0')
-  .filter(file => JS.test(file) && !file.startsWith('public/'));
+  .filter(file => JS.test(file) && !file.startsWith('public/'))
+  // The index still lists a file that was deleted or renamed without git.
+  .filter(file => existsSync(file));
 const present = new Set(files);
 
 const allowed: string[] = JSON.parse(readFileSync(ALLOWLIST, 'utf8'));
