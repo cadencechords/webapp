@@ -54,6 +54,10 @@ export default defineConfig({
         // One chunk per npm package. Generating the sourcemap for a single ~4 MB
         // main chunk pushed the build past Node's default heap on Netlify.
         manualChunks(id) {
+          // Vite's lazy-import helper would otherwise land in whichever vendor
+          // chunk uses it first (stream-chat-react), and every lazy() page
+          // would pull that chunk in to get it.
+          if (id.includes('vite/preload-helper')) return 'vite-preload';
           const path = id.split('node_modules/')[1];
           if (!path) return;
           const [scope, name] = path.split('/');
