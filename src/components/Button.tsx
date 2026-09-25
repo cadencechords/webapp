@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import {
   forwardRef,
   type CSSProperties,
-  type FocusEventHandler,
   type KeyboardEventHandler,
   type MouseEventHandler,
   type ReactNode,
@@ -47,10 +46,6 @@ export type ButtonProps = {
   onKeyUp?: KeyboardEventHandler<HTMLButtonElement>;
   style?: CSSProperties;
   tabIndex?: number;
-  // The open and outlined variants call these while rendering and use the
-  // result as the handler.
-  onFocus?: () => FocusEventHandler<HTMLButtonElement> | undefined;
-  onBlur?: () => FocusEventHandler<HTMLButtonElement> | undefined;
   name?: string;
   type?: 'button' | 'submit' | 'reset';
 };
@@ -73,8 +68,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onKeyUp,
       style,
       tabIndex,
-      onFocus,
-      onBlur,
       name,
       type = 'button',
     },
@@ -93,8 +86,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onKeyUp,
       style,
       tabIndex,
-      onFocus,
-      onBlur,
       name,
       type,
     };
@@ -139,8 +130,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         onKeyUp={onKeyUp}
         style={style}
         tabIndex={tabIndex}
-        onFocus={onFocus?.()}
-        onBlur={onBlur?.()}
         aria-label={name}
         type={type}
         ref={ref}
