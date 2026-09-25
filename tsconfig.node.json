@@ -1,7 +1,7 @@
 {
-  // TypeScript that runs in Node rather than the browser: scripts, e2e,
-  // .claude hooks and config files. Node runs these with its built-in type
-  // stripping, which ignores types, so this is what checks them.
+  // All TypeScript outside src (tsconfig.json): scripts, e2e, cypress,
+  // .claude hooks, config files. Node runs most of these with its built-in
+  // type stripping, which ignores types, so this is what checks them.
   "compilerOptions": {
     "noEmit": true,
     "module": "nodenext",
@@ -10,19 +10,12 @@
     "lib": ["es2023"],
     "types": ["node"],
     "strict": true,
+    "allowUnreachableCode": false,
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true
   },
-  "include": [
-    "scripts/**/*.ts",
-    "scripts/**/*.mts",
-    "e2e/**/*.ts",
-    "e2e/**/*.mts",
-    ".claude/**/*.ts",
-    ".claude/**/*.mts",
-    "*.config.ts",
-    "*.config.mts"
-  ]
+  "include": ["**/*.ts", "**/*.mts", "**/*.cts", "**/*.tsx"],
+  "exclude": ["src", "node_modules", "build", "public"]
 }
