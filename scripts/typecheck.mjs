@@ -6,7 +6,7 @@
 //   yarn typecheck           fail if any file has more errors than its baseline
 //   yarn typecheck --update  rewrite the baseline (after fixing errors)
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const BASELINE = new URL('../typecheck-baseline.json', import.meta.url);
@@ -38,12 +38,25 @@ if (!node.ok) {
 // Every TypeScript file outside src must be in that project. Its include
 // globs skip dot-directories, so check against what git sees (tracked, or
 // untracked and not ignored) rather than trust them.
-const root = process.cwd();
+// Compare real paths: tsc (a Go binary) can print paths through a symlinked
+// working directory where Node's cwd is the real path, and on Windows it
+// prints forward slashes.
+const root = realpathSync(process.cwd());
+function repoPath(file) {
+  try {
+    const relative = path.relative(root, realpathSync(file));
+    return relative.startsWith('..') || path.isAbsolute(relative)
+      ? null
+      : relative.split(path.sep).join('/');
+  } catch {
+    return null; // not a file on disk (a blank line, a library path, …)
+  }
+}
 const checked = new Set(
   tsc('tsconfig.node.json', '--listFilesOnly')
     .output.split('\n')
-    .filter(file => file.startsWith(root + path.sep))
-    .map(file => path.relative(root, file).split(path.sep).join('/'))
+    .map(line => repoPath(line.trim()))
+    .filter(Boolean)
 );
 const unchecked = execFileSync(
   'git',
@@ -51,8 +64,20 @@ const unchecked = execFileSync(
   { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
 )
   .split('\0')
-  .filter(file => /\.(ts|mts|cts|tsx)$/.test(file) && !file.startsWith('src/'))
+  .filter(
+    file =>
+      /\.(ts|mts|cts|tsx)$/.test(file) &&
+      !file.startsWith('src/') &&
+      !/(^|\/)node_modules\//.test(file) &&
+      existsSync(file) // deleted but not yet staged
+  )
   .filter(file => !checked.has(file));
+if (unchecked.length && !checked.size) {
+  // Nothing tsc listed maps into the repo: a path problem in this script,
+  // not a missing include.
+  console.error('Could not match tsc --listFilesOnly output to this repo.');
+  process.exit(1);
+}
 if (unchecked.length) {
   console.error('TypeScript files that no tsconfig checks:\n');
   for (const file of unchecked) console.error(`  ${file}`);
