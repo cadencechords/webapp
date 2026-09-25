@@ -44,7 +44,7 @@ export default function FullscreenDialog({ children, open, onCloseDialog }) {
             leaveTo="opacity-0 scale-95"
           >
             <div
-              className="inline-block w-full h-screen p-6 overflow-hidden text-left align-middle transition-all transform bg-white overflow-y-auto"
+              className="relative inline-block w-full h-screen p-6 overflow-hidden text-left align-middle transition-all transform bg-white overflow-y-auto"
               onKeyUp={checkIfEscapePressed}
             >
               {children}
