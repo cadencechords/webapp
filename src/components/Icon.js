@@ -4,6 +4,14 @@ import { ICONS } from './icons/registry';
 // Heroicons it replaces: <Icon name="delete" className="w-5 h-5 text-gray-600" />.
 // `filled` uses the filled variant; `size` (px) sets width and height inline.
 // Icons are decorative (aria-hidden); give the control an accessible name.
+/**
+ * @param {object} props
+ * @param {string} props.name Material Symbols name, e.g. "delete"
+ * @param {boolean} [props.filled]
+ * @param {number} [props.size] width and height in px
+ * @param {string} [props.className]
+ * @param {import('react').CSSProperties} [props.style]
+ */
 export default function Icon({
   name,
   filled = false,
