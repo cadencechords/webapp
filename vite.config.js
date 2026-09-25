@@ -44,9 +44,27 @@ export default defineConfig({
     watch: { ignored: ['**/e2e/**', '**/cypress/**', '**/build/**'] },
   },
   preview: { port: 3000 },
-  // Netlify publishes build/, as it did with CRA. No sourcemaps: generating
-  // them for the ~4 MB main chunk pushed the build past Node's default heap.
-  build: { outDir: 'build' },
+  // Netlify publishes build/, as it did with CRA. Sentry fetches the public
+  // sourcemaps to make stack traces readable.
+  build: {
+    outDir: 'build',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        // One chunk per npm package. Generating the sourcemap for a single ~4 MB
+        // main chunk pushed the build past Node's default heap on Netlify.
+        manualChunks(id) {
+          const path = id.split('node_modules/')[1];
+          if (!path) return;
+          const [scope, name] = path.split('/');
+          const pkg = scope.startsWith('@')
+            ? `${scope.slice(1)}-${name}`
+            : scope;
+          return `vendor-${pkg}`;
+        },
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
     globals: true,
