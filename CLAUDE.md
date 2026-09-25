@@ -15,7 +15,8 @@ Only `public/` (served as-is) is exempt.
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
 ESLint parses TypeScript with the TypeScript 6 API from
 `@typescript/typescript6`, because TypeScript 7 has no JavaScript API (see
-`eslint.config.mjs`).
+`eslint.config.mjs`). TypeScript files get typescript-eslint's recommended
+rules (the ones that don't need type information), such as `no-explicit-any`.
 
 ## Checks (same as CI)
 

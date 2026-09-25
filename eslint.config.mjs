@@ -72,6 +72,10 @@ export default [
     settings: { react: { version: 'detect' } },
     rules: {
       ...tseslint.configs.eslintRecommended.rules,
+      // typescript-eslint's recommended rules that don't need type information.
+      ...tseslint.configs.recommended.find(
+        config => config.name === 'typescript-eslint/recommended'
+      ).rules,
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       'react-hooks/rules-of-hooks': 'error',
