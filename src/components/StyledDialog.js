@@ -68,7 +68,7 @@ export default function StyledDialog({
             <div
               className={
                 `inline-block ${sizeClasses} ${mobileStyleClasses} ` +
-                ` overflow-y-auto text-left align-middle transition-all transform bg-white dark:bg-dark-gray-700 `
+                ` relative overflow-y-auto text-left align-middle transition-all transform bg-white dark:bg-dark-gray-700 `
               }
             >
               {showClose && (
