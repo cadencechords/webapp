@@ -67,7 +67,7 @@ const unchecked = execFileSync(
   .filter(
     file =>
       /\.(ts|mts|cts|tsx)$/.test(file) &&
-      !file.startsWith('src/') &&
+      !/^(src|public|build)\//.test(file) && // excluded in the tsconfigs
       !/(^|\/)node_modules\//.test(file) &&
       existsSync(file) // deleted but not yet staged
   )

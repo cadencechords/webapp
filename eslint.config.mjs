@@ -41,6 +41,7 @@ export default [
       'e2e/screenshots/',
       'cypress/',
       'public/',
+      '.claude/worktrees/',
     ],
   },
   js.configs.recommended,
