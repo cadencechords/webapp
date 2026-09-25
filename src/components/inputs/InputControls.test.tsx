@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BinderColor from '../BinderColor';
 import Checkbox from '../Checkbox';
@@ -9,6 +9,7 @@ import OpenInput from './OpenInput';
 import OutlinedInput from './OutlinedInput';
 import ProfilePicture from '../ProfilePicture';
 import Range from '../Range';
+import StyledListBox from '../StyledListBox';
 import Toggle from '../Toggle';
 import WellInput from './WellInput';
 
@@ -36,6 +37,13 @@ test('Range has no stray class and reports numbers', () => {
   render(<Range min={0} max={10} value={5} onChange={onChange} />);
   const range = screen.getByRole('slider');
   expect(range.className).toBe('w-full ');
+  fireEvent.change(range, { target: { value: '7' } });
+  expect(onChange).toHaveBeenCalledWith(7);
+});
+
+test('StyledListBox defaults to a transparent background', () => {
+  render(<StyledListBox selectedOption={{ value: 1, template: 'One' }} />);
+  expect(screen.getByRole('button')).toHaveClass('bg-transparent-200');
 });
 
 test('EditableData is an editable text input by default', () => {
@@ -63,6 +71,7 @@ test('OpenInput and WellInput defaults', () => {
   const [open, well] = screen.getAllByRole('textbox');
   expect(open.className).not.toContain('undefined');
   expect(open).not.toHaveFocus();
+  expect(well).not.toHaveFocus();
   expect(well).toHaveAttribute('placeholder', 'Search');
   expect(well).toHaveAttribute('id', '');
   expect(well.className).not.toContain('undefined');
