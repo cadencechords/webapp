@@ -21,12 +21,12 @@ try {
   if (!output) throw error;
 }
 
-const errors = output
-  .split('\n')
-  .filter(line => /^[^(\s]+\(\d+,\d+\): error TS\d+/.test(line));
+// Paths can contain spaces and parentheses (src/components/mobile menus/...).
+const ERROR_LINE = /^(.+?)\(\d+,\d+\): error TS\d+/;
+const errors = output.split('\n').filter(line => ERROR_LINE.test(line));
 const counts = {};
 for (const line of errors) {
-  const file = line.slice(0, line.indexOf('('));
+  const file = line.match(ERROR_LINE)[1];
   counts[file] = (counts[file] ?? 0) + 1;
 }
 const sorted = Object.fromEntries(
