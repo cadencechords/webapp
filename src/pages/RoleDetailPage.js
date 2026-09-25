@@ -10,7 +10,6 @@ import PageTitle from '../components/PageTitle';
 import RoleMembers from '../components/RoleMembersList';
 import RolePermissions from '../components/RolePermissions';
 import RolesApi from '../api/rolesApi';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import _ from 'lodash';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
@@ -20,6 +19,7 @@ import Alert from '../components/Alert';
 import useDeleteRole from '../hooks/api/useDeleteRole';
 import usePermissions from '../hooks/api/usePermissions';
 import useCopy from '../hooks/useCopy';
+import Icon from '../components/Icon';
 
 export default function RoleDetailPage() {
   const id = useParams().id;
@@ -107,7 +107,7 @@ export default function RoleDetailPage() {
               color="gray"
               onClick={() => setShowConfirmDelete(true)}
             >
-              <TrashIcon className="w-5 h-5" />
+              <Icon name="delete" className="w-5 h-5" />
             </Button>
           )}
       </div>

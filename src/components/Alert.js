@@ -1,5 +1,5 @@
 import Button from './Button';
-import XIcon from '@heroicons/react/outline/XIcon';
+import Icon from './Icon';
 
 export default function Alert({
   dismissable,
@@ -15,7 +15,7 @@ export default function Alert({
       {children}
       {dismissable && (
         <Button size="xs" variant="open" color="black" onClick={onDismiss}>
-          <XIcon className="w-4 h-4" />
+          <Icon name="close" className="w-4 h-4" />
         </Button>
       )}
     </div>

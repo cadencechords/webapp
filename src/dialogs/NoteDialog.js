@@ -2,9 +2,9 @@ import Button from '../components/Button';
 import Label from '../components/Label';
 import NoteColorOption from '../components/NoteColorOption';
 import StyledDialog from '../components/StyledDialog';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import Icon from '../components/Icon';
 
 export default function NoteDialog({
   note,
@@ -55,7 +55,7 @@ export default function NoteDialog({
         placeholder="Type here"
         onChange={e => handleUpdate('content', e.target.value)}
         value={updates.content || ''}
-        className="w-full p-2 mb-4 text-base transition-colors border rounded-md outline-none resize-none border-dark-gray-600 focus:outline-none focus:border-blue-400 dark:focus:border-dark-blue dark:bg-dark-gray-900 "
+        className="w-full p-2 mb-4 text-base transition-colors border rounded-md outline-hidden resize-none border-dark-gray-600 focus:outline-hidden focus:border-blue-400 dark:focus:border-dark-blue dark:bg-dark-gray-900 "
       ></textarea>
       <Label>Note color</Label>
       <NoteColorOption
@@ -83,7 +83,7 @@ export default function NoteDialog({
           Confirm
         </Button>
         <Button variant="icon" size="md" color="gray" onClick={handleDelete}>
-          <TrashIcon className="w-5 h-5" />
+          <Icon name="delete" className="w-5 h-5" />
         </Button>
       </div>
     </StyledDialog>

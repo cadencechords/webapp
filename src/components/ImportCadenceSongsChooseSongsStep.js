@@ -6,12 +6,12 @@ import { pluralize } from '../utils/StringUtils';
 import Button from './Button';
 import FadeIn from './FadeIn';
 import PageLoading from './PageLoading';
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import PageTitle from './PageTitle';
 import WellInput from './inputs/WellInput';
 import useImportSongsFromTeam from '../hooks/api/useImportSongsFromTeam';
 import useImportableCadenceSongs from '../hooks/api/useImportableCadenceSongs';
 import NoDataMessage from './NoDataMessage';
+import Icon from './Icon';
 
 export default function ImportCadenceSongsChooseSongsStep({
   selectedTeam,
@@ -60,7 +60,7 @@ export default function ImportCadenceSongsChooseSongsStep({
           className="flex-center"
           onClick={() => onGoToStep(0)}
         >
-          <ArrowNarrowLeftIcon className="w-4 h-4 mr-4" />
+          <Icon name="arrow_back" className="w-4 h-4 mr-4" />
           Choose team
         </Button>
         <PageTitle title="Which songs would you like to import?" />
@@ -116,7 +116,7 @@ function SongOption({ song, selected, onToggleSong }) {
         onChange={isChecked => onToggleSong(isChecked, song)}
         standAlone={false}
       />
-      <span className="inline-block overflow-hidden whitespace-nowrap overflow-ellipsis">
+      <span className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
         {song.name}{' '}
       </span>
       {hasAnyKeysSet(song) && (

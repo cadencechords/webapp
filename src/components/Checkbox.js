@@ -1,6 +1,6 @@
-import CheckIcon from '@heroicons/react/solid/CheckIcon';
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
+import Icon from './Icon';
 
 export default function Checkbox({
   color,
@@ -29,7 +29,7 @@ export default function Checkbox({
       />
       <button
         className={`w-5 h-5 ${RING_COLORS[color]}
-				shadow-sm flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-offset-1 outline-none rounded-md cursor-pointer flex-center
+				shadow-xs shrink-0 focus:outline-hidden focus:ring-2 focus:ring-offset-1 outline-hidden rounded-md cursor-pointer flex-center
 				${
           checked
             ? BACKGROUND_COLORS[color]
@@ -37,7 +37,13 @@ export default function Checkbox({
         } ${className}`}
         onClick={standAlone ? handleClick : null}
       >
-        {checked && <CheckIcon className="w-4 h-4 font-semibold text-white" />}
+        {checked && (
+          <Icon
+            name="check"
+            filled
+            className="w-4 h-4 font-semibold text-white"
+          />
+        )}
       </button>
     </>
   );

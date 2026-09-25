@@ -7,14 +7,9 @@ import { MANAGE_BILLING, VIEW_EVENTS, VIEW_ROLES } from '../../utils/constants';
 import { selectCurrentSubscription } from '../../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
 import BinderIcon from '../../icons/BinderIcon';
-import CalendarIcon from '@heroicons/react/solid/CalendarIcon';
 import DashboardIcon from '../../icons/DashboardIcon';
-import MusicNoteIcon from '@heroicons/react/solid/MusicNoteIcon';
 import PlaylistIcon from '../../icons/PlaylistIcon';
-import SwitchHorizontalIcon from '@heroicons/react/solid/SwitchHorizontalIcon';
-import UserIcon from '@heroicons/react/solid/UserIcon';
-import CreditCardIcon from '@heroicons/react/solid/CreditCardIcon';
-import LockClosedIcon from '@heroicons/react/solid/LockClosedIcon';
+import Icon from '../Icon';
 
 export default function AppMenu({ onCloseDialog, open }) {
   const currentSubscription = useSelector(selectCurrentSubscription);
@@ -54,7 +49,7 @@ export default function AppMenu({ onCloseDialog, open }) {
       <Link to="/songs">
         <MobileMenuButton full onClick={onCloseDialog} size="none">
           <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <MusicNoteIcon className={iconClasses} />
+            <Icon name="music_note" filled className={iconClasses} />
             Songs
           </div>
         </MobileMenuButton>
@@ -72,7 +67,7 @@ export default function AppMenu({ onCloseDialog, open }) {
       <Link to="/members">
         <MobileMenuButton full onClick={onCloseDialog} size="none">
           <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <UserIcon className={iconClasses} />
+            <Icon name="person" filled className={iconClasses} />
             Team members
           </div>
         </MobileMenuButton>
@@ -82,7 +77,7 @@ export default function AppMenu({ onCloseDialog, open }) {
         <Link to="/calendar">
           <MobileMenuButton full onClick={onCloseDialog} size="none">
             <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-              <CalendarIcon className={iconClasses} />
+              <Icon name="calendar_month" filled className={iconClasses} />
               Calendar
             </div>
           </MobileMenuButton>
@@ -96,7 +91,7 @@ export default function AppMenu({ onCloseDialog, open }) {
         <Link to="/permissions">
           <MobileMenuButton full onClick={onCloseDialog} size="none">
             <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-              <LockClosedIcon className={iconClasses} />
+              <Icon name="lock" filled className={iconClasses} />
               Permissions
             </div>
           </MobileMenuButton>
@@ -106,7 +101,7 @@ export default function AppMenu({ onCloseDialog, open }) {
         <Link to="/billing">
           <MobileMenuButton full onClick={onCloseDialog} size="none">
             <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-              <CreditCardIcon className={iconClasses} />
+              <Icon name="credit_card" filled className={iconClasses} />
               Billing
             </div>
           </MobileMenuButton>
@@ -118,7 +113,7 @@ export default function AppMenu({ onCloseDialog, open }) {
       <Link to="/login/teams">
         <MobileMenuButton full onClick={onCloseDialog} size="none">
           <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <SwitchHorizontalIcon className={iconClasses} />
+            <Icon name="swap_horiz" filled className={iconClasses} />
             Switch teams
           </div>
         </MobileMenuButton>

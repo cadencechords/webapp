@@ -1,8 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 
-import AdjustmentsIcon from '@heroicons/react/outline/AdjustmentsIcon';
 import Button from './Button';
-import XIcon from '@heroicons/react/outline/XIcon';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import KeyOptionsPopover from './KeyOptionsPopover';
 import { useSelector } from 'react-redux';
@@ -15,6 +13,7 @@ import {
   useDeleteBulkAnnotations,
 } from '../hooks/api/annotations.hooks';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
+import Icon from './Icon';
 
 export default function SetPresenterTopBar({
   song,
@@ -64,7 +63,7 @@ function DefaultTopBar({
     <>
       <Link to={`/sets/${id}`}>
         <Button variant="icon" size="md" color="gray">
-          <XIcon className="w-5 h-5 sm:h-6 sm:w-6" />
+          <Icon name="close" className="w-5 h-5 sm:h-6 sm:w-6" />
         </Button>
       </Link>
       <HeaderTitle>{song.name}</HeaderTitle>
@@ -77,7 +76,7 @@ function DefaultTopBar({
           />
         )}
         <Button variant="icon" size="md" color="gray" onClick={onShowDrawer}>
-          <AdjustmentsIcon className="w-5 h-5 sm:h-6 sm:w-6" />
+          <Icon name="tune" className="w-5 h-5 sm:h-6 sm:w-6" />
         </Button>
         {currentSubscription.isPro && (
           <MarkupPopover
@@ -164,7 +163,7 @@ function AnnotationsTopBar({ song, onUpdateSong }) {
 
 function HeaderTitle({ children }) {
   return (
-    <h1 className="w-1/3 overflow-hidden font-semibold text-center whitespace-pre overflow-ellipsis">
+    <h1 className="w-1/3 overflow-hidden font-semibold text-center whitespace-pre text-ellipsis">
       {children}
     </h1>
   );

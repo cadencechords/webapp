@@ -6,7 +6,7 @@ export default function NumberBadge({ children, className, disabled }) {
     : 'text-blue-700 bg-blue-100';
   return (
     <span
-      className={`rounded-full h-5 w-5 flex-shrink-0 flex-center text-xs ${colorStyles} ${className}`}
+      className={`rounded-full h-5 w-5 shrink-0 flex-center text-xs ${colorStyles} ${className}`}
     >
       {children}
     </span>

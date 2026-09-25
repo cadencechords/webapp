@@ -2,7 +2,7 @@ import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 import axios from 'axios';
 import { combineParamValues } from '../utils/ObjectUtils';
 
-const SETLISTS_URL = process.env.REACT_APP_API_URL + '/setlists';
+const SETLISTS_URL = import.meta.env.REACT_APP_API_URL + '/setlists';
 
 export default class SetlistApi {
   static search(name) {

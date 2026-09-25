@@ -1,12 +1,11 @@
 import Button from './Button';
-import CheckCircleIcon from '@heroicons/react/solid/CheckCircleIcon';
 import PcoApi from '../api/PlanningCenterApi';
 import SectionTitle from './SectionTitle';
-import XCircleIcon from '@heroicons/react/solid/XCircleIcon';
 import { reportError } from '../utils/error';
 import { setCurrentUser } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
+import Icon from './Icon';
 
 export default function Integrations({ currentUser }) {
   const [isDisconnectingPco, setIsDisconnectingPco] = useState(false);
@@ -30,9 +29,13 @@ export default function Integrations({ currentUser }) {
       <div className="flex-between">
         <div className="flex-center">
           {currentUser.pco_connected ? (
-            <CheckCircleIcon className="w-4 h-4 mr-2 text-green-500 dark:text-dark-green" />
+            <Icon
+              name="check_circle"
+              filled
+              className="w-4 h-4 mr-2 text-green-500 dark:text-dark-green"
+            />
           ) : (
-            <XCircleIcon className="w-4 h-4 mr-2 text-gray-400" />
+            <Icon name="cancel" filled className="w-4 h-4 mr-2 text-gray-400" />
           )}
           Planning Center
         </div>

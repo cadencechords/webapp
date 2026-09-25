@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CYPRESS_INSTALL_BINARY: 0 # the Cypress binary isn't needed for these checks
+
+jobs:
+  check:
+    name: ${{ matrix.check.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check:
+          - { name: Typecheck, run: yarn typecheck }
+          - { name: Lint, run: yarn lint }
+          - { name: Format, run: yarn format:check }
+          - { name: Unit tests, run: yarn test:unit && yarn test:hooks }
+          - { name: Build, run: yarn build }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: ${{ matrix.check.run }}

@@ -10,7 +10,7 @@ export default function Editor({ song = {}, onContentChange }) {
   return (
     <div className="my-3 overflow-x-auto overflow-y-hidden">
       <textarea
-        className="w-full p-2 overflow-y-hidden transition-colors bg-transparent outline-none resize-none hover:bg-gray-100 focus:outline-none dark:hover:bg-dark-gray-700"
+        className="w-full p-2 overflow-y-hidden transition-colors bg-transparent outline-hidden resize-none hover:bg-gray-100 focus:outline-hidden dark:hover:bg-dark-gray-700"
         value={content}
         onChange={e => onContentChange(e.target.value)}
         style={styles}

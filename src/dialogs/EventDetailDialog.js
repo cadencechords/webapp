@@ -27,7 +27,7 @@ export default function EventDetailDialog({
     return (
       <div className="grid grid-cols-10 gap-6">
         <div className="flex items-center justify-end col-span-1">
-          <EventColorOption className="flex-shrink-0" color={event?.color} />
+          <EventColorOption className="shrink-0" color={event?.color} />
         </div>
         <div className="col-span-9">
           <div className="mb-1 text-2xl">{event?.title}</div>

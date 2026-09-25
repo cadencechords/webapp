@@ -2,8 +2,8 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import KeyBadge from './KeyBadge';
 import Button from './Button';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import useRemoveSongFromBinder from '../hooks/api/useRemoveSongFromBinder';
+import Icon from './Icon';
 
 export default function BinderSongRow({ song, binderId }) {
   const router = useHistory();
@@ -18,7 +18,7 @@ export default function BinderSongRow({ song, binderId }) {
         to={{ pathname: `/songs/${song.id}`, state: song }}
         className="flex items-center w-full h-full mr-5 overflow-hidden"
       >
-        <div className="inline-block overflow-hidden whitespace-nowrap overflow-ellipsis hover:underline">
+        <div className="inline-block overflow-hidden whitespace-nowrap text-ellipsis hover:underline">
           {song.name}{' '}
         </div>
         <KeyBadge songKey={song.transposed_key || song.original_key} />
@@ -30,7 +30,7 @@ export default function BinderSongRow({ song, binderId }) {
         loading={isRemoving}
         className="whitespace-nowrap"
       >
-        <TrashIcon className="w-4 h-4" />
+        <Icon name="delete" className="w-4 h-4" />
       </Button>
     </div>
   );

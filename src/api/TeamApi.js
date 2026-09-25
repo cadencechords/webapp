@@ -2,10 +2,10 @@ import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 
 import axios from 'axios';
 
-const TEAMS_URL = process.env.REACT_APP_API_URL + '/teams';
+const TEAMS_URL = import.meta.env.REACT_APP_API_URL + '/teams';
 export default class TeamApi {
   static getAll() {
-    return axios.get(process.env.REACT_APP_API_URL + '/teams', {
+    return axios.get(import.meta.env.REACT_APP_API_URL + '/teams', {
       headers: constructAuthHeaders(),
     });
   }
@@ -13,9 +13,13 @@ export default class TeamApi {
   static createOne(newTeam) {
     let teamParams = { name: newTeam.name, plan: newTeam.plan };
 
-    return axios.post(process.env.REACT_APP_API_URL + '/teams', teamParams, {
-      headers: constructAuthHeaders(),
-    });
+    return axios.post(
+      import.meta.env.REACT_APP_API_URL + '/teams',
+      teamParams,
+      {
+        headers: constructAuthHeaders(),
+      }
+    );
   }
 
   static getCurrentTeam() {

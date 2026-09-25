@@ -2,9 +2,9 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 import Button from './Button';
 import KeyBadge from './KeyBadge';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import { Link } from 'react-router-dom';
+import Icon from './Icon';
 
 export default function DragAndDropTable({
   onReorder,
@@ -101,7 +101,7 @@ export default function DragAndDropTable({
                             variant="icon"
                             onClick={() => onRemove(item.id)}
                           >
-                            <TrashIcon className="w-4 h-4" />
+                            <Icon name="delete" className="w-4 h-4" />
                           </Button>
                         )}
                       </div>
@@ -140,7 +140,7 @@ export default function DragAndDropTable({
             variant="open"
             onClick={() => onRemove(item.id)}
           >
-            <TrashIcon className="w-4 h-4" />
+            <Icon name="delete" className="w-4 h-4" />
           </Button>
         )}
       </div>

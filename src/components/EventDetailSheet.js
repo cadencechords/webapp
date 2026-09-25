@@ -1,11 +1,6 @@
 import { DELETE_EVENTS, EDIT_EVENTS } from '../utils/constants';
 
-import BellIcon from '@heroicons/react/solid/BellIcon';
 import Button from '../components/Button';
-import MenuAlt2Icon from '@heroicons/react/solid/MenuAlt2Icon';
-import PencilIcon from '@heroicons/react/outline/PencilIcon';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
-import UsersIcon from '@heroicons/react/solid/UsersIcon';
 import eventsApi from '../api/eventsApi';
 import { format } from '../utils/date';
 import { hasName } from '../utils/model';
@@ -16,6 +11,7 @@ import useEventForm from '../hooks/forms/useEventForm';
 import PlaylistIcon from '../icons/PlaylistIcon';
 import useSetlist from '../hooks/api/useSetlist';
 import { pluralize } from '../utils/StringUtils';
+import Icon from './Icon';
 
 export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
   const { data: setlist } = useSetlist(event?.setlist_id, {
@@ -40,7 +36,11 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
       <>
         <div className="grid grid-cols-10 gap-6">
           <div className="flex items-start justify-end col-span-1">
-            <UsersIcon className="flex-shrink-0 w-5 h-5 my-1 text-gray-600 dark:text-dark-gray-200" />
+            <Icon
+              name="group"
+              filled
+              className="shrink-0 w-5 h-5 my-1 text-gray-600 dark:text-dark-gray-200"
+            />
           </div>
           <div className="flex flex-col items-start justify-start col-span-9">
             {event?.memberships?.length > 0 ? (
@@ -58,7 +58,11 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
             )}
           </div>
           <div className="flex items-start justify-end col-span-1">
-            <BellIcon className="flex-shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
+            <Icon
+              name="notifications"
+              filled
+              className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200"
+            />
           </div>
           <div className="flex items-start justify-start col-span-9">
             {event.reminders_enabled ? (
@@ -74,7 +78,11 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
           </div>
 
           <div className="flex items-start justify-end col-span-1">
-            <MenuAlt2Icon className="flex-shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
+            <Icon
+              name="notes"
+              filled
+              className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200"
+            />
           </div>
           <div className="flex items-start justify-start col-span-9">
             {event.description ? (
@@ -89,7 +97,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
           {event.setlist && (
             <>
               <div className="flex items-start justify-end col-span-1">
-                <PlaylistIcon className="flex-shrink-0 w-6 h-6 text-gray-600 dark:text-dark-gray-200" />
+                <PlaylistIcon className="shrink-0 w-6 h-6 text-gray-600 dark:text-dark-gray-200" />
               </div>
               <Link
                 className="flex flex-col items-start justify-start col-span-9"
@@ -112,7 +120,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
           {currentMember?.can(EDIT_EVENTS) && (
             <Link to={`/calendar/${event.id}/edit`} onClick={handleEdit}>
               <Button variant="icon" color="gray" size="md" className="mr-4">
-                <PencilIcon className="w-6 h-6" />
+                <Icon name="edit" className="w-6 h-6" />
               </Button>
             </Link>
           )}
@@ -123,7 +131,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
               size="md"
               onClick={handleDelete}
             >
-              <TrashIcon className="w-6 h-6" />
+              <Icon name="delete" className="w-6 h-6" />
             </Button>
           )}
         </div>

@@ -1,0 +1,123 @@
+/* M3 Expressive motion tokens (CAD-81). Spatial motion (position, size,
+   corners) may overshoot; effects motion (color, opacity) doesn't. These are
+   the web cubic-bezier approximations of the springs; for interruptible or
+   gesture-driven motion use src/utils/spring.js instead. */
+
+:root {
+  --md-sys-motion-easing-fast-spatial: cubic-bezier(0.42, 1.67, 0.21, 0.9);
+  --md-sys-motion-easing-default-spatial: cubic-bezier(0.38, 1.21, 0.22, 1);
+  --md-sys-motion-easing-slow-spatial: cubic-bezier(0.39, 1.29, 0.35, 0.98);
+  --md-sys-motion-easing-fast-effects: cubic-bezier(0.31, 0.94, 0.34, 1);
+  --md-sys-motion-easing-default-effects: cubic-bezier(0.34, 0.8, 0.34, 1);
+  --md-sys-motion-easing-slow-effects: cubic-bezier(0.34, 0.88, 0.34, 1);
+
+  --md-sys-motion-duration-fast-spatial: 350ms;
+  --md-sys-motion-duration-default-spatial: 500ms;
+  --md-sys-motion-duration-slow-spatial: 650ms;
+  --md-sys-motion-duration-fast-effects: 150ms;
+  --md-sys-motion-duration-default-effects: 200ms;
+  --md-sys-motion-duration-slow-effects: 300ms;
+}
+
+/* Reduced motion: no spatial movement; fades and color changes remain. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --md-sys-motion-duration-fast-spatial: 0ms;
+    --md-sys-motion-duration-default-spatial: 0ms;
+    --md-sys-motion-duration-slow-spatial: 0ms;
+  }
+}
+
+/* ease-fast-spatial ... ease-slow-effects */
+@theme inline {
+  --ease-fast-spatial: var(--md-sys-motion-easing-fast-spatial);
+  --ease-default-spatial: var(--md-sys-motion-easing-default-spatial);
+  --ease-slow-spatial: var(--md-sys-motion-easing-slow-spatial);
+  --ease-fast-effects: var(--md-sys-motion-easing-fast-effects);
+  --ease-default-effects: var(--md-sys-motion-easing-default-effects);
+  --ease-slow-effects: var(--md-sys-motion-easing-slow-effects);
+}
+
+/* duration-fast-spatial ... duration-slow-effects */
+@utility duration-fast-spatial {
+  --tw-duration: var(--md-sys-motion-duration-fast-spatial);
+  transition-duration: var(--md-sys-motion-duration-fast-spatial);
+}
+@utility duration-default-spatial {
+  --tw-duration: var(--md-sys-motion-duration-default-spatial);
+  transition-duration: var(--md-sys-motion-duration-default-spatial);
+}
+@utility duration-slow-spatial {
+  --tw-duration: var(--md-sys-motion-duration-slow-spatial);
+  transition-duration: var(--md-sys-motion-duration-slow-spatial);
+}
+@utility duration-fast-effects {
+  --tw-duration: var(--md-sys-motion-duration-fast-effects);
+  transition-duration: var(--md-sys-motion-duration-fast-effects);
+}
+@utility duration-default-effects {
+  --tw-duration: var(--md-sys-motion-duration-default-effects);
+  transition-duration: var(--md-sys-motion-duration-default-effects);
+}
+@utility duration-slow-effects {
+  --tw-duration: var(--md-sys-motion-duration-slow-effects);
+  transition-duration: var(--md-sys-motion-duration-slow-effects);
+}
+
+/* transition-<speed>-spatial animates position, size and corners;
+   transition-<speed>-effects animates color, opacity and shadow. */
+@utility transition-fast-spatial {
+  transition-property:
+    transform, translate, scale, rotate, width, height, inset, border-radius;
+  transition-timing-function: var(--md-sys-motion-easing-fast-spatial);
+  transition-duration: var(--md-sys-motion-duration-fast-spatial);
+}
+@utility transition-default-spatial {
+  transition-property:
+    transform, translate, scale, rotate, width, height, inset, border-radius;
+  transition-timing-function: var(--md-sys-motion-easing-default-spatial);
+  transition-duration: var(--md-sys-motion-duration-default-spatial);
+}
+@utility transition-slow-spatial {
+  transition-property:
+    transform, translate, scale, rotate, width, height, inset, border-radius;
+  transition-timing-function: var(--md-sys-motion-easing-slow-spatial);
+  transition-duration: var(--md-sys-motion-duration-slow-spatial);
+}
+@utility transition-fast-effects {
+  transition-property:
+    color, background-color, border-color, outline-color, fill, stroke, opacity,
+    box-shadow;
+  transition-timing-function: var(--md-sys-motion-easing-fast-effects);
+  transition-duration: var(--md-sys-motion-duration-fast-effects);
+}
+@utility transition-default-effects {
+  transition-property:
+    color, background-color, border-color, outline-color, fill, stroke, opacity,
+    box-shadow;
+  transition-timing-function: var(--md-sys-motion-easing-default-effects);
+  transition-duration: var(--md-sys-motion-duration-default-effects);
+}
+@utility transition-slow-effects {
+  transition-property:
+    color, background-color, border-color, outline-color, fill, stroke, opacity,
+    box-shadow;
+  transition-timing-function: var(--md-sys-motion-easing-slow-effects);
+  transition-duration: var(--md-sys-motion-duration-slow-effects);
+}
+
+/* shape-morph: corners squarer while pressed or selected (aria-pressed,
+   aria-selected, data-selected), on the fast-spatial curve. Set
+   --shape-morph-to to change the pressed/selected radius (default: medium).
+   It sets `transition`, so don't combine it with another transition utility. */
+@utility shape-morph {
+  transition: border-radius var(--md-sys-motion-duration-fast-spatial)
+    var(--md-sys-motion-easing-fast-spatial);
+
+  &:active,
+  &[aria-pressed='true'],
+  &[aria-selected='true'],
+  &[data-selected] {
+    border-radius: var(--shape-morph-to, var(--md-sys-shape-corner-medium));
+  }
+}

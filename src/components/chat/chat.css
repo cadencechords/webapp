@@ -1,4 +1,4 @@
-@import '~stream-chat-react/dist/css/v2/index.css';
+@import 'stream-chat-react/dist/css/v2/index.css';
 
 .str-chat {
   --str-chat__message-textarea-border-radius: 20px;

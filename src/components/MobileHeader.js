@@ -1,5 +1,5 @@
 import IconButton from './buttons/IconButton';
-import PlusIcon from '@heroicons/react/outline/PlusCircleIcon';
+import Icon from './Icon';
 
 export default function MobileHeader({ title, className, onAdd, canAdd }) {
   return (
@@ -14,7 +14,10 @@ export default function MobileHeader({ title, className, onAdd, canAdd }) {
           className="absolute right-3 top-2.5 p-1.5"
           onClick={onAdd}
         >
-          <PlusIcon className="w-5 h-5 text-blue-600 dark:text-dark-blue" />
+          <Icon
+            name="add_circle"
+            className="w-5 h-5 text-blue-600 dark:text-dark-blue"
+          />
         </IconButton>
       )}
     </div>

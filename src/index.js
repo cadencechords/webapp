@@ -9,12 +9,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import store from './store/store';
 
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
   Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_URL,
+    dsn: import.meta.env.REACT_APP_SENTRY_URL,
     integrations: [new Integrations.BrowserTracing()],
     tracesSampleRate: 1.0,
-    environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+    environment: import.meta.env.REACT_APP_SENTRY_ENVIRONMENT,
   });
 }
 

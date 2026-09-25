@@ -1,10 +1,9 @@
 import Button from './Button';
-import CalendarIcon from '@heroicons/react/outline/CalendarIcon';
 import { Link } from 'react-router-dom';
-import MusicNoteIcon from '@heroicons/react/solid/MusicNoteIcon';
 import NoDataMessage from './NoDataMessage';
 import SectionTitle from './SectionTitle';
 import { format } from '../utils/DateUtils';
+import Icon from './Icon';
 
 export default function DashboardTodaysSetlists({ setlists }) {
   function buildSetlists() {
@@ -17,11 +16,11 @@ export default function DashboardTodaysSetlists({ setlists }) {
           <div className="mb-2 font-semibold">{setlist.name}</div>
           <div className="flex items-center text-sm text-gray-600 dark:text-dark-gray-200">
             <div className="flex items-center">
-              <CalendarIcon className="w-4 h-4 mr-2" />
+              <Icon name="calendar_month" className="w-4 h-4 mr-2" />
               {format('ddd MMM D', setlist?.scheduled_date)}
             </div>
             <div className="flex items-center ml-5">
-              <MusicNoteIcon className="w-4 h-4 mr-2" />
+              <Icon name="music_note" filled className="w-4 h-4 mr-2" />
               {setlist.scheduled_songs?.length}
             </div>
           </div>

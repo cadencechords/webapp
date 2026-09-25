@@ -11,7 +11,7 @@ export default function MobileMenuButton({
   style,
 }) {
   let classes =
-    ' font-semibold outline-none focus:outline-none text-sm transition-colors whitespace-nowrap overflow-hidden overflow-ellipsis';
+    ' font-semibold outline-hidden focus:outline-hidden text-sm transition-colors whitespace-nowrap overflow-hidden text-ellipsis';
   let widthClasses = full ? ' w-full ' : '';
   let colorClasses = disabled
     ? ' text-gray-600 dark:text-dark-gray-200 cursor-default '

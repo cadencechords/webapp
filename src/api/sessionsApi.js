@@ -1,6 +1,6 @@
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
+import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 
-import api from "./api";
+import api from './api';
 
 export default class SessionsApi {
   static getActiveSessions(setlistId) {
@@ -12,7 +12,7 @@ export default class SessionsApi {
   static startSession(setlistId) {
     return api().post(
       `/setlists/${setlistId}/sessions?team_id=${getTeamId()}`,
-      { status: "ACTIVE" },
+      { status: 'ACTIVE' },
       { headers: constructAuthHeaders() }
     );
   }
@@ -20,7 +20,7 @@ export default class SessionsApi {
   static endSession(setlistId, sessionId) {
     return api().put(
       `/setlists/${setlistId}/sessions/${sessionId}?team_id=${getTeamId()}`,
-      { status: "INACTIVE" },
+      { status: 'INACTIVE' },
       { headers: constructAuthHeaders() }
     );
   }

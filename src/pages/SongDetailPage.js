@@ -13,10 +13,7 @@ import { EDIT_SONGS } from '../utils/constants';
 import { Link } from 'react-router-dom';
 import MeterField from '../components/MeterField';
 import PageTitle from '../components/PageTitle';
-import PencilIcon from '@heroicons/react/solid/PencilIcon';
-import PlayIcon from '@heroicons/react/solid/PlayIcon';
 import PrintSongDialog from '../components/PrintSongDialog';
-import PrinterIcon from '@heroicons/react/outline/PrinterIcon';
 import PulseLoader from 'react-spinners/PulseLoader';
 import SongApi from '../api/SongApi';
 import SongKeyField from '../components/SongKeyField';
@@ -36,6 +33,7 @@ import Select from '../components/Select';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import FormatOptionLabel from '../components/FormatOptionLabel';
 import { determineCapoNumber } from '../utils/capo';
+import Icon from '../components/Icon';
 
 export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -298,7 +296,7 @@ export default function SongDetailPage() {
             onClick={() => setShowPrintDialog(true)}
             className="hidden mr-2 sm:block"
           >
-            <PrinterIcon className="w-5 h-5" />
+            <Icon name="print" className="w-5 h-5" />
           </Button>
           <SongOptionsPopover onPrintClick={() => setShowPrintDialog(true)} />
         </div>
@@ -312,7 +310,7 @@ export default function SongDetailPage() {
           <span className="flex-center">
             <Button variant="filled" size="xs" onClick={handlePresentSong}>
               <div className="flex-center">
-                <PlayIcon className="w-4 h-4 mr-1.5" />
+                <Icon name="play_circle" filled className="w-4 h-4 mr-1.5" />
                 Perform
               </div>
             </Button>
@@ -320,7 +318,7 @@ export default function SongDetailPage() {
               <Link to={{ pathname: `/songs/${id}/edit`, state: song }}>
                 <Button variant="accent" size="xs" className="mx-3">
                   <div className="flex-center">
-                    <PencilIcon className="w-4 h-4 mr-1.5" />
+                    <Icon name="edit" filled className="w-4 h-4 mr-1.5" />
                     Edit
                   </div>
                 </Button>
@@ -355,7 +353,7 @@ export default function SongDetailPage() {
                 className="gap-3 flex-center"
                 full
               >
-                <PencilIcon className="w-5 h-5" />
+                <Icon name="edit" filled className="w-5 h-5" />
                 Edit
               </Button>
             </Link>
@@ -367,7 +365,7 @@ export default function SongDetailPage() {
             onClick={handlePresentSong}
             full
           >
-            <PlayIcon className="w-5 h-5" />
+            <Icon name="play_circle" filled className="w-5 h-5" />
             Perform
           </Button>
         </div>

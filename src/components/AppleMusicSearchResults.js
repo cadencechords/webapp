@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { reportError } from "../utils/error";
-import PageLoading from "./PageLoading";
-import TracksApi from "../api/tracksApi";
-import AppleMusicTrackResult from "./AppleMusicTrackResult";
+import React, { useEffect, useState } from 'react';
+import { reportError } from '../utils/error';
+import PageLoading from './PageLoading';
+import TracksApi from '../api/tracksApi';
+import AppleMusicTrackResult from './AppleMusicTrackResult';
 
 export default function AppleMusicSearchResults({
   query,
@@ -35,9 +35,9 @@ export default function AppleMusicSearchResults({
 
   function isSelected(resultInQuestion) {
     return !!selectedTracks.find(
-      (selectedTrack) =>
+      selectedTrack =>
         selectedTrack.external_id === resultInQuestion.id &&
-        selectedTrack.source === "Apple Music"
+        selectedTrack.source === 'Apple Music'
     );
   }
 
@@ -46,7 +46,7 @@ export default function AppleMusicSearchResults({
       {loading ? (
         <PageLoading />
       ) : (
-        results.map((result) => (
+        results.map(result => (
           <AppleMusicTrackResult
             track={result}
             key={result.id}

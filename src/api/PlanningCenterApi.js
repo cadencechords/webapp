@@ -1,7 +1,7 @@
 import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 import axios from 'axios';
 
-const PCO_URL = process.env.REACT_APP_API_URL + '/pco';
+const PCO_URL = import.meta.env.REACT_APP_API_URL + '/pco';
 const NUMBER_PER_PAGE = 25;
 
 export default class PlanningCenterApi {

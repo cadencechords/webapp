@@ -4,9 +4,6 @@ import clsx from 'clsx';
 import { usePopper } from 'react-popper';
 import { useDropzone } from 'react-dropzone';
 import { nanoid } from 'nanoid';
-import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon';
-import ChartBarIcon from '@heroicons/react/solid/ChartBarIcon';
-import EmojiIcon from '@heroicons/react/solid/EmojiHappyIcon';
 
 import {
   EmojiPicker,
@@ -24,6 +21,7 @@ import {
   CooldownTimer as DefaultCooldownTimer,
 } from 'stream-chat-react';
 import Button from '../Button';
+import Icon from '../Icon';
 
 export const MessageInput = () => {
   const { quotedMessage } = useChannelStateContext('MessageInputFlat');
@@ -148,11 +146,15 @@ const MessageInputV2 = () => {
               className="p-2 bg-transparent rounded-full str-chat__file-input-label hover:bg-gray-100 dark:hover:bg-dark-gray-600"
               htmlFor={id}
             >
-              <PlusCircleIcon className="w-6 h-6 text-blue-600 dark:text-dark-blue" />
+              <Icon
+                name="add_circle"
+                filled
+                className="w-6 h-6 text-blue-600 dark:text-dark-blue"
+              />
             </label>
           </div>
           <Button variant="icon" size="md" color="blue" className="mr-2">
-            <ChartBarIcon className="w-6 h-6" />
+            <Icon name="bar_chart" filled className="w-6 h-6" />
           </Button>
 
           <div className="str-chat__message-textarea-container">
@@ -185,7 +187,7 @@ const MessageInputV2 = () => {
                     emojiPickerIsOpen ? closeEmojiPicker : openEmojiPicker
                   }
                 >
-                  <EmojiIcon className="w-6 h-6" />
+                  <Icon name="mood" filled className="w-6 h-6" />
                 </Button>
               </div>
             </div>

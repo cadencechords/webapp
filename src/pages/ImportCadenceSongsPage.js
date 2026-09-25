@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import CheckCircleIcon from '@heroicons/react/solid/CheckCircleIcon';
 import Button from '../components/Button';
 import PageTitle from '../components/PageTitle';
 import FadeIn from '../components/FadeIn';
 import { Link } from 'react-router-dom';
 import ImportCadenceSongsChooseTeamStep from '../components/ImportCadenceSongsChooseTeamStep';
 import ImportCadenceSongsChooseSongsStep from '../components/ImportCadenceSongsChooseSongsStep';
+import Icon from '../components/Icon';
 
 export default function ImportCadenceSongsPage() {
   const [selectedTeam, setSelectedTeam] = useState();
@@ -59,7 +59,7 @@ function ResultStep({ currentStep, onStartOver }) {
   return (
     <FadeIn>
       <div className="flex-center">
-        <CheckCircleIcon className="w-20 h-20 text-green-500" />
+        <Icon name="check_circle" filled className="w-20 h-20 text-green-500" />
       </div>
       <PageTitle align="center" title="Import successful!" className="mb-4" />
       <div className="flex items-center justify-between gap-4">

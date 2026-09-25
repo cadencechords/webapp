@@ -33,18 +33,18 @@ import ImportCadenceSongsPage from '../pages/ImportCadenceSongsPage';
 import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 
-const PlanningCenterSongsPage = lazy(() =>
-  import('../pages/PlanningCenterSongsPage')
+const PlanningCenterSongsPage = lazy(
+  () => import('../pages/PlanningCenterSongsPage')
 );
 const RoleDetailPage = lazy(() => import('../pages/RoleDetailPage'));
 const RolesIndexPage = lazy(() => import('../pages/RolesIndexPage'));
 const CalendarPage = lazy(() => import('../pages/CalendarPage'));
 const ChatPage = lazy(() => import('../pages/ChatPage'));
-const EditCalendarEventPage = lazy(() =>
-  import('../pages/EditCalendarEventPage')
+const EditCalendarEventPage = lazy(
+  () => import('../pages/EditCalendarEventPage')
 );
-const CreateCalendarEventPage = lazy(() =>
-  import('../pages/CreateCalendarEventPage')
+const CreateCalendarEventPage = lazy(
+  () => import('../pages/CreateCalendarEventPage')
 );
 const BillingPage = lazy(() => import('../pages/BillingPage'));
 

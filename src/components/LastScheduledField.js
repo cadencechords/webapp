@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import DetailTitle from "./DetailTitle";
-import EditableData from "./inputs/EditableData";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import DetailTitle from './DetailTitle';
+import EditableData from './inputs/EditableData';
 
 export default function LastScheduledField({ latestSetlist }) {
   return (
@@ -12,7 +12,7 @@ export default function LastScheduledField({ latestSetlist }) {
           latestSetlist ? (
             <Link to={`/sets/${latestSetlist.id}`}>{latestSetlist.date}</Link>
           ) : (
-            "Never"
+            'Never'
           )
         }
         editable={false}

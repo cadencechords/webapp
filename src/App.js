@@ -18,6 +18,7 @@ import ThemeProvider from './contexts/ThemeProvider';
 
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const TeamLoginPage = lazy(() => import('./pages/TeamLoginPage'));
+const TokensPage = lazy(() => import('./pages/dev/TokensPage'));
 const EmailConfirmedPage = lazy(() => import('./pages/EmailConfirmedPage'));
 const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
@@ -69,6 +70,8 @@ function App() {
                 <Route path="/reset_password" exact>
                   <ResetPasswordPage />
                 </Route>
+                {/* Design token fixture, not linked from the nav */}
+                <Route path="/dev/tokens" exact component={TokensPage} />
                 <SecuredRoutes />
               </Switch>
             </Router>

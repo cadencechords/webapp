@@ -54,7 +54,7 @@ const Button = forwardRef(
     if (variant === 'icon') {
       return <IconButton {...props} ref={ref} />;
     }
-    let defaultClasses = ` outline-none focus:outline-none transition-colors text-sm ${
+    let defaultClasses = ` outline-hidden focus:outline-hidden transition-colors text-sm ${
       className ? className : ''
     } `;
     let colorClasses = '';
@@ -70,7 +70,7 @@ const Button = forwardRef(
       if (color === 'black') {
         colorClasses += ` text-white bg-black `;
       } else {
-        colorClasses += ` text-white ${BACKGROUND_COLORS[color]} shadow-sm `;
+        colorClasses += ` text-white ${BACKGROUND_COLORS[color]} shadow-xs `;
       }
       loadingColor = 'white';
       disabledClasses += ` bg-gray-100 text-gray-600 dark:bg-dark-gray-400 dark:text-dark-gray-200`;
@@ -252,7 +252,7 @@ export const BACKGROUND_COLORS = {
 };
 
 const defaultClasses =
-  'outline-none focus:outline-none transition-colors text-sm rounded-full font-semibold tracking-wide';
+  'outline-hidden focus:outline-hidden transition-colors text-sm rounded-full font-semibold tracking-wide';
 
 const iconColors = {
   gray: 'text-gray-700 dark:text-dark-gray-200',

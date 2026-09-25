@@ -1,4 +1,4 @@
-import UserCircleIcon from '@heroicons/react/outline/UserCircleIcon';
+import Icon from './Icon';
 
 export default function ProfilePicture({ url, size, onClick }) {
   if (url) {
@@ -28,7 +28,10 @@ export default function ProfilePicture({ url, size, onClick }) {
         }`}
         onClick={onClick}
       >
-        <UserCircleIcon className="w-full h-full text-gray-500 dark:text-gray-400" />
+        <Icon
+          name="account_circle"
+          className="w-full h-full text-gray-500 dark:text-gray-400"
+        />
       </div>
     );
   }

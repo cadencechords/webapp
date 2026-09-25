@@ -2,10 +2,10 @@ import { useRef, useState } from 'react';
 
 import BarLoader from 'react-spinners/BarLoader';
 import Button from './Button';
-import DocumentAddIcon from '@heroicons/react/outline/DocumentAddIcon';
 import FilesApi from '../api/filesApi';
 import { reportError } from '../utils/error';
 import { useParams } from 'react-router';
+import Icon from './Icon';
 
 export default function SongFileUpload({ onFilesUploaded }) {
   const [filesBeingUploaded, setFilesBeingUploaded] = useState([]);
@@ -33,7 +33,10 @@ export default function SongFileUpload({ onFilesUploaded }) {
           className="flex-center"
           onClick={() => inputRef.current.click()}
         >
-          <DocumentAddIcon className="w-4 h-4 mr-1.5 text-blue-600 dark:text-dark-blue" />
+          <Icon
+            name="note_add"
+            className="w-4 h-4 mr-1.5 text-blue-600 dark:text-dark-blue"
+          />
           Add file
         </Button>
         <input

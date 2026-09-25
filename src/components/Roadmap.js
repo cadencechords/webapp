@@ -1,12 +1,12 @@
 import Button from './Button';
 import { EDIT_SONGS } from '../utils/constants';
-import PlusIcon from '@heroicons/react/outline/PlusIcon';
 import RoadmapDragDropContext from './RoadmapDragDopContext';
 import SongApi from '../api/SongApi';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import Icon from './Icon';
 
 export default function Roadmap({
   song,
@@ -63,7 +63,7 @@ export default function Roadmap({
           className="mr-4 flex-center"
           onClick={handleAddSection}
         >
-          <PlusIcon className="w-3 h-3 mr-2" />
+          <Icon name="add" className="w-3 h-3 mr-2" />
           Roadmap
         </Button>
         {song.roadmap && (

@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../store/authSlice';
 import { useEffect } from 'react';
 
-const PCO_CLIENT_ID = process.env.REACT_APP_PCO_CLIENT_ID;
-const PCO_REDIRECT_URI = process.env.REACT_APP_PCO_REDIRECT_URI;
+const PCO_CLIENT_ID = import.meta.env.REACT_APP_PCO_CLIENT_ID;
+const PCO_REDIRECT_URI = import.meta.env.REACT_APP_PCO_REDIRECT_URI;
 
 export default function usePlanningCenterAuthCheck() {
   const currentUser = useSelector(selectCurrentUser);

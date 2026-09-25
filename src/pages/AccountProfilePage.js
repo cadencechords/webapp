@@ -1,11 +1,11 @@
 import AccountProfileBasicInfo from '../components/AccountProfileBasicInfo';
-import ArrowNarrowLeftIcon from '@heroicons/react/outline/ArrowNarrowLeftIcon';
 import Button from '../components/Button';
 import { Link } from 'react-router-dom';
 import PageTitle from '../components/PageTitle';
 import ProfilePictureDetail from '../components/ProfilePictureDetail';
 import { selectCurrentUser } from '../store/authSlice';
 import { useSelector } from 'react-redux';
+import Icon from '../components/Icon';
 
 export default function AccountProfilePage() {
   const currentUser = useSelector(selectCurrentUser);
@@ -17,7 +17,7 @@ export default function AccountProfilePage() {
       <Link to="/account">
         <Button variant="open" color="gray">
           <div className="flex-center">
-            <ArrowNarrowLeftIcon className="w-4 h-4 mr-4" />
+            <Icon name="arrow_back" className="w-4 h-4 mr-4" />
             Menu
           </div>
         </Button>

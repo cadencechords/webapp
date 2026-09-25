@@ -1,6 +1,5 @@
 import Button from './Button';
-import PencilIcon from '@heroicons/react/solid/PencilIcon';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
+import Icon from './Icon';
 
 export default function TableRow({
   columns,
@@ -21,7 +20,7 @@ export default function TableRow({
 
       {editable && (
         <td className="px-2 py-2 mx-3">
-          <PencilIcon className="w-4 h-4 text-purple-700" />
+          <Icon name="edit" filled className="w-4 h-4 text-purple-700" />
         </td>
       )}
 
@@ -34,7 +33,10 @@ export default function TableRow({
             size="xs"
             disabled={removing}
           >
-            <TrashIcon className="w-4 h-4 text-gray-600 dark:text-dark-gray-200" />
+            <Icon
+              name="delete"
+              className="w-4 h-4 text-gray-600 dark:text-dark-gray-200"
+            />
           </Button>
         </td>
       )}

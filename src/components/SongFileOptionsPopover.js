@@ -1,21 +1,18 @@
 import { DELETE_FILES, EDIT_FILES } from '../utils/constants';
 
 import Button from './Button';
-import DotsVerticalIcon from '@heroicons/react/outline/DotsVerticalIcon';
-import DownloadIcon from '@heroicons/react/outline/DownloadIcon';
 import MobileMenuButton from './buttons/MobileMenuButton';
-import PencilIcon from '@heroicons/react/outline/PencilIcon';
 import StyledPopover from './StyledPopover';
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
+import Icon from './Icon';
 
 export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
   const currentMember = useSelector(selectCurrentMember);
 
   const button = (
     <Button variant="icon" color="gray">
-      <DotsVerticalIcon className="w-4 h-4" />
+      <Icon name="more_vert" className="w-4 h-4" />
     </Button>
   );
   return (
@@ -29,7 +26,7 @@ export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
         >
           <MobileMenuButton full className="flex-between" color="black">
             Download
-            <DownloadIcon className="w-4 h-4" />
+            <Icon name="download" className="w-4 h-4" />
           </MobileMenuButton>
         </a>
         {currentMember.can(EDIT_FILES) && (
@@ -40,7 +37,7 @@ export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
             onClick={onEdit}
           >
             Edit
-            <PencilIcon className="w-4 h-4" />
+            <Icon name="edit" className="w-4 h-4" />
           </MobileMenuButton>
         )}
         {currentMember.can(DELETE_FILES) && (
@@ -51,7 +48,7 @@ export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
             onClick={onDelete}
           >
             Delete
-            <TrashIcon className="w-4 h-4" />
+            <Icon name="delete" className="w-4 h-4" />
           </MobileMenuButton>
         )}
       </div>

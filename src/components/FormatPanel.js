@@ -1,9 +1,9 @@
-import XIcon from '@heroicons/react/solid/XIcon';
 import React, { useState } from 'react';
 import Draggable from 'react-draggable';
 import FormatPanelChordOptions from './FormatPanelChordOptions';
 import FormatPanelGeneralOptions from './FormatPanelGeneralOptions';
 import SegmentedControl from './SegmentedControl';
+import Icon from './Icon';
 
 export default function FormatPanel({
   onClose,
@@ -30,10 +30,10 @@ export default function FormatPanel({
           <div className="flex-1 cursor-move handle">Formatting</div>
           <div>
             <button
-              className="w-6 flex-center focus:outline-none"
+              className="w-6 flex-center focus:outline-hidden"
               onClick={onClose}
             >
-              <XIcon className="w-4 h-4 text-white" />
+              <Icon name="close" filled className="w-4 h-4 text-white" />
             </button>
           </div>
         </div>

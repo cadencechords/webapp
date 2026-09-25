@@ -1,5 +1,5 @@
 import { Listbox } from '@headlessui/react';
-import SelectorIcon from '@heroicons/react/solid/SelectorIcon';
+import Icon from './Icon';
 
 export default function StyledListBox({
   options,
@@ -13,7 +13,7 @@ export default function StyledListBox({
       <div className="relative">
         <Listbox.Button
           className={
-            `transition-all px-3 py-2 shadow-sm h-8 text-left border-gray-300 dark:border-dark-gray-400 focus:outline-none outline-none ` +
+            `transition-all px-3 py-2 shadow-xs h-8 text-left border-gray-300 dark:border-dark-gray-400 focus:outline-hidden outline-hidden ` +
             ` w-full border rounded-md focus:ring-offset-1 focus:ring-2 focus:ring-blue-400 dark:focus:ring-offset-dark-gray-700 flex-between` +
             ` ${
               background === 'white'
@@ -22,10 +22,14 @@ export default function StyledListBox({
             }`
           }
         >
-          <div className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+          <div className="overflow-hidden text-ellipsis whitespace-nowrap">
             {selectedOption.template}
           </div>
-          <SelectorIcon className="flex-shrink-0 w-4 h-4 text-gray-500" />
+          <Icon
+            name="unfold_more"
+            filled
+            className="shrink-0 w-4 h-4 text-gray-500"
+          />
         </Listbox.Button>
         <Listbox.Options
           className={

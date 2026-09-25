@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import Drawer from './Drawer';
 import MobileMenuButton from './buttons/MobileMenuButton';
-import PencilIcon from '@heroicons/react/solid/PencilIcon';
 import ScrollIcon from '../icons/ScrollIcon';
 import Toggle from './Toggle';
 import { selectCurrentMember } from '../store/authSlice';
@@ -14,6 +13,7 @@ import { useContext } from 'react';
 import { SessionsContext } from '../contexts/SessionsProvider';
 import NumberBadge from './NumberBadge';
 import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
+import Icon from './Icon';
 
 export default function SetlistAdjustmentsDrawer({
   song,
@@ -114,7 +114,7 @@ export default function SetlistAdjustmentsDrawer({
               className="w-full"
             >
               <MobileMenuButton full className="flex items-center">
-                <PencilIcon className={iconClasses} />
+                <Icon name="edit" filled className={iconClasses} />
                 Edit
               </MobileMenuButton>
             </Link>

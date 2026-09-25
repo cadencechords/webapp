@@ -13,7 +13,7 @@ export default function SetlistsTabs({ selectedTab, onChange }) {
       <Tab.List className="flex gap-3 mb-4 text-sm font-semibold text-gray-700 dark:text-dark-gray-200">
         <Tab
           className={classNames(
-            'rounded-full h-7 px-3 outline-none focus:outline-none transition-colors',
+            'rounded-full h-7 px-3 outline-hidden focus:outline-hidden transition-colors',
             selectedIndex === 0
               ? 'text-white bg-blue-600 dark:bg-dark-blue'
               : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700'
@@ -23,7 +23,7 @@ export default function SetlistsTabs({ selectedTab, onChange }) {
         </Tab>
         <Tab
           className={classNames(
-            'rounded-full h-7 px-3 outline-none focus:outline-none transition-colors',
+            'rounded-full h-7 px-3 outline-hidden focus:outline-hidden transition-colors',
             selectedIndex === 1
               ? 'text-white bg-blue-600 dark:bg-dark-blue'
               : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700'

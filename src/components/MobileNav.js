@@ -1,11 +1,8 @@
 import AppMenu from './mobile menus/AppMenu';
-import MenuIcon from '@heroicons/react/solid/MenuIcon';
 import MobileNavLink from './MobileNavLink';
-import SearchIcon from '@heroicons/react/solid/SearchIcon';
-import UserIcon from '@heroicons/react/solid/UserIcon';
 import { useState } from 'react';
-import MusicNoteIcon from '@heroicons/react/solid/MusicNoteIcon';
 import PlaylistIcon from '../icons/PlaylistIcon';
+import Icon from './Icon';
 
 export default function MobileNav() {
   const [showMenuDialog, setShowMenuDialog] = useState(false);
@@ -15,7 +12,7 @@ export default function MobileNav() {
     <>
       <div className="fixed bottom-0 z-40 flex w-full py-1 bg-white border-t dark:bg-dark-gray-800 dark:border-0 md:hidden">
         <MobileNavLink
-          icon={<MusicNoteIcon className={iconClasses} />}
+          icon={<Icon name="music_note" filled className={iconClasses} />}
           to="/songs"
           text="Songs"
         />
@@ -25,17 +22,17 @@ export default function MobileNav() {
           text="Sets"
         />
         <MobileNavLink
-          icon={<MenuIcon className={iconClasses} />}
+          icon={<Icon name="menu" filled className={iconClasses} />}
           onClick={() => setShowMenuDialog(true)}
           text="Menu"
         />
         <MobileNavLink
-          icon={<SearchIcon className={iconClasses} />}
+          icon={<Icon name="search" filled className={iconClasses} />}
           to="/search"
           text="Search"
         />
         <MobileNavLink
-          icon={<UserIcon className={iconClasses} />}
+          icon={<Icon name="person" filled className={iconClasses} />}
           to="/account"
           text="Account"
         />

@@ -19,7 +19,7 @@ export default function StyledPopover({
   return (
     <Popover>
       <Popover.Button
-        className="w-full outline-none focus:outline-none"
+        className="w-full outline-hidden focus:outline-hidden"
         ref={setReferenceElement}
       >
         {button}

@@ -11,7 +11,7 @@ export default function FormatPreview({
 }) {
   return (
     <button
-      className="flex-shrink-0 text-left w-96"
+      className="shrink-0 text-left w-96"
       onClick={() => onChange(selected ? null : format)}
       disabled={disabled}
     >

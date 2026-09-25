@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
 
-import CogIcon from '@heroicons/react/outline/CogIcon';
 import Draggable from 'react-draggable';
 import NoteDialog from '../dialogs/NoteDialog';
 import NotesApi from '../api/notesApi';
 import _ from 'lodash';
 import { reportError } from '../utils/error';
+import Icon from './Icon';
 
 export default function Note({
   songId,
@@ -86,7 +86,7 @@ export default function Note({
         <div className="absolute z-20 flex w-56 shadow-md">
           <textarea
             className={
-              `w-full p-2 rounded-none resize-none h-full outline-none focus:outline-none text-base md:text-sm text-black dark:text-black` +
+              `w-full p-2 rounded-none resize-none h-full outline-hidden focus:outline-hidden text-base md:text-sm text-black dark:text-black` +
               ` ${NOTE_COLORS[color].main}`
             }
             value={content}
@@ -96,10 +96,13 @@ export default function Note({
           ></textarea>
           <div className={`w-9 ${NOTE_COLORS[color].side}`}>
             <button
-              className="w-full py-1 outline-none focus:outline-none flex-center"
+              className="w-full py-1 outline-hidden focus:outline-hidden flex-center"
               onClick={() => setShowDialog(true)}
             >
-              <CogIcon className={`w-5 h-5 ${NOTE_COLORS[color].icon}`} />
+              <Icon
+                name="settings"
+                className={`w-5 h-5 ${NOTE_COLORS[color].icon}`}
+              />
             </button>
 
             <div className="w-full h-full handle"></div>

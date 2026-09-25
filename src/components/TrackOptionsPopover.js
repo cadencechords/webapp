@@ -1,8 +1,7 @@
-import TrashIcon from '@heroicons/react/outline/TrashIcon';
-import PlayIcon from '@heroicons/react/solid/PlayIcon';
 import React from 'react';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import StyledPopover from './StyledPopover';
+import Icon from './Icon';
 
 export default function TrackOptionsPopover({ track, button, onDelete }) {
   return (
@@ -16,7 +15,7 @@ export default function TrackOptionsPopover({ track, button, onDelete }) {
         >
           <MobileMenuButton full className="flex-between" color="black">
             Listen on {track.source}
-            <PlayIcon className="w-4 h-4" />
+            <Icon name="play_circle" filled className="w-4 h-4" />
           </MobileMenuButton>
         </a>
         <MobileMenuButton
@@ -26,7 +25,7 @@ export default function TrackOptionsPopover({ track, button, onDelete }) {
           onClick={onDelete}
         >
           Delete
-          <TrashIcon className="w-4 h-4" />
+          <Icon name="delete" className="w-4 h-4" />
         </MobileMenuButton>
       </div>
     </StyledPopover>

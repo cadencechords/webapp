@@ -107,7 +107,7 @@ export default function PlanningCenterSongsPage() {
                         }
                         standAlone={false}
                       />
-                      <span className="inline-block overflow-hidden whitespace-nowrap overflow-ellipsis">
+                      <span className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
                         {song.title}
                       </span>
                     </label>

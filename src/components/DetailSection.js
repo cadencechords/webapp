@@ -2,8 +2,7 @@ import Button from './Button';
 import DetailTag from './DetailTag';
 import DetailTitle from './DetailTitle';
 import NoDataMessage from './NoDataMessage';
-import PlusIcon from '@heroicons/react/outline/PlusIcon';
-import XIcon from '@heroicons/react/outline/XIcon';
+import Icon from './Icon';
 
 export default function DetailSection({
   title,
@@ -18,7 +17,7 @@ export default function DetailSection({
         <DetailTitle>{title}</DetailTitle>
         {canEdit && onAdd && (
           <Button size="sm" variant="icon" onClick={onAdd} color="blue">
-            <PlusIcon className="w-4 h-4" />
+            <Icon name="add" className="w-4 h-4" />
           </Button>
         )}
       </div>
@@ -29,7 +28,8 @@ export default function DetailSection({
               <DetailTag>
                 <span className="mx-1">{item.name}</span>
                 {canEdit && onDelete && (
-                  <XIcon
+                  <Icon
+                    name="close"
                     className="w-3 h-3 text-gray-700 cursor-pointer dark:text-dark-gray-200"
                     onClick={() => onDelete(item.id)}
                   />

@@ -4,11 +4,10 @@ import PageLoading from './PageLoading';
 import PageTitle from './PageTitle';
 import FadeIn from './FadeIn';
 import Button from './Button';
-import ArrowNarrowRightIcon from '@heroicons/react/outline/ArrowNarrowRightIcon';
 import classNames from 'classnames';
 import ProfilePicture from './ProfilePicture';
-import CheckCircleIcon from '@heroicons/react/solid/CheckCircleIcon';
 import NoDataMessage from './NoDataMessage';
+import Icon from './Icon';
 
 export default function ImportCadenceSongsChooseTeamStep({
   selectedTeam,
@@ -53,7 +52,7 @@ export default function ImportCadenceSongsChooseTeamStep({
                 full={true}
               >
                 Choose songs
-                <ArrowNarrowRightIcon className="w-5 h-5" />
+                <Icon name="arrow_forward" className="w-5 h-5" />
               </Button>
             </div>
           </>
@@ -81,7 +80,11 @@ function TeamOption({ team, selected, onChange }) {
         checked={selected}
       />
       {selected && (
-        <CheckCircleIcon className="absolute w-5 h-5 text-blue-500 top-2 right-2 dark:text-dark-blue" />
+        <Icon
+          name="check_circle"
+          filled
+          className="absolute w-5 h-5 text-blue-500 top-2 right-2 dark:text-dark-blue"
+        />
       )}
     </label>
   );
