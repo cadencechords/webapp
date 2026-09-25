@@ -1,0 +1,10 @@
+build/
+node_modules/
+e2e/.results/
+e2e/screenshots/
+public/
+coverage/
+yarn.lock
+src/styles/*-tokens.css
+typecheck-baseline.json
+eslint-suppressions.json
