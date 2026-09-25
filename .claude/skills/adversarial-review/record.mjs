@@ -18,6 +18,7 @@ import path from 'node:path';
 // The CI checks, as package.json scripts (so a repo's own definitions run).
 const CHECKS = [
   'typecheck',
+  'ts-only',
   'lint',
   'format:check',
   'test:unit',

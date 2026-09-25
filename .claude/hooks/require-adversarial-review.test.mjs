@@ -23,6 +23,7 @@ const GH = 'gh';
 const CREATE = [GH, 'pr', 'create'].join(' '); // spelled out so this file's own tooling never trips the hook
 const CHECK_SCRIPTS = [
   'typecheck',
+  'ts-only',
   'lint',
   'format:check',
   'test:unit',
