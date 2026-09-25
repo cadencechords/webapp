@@ -24,7 +24,7 @@ enforces this; see "What the gate guarantees" at the end for its limits.
 Run the same checks as CI:
 
 ```bash
-yarn typecheck && yarn lint && yarn format:check && yarn vitest run && yarn test:hooks && yarn build
+yarn typecheck && yarn lint && yarn format:check && yarn test:unit && yarn test:hooks && yarn build
 ```
 
 Fix any failure before going on. A reviewer's time is wasted on a branch that
@@ -87,7 +87,9 @@ Stop when a round produces no confirmed blocker or major finding.
 
 Write the summary to a temp file (not in the repo) and record it. Every
 blocker or major finding must be `confirmed` or `refuted`; minors may be
-`unverified`. There's no `checks` field: `record.mjs` runs the checks itself.
+`unverified`. It can't set `verdict`, `sha`, `branch`, `recordedAt` or `checks`:
+`record.mjs` sets those itself, and runs the checks as the repo's
+`package.json` scripts.
 
 ```json
 {
@@ -124,7 +126,8 @@ in any of these cases:
 
 - tracked files have uncommitted changes
 - `HEAD` is detached, or isn't what's on the remote branch (it fetches first)
-- the summary has fewer than two lenses, no `findings` array, or no `base`
+- the summary has fewer than two lenses, no `findings` array, no `base`, or
+  sets a field `record.mjs` owns
 - a blocker or major finding is unverified, or confirmed and not `fixed`
 - any check fails
 
@@ -152,13 +155,17 @@ branch first, so a stale local ref can't be used. It covers:
 
 - the GitHub MCP `create_pull_request` tool (owner and repo must match this
   checkout's remote)
-- Bash commands that run `gh pr create` or `gh pr new`: with `-H`/`--head`,
-  `-R`, env prefixes, `env`/`time` wrappers, `sh -c`, and `$(…)` or backticks
+- Bash commands that run `gh pr create` or `gh pr new` anywhere in a command
+  (after `if`/`then`, `{`, `!`, `timeout`, `sudo -u`, `xargs`, env prefixes),
+  in `$(…)` or backticks, and in strings or heredocs given to a shell
+  (`bash -lc '…'`, `eval`). gh's flags are read like gh reads them:
+  `-H`/`--head`, combined short flags such as `-dHfeat`, `-R`/`--repo`,
+  `GH_REPO`
 - `gh api` POSTs to `…/pulls`, which are always blocked: open PRs with
   `gh pr create` instead
 
 It also blocks when it can't tell what the PR contains: a `cd` or checkout
-before `gh pr create` without `--head`, a detached HEAD, a fork's head
+before `gh pr create` (with or without `--head`), a detached HEAD, a fork's head
 branch, another repo, `create_pull_request_with_copilot`, an unparseable
 command, a corrupt record, or the hook itself failing, including `node`
 missing from PATH. Mentions of the command in quoted text or heredocs are
@@ -173,7 +180,8 @@ ignored. `gh pr create --help` is allowed.
   is where human reviewers can see what was attacked and fixed, and
   challenge it.
 - **It's a guardrail, not a security boundary.** Someone set on bypassing it
-  can: edit `.claude/settings.json`, open the PR from the GitHub UI, or use a
-  shell construct the parser doesn't follow, such as `eval` or a script file.
+  can: edit `.claude/settings.json`, open the PR from the GitHub UI, run it
+  from a script file, or obfuscate the command (for example by quoting the
+  program name, `g''h`).
   A hook timeout (30s) is treated by Claude Code as non-blocking.
 - **Only opening a PR is gated.** Pushing more commits to an open PR isn't.

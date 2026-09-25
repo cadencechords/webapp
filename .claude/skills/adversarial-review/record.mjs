@@ -15,17 +15,17 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-// Overridable for this script's own tests only.
-const CHECKS = process.env.ADVERSARIAL_REVIEW_CHECKS
-  ? JSON.parse(process.env.ADVERSARIAL_REVIEW_CHECKS)
-  : {
-      typecheck: 'yarn -s typecheck',
-      lint: 'yarn -s lint',
-      format: 'yarn -s format:check',
-      tests: 'yarn -s vitest run',
-      hooks: 'yarn -s test:hooks',
-      build: 'yarn -s build',
-    };
+// The CI checks, as package.json scripts (so a repo's own definitions run).
+const CHECKS = [
+  'typecheck',
+  'lint',
+  'format:check',
+  'test:unit',
+  'test:hooks',
+  'build',
+];
+// Fields record.mjs sets itself; a summary can't supply them.
+const RESERVED = ['sha', 'branch', 'verdict', 'recordedAt', 'checks'];
 const SEVERITIES = ['blocker', 'major', 'minor'];
 const VERDICTS = ['confirmed', 'refuted', 'unverified'];
 
@@ -80,6 +80,11 @@ try {
 } catch (error) {
   fail(`can't read the summary: ${error.message}`);
 }
+const reserved = RESERVED.filter(key => key in summary);
+if (reserved.length)
+  fail(
+    `the summary can't set ${reserved.join(', ')}; record.mjs sets those itself`
+  );
 if (typeof summary.base !== 'string' || !summary.base)
   fail('summary.base must name the PR base branch');
 const lenses = Array.isArray(summary.lenses)
@@ -120,9 +125,9 @@ if (verdict === 'pass' && open.length)
 
 // Run the checks here instead of trusting reported results.
 const checks = {};
-for (const [name, command] of Object.entries(CHECKS)) {
+for (const name of CHECKS) {
   process.stdout.write(`check ${name}: `);
-  const result = spawnSync(command, { shell: true, stdio: 'ignore' });
+  const result = spawnSync('yarn', ['-s', name], { stdio: 'ignore' });
   checks[name] = result.status === 0 ? 'pass' : 'fail';
   console.log(checks[name]);
 }
@@ -145,13 +150,13 @@ const dir = path.resolve(
 mkdirSync(dir, { recursive: true });
 const file = path.join(dir, `${sha}.json`);
 const record = {
+  ...summary,
+  lenses,
+  findings,
   sha,
   branch,
   verdict,
   recordedAt: new Date().toISOString(),
-  ...summary,
-  lenses,
-  findings,
   checks,
 };
 writeFileSync(file, JSON.stringify(record, null, 2) + '\n');

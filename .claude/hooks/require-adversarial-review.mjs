@@ -26,71 +26,168 @@ const block = message => {
 
 // ---------------------------------------------------------------- shell parsing
 
-// Splits shell text into simple commands (arrays of words). Quotes and escapes
-// are resolved; heredoc bodies are skipped (they're data); the contents of
-// $(...) and `...` are returned separately because they also run.
+// Reads a heredoc operator at text[i] ("<<", "<<-") and returns its delimiter,
+// or null for "<<<" (here-string) and "<<=" (arithmetic).
+function heredocAt(text, i) {
+  if (
+    text[i] !== '<' ||
+    text[i + 1] !== '<' ||
+    text[i + 2] === '<' ||
+    text[i + 2] === '='
+  )
+    return null;
+  const m = text.slice(i).match(/^<<(-?)[ \t]*(['"]?)([^\s'"<>;&|()]+)\2/);
+  if (!m) block('unparseable heredoc in the command');
+  return { length: m[0].length, delimiter: m[3], stripTabs: m[1] === '-' };
+}
+
+// Returns [body, index after the delimiter line] for a heredoc whose body
+// starts at text[i] (the character after the newline).
+function readHeredocBody(text, i, { delimiter, stripTabs }) {
+  const lines = [];
+  while (i < text.length) {
+    const end = text.indexOf('\n', i);
+    const line = text.slice(i, end === -1 ? text.length : end);
+    i = end === -1 ? text.length : end + 1;
+    if ((stripTabs ? line.replace(/^\t+/, '') : line) === delimiter)
+      return [lines.join('\n'), i];
+    lines.push(line);
+  }
+  return [lines.join('\n'), i]; // unterminated: bash reads to the end
+}
+
+// Given text[start] just after "$(", returns the index just after the
+// matching ")". Aware of quotes, escapes, nested substitutions, comments and
+// heredocs, so parentheses inside a PR body don't confuse it.
+function substitutionEnd(text, start) {
+  let depth = 1;
+  let i = start;
+  const pending = [];
+  while (i < text.length) {
+    const c = text[i];
+    if (c === '\\') i += 2;
+    else if (c === "'") {
+      const end = text.indexOf("'", i + 1);
+      if (end === -1) block('unterminated quote in the command');
+      i = end + 1;
+    } else if (c === '"') {
+      i++;
+      while (i < text.length && text[i] !== '"') {
+        if (text[i] === '\\') i += 2;
+        else if (text[i] === '$' && text[i + 1] === '(')
+          i = substitutionEnd(text, i + 2);
+        else i++;
+      }
+      if (i >= text.length) block('unterminated quote in the command');
+      i++;
+    } else if (c === '`') {
+      const end = text.indexOf('`', i + 1);
+      if (end === -1) block('unterminated backquote in the command');
+      i = end + 1;
+    } else if (c === '$' && text[i + 1] === '(') {
+      i = substitutionEnd(text, i + 2);
+    } else if (c === '#' && (i === start || /[\s;&|(]/.test(text[i - 1]))) {
+      while (i < text.length && text[i] !== '\n') i++;
+    } else if (heredocAt(text, i)) {
+      const h = heredocAt(text, i);
+      pending.push(h);
+      i += h.length;
+    } else if (c === '\n' && pending.length) {
+      i++;
+      while (pending.length) [, i] = readHeredocBody(text, i, pending.shift());
+    } else if (c === '(') {
+      depth++;
+      i++;
+    } else if (c === ')') {
+      depth--;
+      i++;
+      if (!depth) return i;
+    } else i++;
+  }
+  block('unbalanced $( in the command');
+}
+
+// Splits shell text into simple commands: { words, heredocs } where words
+// have quotes and escapes resolved and heredocs are the bodies fed to that
+// command. The contents of $(...) and `...` are returned separately, since
+// they run too.
 export function parseShell(text) {
-  const commands = [[]];
+  const commands = [{ words: [], heredocs: [] }];
   const substitutions = [];
-  const heredocs = [];
+  const pending = [];
   let word = null;
   let i = 0;
   const cmd = () => commands[commands.length - 1];
+  const add = s => (word = (word ?? '') + s);
   const endWord = () => {
-    if (word !== null) cmd().push(word);
+    if (word !== null) cmd().words.push(word);
     word = null;
   };
   const endCommand = () => {
     endWord();
-    if (cmd().length) commands.push([]);
+    if (cmd().words.length || cmd().heredocs.length)
+      commands.push({ words: [], heredocs: [] });
   };
-  const readUntilClosingParen = start => {
-    let depth = 1;
-    let j = start;
-    for (; j < text.length && depth; j++) {
-      if (text[j] === '(') depth++;
-      else if (text[j] === ')') depth--;
-    }
-    if (depth) block('unbalanced $( in the command');
-    return j;
+  const substitution = at => {
+    const end = substitutionEnd(text, at + 2);
+    substitutions.push(text.slice(at + 2, end - 1));
+    return end;
   };
 
   while (i < text.length) {
     const c = text[i];
+    const h = c === '<' ? heredocAt(text, i) : null;
     if (c === '\n') {
+      const owner = cmd();
       endCommand();
       i++;
-      // Skip pending heredoc bodies that start on this line.
-      while (heredocs.length) {
-        const { delimiter, stripTabs } = heredocs.shift();
-        for (;;) {
-          const end = text.indexOf('\n', i);
-          const line = text.slice(i, end === -1 ? text.length : end);
-          i = end === -1 ? text.length : end + 1;
-          if ((stripTabs ? line.replace(/^\t+/, '') : line) === delimiter)
-            break;
-          if (end === -1) break;
-        }
+      while (pending.length) {
+        const { target, heredoc } = pending.shift();
+        let body;
+        [body, i] = readHeredocBody(text, i, heredoc);
+        (target || owner).heredocs.push(body);
       }
     } else if (c === ' ' || c === '\t') {
       endWord();
+      i++;
+    } else if (';&|(){}!'.includes(c) && word === null) {
+      endCommand();
       i++;
     } else if (';&|()'.includes(c)) {
       endCommand();
       i++;
     } else if (c === '#' && word === null) {
       while (i < text.length && text[i] !== '\n') i++;
-    } else if (c === '<' && text[i + 1] === '<' && text[i + 2] !== '<') {
+    } else if (h) {
       endWord();
-      const m = text.slice(i).match(/^<<(-?)\s*(['"]?)([\w.-]+)\2/);
-      if (!m) block('unparseable heredoc in the command');
-      heredocs.push({ delimiter: m[3], stripTabs: m[1] === '-' });
-      i += m[0].length;
+      pending.push({ target: cmd(), heredoc: h });
+      i += h.length;
+    } else if (c === '<' && text.startsWith('<<<', i)) {
+      endWord();
+      i += 3;
     } else if (c === "'") {
       const end = text.indexOf("'", i + 1);
       if (end === -1) block('unterminated quote in the command');
-      word = (word ?? '') + text.slice(i + 1, end);
+      add(text.slice(i + 1, end));
       i = end + 1;
+    } else if (c === '$' && text[i + 1] === "'") {
+      // ANSI-C quoting: backslash escapes, ends at an unescaped quote.
+      let j = i + 2;
+      let value = '';
+      while (j < text.length && text[j] !== "'") {
+        if (text[j] === '\\' && j + 1 < text.length) {
+          value +=
+            text[j + 1] === 'n'
+              ? '\n'
+              : text[j + 1] === 't'
+                ? '\t'
+                : text[j + 1];
+          j += 2;
+        } else value += text[j++];
+      }
+      if (j >= text.length) block('unterminated quote in the command');
+      add(value);
+      i = j + 1;
     } else if (c === '"') {
       let j = i + 1;
       let value = '';
@@ -99,8 +196,7 @@ export function parseShell(text) {
           value += text[j + 1];
           j += 2;
         } else if (text[j] === '$' && text[j + 1] === '(') {
-          const end = readUntilClosingParen(j + 2);
-          substitutions.push(text.slice(j + 2, end - 1));
+          const end = substitution(j);
           value += text.slice(j, end);
           j = end;
         } else if (text[j] === '`') {
@@ -109,138 +205,188 @@ export function parseShell(text) {
           substitutions.push(text.slice(j + 1, end));
           value += text.slice(j, end + 1);
           j = end + 1;
-        } else {
-          value += text[j++];
-        }
+        } else value += text[j++];
       }
       if (j >= text.length) block('unterminated quote in the command');
-      word = (word ?? '') + value;
+      add(value);
       i = j + 1;
     } else if (c === '\\') {
-      if (text[i + 1] !== '\n') word = (word ?? '') + (text[i + 1] ?? '');
+      if (text[i + 1] !== '\n') add(text[i + 1] ?? '');
       i += 2;
     } else if (c === '$' && text[i + 1] === '(') {
-      const end = readUntilClosingParen(i + 2);
-      substitutions.push(text.slice(i + 2, end - 1));
-      word = (word ?? '') + text.slice(i, end);
+      const end = substitution(i);
+      add(text.slice(i, end));
       i = end;
     } else if (c === '`') {
       const end = text.indexOf('`', i + 1);
       if (end === -1) block('unterminated backquote in the command');
       substitutions.push(text.slice(i + 1, end));
-      word = (word ?? '') + text.slice(i, end + 1);
+      add(text.slice(i, end + 1));
       i = end + 1;
     } else {
-      word = (word ?? '') + c;
+      add(c);
       i++;
     }
   }
   endWord();
-  return { commands: commands.filter(c => c.length), substitutions };
+  return {
+    commands: commands.filter(c => c.words.length || c.heredocs.length),
+    substitutions,
+  };
 }
 
-const WRAPPERS = new Set([
-  'env',
-  'time',
-  'command',
-  'exec',
-  'nice',
-  'nohup',
-  'sudo',
+// gh flags that take a value (gh pr create's, plus the global -R/--repo).
+const VALUE_SHORT = new Set([...'aBbFHlmprRTt']);
+const VALUE_LONG = new Set([
+  'title',
+  'body',
+  'body-file',
+  'base',
+  'head',
+  'assignee',
+  'label',
+  'milestone',
+  'project',
+  'reviewer',
+  'template',
+  'repo',
+  'recover',
+  'hostname',
 ]);
-const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash']);
+// Programs that run their string arguments or stdin as shell commands.
+const RUNS_SHELL = new Set([
+  'sh',
+  'bash',
+  'zsh',
+  'dash',
+  'ksh',
+  'eval',
+  'xargs',
+  'watch',
+  'su',
+  'ssh',
+]);
 const MOVES = new Set(['cd', 'pushd', 'popd']);
-const GH_GLOBAL_WITH_VALUE = new Set(['-R', '--repo', '--hostname']);
 const API_WRITE_FLAGS = /^(-f|-F|--field|--raw-field|--input)(=|$)/;
 
-// Finds PR-creating gh calls in a Bash command. Returns
-// [{ head, repo, moved }], where `moved` means an earlier command in the same
-// line may have changed directory or branch.
-export function findPrCreations(text) {
+// Parses gh's arguments (after the "gh" word). Returns { head, repo } for a PR
+// creation, null otherwise; blocks on `gh api` PR creation.
+function analyzeGh(args, env) {
+  let repo = env.GH_REPO || null;
+  let k = 0;
+  while (k < args.length && args[k].startsWith('-')) {
+    const [flag, inline] = args[k].split(/=(.*)/s);
+    if (flag === '-R' || flag === '--repo') repo = inline ?? args[++k];
+    else if (flag === '--hostname' && inline === undefined) k++;
+    else if (/^-R./.test(args[k])) repo = args[k].slice(2);
+    k++;
+  }
+  const [group, action] = [args[k], args[k + 1]];
+  const rest = args.slice(k + 2);
+
+  if (group === 'pr' && (action === 'create' || action === 'new')) {
+    let head = null;
+    let help = false;
+    for (let j = 0; j < rest.length; j++) {
+      const a = rest[j];
+      if (a === '--') break;
+      if (a.startsWith('--')) {
+        const [name, inline] = a.slice(2).split(/=(.*)/s);
+        if (name === 'help') help = true;
+        else if (VALUE_LONG.has(name)) {
+          const value = inline ?? rest[++j];
+          if (name === 'head') head = value;
+          if (name === 'repo') repo = value;
+        }
+      } else if (a.startsWith('-') && a.length > 1) {
+        // pflag short flags: "-dHfeat" is -d plus -H feat.
+        for (let c = 1; c < a.length; c++) {
+          if (a[c] === 'h') help = true;
+          else if (VALUE_SHORT.has(a[c])) {
+            const value = a.slice(c + 1) || rest[++j];
+            if (a[c] === 'H') head = value;
+            if (a[c] === 'R') repo = value;
+            break;
+          }
+        }
+      }
+    }
+    return help ? null : { head, repo };
+  }
+
+  if (group === 'api') {
+    const apiArgs = args.slice(k + 1);
+    let method = '';
+    for (let j = 0; j < apiArgs.length; j++) {
+      if (apiArgs[j] === '-X' || apiArgs[j] === '--method')
+        method = apiArgs[j + 1] || '';
+      else if (apiArgs[j].startsWith('--method=')) method = apiArgs[j].slice(9);
+      else if (/^-X./.test(apiArgs[j])) method = apiArgs[j].slice(2);
+    }
+    method = method.toUpperCase();
+    // gh api defaults to POST when fields are given.
+    const writes =
+      method === 'POST' ||
+      (!method && apiArgs.some(a => API_WRITE_FLAGS.test(a)));
+    if (writes && apiArgs.some(a => /(^|\/)pulls\/?$/.test(a))) {
+      block(
+        "opening a PR through `gh api` can't be checked; use `gh pr create --head <branch>` or the create_pull_request tool after the review"
+      );
+    }
+  }
+  return null;
+}
+
+// Finds PR-creating gh calls in a Bash command. Returns [{ head, repo, moved }],
+// where `moved` means an earlier command changed directory or branch, so this
+// checkout may not be where the PR comes from.
+//
+// Deliberately broad: `gh` is looked for anywhere in each simple command (so
+// `then gh`, `timeout 60 gh`, `sudo -u me gh` are caught), and strings or
+// heredocs given to a shell (`bash -lc '…'`, `eval`, `xargs`) are parsed too.
+export function findPrCreations(text, depth = 0) {
+  if (depth > 5) block('the command nests shells too deeply to check');
   const found = [];
   const { commands, substitutions } = parseShell(text);
   let moved = false;
-  for (let words of commands) {
-    words = [...words];
-    while (words.length && /^\w+=/.test(words[0])) words.shift(); // VAR=x
-    while (words.length && WRAPPERS.has(path.basename(words[0]))) {
-      words.shift();
-      while (
-        words.length &&
-        (words[0].startsWith('-') || /^\w+=/.test(words[0]))
-      )
-        words.shift();
-    }
-    if (!words.length) continue;
-    const program = path.basename(words[0]);
+  const nested = inner =>
+    found.push(
+      ...findPrCreations(inner, depth + 1).map(f => ({
+        ...f,
+        moved: f.moved || moved,
+      }))
+    );
 
-    if (SHELLS.has(program)) {
-      const c = words.indexOf('-c');
-      if (c !== -1 && words[c + 1])
-        found.push(
-          ...findPrCreations(words[c + 1]).map(f => ({
-            ...f,
-            moved: f.moved || moved,
-          }))
-        );
-      continue;
+  for (const { words, heredocs } of commands) {
+    const env = {};
+    let s = 0;
+    for (; s < words.length && /^[A-Za-z_]\w*=/.test(words[s]); s++) {
+      const [name, value] = words[s].split(/=(.*)/s);
+      env[name] = value;
     }
+    const names = words.map(w => path.basename(w));
+    names.forEach((name, i) => {
+      if (i < s || name !== 'gh') return;
+      const pr = analyzeGh(words.slice(i + 1), env);
+      if (pr) found.push({ ...pr, moved });
+    });
+    if (names.some(n => RUNS_SHELL.has(n))) {
+      for (const w of words.slice(s))
+        if (/\bgh\b/.test(w) && /\s/.test(w)) nested(w);
+      for (const body of heredocs) nested(body);
+    }
+    const git = names.indexOf('git');
     if (
-      MOVES.has(program) ||
-      (program === 'git' && /^(checkout|switch|worktree)$/.test(words[1] || ''))
+      names.some(n => MOVES.has(n)) ||
+      (git !== -1 &&
+        words
+          .slice(git + 1)
+          .some(w => /^(checkout|switch|worktree|-C)$/.test(w)))
     ) {
       moved = true;
-      continue;
-    }
-    if (program !== 'gh') continue;
-
-    let repo = null;
-    let k = 1;
-    while (k < words.length && words[k].startsWith('-')) {
-      const [flag, inline] = words[k].split(/=(.*)/s);
-      if (GH_GLOBAL_WITH_VALUE.has(flag)) {
-        const value = inline ?? words[++k];
-        if (flag !== '--hostname') repo = value;
-      }
-      k++;
-    }
-    const [group, action, ...rest] = words.slice(k);
-    if (rest.includes('--help') || rest.includes('-h')) continue;
-
-    if (group === 'pr' && (action === 'create' || action === 'new')) {
-      let head = null;
-      for (let j = 0; j < rest.length; j++) {
-        const [flag, inline] = rest[j].split(/=(.*)/s);
-        if (flag === '-H' || flag === '--head') head = inline ?? rest[++j];
-        else if (flag === '-R' || flag === '--repo') repo = inline ?? rest[++j];
-        else if (/^-H./.test(rest[j])) head = rest[j].slice(2);
-      }
-      found.push({ head, repo, moved });
-    } else if (group === 'api') {
-      const args = [action, ...rest];
-      let method = '';
-      for (let j = 0; j < args.length; j++) {
-        if (args[j] === '-X' || args[j] === '--method')
-          method = args[j + 1] || '';
-        else if (args[j].startsWith('--method=')) method = args[j].slice(9);
-        else if (/^-X./.test(args[j])) method = args[j].slice(2);
-      }
-      method = method.toUpperCase();
-      // gh api defaults to POST when fields are given.
-      const writes =
-        method === 'POST' ||
-        (!method && args.some(a => API_WRITE_FLAGS.test(a)));
-      if (writes && args.some(a => /(^|\/)pulls\/?$/.test(a))) {
-        block(
-          "opening a PR through `gh api` can't be checked; use `gh pr create --head <branch>` or the create_pull_request tool after the review"
-        );
-      }
     }
   }
-  for (const sub of substitutions)
-    found.push(
-      ...findPrCreations(sub).map(f => ({ ...f, moved: f.moved || moved }))
-    );
+  for (const sub of substitutions) nested(sub);
   return found;
 }
 
@@ -278,11 +424,12 @@ function checkPr({ cwd, head, repo, moved }) {
   if (tryRun('rev-parse', '--git-dir') === null)
     block(`${cwd} isn't a git repository`);
 
+  if (moved) {
+    block(
+      'the command changes directory or branch before opening the PR, so which checkout and branch it is for is unknown; run gh pr create on its own from the checkout'
+    );
+  }
   if (!head) {
-    if (moved)
-      block(
-        'the command changes directory or branch before opening the PR, so the head branch is unknown; pass --head <branch>'
-      );
     head = tryRun('symbolic-ref', '--quiet', '--short', 'HEAD');
     if (!head)
       block(
@@ -345,9 +492,18 @@ function checkPr({ cwd, head, repo, moved }) {
   } catch {
     block(`the review record for ${sha.slice(0, 7)} is unreadable`);
   }
-  if (record.verdict !== 'pass' || record.sha !== sha) {
+  if (record.sha !== sha)
+    block(
+      `the review record for ${sha.slice(0, 7)} wasn't written by record.mjs for this commit`
+    );
+  if (record.verdict !== 'pass')
     block(
       `the review for ${head} @ ${sha.slice(0, 7)} did not pass (verdict: ${record.verdict})`
+    );
+  const checks = Object.entries(record.checks || {});
+  if (!checks.length || checks.some(([, result]) => result !== 'pass')) {
+    block(
+      `the review record for ${sha.slice(0, 7)} doesn't show passing checks`
     );
   }
 }

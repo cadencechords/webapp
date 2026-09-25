@@ -74,7 +74,8 @@
     "lint:prune": "eslint . --prune-suppressions",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:hooks": "node --test .claude/hooks/require-adversarial-review.test.mjs"
+    "test:hooks": "node --test .claude/hooks/require-adversarial-review.test.mjs",
+    "test:unit": "vitest run"
   },
   "browserslist": [
     ">0.2%",

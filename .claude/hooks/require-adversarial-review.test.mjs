@@ -21,8 +21,17 @@ const wrapper = path.join(here, 'run-hook.sh');
 const recorder = path.resolve(here, '../skills/adversarial-review/record.mjs');
 const GH = 'gh';
 const CREATE = [GH, 'pr', 'create'].join(' '); // spelled out so this file's own tooling never trips the hook
+const CHECK_SCRIPTS = [
+  'typecheck',
+  'lint',
+  'format:check',
+  'test:unit',
+  'test:hooks',
+  'build',
+];
 
-// A repo cloned from a bare "acme/app" remote, with main and feat pushed.
+// A repo cloned from a bare "acme/app" remote, with main and feat pushed. Its
+// package.json defines record.mjs's checks as scripts that succeed.
 function fixture(t) {
   const root = mkdtempSync(path.join(os.tmpdir(), 'review-gate-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
@@ -49,13 +58,24 @@ function fixture(t) {
   mkdirSync(origin, { recursive: true });
   git(origin, 'init', '--bare', '--quiet');
   git(root, 'clone', '--quiet', origin, work);
-  const commit = message => {
-    writeFileSync(path.join(work, 'file.txt'), message);
-    git(work, 'add', '.');
+  const commit = (message, files = { 'file.txt': message }) => {
+    for (const [name, content] of Object.entries(files))
+      writeFileSync(path.join(work, name), content);
+    git(work, 'add', ...Object.keys(files));
     git(work, 'commit', '--quiet', '-m', message);
     return git(work, 'rev-parse', 'HEAD');
   };
-  commit('initial');
+  const scripts = failing =>
+    Object.fromEntries(
+      CHECK_SCRIPTS.map(name => [name, name === failing ? 'false' : 'true'])
+    );
+  commit('initial', {
+    'package.json': JSON.stringify({
+      name: 'app',
+      private: true,
+      scripts: scripts(),
+    }),
+  });
   git(work, 'push', '--quiet', '-u', 'origin', 'main');
   git(work, 'checkout', '--quiet', '-b', 'feat');
   const feat = commit('feature');
@@ -63,14 +83,26 @@ function fixture(t) {
   const records = path.join(work, '.git', 'adversarial-reviews');
   const record = (sha, body) => {
     mkdirSync(records, { recursive: true });
-    writeFileSync(
-      path.join(records, `${sha}.json`),
+    const content =
       typeof body === 'string'
         ? body
-        : JSON.stringify({ sha, verdict: 'pass', ...body })
-    );
+        : JSON.stringify({
+            sha,
+            verdict: 'pass',
+            checks: { lint: 'pass' },
+            ...body,
+          });
+    writeFileSync(path.join(records, `${sha}.json`), content);
   };
-  return { root, work, git: (...a) => git(work, ...a), commit, feat, record };
+  return {
+    root,
+    work,
+    git: (...a) => git(work, ...a),
+    commit,
+    feat,
+    record,
+    scripts,
+  };
 }
 
 function hook(fx, payload, raw) {
@@ -95,6 +127,7 @@ const mcp = (fx, input, tool = 'mcp__github__create_pull_request') =>
       ...input,
     },
   });
+const body = text => `"$(cat <<'EOF'\n${text}\nEOF\n)"`;
 
 test('lets through tools and commands that do not open a PR', t => {
   const fx = fixture(t);
@@ -107,10 +140,12 @@ test('lets through tools and commands that do not open a PR', t => {
     `${GH} pr list`,
     `${GH} pr view 4`,
     `${CREATE} --help`,
+    `${CREATE} -h`,
     `git commit -m "don't forget ${CREATE} --head other"`,
     `echo '${CREATE}'`,
     `cat > x.md <<'EOF'\nrun \`${CREATE} --head other\`\nEOF\necho done`,
     `${GH} api repos/acme/app/pulls`,
+    `echo "it's" && awk '{print $1}' f; echo $((1+2)) \${HOME} a#b; (( x <<= 1 ))`,
   ]) {
     assert.equal(bash(fx, command).code, 0, command);
   }
@@ -123,18 +158,30 @@ test('blocks every way of opening a PR when there is no review', t => {
     `${CREATE} --head feat`,
     `${CREATE} --head=feat`,
     `${CREATE} -H feat`,
+    `${CREATE} -dHfeat`,
     `${GH} pr new --title t`,
     `/usr/local/bin/${CREATE}`,
     `GH_TOKEN=x ${CREATE}`,
-    `env ${CREATE}`,
+    `env -u X ${CREATE}`,
     `time ${CREATE}`,
+    `timeout 60 ${CREATE}`,
+    `sudo -u me ${CREATE}`,
+    `nice -n 5 ${CREATE}`,
+    `echo x | xargs ${CREATE}`,
+    `if true; then ${CREATE} --fill; fi`,
+    `git status && { ${CREATE} --fill; }`,
+    `! ${CREATE}`,
     `sh -c "${CREATE} --title t"`,
-    `bash -c '${CREATE}'`,
+    `bash -lc '${CREATE}'`,
+    `bash <<X\n${CREATE} --fill\nX`,
     `echo "$(${CREATE})"`,
     `echo \`${CREATE}\``,
     `${GH} -R acme/app pr create`,
     `git commit -m "don't stop" && ${CREATE} --title 'x'`,
-    `${CREATE} --title t --body "$(cat <<'EOF'\nbody\nEOF\n)"`,
+    `${CREATE} --title t --body --help`,
+    `${CREATE} -t t -b -h`,
+    `${CREATE} --title t --body ${body('Fixes the (rare case :(')}`,
+    `${CREATE} -t $'it\\'s'`,
   ]) {
     const r = bash(fx, command);
     assert.equal(r.code, 2, command);
@@ -153,15 +200,22 @@ test('allows a PR whose head commit passed review', t => {
   assert.equal(mcp(fx, { head: 'acme:feat' }).code, 0);
   assert.equal(bash(fx, CREATE).code, 0); // current branch
   assert.equal(bash(fx, `${CREATE} -H feat --title "don't"`).code, 0);
-  assert.equal(bash(fx, `cd /tmp && ${CREATE} --head feat`).code, 0);
+  assert.equal(
+    bash(
+      fx,
+      `${CREATE} --title t --body ${body('Fixes the (rare case :( and 1) this')}`
+    ).code,
+    0
+  );
 });
 
 test('checks the branch the PR is really for', t => {
   const fx = fixture(t);
   fx.record(fx.feat); // feat is reviewed, main isn't
   assert.equal(bash(fx, `${CREATE} -H main`).code, 2);
+  assert.equal(bash(fx, `${CREATE} -dHmain --fill`).code, 2);
   assert.equal(
-    bash(fx, `${CREATE} --title t --body "stacked on --head feat"`).code,
+    bash(fx, `${CREATE} --title t --body "stacked on --head main"`).code,
     0
   );
   fx.git('checkout', '--quiet', 'main');
@@ -169,19 +223,24 @@ test('checks the branch the PR is really for', t => {
     bash(fx, `${CREATE} --title t --body "stacked on --head feat"`).code,
     2
   );
+  assert.equal(bash(fx, `${CREATE} -t -Hfeat`).code, 2); // -Hfeat is the title
   assert.equal(bash(fx, `${CREATE} -H feat`).code, 0);
 });
 
-test('blocks when the head branch cannot be known', t => {
+test('blocks when it cannot tell which checkout or branch the PR is for', t => {
   const fx = fixture(t);
   fx.record(fx.feat);
   assert.match(
     bash(fx, `cd ../other && ${CREATE}`).stderr,
-    /head branch is unknown/
+    /changes directory or branch/
+  );
+  assert.match(
+    bash(fx, `cd /tmp && ${CREATE} --head feat`).stderr,
+    /changes directory or branch/
   );
   assert.match(
     bash(fx, `git checkout main && ${CREATE}`).stderr,
-    /head branch is unknown/
+    /changes directory or branch/
   );
   fx.git('checkout', '--quiet', '--detach');
   assert.match(bash(fx, CREATE).stderr, /detached/);
@@ -197,6 +256,14 @@ test('blocks PRs for other repos, forks and unsupported tools, even with a revie
   assert.match(mcp(fx, { head: 'someone:feat' }).stderr, /fork/);
   assert.match(
     bash(fx, `${CREATE} -R evil/other -H feat`).stderr,
+    /targets evil\/other/
+  );
+  assert.match(
+    bash(fx, `${GH} -Revil/other pr create -H feat`).stderr,
+    /targets evil\/other/
+  );
+  assert.match(
+    bash(fx, `GH_REPO=evil/other ${CREATE} -H feat`).stderr,
     /targets evil\/other/
   );
   assert.match(
@@ -240,7 +307,9 @@ test('uses the pushed head, not a stale local ref', t => {
       '-am',
       'unreviewed',
     ],
-    { cwd: other }
+    {
+      cwd: other,
+    }
   );
   execFileSync('git', ['push', '--quiet'], { cwd: other });
   assert.match(
@@ -256,10 +325,23 @@ test('fails closed on bad records, bad input and crashes', t => {
   assert.match(mcp(fx, { head: 'feat' }).stderr, /did not pass/);
   fx.record(fx.feat, '{"verdict":');
   assert.match(mcp(fx, { head: 'feat' }).stderr, /unreadable/);
-  fx.record(fx.feat, JSON.stringify({ verdict: 'pass' })); // no sha: not written by record.mjs
-  assert.equal(mcp(fx, { head: 'feat' }).code, 2);
+  fx.record(
+    fx.feat,
+    JSON.stringify({ verdict: 'pass', checks: { lint: 'pass' } })
+  ); // no sha
+  assert.match(
+    mcp(fx, { head: 'feat' }).stderr,
+    /wasn't written by record\.mjs/
+  );
+  fx.record(fx.feat, { checks: {} });
+  assert.match(mcp(fx, { head: 'feat' }).stderr, /passing checks/);
+  fx.record(fx.feat, { checks: { lint: 'pass', build: 'fail' } });
+  assert.match(mcp(fx, { head: 'feat' }).stderr, /passing checks/);
   assert.equal(hook(fx, null, '{not json').code, 2);
-  assert.equal(bash(fx, `${CREATE} --title "unterminated`).code, 2);
+  assert.match(
+    bash(fx, `${CREATE} --title "unterminated`).stderr,
+    /unterminated quote/
+  );
   // A PATH with the shell tools the wrapper uses, but no node.
   const bin = path.join(fx.root, 'bin');
   mkdirSync(bin);
@@ -284,22 +366,24 @@ test('fails closed on bad records, bad input and crashes', t => {
 
 // ---------------------------------------------------------------- record.mjs
 
-function record(fx, verdict, summary, checks = { ok: 'true' }) {
+function record(fx, verdict, summary) {
   const file = path.join(fx.root, 'summary.json');
   writeFileSync(file, JSON.stringify(summary));
   const r = spawnSync('node', [recorder, verdict, file], {
     cwd: fx.work,
     encoding: 'utf8',
-    env: { ...process.env, ADVERSARIAL_REVIEW_CHECKS: JSON.stringify(checks) },
   });
   return { code: r.status, out: r.stdout + r.stderr };
 }
 const good = { base: 'main', lenses: ['correctness', 'tests'], findings: [] };
 
-test('record.mjs records a passing review that unlocks the PR', t => {
+test('record.mjs runs the checks and records a review that unlocks the PR', t => {
   const fx = fixture(t);
+  writeFileSync(path.join(fx.work, 'untracked.txt'), 'x'); // not part of the PR: fine
   const r = record(fx, 'pass', good);
   assert.equal(r.code, 0, r.out);
+  for (const name of CHECK_SCRIPTS)
+    assert.match(r.out, new RegExp(`check ${name}: pass`));
   assert.equal(mcp(fx, { head: 'feat' }).code, 0);
 });
 
@@ -308,12 +392,21 @@ test('record.mjs refuses a review that does not cover the pushed commit', t => {
   writeFileSync(path.join(fx.work, 'file.txt'), 'dirty');
   assert.match(record(fx, 'pass', good).out, /uncommitted changes/);
   fx.git('checkout', '--quiet', '--', 'file.txt');
-  writeFileSync(path.join(fx.work, 'untracked.txt'), 'x'); // not part of the PR: fine
   fx.commit('local only');
   assert.match(record(fx, 'pass', good).out, /push first/);
 });
 
-test('record.mjs refuses an incomplete or unresolved review', t => {
+test('record.mjs refuses a failing check', t => {
+  const fx = fixture(t);
+  fx.commit('break build', {
+    'package.json': JSON.stringify({ scripts: fx.scripts('build') }),
+  });
+  fx.git('push', '--quiet');
+  assert.match(record(fx, 'pass', good).out, /failing checks: build/);
+  assert.equal(mcp(fx, { head: 'feat' }).code, 2);
+});
+
+test('record.mjs refuses an incomplete, unresolved or self-graded review', t => {
   const fx = fixture(t);
   const cases = [
     [{ ...good, lenses: ['correctness'] }, /at least two/],
@@ -336,14 +429,14 @@ test('record.mjs refuses an incomplete or unresolved review', t => {
       { ...good, findings: [{ severity: 'huge', verdict: 'confirmed' }] },
       /severity/,
     ],
+    [{ ...good, verdict: 'pass' }, /can't set verdict/],
+    [{ ...good, checks: { lint: 'pass' } }, /can't set checks/],
   ];
   for (const [summary, error] of cases)
     assert.match(record(fx, 'pass', summary).out, error);
-  assert.match(
-    record(fx, 'pass', good, { ok: 'true', broken: 'false' }).out,
-    /failing checks: broken/
-  );
-  assert.equal(mcp(fx, { head: 'feat' }).code, 2); // nothing was recorded
+  // A "fail" run whose summary claims "pass" must not unlock the PR.
+  record(fx, 'fail', { ...good, verdict: 'pass' });
+  assert.equal(mcp(fx, { head: 'feat' }).code, 2);
   const fixed = {
     ...good,
     findings: [

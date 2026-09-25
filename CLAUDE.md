@@ -9,7 +9,7 @@ and `docs/icons.md`.
 yarn typecheck      # TypeScript over the JS; fails only on errors beyond typecheck-baseline.json
 yarn lint           # ESLint; existing violations are in eslint-suppressions.json
 yarn format:check   # Prettier
-yarn vitest run     # unit tests
+yarn test:unit      # unit tests (Vitest)
 yarn test:hooks     # tests for the PR review gate (.claude/hooks)
 yarn build
 ```
