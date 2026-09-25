@@ -11,14 +11,22 @@ import Module from 'node:module';
 // typescript-eslint parses with the TypeScript compiler's JavaScript API.
 // TypeScript 7 (the `typescript` package, used by `yarn typecheck`) is a
 // native Go binary without that API. @typescript/typescript6 re-exports the
-// TypeScript 6 API, so inside ESLint, `require('typescript')` loads that
-// instead. Nothing else ESLint loads needs the TypeScript 7 package. This has
-// to run before typescript-eslint is loaded, hence the dynamic import below.
+// TypeScript 6 API, so `require('typescript')` from typescript-eslint and
+// ts-api-utils loads that instead; anything else still gets TypeScript 7.
+// Only the bare `typescript` import is redirected, so type-aware linting
+// (`projectService`, which needs `typescript/lib/tsserverlibrary`) isn't
+// supported. This has to run before typescript-eslint is loaded, hence the
+// dynamic import below.
+const USES_TS_API =
+  /[\\/]node_modules[\\/](@typescript-eslint|typescript-eslint|ts-api-utils)[\\/]/;
 const resolveFilename = Module._resolveFilename;
-Module._resolveFilename = function (request, ...rest) {
+Module._resolveFilename = function (request, parent, ...rest) {
+  const redirect =
+    request === 'typescript' && USES_TS_API.test(parent?.filename ?? '');
   return resolveFilename.call(
     this,
-    request === 'typescript' ? '@typescript/typescript6' : request,
+    redirect ? '@typescript/typescript6' : request,
+    parent,
     ...rest
   );
 };
