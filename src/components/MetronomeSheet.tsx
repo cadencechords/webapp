@@ -5,12 +5,23 @@ import { EDIT_SONGS } from '../utils/constants';
 import Metronome from './Metronome';
 import SectionTitle from './SectionTitle';
 import SongApi from '../api/SongApi';
+import type { Song } from '../types';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 
-export default function MetronomeSheet({ song, onSongChange, className }) {
-  const [updates, setUpdates] = useState();
+type MetronomeSheetProps = {
+  song: Song;
+  onSongChange: (field: 'bpm', value: number) => void;
+  className?: string;
+};
+
+export default function MetronomeSheet({
+  song,
+  onSongChange,
+  className = '',
+}: MetronomeSheetProps) {
+  const [updates, setUpdates] = useState<{ bpm: number } | null>();
   const [loading, setLoading] = useState(false);
   const currentMember = useSelector(selectCurrentMember);
 
@@ -18,7 +29,7 @@ export default function MetronomeSheet({ song, onSongChange, className }) {
     setUpdates(null);
   }, [song.id]);
 
-  function handleBpmChange(bpm) {
+  function handleBpmChange(bpm: number) {
     if (currentMember.can(EDIT_SONGS)) {
       setUpdates({ bpm });
     }
@@ -63,7 +74,3 @@ export default function MetronomeSheet({ song, onSongChange, className }) {
     </div>
   );
 }
-
-MetronomeSheet.defaultProps = {
-  className: '',
-};

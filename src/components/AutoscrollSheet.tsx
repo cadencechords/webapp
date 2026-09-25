@@ -9,32 +9,42 @@ import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import Icon from './Icon';
+import type { Song } from '../types';
+
+type AutoscrollSheetProps = {
+  song: Song;
+  onSongChange: (field: 'scroll_speed', value: number) => void;
+  className?: string;
+  /** Hides the floating play/stop shortcut while the bottom sheet is open. */
+  bottomSheetOpen?: boolean;
+  shortcutClasses?: string;
+};
 
 export default function AutoscrollSheet({
   song,
   onSongChange,
-  className,
+  className = '',
   bottomSheetOpen,
-  shortcutClasses,
-}) {
+  shortcutClasses = '',
+}: AutoscrollSheetProps) {
   const iconClasses = 'w-14 h-14 text-blue-600 dark:text-dark-blue';
   const [isScrolling, setIsScrolling] = useState(false);
   const [showShortcut, setShowShortcut] = useState(false);
-  const [updates, setUpdates] = useState();
+  const [updates, setUpdates] = useState<{ scroll_speed: number } | null>();
   const currentMember = useSelector(selectCurrentMember);
   const [loading, setLoading] = useState(false);
-  const [animationFrameId, setAnimationFrameId] = useState();
+  const [animationFrameId, setAnimationFrameId] = useState<number | null>();
 
   useEffect(() => {
     setIsScrolling(false);
     setUpdates(null);
-    cancelAnimationFrame(animationFrameId);
+    cancelFrame(animationFrameId);
     setAnimationFrameId(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [song.id]);
 
   useEffect(() => {
-    return () => cancelAnimationFrame(animationFrameId);
+    return () => cancelFrame(animationFrameId);
   }, [animationFrameId]);
 
   function handleToggleScroll() {
@@ -43,13 +53,13 @@ export default function AutoscrollSheet({
     } else {
       setShowShortcut(true);
       setIsScrolling(true);
-      let { px, interval } = SPEEDS[song.scroll_speed || 1];
+      const { px, interval } = SPEEDS[song.scroll_speed || 1];
       setAnimationFrameId(requestAnimationFrame(() => scroll(0, px, interval)));
     }
   }
 
-  function handleSpeedChange(newSpeed) {
-    cancelAnimationFrame(animationFrameId);
+  function handleSpeedChange(newSpeed: number) {
+    cancelFrame(animationFrameId);
     setAnimationFrameId(null);
 
     if (currentMember.can(EDIT_SONGS)) {
@@ -57,13 +67,13 @@ export default function AutoscrollSheet({
     }
 
     if (isScrolling) {
-      let { px, interval } = SPEEDS[newSpeed || 1];
+      const { px, interval } = SPEEDS[newSpeed || 1];
       setAnimationFrameId(requestAnimationFrame(() => scroll(0, px, interval)));
     }
     onSongChange('scroll_speed', newSpeed);
   }
 
-  function isAtBottom(element) {
+  function isAtBottom(element: HTMLElement) {
     return (
       Math.abs(
         element.scrollHeight - element.scrollTop - element.clientHeight
@@ -72,29 +82,34 @@ export default function AutoscrollSheet({
   }
 
   function handleStopScrolling() {
-    cancelAnimationFrame(animationFrameId);
+    cancelFrame(animationFrameId);
     setAnimationFrameId(null);
     setIsScrolling(false);
     setShowShortcut(false);
   }
 
   function handlePauseScrolling() {
-    cancelAnimationFrame(animationFrameId);
+    cancelFrame(animationFrameId);
     setIsScrolling(false);
     setAnimationFrameId(null);
   }
 
   function handleStartScrolling() {
     setIsScrolling(true);
-    let { px, interval } = SPEEDS[song?.scroll_speed || 1];
-    setAnimationFrameId(() => scroll(0, px, interval));
+    const { px, interval } = SPEEDS[song?.scroll_speed || 1];
+    // This passes an updater, not a frame id: React calls it right away, which
+    // starts scrolling, and stores its `undefined` return as the id.
+    setAnimationFrameId(() => {
+      scroll(0, px, interval);
+      return undefined;
+    });
   }
 
-  function scroll(time, px, interval) {
-    let page = document.querySelector('html');
-    let currentScrollPosition = page.scrollTop;
+  function scroll(time: number, px: number, interval: number) {
+    const page = document.querySelector('html') as HTMLElement;
+    const currentScrollPosition = page.scrollTop;
     if (isAtBottom(page)) {
-      cancelAnimationFrame(animationFrameId);
+      cancelFrame(animationFrameId);
       setAnimationFrameId(null);
       setIsScrolling(false);
     } else {
@@ -199,12 +214,13 @@ export default function AutoscrollSheet({
   );
 }
 
-AutoscrollSheet.defaultProps = {
-  className: '',
-  shortcutClasses: '',
-};
+// cancelAnimationFrame(undefined) and (null) cancel nothing, the same as not
+// calling it, since frame ids start at 1.
+function cancelFrame(id: number | null | undefined) {
+  if (id != null) cancelAnimationFrame(id);
+}
 
-const SPEEDS = {
+const SPEEDS: Record<number, { px: number; interval: number }> = {
   1: { px: 1, interval: 15 },
   2: { px: 1, interval: 13 },
   3: { px: 1, interval: 11 },

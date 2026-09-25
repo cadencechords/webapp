@@ -1,12 +1,20 @@
+import type { ReactNode } from 'react';
 import Button from './Button';
 import Icon from './Icon';
+
+type BottomSheetProps = {
+  open?: boolean;
+  onClose?: () => void;
+  children?: ReactNode;
+  className?: string;
+};
 
 export default function BottomSheet({
   open,
   onClose,
   children,
   className = '',
-}) {
+}: BottomSheetProps) {
   return (
     <div
       className={
@@ -32,7 +40,3 @@ export default function BottomSheet({
     </div>
   );
 }
-
-BottomSheet.defaultProps = {
-  className: '',
-};

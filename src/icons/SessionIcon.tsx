@@ -1,6 +1,8 @@
-import React from 'react';
+type SessionIconProps = {
+  className?: string;
+};
 
-export default function SessionIcon({ className }) {
+export default function SessionIcon({ className = '' }: SessionIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24">
       <path
@@ -10,7 +12,3 @@ export default function SessionIcon({ className }) {
     </svg>
   );
 }
-
-SessionIcon.defaultProps = {
-  className: '',
-};

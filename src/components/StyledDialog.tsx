@@ -1,27 +1,40 @@
 import { Dialog, Transition } from '@headlessui/react';
 
 import Button from './Button';
-import { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import { Fragment, type ReactNode } from 'react';
 import classNames from 'classnames';
 import Icon from './Icon';
+
+export type DialogSize = keyof typeof MAX_WIDTHS;
+
+type StyledDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  title?: ReactNode;
+  children?: ReactNode;
+  size?: DialogSize;
+  showClose?: boolean;
+  fullscreen?: boolean;
+  borderedTop?: boolean;
+  className?: string;
+};
 
 export default function StyledDialog({
   open,
   onCloseDialog,
   title,
   children,
-  size,
-  showClose,
-  fullscreen,
-  borderedTop,
+  size = 'md',
+  showClose = true,
+  fullscreen = true,
+  borderedTop = true,
   className,
-}) {
-  let sizeClasses = fullscreen
+}: StyledDialogProps) {
+  const sizeClasses = fullscreen
     ? `min-h-screen sm:min-h-full w-full ${SM_MAX_WIDTHS[size]} `
     : ` ${MAX_WIDTHS[size]} w-full `;
 
-  let mobileStyleClasses = fullscreen
+  const mobileStyleClasses = fullscreen
     ? ` sm:shadow-xl sm:rounded-xl sm:mt-8 `
     : ` shadow-xl rounded-xl mt-8`;
 
@@ -109,18 +122,6 @@ export default function StyledDialog({
   );
 }
 
-StyledDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onCloseDialog: PropTypes.func.isRequired,
-};
-
-StyledDialog.defaultProps = {
-  size: 'md',
-  showClose: true,
-  fullscreen: true,
-  borderedTop: true,
-};
-
 const MAX_WIDTHS = {
   sm: 'max-w-sm',
   md: 'max-w-md',
@@ -132,7 +133,7 @@ const MAX_WIDTHS = {
   '5xl': 'max-w-5xl',
 };
 
-const SM_MAX_WIDTHS = {
+const SM_MAX_WIDTHS: Record<DialogSize, string> = {
   sm: 'sm:max-w-sm',
   md: 'sm:max-w-md',
   lg: 'sm:max-w-lg',

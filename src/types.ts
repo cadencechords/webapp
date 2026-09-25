@@ -40,6 +40,16 @@ export interface Track {
 
 export interface SongFormat {
   chords_hidden?: boolean;
+  font?: string;
+  font_size?: number;
+}
+
+/** A sticky note on one line of a song. */
+export interface SongNote {
+  id: number;
+  content: string;
+  color: string;
+  line_number: number;
 }
 
 export interface Song {
@@ -48,6 +58,8 @@ export interface Song {
   content?: string;
   artist?: string;
   bpm?: number;
+  /** 1 (slowest) to 10. */
+  scroll_speed?: number;
   meter?: string;
   original_key?: string;
   transposed_key?: string;
@@ -59,6 +71,7 @@ export interface Song {
   genres?: Tag[];
   themes?: Tag[];
   tracks?: Track[];
+  notes?: SongNote[];
   binders?: Binder[];
   setlists?: Pick<Setlist, 'id' | 'scheduled_date'>[];
 }

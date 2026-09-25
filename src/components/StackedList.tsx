@@ -1,6 +1,15 @@
+import type { ReactElement } from 'react';
 import StackedListItem from './StackedListItem';
 
-export default function StackedList({ items, className }) {
+type StackedListProps = {
+  items?: (ReactElement & { id?: number | string })[];
+  className?: string;
+};
+
+export default function StackedList({
+  items,
+  className = '',
+}: StackedListProps) {
   return (
     <div className={className}>
       {items?.map((item, index) => (
@@ -11,7 +20,3 @@ export default function StackedList({ items, className }) {
     </div>
   );
 }
-
-StackedList.defaultProps = {
-  className: '',
-};

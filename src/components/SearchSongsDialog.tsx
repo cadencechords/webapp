@@ -11,8 +11,19 @@ import Alert from './Alert';
 import { pluralize } from '../utils/StringUtils';
 import useAddSongsToBinder from '../hooks/api/useAddSongsToBinder';
 import { useHistory } from 'react-router-dom';
+import type { Binder, Song } from '../types';
 
-export default function SearchSongsDialog({ open, onCloseDialog, binder }) {
+type SearchSongsDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  binder: Binder & { songs?: Song[] };
+};
+
+export default function SearchSongsDialog({
+  open,
+  onCloseDialog,
+  binder,
+}: SearchSongsDialogProps) {
   const router = useHistory();
   const { songs: boundSongs, id } = binder;
   const { data: songs, isLoading, isError, isSuccess } = useSongs();
@@ -31,11 +42,11 @@ export default function SearchSongsDialog({ open, onCloseDialog, binder }) {
       router.replace(`/binders/${id}`, null);
     },
   });
-  const [songsToAdd, setSongsToAdd] = useState([]);
+  const [songsToAdd, setSongsToAdd] = useState<Song[]>([]);
   const [query, setQuery] = useState('');
 
-  function handleChecked(shouldAdd, song) {
-    let songsSet = new Set(songsToAdd);
+  function handleChecked(shouldAdd: boolean, song: Song) {
+    const songsSet = new Set(songsToAdd);
     if (shouldAdd) {
       songsSet.add(song);
     } else {
@@ -58,7 +69,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, binder }) {
 
   const filteredSongs = () => {
     if (query !== '') {
-      let lowercasedQuery = query.toLowerCase();
+      const lowercasedQuery = query.toLowerCase();
       return (
         unboundSongs?.filter(song =>
           song.name.toLowerCase().includes(lowercasedQuery)
@@ -70,7 +81,7 @@ export default function SearchSongsDialog({ open, onCloseDialog, binder }) {
   };
 
   const songListItems = filteredSongs().map(song => {
-    let checked = songsToAdd.includes(song);
+    const checked = songsToAdd.includes(song);
     return (
       <div
         key={song.id}
@@ -124,7 +135,3 @@ export default function SearchSongsDialog({ open, onCloseDialog, binder }) {
     </StyledDialog>
   );
 }
-
-SearchSongsDialog.defaultProps = {
-  boundSongs: [],
-};

@@ -1,7 +1,20 @@
+import type { ReactNode } from 'react';
 import IconButton from './buttons/IconButton';
 import Icon from './Icon';
 
-export default function MobileHeader({ title, className, onAdd, canAdd }) {
+type MobileHeaderProps = {
+  title?: ReactNode;
+  className?: string;
+  onAdd?: () => void;
+  canAdd?: boolean;
+};
+
+export default function MobileHeader({
+  title,
+  className,
+  onAdd,
+  canAdd = true,
+}: MobileHeaderProps) {
   return (
     <div
       className={`bg-white dark:bg-dark-gray-800 z-30 py-3 px-1 border-b dark:border-0 fixed left-0 top-0 right-0 ${className} font-semibold text-center`}
@@ -23,7 +36,3 @@ export default function MobileHeader({ title, className, onAdd, canAdd }) {
     </div>
   );
 }
-
-MobileHeader.defaultProps = {
-  canAdd: true,
-};
