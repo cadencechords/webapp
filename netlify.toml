@@ -1,3 +1,9 @@
+[build.environment]
+# Vite 6 needs Node 18+, and Tailwind v4's @tailwindcss/oxide needs Node 20+
+# (yarn refuses to install it on older Node). This file overrides the
+# Netlify UI setting.
+NODE_VERSION = "22"
+
 [context.production.environment]
 REACT_APP_API_URL           = "https://chords-api.herokuapp.com"
 REACT_APP_PCO_CLIENT_ID     = "fb5fe2aa8e69d8e2fc436b5a07ce22cac022aa92d7e2070ff1edd6efdf41d4f5"
