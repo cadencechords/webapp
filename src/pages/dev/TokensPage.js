@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { ROLES, SEED, generateScheme } from '../../../scripts/color-tokens.mjs';
 import { SCALE } from '../../../scripts/type-tokens.mjs';
+import { USER_COLOR_NAMES, userColorClasses } from '../../utils/userColors';
 
 // Class names below are built dynamically; index.css safelists them with @source inline().
 const SHAPES = [
@@ -63,6 +64,23 @@ export default function TokensPage() {
         <div className="grid gap-8 xl:grid-cols-2">
           <ColorScheme name="light" />
           <ColorScheme name="dark" />
+        </div>
+      </Section>
+
+      <Section title="User colors">
+        <p className="mb-4 text-body-medium text-on-surface-variant">
+          Stored binder, note and event colors, as they render in the current theme.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          {[...USER_COLOR_NAMES, 'none'].map(name => {
+            const c = userColorClasses(name);
+            return (
+              <div key={name} className={`w-32 overflow-hidden rounded-medium ${c.container} ${c.onContainer}`}>
+                <div className={`px-3 py-2 text-label-large ${c.color} ${c.onColor}`}>{name}</div>
+                <div className="px-3 py-2 text-body-small">container</div>
+              </div>
+            );
+          })}
         </div>
       </Section>
 

@@ -105,6 +105,85 @@
   --md-sys-color-shadow: #000000;
 }
 
+/* User-picked data colors (binders, notes, events). See USER_COLORS. */
+:root {
+  --md-custom-color-red: #b91a24;
+  --md-custom-color-on-red: #ffffff;
+  --md-custom-color-red-container: #ffdad7;
+  --md-custom-color-on-red-container: #410004;
+  --md-custom-color-blue: #005ac2;
+  --md-custom-color-on-blue: #ffffff;
+  --md-custom-color-blue-container: #d8e2ff;
+  --md-custom-color-on-blue-container: #001a42;
+  --md-custom-color-green: #006c49;
+  --md-custom-color-on-green: #ffffff;
+  --md-custom-color-green-container: #6ffbbe;
+  --md-custom-color-on-green-container: #002113;
+  --md-custom-color-yellow: #855300;
+  --md-custom-color-on-yellow: #ffffff;
+  --md-custom-color-yellow-container: #ffddb8;
+  --md-custom-color-on-yellow-container: #2a1700;
+  --md-custom-color-pink: #b4136d;
+  --md-custom-color-on-pink: #ffffff;
+  --md-custom-color-pink-container: #ffd9e4;
+  --md-custom-color-on-pink-container: #3e0022;
+  --md-custom-color-purple: #6d3bd7;
+  --md-custom-color-on-purple: #ffffff;
+  --md-custom-color-purple-container: #e9ddff;
+  --md-custom-color-on-purple-container: #23005c;
+  --md-custom-color-indigo: #494bd6;
+  --md-custom-color-on-indigo: #ffffff;
+  --md-custom-color-indigo-container: #e1e0ff;
+  --md-custom-color-on-indigo-container: #07006c;
+  --md-custom-color-gray: #5c5e64;
+  --md-custom-color-on-gray: #ffffff;
+  --md-custom-color-gray-container: #e1e2e9;
+  --md-custom-color-on-gray-container: #191c20;
+  --md-custom-color-black: #1e1b1b;
+  --md-custom-color-on-black: #ffffff;
+  --md-custom-color-black-container: #e8e1e1;
+  --md-custom-color-on-black-container: #1e1b1b;
+}
+
+.dark {
+  --md-custom-color-red: #ffb3ad;
+  --md-custom-color-on-red: #68000a;
+  --md-custom-color-red-container: #930013;
+  --md-custom-color-on-red-container: #ffdad7;
+  --md-custom-color-blue: #adc6ff;
+  --md-custom-color-on-blue: #002e6a;
+  --md-custom-color-blue-container: #004395;
+  --md-custom-color-on-blue-container: #d8e2ff;
+  --md-custom-color-green: #4edea3;
+  --md-custom-color-on-green: #003824;
+  --md-custom-color-green-container: #005236;
+  --md-custom-color-on-green-container: #6ffbbe;
+  --md-custom-color-yellow: #ffb95f;
+  --md-custom-color-on-yellow: #472a00;
+  --md-custom-color-yellow-container: #653e00;
+  --md-custom-color-on-yellow-container: #ffddb8;
+  --md-custom-color-pink: #ffb0cd;
+  --md-custom-color-on-pink: #640039;
+  --md-custom-color-pink-container: #8c0053;
+  --md-custom-color-on-pink-container: #ffd9e4;
+  --md-custom-color-purple: #d0bcff;
+  --md-custom-color-on-purple: #3c0091;
+  --md-custom-color-purple-container: #5516be;
+  --md-custom-color-on-purple-container: #e9ddff;
+  --md-custom-color-indigo: #c0c1ff;
+  --md-custom-color-on-indigo: #1000a9;
+  --md-custom-color-indigo-container: #2f2ebe;
+  --md-custom-color-on-indigo-container: #e1e0ff;
+  --md-custom-color-gray: #c5c6cd;
+  --md-custom-color-on-gray: #2e3035;
+  --md-custom-color-gray-container: #45474c;
+  --md-custom-color-on-gray-container: #e1e2e9;
+  --md-custom-color-black: #e8e1e1;
+  --md-custom-color-on-black: #1e1b1b;
+  --md-custom-color-black-container: #4a4646;
+  --md-custom-color-on-black-container: #e8e1e1;
+}
+
 /* Tailwind utilities for every role: bg-primary-container, text-on-surface-variant, ... */
 @theme inline {
   --color-primary: var(--md-sys-color-primary);
@@ -156,4 +235,42 @@
   --color-inverse-primary: var(--md-sys-color-inverse-primary);
   --color-scrim: var(--md-sys-color-scrim);
   --color-shadow: var(--md-sys-color-shadow);
+
+  /* bg-user-blue, text-on-user-blue-container, ... */
+  --color-user-red: var(--md-custom-color-red);
+  --color-on-user-red: var(--md-custom-color-on-red);
+  --color-user-red-container: var(--md-custom-color-red-container);
+  --color-on-user-red-container: var(--md-custom-color-on-red-container);
+  --color-user-blue: var(--md-custom-color-blue);
+  --color-on-user-blue: var(--md-custom-color-on-blue);
+  --color-user-blue-container: var(--md-custom-color-blue-container);
+  --color-on-user-blue-container: var(--md-custom-color-on-blue-container);
+  --color-user-green: var(--md-custom-color-green);
+  --color-on-user-green: var(--md-custom-color-on-green);
+  --color-user-green-container: var(--md-custom-color-green-container);
+  --color-on-user-green-container: var(--md-custom-color-on-green-container);
+  --color-user-yellow: var(--md-custom-color-yellow);
+  --color-on-user-yellow: var(--md-custom-color-on-yellow);
+  --color-user-yellow-container: var(--md-custom-color-yellow-container);
+  --color-on-user-yellow-container: var(--md-custom-color-on-yellow-container);
+  --color-user-pink: var(--md-custom-color-pink);
+  --color-on-user-pink: var(--md-custom-color-on-pink);
+  --color-user-pink-container: var(--md-custom-color-pink-container);
+  --color-on-user-pink-container: var(--md-custom-color-on-pink-container);
+  --color-user-purple: var(--md-custom-color-purple);
+  --color-on-user-purple: var(--md-custom-color-on-purple);
+  --color-user-purple-container: var(--md-custom-color-purple-container);
+  --color-on-user-purple-container: var(--md-custom-color-on-purple-container);
+  --color-user-indigo: var(--md-custom-color-indigo);
+  --color-on-user-indigo: var(--md-custom-color-on-indigo);
+  --color-user-indigo-container: var(--md-custom-color-indigo-container);
+  --color-on-user-indigo-container: var(--md-custom-color-on-indigo-container);
+  --color-user-gray: var(--md-custom-color-gray);
+  --color-on-user-gray: var(--md-custom-color-on-gray);
+  --color-user-gray-container: var(--md-custom-color-gray-container);
+  --color-on-user-gray-container: var(--md-custom-color-on-gray-container);
+  --color-user-black: var(--md-custom-color-black);
+  --color-on-user-black: var(--md-custom-color-on-black);
+  --color-user-black-container: var(--md-custom-color-black-container);
+  --color-on-user-black-container: var(--md-custom-color-on-black-container);
 }

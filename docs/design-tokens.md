@@ -19,6 +19,29 @@ contrast). Light values are on `:root` and dark values on `.dark`, so the
 - Regenerate: change the seed or variant in `scripts/color-tokens.mjs`, then run `yarn tokens:color`.
   A test fails if the checked-in file is out of date. Another test checks that every on-X/X pair meets 4.5:1.
 
+## User colors (binders, notes, events)
+
+Users pick colors by name (`red`, `blue`, `green`, `yellow`, `pink`,
+`purple`, `indigo`, `gray`, `black`, and `none` for binders). The stored
+values never change. `userColorClasses(name)` in `src/utils/userColors.js`
+maps each name to `color`, `onColor`, `container` and `onContainer` Tailwind
+classes, for example `bg-user-blue-container text-on-user-blue-container`.
+Anything unknown falls back to neutral roles.
+
+- The groups are generated from the v2 500 shades the app has always shown,
+  using M3 custom color tones in light and dark (`USER_COLORS` in
+  `scripts/color-tokens.mjs`).
+- **They are not harmonized.** Pulling them toward the blue primary merges
+  purple and indigo into blue and pink into purple, and these colors exist to
+  tell items apart. A test keeps the chromatic ones at least 10° apart.
+- Gray and black use near-neutral palettes. Black inverts in dark mode, as
+  black annotations already do.
+- **Annotations don't change.** Their stored RGBA values still render as-is
+  (`getThemeAwareAnnotationColor` only swaps black and white by theme). Only
+  picker swatches get restyled.
+- The mobile app also renders these stored names. It should use the same
+  source shades so both platforms show a similar hue.
+
 ## Typography (`src/styles/type-tokens.css`, generated)
 
 The M3 type scale (androidx `TypeScaleTokens.kt`) in Roboto Flex. Each style
