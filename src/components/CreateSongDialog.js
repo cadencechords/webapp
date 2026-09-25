@@ -21,7 +21,7 @@ export default function CreateSongDialog({ open, onCloseDialog }) {
     },
   });
 
-  const inputRef = useRef();
+  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
 
   useEffect(() => {
     setTimeout(() => {

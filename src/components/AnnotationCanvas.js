@@ -9,9 +9,11 @@ export default function AnnotationCanvas({
   onChange,
 }) {
   const { isDark } = useTheme();
-  const ref = useRef();
+  const ref = useRef(/** @type {SVGSVGElement | null} */ (null));
   const { color, strokeWidth, utensil } = useAnnotationsToolbar();
-  const [eraserPosition, setEraserPosition] = useState();
+  const [eraserPosition, setEraserPosition] = useState(
+    /** @type {[number, number] | undefined} */ (undefined)
+  );
   const [paths, setPaths] = useState(defaultAnnotations);
 
   useGesture(

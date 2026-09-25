@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 export default function RoadmapSection({ section, color, onChange, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
-  const ref = useRef();
+  const ref = useRef(/** @type {HTMLInputElement | null} */ (null));
 
   function determineWidth() {
     return section.length + 3 + 'ch';
@@ -20,7 +20,7 @@ export default function RoadmapSection({ section, color, onChange, onDelete }) {
     setIsEditing(true);
     setTimeout(() => {
       ref.current?.select();
-    }, [50]);
+    }, 50);
   }
 
   return isEditing ? (

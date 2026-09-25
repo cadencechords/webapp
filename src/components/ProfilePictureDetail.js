@@ -14,7 +14,7 @@ export default function ProfilePictureDetail({ url }) {
   const [showMobileActionsDialog, setShowMobileActionsDialog] = useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector(selectCurrentUser);
-  const inputRef = useRef();
+  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
 

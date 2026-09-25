@@ -37,12 +37,16 @@ import Icon from '../components/Icon';
 
 export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
-  const [song, setSong] = useState();
+  const [song, setSong] = useState(
+    /** @type {import('../types').Song | undefined} */ (undefined)
+  );
   const [pendingUpdates, setPendingUpdates] = useState({});
   const [saving, setSaving] = useState(false);
   const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
   const [showAddGenreDialog, setShowGenreDialog] = useState(false);
-  const [keyType, setKeyType] = useState();
+  const [keyType, setKeyType] = useState(
+    /** @type {string | undefined} */ (undefined)
+  );
   const dispatch = useDispatch();
   const currentMember = useSelector(selectCurrentMember);
   const { data: currentUser } = useCurrentUser({
@@ -50,7 +54,9 @@ export default function SongDetailPage() {
     refetchOnWindowFocus: false,
   });
 
-  useEffect(() => (document.title = song ? song.name : 'Songs'), [song]);
+  useEffect(() => {
+    document.title = song ? song.name : 'Songs';
+  }, [song]);
 
   const router = useHistory();
   const { id } = useParams();

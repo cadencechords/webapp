@@ -26,7 +26,7 @@ export default function TeamDetailPage() {
     () => (document.title = currentTeam ? currentTeam.name : 'Team Details')
   );
 
-  const inputRef = useRef();
+  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
   const [showImageDialog, setShowImageDialog] = useState(false);
   const dispatch = useDispatch();
   const currentMember = useSelector(selectCurrentMember);

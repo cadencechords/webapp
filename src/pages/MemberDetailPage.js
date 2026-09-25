@@ -15,10 +15,14 @@ import { REMOVE_MEMBERS } from '../utils/constants';
 
 export default function MemberDetail() {
   const { id } = useParams();
-  const [member, setMember] = useState();
+  const [member, setMember] = useState(
+    /** @type {import('../types').User | undefined} */ (undefined)
+  );
   const [loadingMember, setLoadingMember] = useState(true);
   const [memberMenuOpen, setMemberMenuOpen] = useState(false);
-  const [alert, setAlert] = useState();
+  const [alert, setAlert] = useState(
+    /** @type {string | undefined} */ (undefined)
+  );
   const router = useHistory();
 
   const { can } = usePermissionsCheck();
@@ -58,6 +62,12 @@ export default function MemberDetail() {
 
   if (loadingMember) {
     return <PageLoading>Loading profile</PageLoading>;
+  } else if (!member) {
+    return (
+      <div className="max-w-sm mx-auto mt-4">
+        <Alert color="red">We were unable to load this member.</Alert>
+      </div>
+    );
   } else {
     return (
       <>

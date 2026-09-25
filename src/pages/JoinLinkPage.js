@@ -60,13 +60,13 @@ export default function JoinLinkPage() {
   }
 
   function handleGoToTeam() {
-    localStorage.setItem('teamId', team.id);
+    localStorage.setItem('teamId', String(team.id));
     dispatch(setTeamId(team.id));
   }
 
   async function handleJoinTeam() {
     await join();
-    localStorage.setItem('teamId', team.id);
+    localStorage.setItem('teamId', String(team.id));
     dispatch(setTeamId(team.id));
     router.push('/');
   }
