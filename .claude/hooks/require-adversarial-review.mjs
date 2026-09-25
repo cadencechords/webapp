@@ -24,13 +24,33 @@ const tryGit = (...a) => {
   }
 };
 
+// Shell text with heredoc bodies and quoted strings removed, so a command that
+// only mentions `gh pr create` (in a commit message, a doc, an echo) isn't
+// mistaken for one that runs it. Quoted arguments aren't needed: we only look
+// for the command itself and its --head value.
+function codeOnly(command) {
+  return command
+    .replace(/<<-?\s*(['"]?)(\w+)\1[^\n]*\n[\s\S]*?\n\s*\2\b/g, ' ')
+    .replace(/'[^']*'/g, "''")
+    .replace(/"(?:[^"\\]|\\.)*"/g, '""')
+    .replace(/`[^`]*`/g, '``');
+}
+const GH_PR_CREATE =
+  /(?:^|[\n;&|(]|&&|\|\|)\s*(?:\S*\/)?gh\s+pr\s+create\b(.*)/;
+
 let head = null;
+const ghCreate =
+  tool === 'Bash' && codeOnly(args.command || '').match(GH_PR_CREATE);
 if (/create_pull_request$/.test(tool || '')) {
   head = args.head;
-} else if (tool === 'Bash' && /\bgh\s+pr\s+create\b/.test(args.command || '')) {
-  head =
-    (args.command.match(/--head(?:=|\s+)["']?([^\s"']+)/) || [])[1] ||
-    tryGit('rev-parse', '--abbrev-ref', 'HEAD');
+} else if (ghCreate) {
+  // Prefer the unquoted flag in the real command; fall back to the raw text
+  // for a quoted value (codeOnly blanks those).
+  const HEAD_FLAG = /--head(?:=|\s+)["']?([\w./:-]+)/;
+  const headFlag = (ghCreate[1].match(HEAD_FLAG) ||
+    args.command.match(HEAD_FLAG) ||
+    [])[1];
+  head = headFlag || tryGit('rev-parse', '--abbrev-ref', 'HEAD');
 } else {
   process.exit(0); // not a PR creation
 }

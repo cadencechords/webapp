@@ -73,7 +73,8 @@
     "lint": "eslint .",
     "lint:prune": "eslint . --prune-suppressions",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:hooks": "node --test '.claude/hooks/*.test.mjs'"
   },
   "browserslist": [
     ">0.2%",

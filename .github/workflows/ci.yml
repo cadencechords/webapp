@@ -23,7 +23,7 @@ jobs:
           - { name: Typecheck, run: yarn typecheck }
           - { name: Lint, run: yarn lint }
           - { name: Format, run: yarn format:check }
-          - { name: Unit tests, run: yarn vitest run }
+          - { name: Unit tests, run: yarn vitest run && yarn test:hooks }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
