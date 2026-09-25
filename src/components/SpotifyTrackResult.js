@@ -1,5 +1,5 @@
-import React from "react";
-import Checkbox from "./Checkbox";
+import React from 'react';
+import Checkbox from './Checkbox';
 
 export default function SpotifyTrackResult({ track, selected, onClick }) {
   function getArtworkUrl() {
@@ -7,13 +7,13 @@ export default function SpotifyTrackResult({ track, selected, onClick }) {
   }
 
   function getArtists() {
-    return track?.artists?.map((artist) => artist.name)?.join(", ");
+    return track?.artists?.map(artist => artist.name)?.join(', ');
   }
 
   function handleClick(newToggleValue) {
     onClick(
       {
-        source: "Spotify",
+        source: 'Spotify',
         external_id: track.id,
         url: track.external_urls?.spotify,
         artwork_url: getArtworkUrl(),

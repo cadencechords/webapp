@@ -9,6 +9,4 @@ import OrDivider from './OrDivider';
 import PageLoading from './PageLoading';
 import ProfilePicture from './ProfilePicture';
 
-export default function JoinLinkUserSection() {
-  
-}
+export default function JoinLinkUserSection() {}

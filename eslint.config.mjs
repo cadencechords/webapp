@@ -8,7 +8,16 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 
 export default [
-  { ignores: ['build/', 'node_modules/', 'e2e/.results/', 'e2e/screenshots/', 'cypress/', 'public/'] },
+  {
+    ignores: [
+      'build/',
+      'node_modules/',
+      'e2e/.results/',
+      'e2e/screenshots/',
+      'cypress/',
+      'public/',
+    ],
+  },
   js.configs.recommended,
   {
     files: ['**/*.{js,jsx,mjs}'],

@@ -13,9 +13,13 @@ export default class TeamApi {
   static createOne(newTeam) {
     let teamParams = { name: newTeam.name, plan: newTeam.plan };
 
-    return axios.post(import.meta.env.REACT_APP_API_URL + '/teams', teamParams, {
-      headers: constructAuthHeaders(),
-    });
+    return axios.post(
+      import.meta.env.REACT_APP_API_URL + '/teams',
+      teamParams,
+      {
+        headers: constructAuthHeaders(),
+      }
+    );
   }
 
   static getCurrentTeam() {

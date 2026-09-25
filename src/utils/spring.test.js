@@ -56,7 +56,11 @@ describe('createSpring', () => {
   test('animates to the target and calls onRest once', () => {
     const updates = [];
     const onRest = vi.fn();
-    const spring = createSpring(0, { spec: SPRINGS.defaultEffects, onUpdate: v => updates.push(v), onRest });
+    const spring = createSpring(0, {
+      spec: SPRINGS.defaultEffects,
+      onUpdate: v => updates.push(v),
+      onRest,
+    });
     spring.to(100);
     flush(600);
     expect(spring.value).toBe(100);

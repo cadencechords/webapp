@@ -1,9 +1,9 @@
-import React from "react";
-import TrackOptionsPopover from "./TrackOptionsPopover";
-import AppleMusicIcon from "../images/apple_music_icon.png";
-import SpotifyIcon from "../images/spotify_icon.png";
-import YouTubeIcon from "../images/youtube_icon.png";
-import TracksApi from "../api/tracksApi";
+import React from 'react';
+import TrackOptionsPopover from './TrackOptionsPopover';
+import AppleMusicIcon from '../images/apple_music_icon.png';
+import SpotifyIcon from '../images/spotify_icon.png';
+import YouTubeIcon from '../images/youtube_icon.png';
+import TracksApi from '../api/tracksApi';
 
 export default function Track({ songId, track, onDeleted }) {
   function handleDelete() {
@@ -12,7 +12,7 @@ export default function Track({ songId, track, onDeleted }) {
   }
 
   function getIcon() {
-    if (track.source === "Apple Music") {
+    if (track.source === 'Apple Music') {
       return (
         <img
           src={AppleMusicIcon}
@@ -22,7 +22,7 @@ export default function Track({ songId, track, onDeleted }) {
           className="absolute top-1 right-1"
         />
       );
-    } else if (track.source === "Spotify") {
+    } else if (track.source === 'Spotify') {
       return (
         <img
           src={SpotifyIcon}
@@ -32,7 +32,7 @@ export default function Track({ songId, track, onDeleted }) {
           className="absolute top-1 right-1"
         />
       );
-    } else if (track.source === "YouTube") {
+    } else if (track.source === 'YouTube') {
       return (
         <img
           src={YouTubeIcon}

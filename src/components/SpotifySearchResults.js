@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { reportError } from "../utils/error";
-import PageLoading from "./PageLoading";
-import TracksApi from "../api/tracksApi";
-import SpotifyTrackResult from "./SpotifyTrackResult";
+import React, { useEffect, useState } from 'react';
+import { reportError } from '../utils/error';
+import PageLoading from './PageLoading';
+import TracksApi from '../api/tracksApi';
+import SpotifyTrackResult from './SpotifyTrackResult';
 
 export default function SpotifySearchResults({
   query,
@@ -35,9 +35,9 @@ export default function SpotifySearchResults({
 
   function isSelected(resultInQuestion) {
     return !!selectedTracks.find(
-      (selectedTrack) =>
+      selectedTrack =>
         selectedTrack.external_id === resultInQuestion.id &&
-        selectedTrack.source === "Spotify"
+        selectedTrack.source === 'Spotify'
     );
   }
 
@@ -46,7 +46,7 @@ export default function SpotifySearchResults({
       {loading ? (
         <PageLoading />
       ) : (
-        results.map((result) => (
+        results.map(result => (
           <SpotifyTrackResult
             track={result}
             key={result.id}

@@ -36,7 +36,11 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
       <>
         <div className="grid grid-cols-10 gap-6">
           <div className="flex items-start justify-end col-span-1">
-            <Icon name="group" filled className="shrink-0 w-5 h-5 my-1 text-gray-600 dark:text-dark-gray-200" />
+            <Icon
+              name="group"
+              filled
+              className="shrink-0 w-5 h-5 my-1 text-gray-600 dark:text-dark-gray-200"
+            />
           </div>
           <div className="flex flex-col items-start justify-start col-span-9">
             {event?.memberships?.length > 0 ? (
@@ -54,7 +58,11 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
             )}
           </div>
           <div className="flex items-start justify-end col-span-1">
-            <Icon name="notifications" filled className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
+            <Icon
+              name="notifications"
+              filled
+              className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200"
+            />
           </div>
           <div className="flex items-start justify-start col-span-9">
             {event.reminders_enabled ? (
@@ -70,7 +78,11 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
           </div>
 
           <div className="flex items-start justify-end col-span-1">
-            <Icon name="notes" filled className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
+            <Icon
+              name="notes"
+              filled
+              className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200"
+            />
           </div>
           <div className="flex items-start justify-start col-span-9">
             {event.description ? (

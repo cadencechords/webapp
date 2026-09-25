@@ -1,7 +1,7 @@
 export default function Pagination({
-	numPages,
-	onPageClick,
-	currentPageNumber,
+  numPages,
+  onPageClick,
+  currentPageNumber,
 }) {
-	return <></>;
+  return <></>;
 }

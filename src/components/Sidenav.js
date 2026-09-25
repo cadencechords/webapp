@@ -57,7 +57,9 @@ export default function Sidenav() {
             <SidenavLink
               text="Calendar"
               to="/calendar"
-              icon={<Icon name="calendar_month" filled className={iconClasses} />}
+              icon={
+                <Icon name="calendar_month" filled className={iconClasses} />
+              }
             />
           )}
           {/* {currentSubscription?.isPro && (

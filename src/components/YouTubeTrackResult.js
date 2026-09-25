@@ -1,5 +1,5 @@
-import React from "react";
-import Checkbox from "./Checkbox";
+import React from 'react';
+import Checkbox from './Checkbox';
 
 export default function YouTubeTrackResult({ track, selected, onClick }) {
   function getThumbnailUrl() {
@@ -12,7 +12,7 @@ export default function YouTubeTrackResult({ track, selected, onClick }) {
   function handleClick(newToggleValue) {
     onClick(
       {
-        source: "YouTube",
+        source: 'YouTube',
         external_id: track.id?.videoId,
         url: `https://www.youtube.com/watch/${track.id?.videoId}`,
         artwork_url:

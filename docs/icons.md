@@ -30,64 +30,64 @@ Heroicons "solid" maps to the filled variant. The recent Material Symbols
 releases renamed `expand_more` to `keyboard_arrow_down` and `smartphone` to
 `mobile`.
 
-| Heroicon (v1) | Material Symbol |
-|---|---|
-| `AdjustmentsIcon` (outline) | `tune` |
-| `ArrowNarrowLeftIcon` (outline) | `arrow_back` |
-| `ArrowNarrowRightIcon` (outline) | `arrow_forward` |
-| `BellIcon` (outline) | `notifications` |
-| `BellIcon` (solid) | `notifications` (filled) |
-| `CalendarIcon` (outline) | `calendar_month` |
-| `CalendarIcon` (solid) | `calendar_month` (filled) |
-| `ChartBarIcon` (solid) | `bar_chart` (filled) |
-| `ChatIcon` (outline) | `chat` |
-| `CheckCircleIcon` (solid) | `check_circle` (filled) |
-| `CheckCircleIcon` (outline) | `check_circle` |
-| `CheckIcon` (solid) | `check` (filled) |
-| `CheckIcon` (outline) | `check` |
-| `ChevronDownIcon` (outline) | `keyboard_arrow_down` |
-| `ChevronDownIcon` (solid) | `keyboard_arrow_down` (filled) |
-| `ChevronLeftIcon` (outline) | `chevron_left` |
-| `ChevronRightIcon` (outline) | `chevron_right` |
-| `CogIcon` (outline) | `settings` |
-| `CreditCardIcon` (solid) | `credit_card` (filled) |
-| `DesktopComputerIcon` (outline) | `desktop_windows` |
-| `DeviceMobileIcon` (outline) | `mobile` |
-| `DocumentAddIcon` (outline) | `note_add` |
-| `DocumentTextIcon` (outline) | `description` |
-| `DotsHorizontalIcon` (solid) | `more_horiz` (filled) |
-| `DotsVerticalIcon` (outline) | `more_vert` |
-| `DownloadIcon` (outline) | `download` |
-| `EmojiHappyIcon` (solid) | `mood` (filled) |
-| `InformationCircleIcon` (outline) | `info` |
-| `LockClosedIcon` (solid) | `lock` (filled) |
-| `MailIcon` (outline) | `mail` |
-| `MenuAlt2Icon` (outline) | `notes` |
-| `MenuAlt2Icon` (solid) | `notes` (filled) |
-| `MenuIcon` (solid) | `menu` (filled) |
-| `MinusIcon` (outline) | `remove` |
-| `MusicNoteIcon` (solid) | `music_note` (filled) |
-| `PauseIcon` (solid) | `pause_circle` (filled) |
-| `PencilIcon` (outline) | `edit` |
-| `PencilIcon` (solid) | `edit` (filled) |
-| `PhotographIcon` (outline) | `image` |
-| `PlayIcon` (solid) | `play_circle` (filled) |
-| `PlusCircleIcon` (outline) | `add_circle` |
-| `PlusCircleIcon` (solid) | `add_circle` (filled) |
-| `PlusIcon` (outline) | `add` |
-| `PrinterIcon` (outline) | `print` |
-| `SearchIcon` (solid) | `search` (filled) |
-| `SearchIcon` (outline) | `search` |
-| `SelectorIcon` (solid) | `unfold_more` (filled) |
-| `StopIcon` (solid) | `stop_circle` (filled) |
-| `SwitchHorizontalIcon` (outline) | `swap_horiz` |
-| `SwitchHorizontalIcon` (solid) | `swap_horiz` (filled) |
-| `TrashIcon` (outline) | `delete` |
-| `UserCircleIcon` (outline) | `account_circle` |
-| `UserIcon` (solid) | `person` (filled) |
-| `UserRemoveIcon` (outline) | `person_remove` |
-| `UsersIcon` (solid) | `group` (filled) |
-| `XCircleIcon` (outline) | `cancel` |
-| `XCircleIcon` (solid) | `cancel` (filled) |
-| `XIcon` (outline) | `close` |
-| `XIcon` (solid) | `close` (filled) |
+| Heroicon (v1)                     | Material Symbol                |
+| --------------------------------- | ------------------------------ |
+| `AdjustmentsIcon` (outline)       | `tune`                         |
+| `ArrowNarrowLeftIcon` (outline)   | `arrow_back`                   |
+| `ArrowNarrowRightIcon` (outline)  | `arrow_forward`                |
+| `BellIcon` (outline)              | `notifications`                |
+| `BellIcon` (solid)                | `notifications` (filled)       |
+| `CalendarIcon` (outline)          | `calendar_month`               |
+| `CalendarIcon` (solid)            | `calendar_month` (filled)      |
+| `ChartBarIcon` (solid)            | `bar_chart` (filled)           |
+| `ChatIcon` (outline)              | `chat`                         |
+| `CheckCircleIcon` (solid)         | `check_circle` (filled)        |
+| `CheckCircleIcon` (outline)       | `check_circle`                 |
+| `CheckIcon` (solid)               | `check` (filled)               |
+| `CheckIcon` (outline)             | `check`                        |
+| `ChevronDownIcon` (outline)       | `keyboard_arrow_down`          |
+| `ChevronDownIcon` (solid)         | `keyboard_arrow_down` (filled) |
+| `ChevronLeftIcon` (outline)       | `chevron_left`                 |
+| `ChevronRightIcon` (outline)      | `chevron_right`                |
+| `CogIcon` (outline)               | `settings`                     |
+| `CreditCardIcon` (solid)          | `credit_card` (filled)         |
+| `DesktopComputerIcon` (outline)   | `desktop_windows`              |
+| `DeviceMobileIcon` (outline)      | `mobile`                       |
+| `DocumentAddIcon` (outline)       | `note_add`                     |
+| `DocumentTextIcon` (outline)      | `description`                  |
+| `DotsHorizontalIcon` (solid)      | `more_horiz` (filled)          |
+| `DotsVerticalIcon` (outline)      | `more_vert`                    |
+| `DownloadIcon` (outline)          | `download`                     |
+| `EmojiHappyIcon` (solid)          | `mood` (filled)                |
+| `InformationCircleIcon` (outline) | `info`                         |
+| `LockClosedIcon` (solid)          | `lock` (filled)                |
+| `MailIcon` (outline)              | `mail`                         |
+| `MenuAlt2Icon` (outline)          | `notes`                        |
+| `MenuAlt2Icon` (solid)            | `notes` (filled)               |
+| `MenuIcon` (solid)                | `menu` (filled)                |
+| `MinusIcon` (outline)             | `remove`                       |
+| `MusicNoteIcon` (solid)           | `music_note` (filled)          |
+| `PauseIcon` (solid)               | `pause_circle` (filled)        |
+| `PencilIcon` (outline)            | `edit`                         |
+| `PencilIcon` (solid)              | `edit` (filled)                |
+| `PhotographIcon` (outline)        | `image`                        |
+| `PlayIcon` (solid)                | `play_circle` (filled)         |
+| `PlusCircleIcon` (outline)        | `add_circle`                   |
+| `PlusCircleIcon` (solid)          | `add_circle` (filled)          |
+| `PlusIcon` (outline)              | `add`                          |
+| `PrinterIcon` (outline)           | `print`                        |
+| `SearchIcon` (solid)              | `search` (filled)              |
+| `SearchIcon` (outline)            | `search`                       |
+| `SelectorIcon` (solid)            | `unfold_more` (filled)         |
+| `StopIcon` (solid)                | `stop_circle` (filled)         |
+| `SwitchHorizontalIcon` (outline)  | `swap_horiz`                   |
+| `SwitchHorizontalIcon` (solid)    | `swap_horiz` (filled)          |
+| `TrashIcon` (outline)             | `delete`                       |
+| `UserCircleIcon` (outline)        | `account_circle`               |
+| `UserIcon` (solid)                | `person` (filled)              |
+| `UserRemoveIcon` (outline)        | `person_remove`                |
+| `UsersIcon` (solid)               | `group` (filled)               |
+| `XCircleIcon` (outline)           | `cancel`                       |
+| `XCircleIcon` (solid)             | `cancel` (filled)              |
+| `XIcon` (outline)                 | `close`                        |
+| `XIcon` (solid)                   | `close` (filled)               |

@@ -8,7 +8,8 @@ const TEAM = process.env.TEST_TEAM_NAME || 'Claude Team';
 
 setup('sign in', async ({ page }) => {
   const { TEST_USER_EMAIL: email, TEST_USER_PASSWORD: password } = process.env;
-  if (!email || !password) throw new Error('Set TEST_USER_EMAIL and TEST_USER_PASSWORD');
+  if (!email || !password)
+    throw new Error('Set TEST_USER_EMAIL and TEST_USER_PASSWORD');
 
   await page.goto('/login');
   await expect(page.getByPlaceholder('email')).toBeVisible();
@@ -38,9 +39,13 @@ setup('seed sample data', async ({ browser }) => {
 
   for (const kind of ['setlists', 'binders']) {
     if ((await api(page, 'GET', `/${kind}`)).length) continue;
-    const extra = kind === 'setlists' ? { scheduled_date: '2030-01-01' } : { color: 'blue' };
+    const extra =
+      kind === 'setlists'
+        ? { scheduled_date: '2030-01-01' }
+        : { color: 'blue' };
     const { id } = await api(page, 'POST', `/${kind}`, { name, ...extra });
-    if (song) await api(page, 'POST', `/${kind}/${id}/songs`, { song_ids: [song.id] });
+    if (song)
+      await api(page, 'POST', `/${kind}/${id}/songs`, { song_ids: [song.id] });
   }
   await context.close();
 });

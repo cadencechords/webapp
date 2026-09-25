@@ -1,10 +1,17 @@
 // Create a set, add songs to it, then move between songs in performance mode.
 const { test, expect } = require('@playwright/test');
-const { uniqueName, createSong, cleanup, quickAddButton } = require('./helpers');
+const {
+  uniqueName,
+  createSong,
+  cleanup,
+  quickAddButton,
+} = require('./helpers');
 
 test.afterEach(async ({ page }) => cleanup(page));
 
-test('add songs to a set and move between them in performance mode', async ({ page }) => {
+test('add songs to a set and move between them in performance mode', async ({
+  page,
+}) => {
   const first = uniqueName('first');
   const second = uniqueName('second');
   const setName = uniqueName('set');

@@ -13,7 +13,10 @@ test('dialog opens and closes', async ({ page }) => {
 
 test('menu opens and closes', async ({ page }) => {
   await page.goto('/songs');
-  await page.locator('main a[href^="/songs/"], a[href^="/songs/"]').first().click();
+  await page
+    .locator('main a[href^="/songs/"], a[href^="/songs/"]')
+    .first()
+    .click();
   await page.waitForURL(/\/songs\/\d+$/);
   await optionsMenuButton(page).click();
   const print = page.getByRole('button', { name: 'Print' });
@@ -23,7 +26,10 @@ test('menu opens and closes', async ({ page }) => {
 });
 
 test('theme toggle switches and persists', async ({ page }) => {
-  await page.addInitScript(() => localStorage.getItem('theme') || localStorage.setItem('theme', 'light'));
+  await page.addInitScript(
+    () =>
+      localStorage.getItem('theme') || localStorage.setItem('theme', 'light')
+  );
   await page.goto('/account');
   const html = page.locator('html');
   const toggle = page.getByRole('button', { name: /Dark theme/ });
@@ -36,5 +42,7 @@ test('theme toggle switches and persists', async ({ page }) => {
 
   await page.getByRole('button', { name: /Dark theme/ }).click();
   await expect(html).not.toHaveClass(/\bdark\b/);
-  expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe('light');
+  expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe(
+    'light'
+  );
 });

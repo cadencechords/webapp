@@ -80,7 +80,11 @@ function TeamOption({ team, selected, onChange }) {
         checked={selected}
       />
       {selected && (
-        <Icon name="check_circle" filled className="absolute w-5 h-5 text-blue-500 top-2 right-2 dark:text-dark-blue" />
+        <Icon
+          name="check_circle"
+          filled
+          className="absolute w-5 h-5 text-blue-500 top-2 right-2 dark:text-dark-blue"
+        />
       )}
     </label>
   );

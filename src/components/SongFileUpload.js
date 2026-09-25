@@ -33,7 +33,10 @@ export default function SongFileUpload({ onFilesUploaded }) {
           className="flex-center"
           onClick={() => inputRef.current.click()}
         >
-          <Icon name="note_add" className="w-4 h-4 mr-1.5 text-blue-600 dark:text-dark-blue" />
+          <Icon
+            name="note_add"
+            className="w-4 h-4 mr-1.5 text-blue-600 dark:text-dark-blue"
+          />
           Add file
         </Button>
         <input

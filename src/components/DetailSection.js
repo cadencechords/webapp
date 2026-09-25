@@ -28,7 +28,8 @@ export default function DetailSection({
               <DetailTag>
                 <span className="mx-1">{item.name}</span>
                 {canEdit && onDelete && (
-                  <Icon name="close"
+                  <Icon
+                    name="close"
                     className="w-3 h-3 text-gray-700 cursor-pointer dark:text-dark-gray-200"
                     onClick={() => onDelete(item.id)}
                   />

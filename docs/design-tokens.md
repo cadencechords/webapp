@@ -54,12 +54,12 @@ has an `-emphasized` variant that is one weight heavier (400 → 500, 500 → 70
 
 ## Shape, elevation, state layers (`src/styles/shape-elevation-state.css`)
 
-| What | Utilities | Notes |
-|---|---|---|
-| Corner radius | `rounded-extra-small` (4) · `small` (8) · `medium` (12) · `large` (16) · `large-increased` (20) · `extra-large` (28) · `extra-large-increased` (32) · `extra-extra-large` (48) · `rounded-full` | M3 names; Tailwind's `rounded-sm/md/lg` are unchanged |
-| Elevation | `elevation-0` … `elevation-5` | Surface-container tone plus the level's shadow |
-| State layer | `state-layer` | `currentColor` overlay at 8% hover, 10% focus, 10% pressed, 16% dragged (`data-dragging`). Uses `::before`, drawn behind the content |
-| Focus ring | `focus-ring` | 3px `secondary` outline, 2px offset, on `:focus-visible` |
+| What          | Utilities                                                                                                                                                                                       | Notes                                                                                                                                |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Corner radius | `rounded-extra-small` (4) · `small` (8) · `medium` (12) · `large` (16) · `large-increased` (20) · `extra-large` (28) · `extra-large-increased` (32) · `extra-extra-large` (48) · `rounded-full` | M3 names; Tailwind's `rounded-sm/md/lg` are unchanged                                                                                |
+| Elevation     | `elevation-0` … `elevation-5`                                                                                                                                                                   | Surface-container tone plus the level's shadow                                                                                       |
+| State layer   | `state-layer`                                                                                                                                                                                   | `currentColor` overlay at 8% hover, 10% focus, 10% pressed, 16% dragged (`data-dragging`). Uses `::before`, drawn behind the content |
+| Focus ring    | `focus-ring`                                                                                                                                                                                    | 3px `secondary` outline, 2px offset, on `:focus-visible`                                                                             |
 
 ## Motion (`src/styles/motion.css`, `src/utils/spring.js`)
 
@@ -67,14 +67,14 @@ M3 Expressive uses **spatial** springs for position, size and corners (these
 may overshoot) and **effects** springs for color and opacity (these don't).
 Each comes in fast, default and slow.
 
-| Token | Curve | Duration |
-|---|---|---|
-| fast-spatial | `cubic-bezier(0.42,1.67,0.21,0.90)` | 350ms |
-| default-spatial | `cubic-bezier(0.38,1.21,0.22,1.00)` | 500ms |
-| slow-spatial | `cubic-bezier(0.39,1.29,0.35,0.98)` | 650ms |
-| fast-effects | `cubic-bezier(0.31,0.94,0.34,1.00)` | 150ms |
-| default-effects | `cubic-bezier(0.34,0.80,0.34,1.00)` | 200ms |
-| slow-effects | `cubic-bezier(0.34,0.88,0.34,1.00)` | 300ms |
+| Token           | Curve                               | Duration |
+| --------------- | ----------------------------------- | -------- |
+| fast-spatial    | `cubic-bezier(0.42,1.67,0.21,0.90)` | 350ms    |
+| default-spatial | `cubic-bezier(0.38,1.21,0.22,1.00)` | 500ms    |
+| slow-spatial    | `cubic-bezier(0.39,1.29,0.35,0.98)` | 650ms    |
+| fast-effects    | `cubic-bezier(0.31,0.94,0.34,1.00)` | 150ms    |
+| default-effects | `cubic-bezier(0.34,0.80,0.34,1.00)` | 200ms    |
+| slow-effects    | `cubic-bezier(0.34,0.88,0.34,1.00)` | 300ms    |
 
 - **CSS transitions:** `transition-<speed>-spatial` (transform, translate,
   size, inset, border-radius) and `transition-<speed>-effects` (colors,

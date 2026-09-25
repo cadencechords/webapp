@@ -79,14 +79,20 @@ export default function KeyTransposerDialog({
           <>
             <div className="flex-col text-xs flex-center">
               {calculateTonesTransposed()}
-              <Icon name="arrow_forward" className="w-6 h-6 mt-1 transform -translate-y-2" />
+              <Icon
+                name="arrow_forward"
+                className="w-6 h-6 mt-1 transform -translate-y-2"
+              />
             </div>
             <div className="relative flex-col flex-center">
               <button
                 className="absolute outline-hidden -top-1 -right-1 focus:outline-hidden"
                 onClick={() => handleKeyChange(null)}
               >
-                <Icon name="delete" className="w-4 h-4 text-red-600 dark:text-dark-red" />
+                <Icon
+                  name="delete"
+                  className="w-4 h-4 text-red-600 dark:text-dark-red"
+                />
               </button>
               <h1 className="mb-2 text-3xl font-bold text-center">
                 {workingTransposedKey}

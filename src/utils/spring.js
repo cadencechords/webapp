@@ -21,7 +21,12 @@ export const SPRINGS = {
 const STEP = 1 / 240; // integration step, seconds
 
 // Advances a unit-mass spring by `dt` seconds. Pure; returns the new state.
-export function stepSpring({ value, velocity }, target, { dampingRatio, stiffness }, dt) {
+export function stepSpring(
+  { value, velocity },
+  target,
+  { dampingRatio, stiffness },
+  dt
+) {
   const damping = 2 * dampingRatio * Math.sqrt(stiffness);
   let v = velocity;
   let x = value;
@@ -35,16 +40,24 @@ export function stepSpring({ value, velocity }, target, { dampingRatio, stiffnes
 }
 
 export function isSettled({ value, velocity }, target, precision = 0.01) {
-  return Math.abs(value - target) < precision && Math.abs(velocity) < precision * 10;
+  return (
+    Math.abs(value - target) < precision && Math.abs(velocity) < precision * 10
+  );
 }
 
 export function prefersReducedMotion() {
-  return typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  return (
+    typeof window !== 'undefined' &&
+    !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  );
 }
 
 // An animated value driven by requestAnimationFrame. Spatial springs jump
 // straight to the target when the user prefers reduced motion.
-export function createSpring(initial, { spec = SPRINGS.defaultSpatial, onUpdate, onRest, precision } = {}) {
+export function createSpring(
+  initial,
+  { spec = SPRINGS.defaultSpatial, onUpdate, onRest, precision } = {}
+) {
   let state = { value: initial, velocity: 0 };
   let target = initial;
   let frame = null;

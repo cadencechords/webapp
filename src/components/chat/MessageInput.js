@@ -146,7 +146,11 @@ const MessageInputV2 = () => {
               className="p-2 bg-transparent rounded-full str-chat__file-input-label hover:bg-gray-100 dark:hover:bg-dark-gray-600"
               htmlFor={id}
             >
-              <Icon name="add_circle" filled className="w-6 h-6 text-blue-600 dark:text-dark-blue" />
+              <Icon
+                name="add_circle"
+                filled
+                className="w-6 h-6 text-blue-600 dark:text-dark-blue"
+              />
             </label>
           </div>
           <Button variant="icon" size="md" color="blue" className="mr-2">

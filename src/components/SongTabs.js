@@ -1,11 +1,11 @@
-import SongFilesTab from "./SongFilesTab";
-import { Tab } from "@headlessui/react";
-import { VIEW_FILES } from "../utils/constants";
-import { selectCurrentMember } from "../store/authSlice";
-import { selectCurrentSubscription } from "../store/subscriptionSlice";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import SongTracksTab from "./SongTracksTab";
+import SongFilesTab from './SongFilesTab';
+import { Tab } from '@headlessui/react';
+import { VIEW_FILES } from '../utils/constants';
+import { selectCurrentMember } from '../store/authSlice';
+import { selectCurrentSubscription } from '../store/subscriptionSlice';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import SongTracksTab from './SongTracksTab';
 
 export default function SongTabs({ song, onTrackDeleted, onTracksAdded }) {
   const [files, setFiles] = useState();
@@ -23,7 +23,7 @@ export default function SongTabs({ song, onTrackDeleted, onTracksAdded }) {
             {({ selected }) => (
               <div
                 className={`${
-                  selected ? SELECTED_TAB_CLASSES : ""
+                  selected ? SELECTED_TAB_CLASSES : ''
                 } ${TAB_CLASSES}`}
               >
                 Files
@@ -36,7 +36,7 @@ export default function SongTabs({ song, onTrackDeleted, onTracksAdded }) {
             {({ selected }) => (
               <div
                 className={`${
-                  selected ? SELECTED_TAB_CLASSES : ""
+                  selected ? SELECTED_TAB_CLASSES : ''
                 } ${TAB_CLASSES}`}
               >
                 Tracks
@@ -66,5 +66,5 @@ export default function SongTabs({ song, onTrackDeleted, onTracksAdded }) {
 }
 
 const TAB_CLASSES =
-  "px-3 py-2 font-medium hover:bg-gray-100 dark:hover:bg-dark-gray-800 transition-colors";
-const SELECTED_TAB_CLASSES = "border-b-4 border-blue-600 dark:border-dark-blue";
+  'px-3 py-2 font-medium hover:bg-gray-100 dark:hover:bg-dark-gray-800 transition-colors';
+const SELECTED_TAB_CLASSES = 'border-b-4 border-blue-600 dark:border-dark-blue';

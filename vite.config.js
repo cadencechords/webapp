@@ -16,7 +16,9 @@ export default defineConfig({
     tailwindcss(),
     // `import X from './icon.svg?react'` -> React component. Material Symbols
     // SVGs have no fill or size: color follows currentColor, size follows CSS.
-    svgr({ svgrOptions: { dimensions: false, svgProps: { fill: 'currentColor' } } }),
+    svgr({
+      svgrOptions: { dimensions: false, svgProps: { fill: 'currentColor' } },
+    }),
     // @react-pdf/renderer needs these Node built-ins, which webpack 4 (CRA) polyfilled automatically.
     nodePolyfills({
       include: ['buffer', 'process', 'stream', 'util', 'events', 'zlib'],
@@ -27,13 +29,20 @@ export default defineConfig({
     alias: [
       // The ES build does `export * from '@react-pdf/primitives'`, a CommonJS
       // module, so Text/View/etc. get lost. The CJS browser build exports them.
-      { find: /^@react-pdf\/renderer$/, replacement: '@react-pdf/renderer/lib/react-pdf.browser.cjs.js' },
+      {
+        find: /^@react-pdf\/renderer$/,
+        replacement: '@react-pdf/renderer/lib/react-pdf.browser.cjs.js',
+      },
     ],
   },
   esbuild: { loader: 'jsx', include: jsxInJs, exclude: [] },
   optimizeDeps: { esbuildOptions: { loader: { '.js': 'jsx' } } },
   // Test runs write files (traces, screenshots) that would otherwise trigger full reloads.
-  server: { port: 3000, host: true, watch: { ignored: ['**/e2e/**', '**/cypress/**', '**/build/**'] } },
+  server: {
+    port: 3000,
+    host: true,
+    watch: { ignored: ['**/e2e/**', '**/cypress/**', '**/build/**'] },
+  },
   preview: { port: 3000 },
   // Netlify publishes build/, as it did with CRA.
   build: { outDir: 'build', sourcemap: true },

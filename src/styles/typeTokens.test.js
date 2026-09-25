@@ -15,33 +15,56 @@ test('every role and size has a base and an emphasized style', () => {
   }
 });
 
-test.each([[400, 500], [500, 700]])('emphasized weight of %i is %i', (base, emphasized) => {
+test.each([
+  [400, 500],
+  [500, 700],
+])('emphasized weight of %i is %i', (base, emphasized) => {
   expect(emphasize(base)).toBe(emphasized);
 });
 
 describe('Tailwind utilities', () => {
   let css;
   beforeAll(async () => {
-    const compiler = await compile(readFileSync('src/index.css', 'utf8'), { base: path.resolve('src'), onDependency: () => {} });
-    css = compiler.build(['text-headline-large', 'text-title-medium-emphasized', 'font-plain']);
+    const compiler = await compile(readFileSync('src/index.css', 'utf8'), {
+      base: path.resolve('src'),
+      onDependency: () => {},
+    });
+    css = compiler.build([
+      'text-headline-large',
+      'text-title-medium-emphasized',
+      'font-plain',
+    ]);
   });
 
-  const rule = cls => css.match(new RegExp(`\\.${cls}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
+  const rule = cls =>
+    css.match(new RegExp(`\\.${cls}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
 
   test('text-headline-large sets size, line height, tracking and weight', () => {
     const r = rule('text-headline-large');
-    expect(r).toContain('font-size: var(--md-sys-typescale-headline-large-size)');
-    expect(r).toContain('line-height: var(--tw-leading, var(--md-sys-typescale-headline-large-line-height))');
-    expect(r).toContain('letter-spacing: var(--tw-tracking, var(--md-sys-typescale-headline-large-tracking))');
-    expect(r).toContain('font-weight: var(--tw-font-weight, var(--md-sys-typescale-headline-large-weight))');
+    expect(r).toContain(
+      'font-size: var(--md-sys-typescale-headline-large-size)'
+    );
+    expect(r).toContain(
+      'line-height: var(--tw-leading, var(--md-sys-typescale-headline-large-line-height))'
+    );
+    expect(r).toContain(
+      'letter-spacing: var(--tw-tracking, var(--md-sys-typescale-headline-large-tracking))'
+    );
+    expect(r).toContain(
+      'font-weight: var(--tw-font-weight, var(--md-sys-typescale-headline-large-weight))'
+    );
   });
 
   test('emphasized utility uses the emphasized weight token', () => {
-    expect(rule('text-title-medium-emphasized')).toContain('var(--md-sys-typescale-title-medium-emphasized-weight)');
+    expect(rule('text-title-medium-emphasized')).toContain(
+      'var(--md-sys-typescale-title-medium-emphasized-weight)'
+    );
   });
 
   test('font-plain uses Roboto Flex', () => {
-    expect(rule('font-plain')).toContain('font-family: var(--md-ref-typeface-plain)');
+    expect(rule('font-plain')).toContain(
+      'font-family: var(--md-ref-typeface-plain)'
+    );
     expect(css).toMatch(/--md-ref-typeface-plain: 'Roboto Flex'/);
   });
 });

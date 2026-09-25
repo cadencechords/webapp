@@ -67,32 +67,41 @@
 /* transition-<speed>-spatial animates position, size and corners;
    transition-<speed>-effects animates color, opacity and shadow. */
 @utility transition-fast-spatial {
-  transition-property: transform, translate, scale, rotate, width, height, inset, border-radius;
+  transition-property:
+    transform, translate, scale, rotate, width, height, inset, border-radius;
   transition-timing-function: var(--md-sys-motion-easing-fast-spatial);
   transition-duration: var(--md-sys-motion-duration-fast-spatial);
 }
 @utility transition-default-spatial {
-  transition-property: transform, translate, scale, rotate, width, height, inset, border-radius;
+  transition-property:
+    transform, translate, scale, rotate, width, height, inset, border-radius;
   transition-timing-function: var(--md-sys-motion-easing-default-spatial);
   transition-duration: var(--md-sys-motion-duration-default-spatial);
 }
 @utility transition-slow-spatial {
-  transition-property: transform, translate, scale, rotate, width, height, inset, border-radius;
+  transition-property:
+    transform, translate, scale, rotate, width, height, inset, border-radius;
   transition-timing-function: var(--md-sys-motion-easing-slow-spatial);
   transition-duration: var(--md-sys-motion-duration-slow-spatial);
 }
 @utility transition-fast-effects {
-  transition-property: color, background-color, border-color, outline-color, fill, stroke, opacity, box-shadow;
+  transition-property:
+    color, background-color, border-color, outline-color, fill, stroke, opacity,
+    box-shadow;
   transition-timing-function: var(--md-sys-motion-easing-fast-effects);
   transition-duration: var(--md-sys-motion-duration-fast-effects);
 }
 @utility transition-default-effects {
-  transition-property: color, background-color, border-color, outline-color, fill, stroke, opacity, box-shadow;
+  transition-property:
+    color, background-color, border-color, outline-color, fill, stroke, opacity,
+    box-shadow;
   transition-timing-function: var(--md-sys-motion-easing-default-effects);
   transition-duration: var(--md-sys-motion-duration-default-effects);
 }
 @utility transition-slow-effects {
-  transition-property: color, background-color, border-color, outline-color, fill, stroke, opacity, box-shadow;
+  transition-property:
+    color, background-color, border-color, outline-color, fill, stroke, opacity,
+    box-shadow;
   transition-timing-function: var(--md-sys-motion-easing-slow-effects);
   transition-duration: var(--md-sys-motion-duration-slow-effects);
 }
@@ -102,7 +111,8 @@
    --shape-morph-to to change the pressed/selected radius (default: medium).
    It sets `transition`, so don't combine it with another transition utility. */
 @utility shape-morph {
-  transition: border-radius var(--md-sys-motion-duration-fast-spatial) var(--md-sys-motion-easing-fast-spatial);
+  transition: border-radius var(--md-sys-motion-duration-fast-spatial)
+    var(--md-sys-motion-easing-fast-spatial);
 
   &:active,
   &[aria-pressed='true'],

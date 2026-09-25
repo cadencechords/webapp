@@ -1,6 +1,6 @@
-import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
+import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 
-import api from "./api";
+import api from './api';
 
 export default class NotesApi {
   static getAll(songId) {

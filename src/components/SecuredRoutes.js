@@ -26,8 +26,8 @@ import AnnotationsToolbarProvider from '../contexts/AnnotationsToolbarProvider';
 import useOneSignal from '../hooks/useOneSignal';
 
 const SongEditorPage = lazy(() => import('../pages/SongEditorPage'));
-const CustomerPortalSessionGeneratorPage = lazy(() =>
-  import('../pages/CustomerPortalSessionGeneratorPage')
+const CustomerPortalSessionGeneratorPage = lazy(
+  () => import('../pages/CustomerPortalSessionGeneratorPage')
 );
 const SetPresenterPage = lazy(() => import('../pages/SetPresenterPage'));
 const SongPresenterPage = lazy(() => import('../pages/SongPresenterPage'));

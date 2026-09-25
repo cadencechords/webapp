@@ -1,6 +1,11 @@
 // Create, edit and delete a song through the UI.
 const { test, expect } = require('@playwright/test');
-const { uniqueName, cleanup, quickAddButton, optionsMenuButton } = require('./helpers');
+const {
+  uniqueName,
+  cleanup,
+  quickAddButton,
+  optionsMenuButton,
+} = require('./helpers');
 
 test.afterEach(async ({ page }) => cleanup(page));
 
@@ -21,8 +26,13 @@ test('create, edit and delete a song', async ({ page }) => {
 
   // Edit: nothing autosaves; changes show a "Save Changes" button.
   await page.getByPlaceholder('Add an artist').fill(artist);
-  const saved = page.waitForResponse(res => res.request().method() === 'PUT' && /\/songs\/\d+/.test(res.url()));
-  await page.getByRole('button', { name: 'Save Changes' }).locator('visible=true').click();
+  const saved = page.waitForResponse(
+    res => res.request().method() === 'PUT' && /\/songs\/\d+/.test(res.url())
+  );
+  await page
+    .getByRole('button', { name: 'Save Changes' })
+    .locator('visible=true')
+    .click();
   expect((await saved).ok()).toBe(true);
   await page.reload();
   await expect(page.getByPlaceholder('Add an artist')).toHaveValue(artist);

@@ -47,9 +47,7 @@ export default function StyledDialog({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay
-              className={`fixed inset-0 bg-black/20`}
-            />
+            <Dialog.Overlay className={`fixed inset-0 bg-black/20`} />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
@@ -79,7 +77,10 @@ export default function StyledDialog({
                     onClick={onCloseDialog}
                     tabIndex={1}
                   >
-                    <Icon name="close" className="w-4 h-4 text-gray-700 dark:text-dark-gray-200" />
+                    <Icon
+                      name="close"
+                      className="w-4 h-4 text-gray-700 dark:text-dark-gray-200"
+                    />
                   </Button>
                 </span>
               )}

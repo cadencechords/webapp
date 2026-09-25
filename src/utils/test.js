@@ -13,11 +13,15 @@ export function renderWithProvider(
     ...renderOptions
   } = {}
 ) {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   function Wrapper({ children }) {
     return (
       <Provider store={store}>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
       </Provider>
     );
   }

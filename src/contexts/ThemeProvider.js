@@ -12,8 +12,12 @@ export default function ThemeProvider(props) {
     const root = document.documentElement;
     root.classList.toggle('dark', isDark);
     // Browser UI color follows the surface token for the active theme.
-    const surface = getComputedStyle(root).getPropertyValue('--md-sys-color-surface').trim();
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', surface);
+    const surface = getComputedStyle(root)
+      .getPropertyValue('--md-sys-color-surface')
+      .trim();
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', surface);
   }, [isDark]);
 
   const handleThemeChange = useCallback(

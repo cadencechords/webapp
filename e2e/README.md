@@ -27,11 +27,11 @@ The dev server starts automatically if nothing is listening on :3000. Set
 
 ## Commands
 
-| Command | What it does |
-|---|---|
+| Command            | What it does                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
 | `yarn e2e:catalog` | Screenshots every route into `e2e/screenshots/` as `<route>__<desktop\|mobile>-<light\|dark>.png` |
-| `yarn e2e:smoke` | Runs the smoke flows |
-| `yarn e2e:unit` | Unit tests for the route list (no browser) |
+| `yarn e2e:smoke`   | Runs the smoke flows                                                                              |
+| `yarn e2e:unit`    | Unit tests for the route list (no browser)                                                        |
 
 Catalog options:
 

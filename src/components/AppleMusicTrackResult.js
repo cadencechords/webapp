@@ -1,12 +1,12 @@
-import React from "react";
-import Checkbox from "./Checkbox";
+import React from 'react';
+import Checkbox from './Checkbox';
 
 export default function AppleMusicTrackResult({ track, selected, onClick }) {
   function getArtworkUrl() {
     let url = track?.attributes?.artwork?.url;
 
-    url = url.replace("{w}", 100);
-    url = url.replace("{h}", 100);
+    url = url.replace('{w}', 100);
+    url = url.replace('{h}', 100);
 
     return url;
   }
@@ -14,11 +14,11 @@ export default function AppleMusicTrackResult({ track, selected, onClick }) {
   function handleClick(newToggleValue) {
     let artworkUrl = track?.attributes?.artwork?.url;
 
-    artworkUrl = artworkUrl.replace("{w}", 400);
-    artworkUrl = artworkUrl.replace("{h}", 400);
+    artworkUrl = artworkUrl.replace('{w}', 400);
+    artworkUrl = artworkUrl.replace('{h}', 400);
     onClick(
       {
-        source: "Apple Music",
+        source: 'Apple Music',
         external_id: track.id,
         url: track.attributes?.url,
         artwork_url: artworkUrl,

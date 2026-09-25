@@ -37,7 +37,13 @@ export default function Checkbox({
         } ${className}`}
         onClick={standAlone ? handleClick : null}
       >
-        {checked && <Icon name="check" filled className="w-4 h-4 font-semibold text-white" />}
+        {checked && (
+          <Icon
+            name="check"
+            filled
+            className="w-4 h-4 font-semibold text-white"
+          />
+        )}
       </button>
     </>
   );

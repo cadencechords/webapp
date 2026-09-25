@@ -99,7 +99,10 @@ export default function Note({
               className="w-full py-1 outline-hidden focus:outline-hidden flex-center"
               onClick={() => setShowDialog(true)}
             >
-              <Icon name="settings" className={`w-5 h-5 ${NOTE_COLORS[color].icon}`} />
+              <Icon
+                name="settings"
+                className={`w-5 h-5 ${NOTE_COLORS[color].icon}`}
+              />
             </button>
 
             <div className="w-full h-full handle"></div>

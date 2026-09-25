@@ -24,7 +24,11 @@ export default function Select({
           </option>
         ))}
       </select>
-      <Icon name="keyboard_arrow_down" filled className="absolute w-3 h-3 transform -translate-y-1/2 right-1 top-1/2" />
+      <Icon
+        name="keyboard_arrow_down"
+        filled
+        className="absolute w-3 h-3 transform -translate-y-1/2 right-1 top-1/2"
+      />
     </span>
   );
 }

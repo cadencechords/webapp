@@ -29,7 +29,11 @@ export default function Integrations({ currentUser }) {
       <div className="flex-between">
         <div className="flex-center">
           {currentUser.pco_connected ? (
-            <Icon name="check_circle" filled className="w-4 h-4 mr-2 text-green-500 dark:text-dark-green" />
+            <Icon
+              name="check_circle"
+              filled
+              className="w-4 h-4 mr-2 text-green-500 dark:text-dark-green"
+            />
           ) : (
             <Icon name="cancel" filled className="w-4 h-4 mr-2 text-gray-400" />
           )}

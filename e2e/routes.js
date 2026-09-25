@@ -44,9 +44,21 @@ const AUTHED_ROUTES = [
 ];
 
 const VARIANTS = [
-  { name: 'desktop-light', viewport: { width: 1280, height: 800 }, theme: 'light' },
-  { name: 'desktop-dark', viewport: { width: 1280, height: 800 }, theme: 'dark' },
-  { name: 'mobile-light', viewport: { width: 390, height: 844 }, theme: 'light' },
+  {
+    name: 'desktop-light',
+    viewport: { width: 1280, height: 800 },
+    theme: 'light',
+  },
+  {
+    name: 'desktop-dark',
+    viewport: { width: 1280, height: 800 },
+    theme: 'dark',
+  },
+  {
+    name: 'mobile-light',
+    viewport: { width: 390, height: 844 },
+    theme: 'light',
+  },
   { name: 'mobile-dark', viewport: { width: 390, height: 844 }, theme: 'dark' },
 ];
 

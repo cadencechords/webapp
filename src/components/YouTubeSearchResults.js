@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { reportError } from "../utils/error";
-import PageLoading from "./PageLoading";
-import TracksApi from "../api/tracksApi";
-import YouTubeTrackResult from "./YouTubeTrackResult";
+import React, { useEffect, useState } from 'react';
+import { reportError } from '../utils/error';
+import PageLoading from './PageLoading';
+import TracksApi from '../api/tracksApi';
+import YouTubeTrackResult from './YouTubeTrackResult';
 
 export default function YouTubeSearchResults({
   query,
@@ -35,9 +35,9 @@ export default function YouTubeSearchResults({
 
   function isSelected(resultInQuestion) {
     return !!selectedTracks.find(
-      (selectedTrack) =>
+      selectedTrack =>
         selectedTrack.external_id === resultInQuestion.id.videoId &&
-        selectedTrack.source === "YouTube"
+        selectedTrack.source === 'YouTube'
     );
   }
 
@@ -46,7 +46,7 @@ export default function YouTubeSearchResults({
       {loading ? (
         <PageLoading />
       ) : (
-        results.map((result) => (
+        results.map(result => (
           <YouTubeTrackResult
             track={result}
             key={result.id.videoId}

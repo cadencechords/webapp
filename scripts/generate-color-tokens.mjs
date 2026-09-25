@@ -4,5 +4,8 @@
 import { writeFileSync } from 'node:fs';
 import { renderCss } from './color-tokens.mjs';
 
-writeFileSync(new URL('../src/styles/color-tokens.css', import.meta.url), renderCss());
+writeFileSync(
+  new URL('../src/styles/color-tokens.css', import.meta.url),
+  renderCss()
+);
 console.log('Wrote src/styles/color-tokens.css');

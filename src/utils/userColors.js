@@ -67,7 +67,17 @@ const CLASSES = {
   },
 };
 
-export const USER_COLOR_NAMES = ['red', 'blue', 'green', 'yellow', 'pink', 'purple', 'indigo', 'gray', 'black'];
+export const USER_COLOR_NAMES = [
+  'red',
+  'blue',
+  'green',
+  'yellow',
+  'pink',
+  'purple',
+  'indigo',
+  'gray',
+  'black',
+];
 
 // { color, onColor, container, onContainer } Tailwind classes for a stored color.
 export function userColorClasses(name) {

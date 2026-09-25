@@ -28,7 +28,10 @@ export default function ProfilePicture({ url, size, onClick }) {
         }`}
         onClick={onClick}
       >
-        <Icon name="account_circle" className="w-full h-full text-gray-500 dark:text-gray-400" />
+        <Icon
+          name="account_circle"
+          className="w-full h-full text-gray-500 dark:text-gray-400"
+        />
       </div>
     );
   }

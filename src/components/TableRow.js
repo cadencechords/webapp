@@ -33,7 +33,10 @@ export default function TableRow({
             size="xs"
             disabled={removing}
           >
-            <Icon name="delete" className="w-4 h-4 text-gray-600 dark:text-dark-gray-200" />
+            <Icon
+              name="delete"
+              className="w-4 h-4 text-gray-600 dark:text-dark-gray-200"
+            />
           </Button>
         </td>
       )}

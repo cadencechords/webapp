@@ -33,7 +33,10 @@ export default function Modal({
           <div className="p-3 pt-0">
             <div className="px-3 mb-4 flex-between">
               <Button variant="icon" size="md" onClick={onClose} tabIndex={1}>
-                <Icon name="close" className="w-5 h-5 text-gray-700 dark:text-dark-gray-200" />
+                <Icon
+                  name="close"
+                  className="w-5 h-5 text-gray-700 dark:text-dark-gray-200"
+                />
               </Button>
               {headerRight ? headerRight : <div />}
             </div>

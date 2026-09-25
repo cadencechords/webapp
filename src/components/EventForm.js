@@ -48,7 +48,10 @@ export default function EventForm() {
             )}
           </Tab>
         </Tab.List>
-        <Tab.Panels as="div" className="mt-6 outline-hidden focus:outline-hidden">
+        <Tab.Panels
+          as="div"
+          className="mt-6 outline-hidden focus:outline-hidden"
+        >
           <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
             <EventFormDetailsPanel />
           </Tab.Panel>

@@ -9,7 +9,9 @@ let chromium;
 try {
   ({ chromium } = require('playwright'));
 } catch {
-  ({ chromium } = require(execSync('npm root -g').toString().trim() + '/playwright'));
+  ({ chromium } = require(
+    execSync('npm root -g').toString().trim() + '/playwright'
+  ));
 }
 
 const BASE = process.env.APP_URL || 'http://localhost:3000';
@@ -20,32 +22,51 @@ const [outDir = '.', team = 'Claude Team', afterPath] = process.argv.slice(2);
 function proxyCaArgs() {
   const ca = '/root/.ccr/agent-proxy-ca.crt';
   if (!fs.existsSync(ca)) return [];
-  const der = new crypto.X509Certificate(fs.readFileSync(ca)).publicKey.export({ type: 'spki', format: 'der' });
-  return [`--ignore-certificate-errors-spki-list=${crypto.createHash('sha256').update(der).digest('base64')}`];
+  const der = new crypto.X509Certificate(fs.readFileSync(ca)).publicKey.export({
+    type: 'spki',
+    format: 'der',
+  });
+  return [
+    `--ignore-certificate-errors-spki-list=${crypto.createHash('sha256').update(der).digest('base64')}`,
+  ];
 }
 
 (async () => {
   const { TEST_USER_EMAIL: email, TEST_USER_PASSWORD: password } = process.env;
-  if (!email || !password) throw new Error('TEST_USER_EMAIL and TEST_USER_PASSWORD must be set');
+  if (!email || !password)
+    throw new Error('TEST_USER_EMAIL and TEST_USER_PASSWORD must be set');
 
   const browser = await chromium.launch({ args: proxyCaArgs() });
-  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-  page.on('requestfailed', r => console.log('REQUEST FAILED', r.url(), r.failure()?.errorText));
-  page.on('response', r => r.url().includes('/auth/sign_in') && console.log('sign_in', r.status()));
+  const page = await browser.newPage({
+    viewport: { width: 1280, height: 800 },
+  });
+  page.on('requestfailed', r =>
+    console.log('REQUEST FAILED', r.url(), r.failure()?.errorText)
+  );
+  page.on(
+    'response',
+    r => r.url().includes('/auth/sign_in') && console.log('sign_in', r.status())
+  );
 
   await page.goto(`${BASE}/login`, { waitUntil: 'networkidle' });
   // Values filled immediately after load get wiped by a re-render; wait, then type keys.
   await page.waitForTimeout(1500);
   await page.locator('input[placeholder="email"]').pressSequentially(email);
-  await page.locator('input[placeholder="password"]').pressSequentially(password);
-  await page.waitForSelector('button[type="submit"]:not([disabled])', { timeout: 5000 });
+  await page
+    .locator('input[placeholder="password"]')
+    .pressSequentially(password);
+  await page.waitForSelector('button[type="submit"]:not([disabled])', {
+    timeout: 5000,
+  });
   await page.click('button[type="submit"]');
 
   // Sign-in lands on the team picker at /login/teams.
   await page.waitForURL('**/login/teams', { timeout: 30000 });
   await page.waitForLoadState('networkidle');
   await page.getByText(team, { exact: true }).click();
-  await page.waitForURL(u => !new URL(u).pathname.startsWith('/login'), { timeout: 30000 });
+  await page.waitForURL(u => !new URL(u).pathname.startsWith('/login'), {
+    timeout: 30000,
+  });
 
   if (afterPath) await page.goto(BASE + afterPath);
   await page.waitForLoadState('networkidle').catch(() => {});

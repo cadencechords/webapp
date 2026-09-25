@@ -2,7 +2,13 @@
 // --md-sys-color-* custom property, light on :root and dark on .dark.
 // Regenerate with `yarn tokens:color` after changing the seed or variant.
 import {
-  argbFromHex, customColor, hexFromArgb, Hct, MaterialDynamicColors, SchemeTonalSpot, TonalPalette,
+  argbFromHex,
+  customColor,
+  hexFromArgb,
+  Hct,
+  MaterialDynamicColors,
+  SchemeTonalSpot,
+  TonalPalette,
 } from '@material/material-color-utilities';
 
 export const SEED = '#1f6feb'; // current brand blue
@@ -14,27 +20,56 @@ export const ROLES = [
   ...['primary', 'secondary', 'tertiary'].flatMap(c => {
     const C = c[0].toUpperCase() + c.slice(1);
     return [
-      [c, c], [`on-${c}`, `on${C}`], [`${c}-container`, `${c}Container`], [`on-${c}-container`, `on${C}Container`],
-      [`${c}-fixed`, `${c}Fixed`], [`${c}-fixed-dim`, `${c}FixedDim`],
-      [`on-${c}-fixed`, `on${C}Fixed`], [`on-${c}-fixed-variant`, `on${C}FixedVariant`],
+      [c, c],
+      [`on-${c}`, `on${C}`],
+      [`${c}-container`, `${c}Container`],
+      [`on-${c}-container`, `on${C}Container`],
+      [`${c}-fixed`, `${c}Fixed`],
+      [`${c}-fixed-dim`, `${c}FixedDim`],
+      [`on-${c}-fixed`, `on${C}Fixed`],
+      [`on-${c}-fixed-variant`, `on${C}FixedVariant`],
     ];
   }),
-  ['error', 'error'], ['on-error', 'onError'], ['error-container', 'errorContainer'], ['on-error-container', 'onErrorContainer'],
-  ['background', 'background'], ['on-background', 'onBackground'],
-  ['surface', 'surface'], ['surface-dim', 'surfaceDim'], ['surface-bright', 'surfaceBright'],
-  ['surface-container-lowest', 'surfaceContainerLowest'], ['surface-container-low', 'surfaceContainerLow'],
-  ['surface-container', 'surfaceContainer'], ['surface-container-high', 'surfaceContainerHigh'],
+  ['error', 'error'],
+  ['on-error', 'onError'],
+  ['error-container', 'errorContainer'],
+  ['on-error-container', 'onErrorContainer'],
+  ['background', 'background'],
+  ['on-background', 'onBackground'],
+  ['surface', 'surface'],
+  ['surface-dim', 'surfaceDim'],
+  ['surface-bright', 'surfaceBright'],
+  ['surface-container-lowest', 'surfaceContainerLowest'],
+  ['surface-container-low', 'surfaceContainerLow'],
+  ['surface-container', 'surfaceContainer'],
+  ['surface-container-high', 'surfaceContainerHigh'],
   ['surface-container-highest', 'surfaceContainerHighest'],
-  ['on-surface', 'onSurface'], ['surface-variant', 'surfaceVariant'], ['on-surface-variant', 'onSurfaceVariant'],
+  ['on-surface', 'onSurface'],
+  ['surface-variant', 'surfaceVariant'],
+  ['on-surface-variant', 'onSurfaceVariant'],
   ['surface-tint', 'surfaceTint'],
-  ['outline', 'outline'], ['outline-variant', 'outlineVariant'],
-  ['inverse-surface', 'inverseSurface'], ['inverse-on-surface', 'inverseOnSurface'], ['inverse-primary', 'inversePrimary'],
-  ['scrim', 'scrim'], ['shadow', 'shadow'],
+  ['outline', 'outline'],
+  ['outline-variant', 'outlineVariant'],
+  ['inverse-surface', 'inverseSurface'],
+  ['inverse-on-surface', 'inverseOnSurface'],
+  ['inverse-primary', 'inversePrimary'],
+  ['scrim', 'scrim'],
+  ['shadow', 'shadow'],
 ];
 
 export function generateScheme(isDark) {
-  const scheme = new SchemeTonalSpot(Hct.fromInt(argbFromHex(SEED)), isDark, CONTRAST_LEVEL, SPEC_VERSION);
-  return Object.fromEntries(ROLES.map(([name, key]) => [name, hexFromArgb(MaterialDynamicColors[key].getArgb(scheme))]));
+  const scheme = new SchemeTonalSpot(
+    Hct.fromInt(argbFromHex(SEED)),
+    isDark,
+    CONTRAST_LEVEL,
+    SPEC_VERSION
+  );
+  return Object.fromEntries(
+    ROLES.map(([name, key]) => [
+      name,
+      hexFromArgb(MaterialDynamicColors[key].getArgb(scheme)),
+    ])
+  );
 }
 
 // Colors users pick for binders, notes and events are stored by name. Stored
@@ -68,16 +103,35 @@ export function generateUserColor(name) {
   });
   const fromPalette = (palette, light, dark) => {
     const tones = ([c, on, cont, onCont]) =>
-      pick({ color: palette.tone(c), onColor: palette.tone(on), colorContainer: palette.tone(cont), onColorContainer: palette.tone(onCont) });
+      pick({
+        color: palette.tone(c),
+        onColor: palette.tone(on),
+        colorContainer: palette.tone(cont),
+        onColorContainer: palette.tone(onCont),
+      });
     return { light: tones(light), dark: tones(dark) };
   };
   const source = Hct.fromInt(argbFromHex(USER_COLORS[name]));
 
   // Black inverts in dark mode, like black annotations already do.
-  if (name === 'black') return fromPalette(TonalPalette.fromHueAndChroma(source.hue, 2), [10, 100, 90, 10], [90, 10, 30, 90]);
+  if (name === 'black')
+    return fromPalette(
+      TonalPalette.fromHueAndChroma(source.hue, 2),
+      [10, 100, 90, 10],
+      [90, 10, 30, 90]
+    );
   // M3 custom color tones: color 40/80, on-color 100/20, container 90/30, on-container 10/90.
-  if (name === 'gray') return fromPalette(TonalPalette.fromHueAndChroma(source.hue, 6), [40, 100, 90, 10], [80, 20, 30, 90]);
-  const group = customColor(argbFromHex(SEED), { name, value: source.toInt(), blend: false });
+  if (name === 'gray')
+    return fromPalette(
+      TonalPalette.fromHueAndChroma(source.hue, 6),
+      [40, 100, 90, 10],
+      [80, 20, 30, 90]
+    );
+  const group = customColor(argbFromHex(SEED), {
+    name,
+    value: source.toInt(),
+    blend: false,
+  });
   return { light: pick(group.light), dark: pick(group.dark) };
 }
 
@@ -95,21 +149,31 @@ function userColorVars(theme) {
 
 export function renderCss() {
   const block = (selector, colors) =>
-    `${selector} {\n${Object.entries(colors).map(([n, v]) => `  --md-sys-color-${n}: ${v};`).join('\n')}\n}\n`;
+    `${selector} {\n${Object.entries(colors)
+      .map(([n, v]) => `  --md-sys-color-${n}: ${v};`)
+      .join('\n')}\n}\n`;
   return (
     `/* Generated by scripts/generate-color-tokens.mjs — do not edit by hand.\n` +
     `   Seed ${SEED}, TonalSpot, spec ${SPEC_VERSION}, contrast ${CONTRAST_LEVEL}. */\n\n` +
-    block(':root', generateScheme(false)) + '\n' + block('.dark', generateScheme(true)) + '\n' +
+    block(':root', generateScheme(false)) +
+    '\n' +
+    block('.dark', generateScheme(true)) +
+    '\n' +
     `/* User-picked data colors (binders, notes, events). See USER_COLORS. */\n` +
     `:root {\n${userColorVars('light').join('\n')}\n}\n\n.dark {\n${userColorVars('dark').join('\n')}\n}\n\n` +
     `/* Tailwind utilities for every role: bg-primary-container, text-on-surface-variant, ... */\n` +
     `@theme inline {\n${ROLES.map(([n]) => `  --color-${n}: var(--md-sys-color-${n});`).join('\n')}\n` +
     `\n  /* bg-user-blue, text-on-user-blue-container, ... */\n` +
-    Object.keys(USER_COLORS).map(n => [
-      `  --color-user-${n}: var(--md-custom-color-${n});`,
-      `  --color-on-user-${n}: var(--md-custom-color-on-${n});`,
-      `  --color-user-${n}-container: var(--md-custom-color-${n}-container);`,
-      `  --color-on-user-${n}-container: var(--md-custom-color-on-${n}-container);`,
-    ].join('\n')).join('\n') + `\n}\n`
+    Object.keys(USER_COLORS)
+      .map(n =>
+        [
+          `  --color-user-${n}: var(--md-custom-color-${n});`,
+          `  --color-on-user-${n}: var(--md-custom-color-on-${n});`,
+          `  --color-user-${n}-container: var(--md-custom-color-${n}-container);`,
+          `  --color-on-user-${n}-container: var(--md-custom-color-on-${n}-container);`,
+        ].join('\n')
+      )
+      .join('\n') +
+    `\n}\n`
   );
 }

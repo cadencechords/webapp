@@ -25,7 +25,11 @@ export default function StyledListBox({
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
             {selectedOption.template}
           </div>
-          <Icon name="unfold_more" filled className="shrink-0 w-4 h-4 text-gray-500" />
+          <Icon
+            name="unfold_more"
+            filled
+            className="shrink-0 w-4 h-4 text-gray-500"
+          />
         </Listbox.Button>
         <Listbox.Options
           className={

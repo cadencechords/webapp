@@ -21,10 +21,16 @@ export default function BillingPage() {
   const isTrialing = status === 'trialing' && trialEndDate;
 
   const checkIcon = (
-    <Icon name="check" className="w-4 h-4 mr-3 text-green-600 dark:text-dark-green" />
+    <Icon
+      name="check"
+      className="w-4 h-4 mr-3 text-green-600 dark:text-dark-green"
+    />
   );
   const xIcon = (
-    <Icon name="close" className="w-4 h-4 mr-3 text-gray-600 dark:text-dark-gray-200" />
+    <Icon
+      name="close"
+      className="w-4 h-4 mr-3 text-gray-600 dark:text-dark-gray-200"
+    />
   );
 
   if (isLoading) return <PageLoading />;

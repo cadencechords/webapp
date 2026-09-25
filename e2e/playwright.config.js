@@ -12,8 +12,13 @@ const AUTH_FILE = path.join(__dirname, '.auth/user.json');
 function proxyCaArgs() {
   const ca = '/root/.ccr/agent-proxy-ca.crt';
   if (!fs.existsSync(ca)) return [];
-  const der = new crypto.X509Certificate(fs.readFileSync(ca)).publicKey.export({ type: 'spki', format: 'der' });
-  return [`--ignore-certificate-errors-spki-list=${crypto.createHash('sha256').update(der).digest('base64')}`];
+  const der = new crypto.X509Certificate(fs.readFileSync(ca)).publicKey.export({
+    type: 'spki',
+    format: 'der',
+  });
+  return [
+    `--ignore-certificate-errors-spki-list=${crypto.createHash('sha256').update(der).digest('base64')}`,
+  ];
 }
 
 module.exports = defineConfig({
