@@ -5,7 +5,7 @@ description: Start the Cadence Chords web app dev server and sign in with the te
 
 # Run the app and sign in
 
-The app is a CRA/craco React app. It talks to the API at `REACT_APP_API_URL`
+The app is a React app built with Vite. It talks to the API at `REACT_APP_API_URL`
 (currently the live backend, `https://chords-api.herokuapp.com`). Env vars
 (`REACT_APP_*`, `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`) come from the
 environment config; there is no `.env` file in the repo.
@@ -24,10 +24,13 @@ Set `CYPRESS_INSTALL_BINARY=0` because the sandbox network policy blocks
 
 ```bash
 cd /home/user/webapp
-curl -s -o /dev/null localhost:3000 || (BROWSER=none PORT=3000 nohup yarn start > /tmp/webapp-dev.log 2>&1 &)
-for i in $(seq 1 90); do curl -s -o /dev/null localhost:3000 && break; sleep 2; done
-tail -5 /tmp/webapp-dev.log   # expect "Compiled successfully!"
+curl -s -o /dev/null localhost:3000 || (nohup yarn start > /tmp/webapp-dev.log 2>&1 &)
+for i in $(seq 1 30); do curl -s -o /dev/null localhost:3000 && break; sleep 1; done
+tail -5 /tmp/webapp-dev.log   # expect "VITE ... ready" and http://localhost:3000/
 ```
+
+Don't stop the server with `pkill -f vite`: that pattern also matches the
+shell running the command. Kill it by PID instead.
 
 ## 3. Sign in and screenshot
 
