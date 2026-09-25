@@ -3,10 +3,34 @@
 React 17 + Vite, Tailwind v4, Vitest. See `README.md`, `docs/design-tokens.md`
 and `docs/icons.md`.
 
+## TypeScript only
+
+Write new files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`. The
+JavaScript files that already exist are listed in `js-allowlist.json` and get
+converted over time; `yarn ts-only` fails on any file not in that list.
+Converting a file means renaming it to `.ts`/`.tsx`, typing it, and running
+`yarn ts-only --update`. Renaming or moving a `.js` file counts as a new file.
+Only `public/` (served as-is) is exempt.
+
+Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
+`tsconfig.json` covers `src`. `tsconfig.node.json` covers all other
+TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, `.github/`, config files), is
+`strict`, and has no baseline. Write ES modules there as `.mts` (package.json
+has no `"type": "module"`, so a `.ts` file counts as CommonJS). Node strips types without checking them, so
+`yarn typecheck` is what catches errors there.
+
+ESLint parses TypeScript with the TypeScript 6 API from
+`@typescript/typescript6`, because TypeScript 7 has no JavaScript API (see
+`eslint.config.mjs`). So `yarn install` warns that typescript-eslint wants
+`typescript@<6.1.0`. That's expected: don't downgrade `typescript` to silence
+it. TypeScript files get typescript-eslint's recommended rules (the ones that
+don't need type information), such as `no-explicit-any`.
+
 ## Checks (same as CI)
 
 ```bash
-yarn typecheck      # TypeScript over the JS; fails only on errors beyond typecheck-baseline.json
+yarn typecheck      # TypeScript over src (fails only on errors beyond typecheck-baseline.json) and Node-side TS
+yarn ts-only        # no new JavaScript files; the existing ones are in js-allowlist.json
 yarn lint           # ESLint; existing violations are in eslint-suppressions.json
 yarn format:check   # Prettier
 yarn test:unit      # unit tests (Vitest)

@@ -24,7 +24,7 @@ enforces this; see "What the gate guarantees" at the end for its limits.
 Run the same checks as CI:
 
 ```bash
-yarn typecheck && yarn lint && yarn format:check && yarn test:unit && yarn test:hooks && yarn build
+yarn typecheck && yarn ts-only && yarn lint && yarn format:check && yarn test:unit && yarn test:hooks && yarn build
 ```
 
 Fix any failure before going on. A reviewer's time is wasted on a branch that

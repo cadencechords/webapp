@@ -31,3 +31,6 @@ cypress.env.json
 /e2e/.auth
 /e2e/.results
 /e2e/screenshots
+
+# Claude Code's git worktrees (full copies of the repo)
+/.claude/worktrees/

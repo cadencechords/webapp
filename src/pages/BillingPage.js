@@ -45,7 +45,7 @@ export default function BillingPage() {
               color="purple"
               variant="accent"
               className="w-24 whitespace-nowrap"
-              onClick={createCustomerPortalSession}
+              onClick={() => createCustomerPortalSession()}
               loading={isCreatingSession}
             >
               Manage
@@ -55,7 +55,7 @@ export default function BillingPage() {
             <Button
               color="purple"
               className="w-24"
-              onClick={createCustomerPortalSession}
+              onClick={() => createCustomerPortalSession()}
               loading={isCreatingSession}
             >
               Upgrade
@@ -134,7 +134,7 @@ export default function BillingPage() {
             full={true}
             color="purple"
             variant="outlined"
-            onClick={createCustomerPortalSession}
+            onClick={() => createCustomerPortalSession()}
             loading={isCreatingSession}
           >
             Manage
@@ -144,7 +144,7 @@ export default function BillingPage() {
           <Button
             full={true}
             color="purple"
-            onClick={createCustomerPortalSession}
+            onClick={() => createCustomerPortalSession()}
             loading={isCreatingSession}
           >
             Upgrade

@@ -1,25 +1,73 @@
 import classNames from 'classnames';
-import { forwardRef } from 'react';
+import {
+  forwardRef,
+  type CSSProperties,
+  type KeyboardEventHandler,
+  type MouseEventHandler,
+  type ReactNode,
+} from 'react';
 import PulseLoader from 'react-spinners/PulseLoader';
 
-const Button = forwardRef(
+export type ButtonColor =
+  | 'red'
+  | 'blue'
+  | 'green'
+  | 'yellow'
+  | 'indigo'
+  | 'purple'
+  | 'pink'
+  | 'gray'
+  | 'black'
+  | 'white';
+
+export type ButtonSize =
+  | 'square'
+  | 'xs'
+  | 'sm'
+  | 'small'
+  | 'md'
+  | 'medium'
+  // icon variant only
+  | 'lg';
+
+export type ButtonVariant = 'filled' | 'accent' | 'icon' | 'open' | 'outlined';
+
+export type ButtonProps = {
+  children?: ReactNode;
+  variant?: ButtonVariant;
+  color?: ButtonColor;
+  size?: ButtonSize;
+  full?: boolean;
+  bold?: boolean;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  loading?: boolean;
+  disabled?: boolean;
+  className?: string;
+  onKeyUp?: KeyboardEventHandler<HTMLButtonElement>;
+  style?: CSSProperties;
+  tabIndex?: number;
+  name?: string;
+  type?: 'button' | 'submit' | 'reset';
+};
+
+type VariantProps = Omit<ButtonProps, 'variant'>;
+
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
       variant = 'filled',
-      color,
-      size,
-      full,
-      bold,
+      color = 'blue',
+      size = 'sm',
+      full = false,
+      bold = true,
       onClick,
-      loading,
-      disabled,
+      loading = false,
+      disabled = false,
       className,
       onKeyUp,
       style,
       tabIndex,
-      onFocus,
-      onBlur,
       name,
       type = 'button',
     },
@@ -38,8 +86,6 @@ const Button = forwardRef(
       onKeyUp,
       style,
       tabIndex,
-      onFocus,
-      onBlur,
       name,
       type,
     };
@@ -54,27 +100,19 @@ const Button = forwardRef(
     if (variant === 'icon') {
       return <IconButton {...props} ref={ref} />;
     }
-    let defaultClasses = ` outline-hidden focus:outline-hidden transition-colors text-sm ${
+    const defaultClasses = ` outline-hidden focus:outline-hidden transition-colors text-sm ${
       className ? className : ''
     } `;
     let colorClasses = '';
     let disabledClasses = ' cursor-default ';
-    let roundedClasses = ' rounded-full ';
-    let sizeClasses = ` ${sizePaddings[size]} ${full ? ' w-full ' : ''}`;
-    let fontClasses = ` ${bold ? ' font-semibold ' : ''} `;
-    let loadingColor = color;
+    const roundedClasses = ' rounded-full ';
+    const sizeClasses = ` ${sizePaddings[size]} ${full ? ' w-full ' : ''}`;
+    const fontClasses = ` ${bold ? ' font-semibold ' : ''} `;
+    let loadingColor: string = color;
 
     if (color === 'blue' || color === 'black') loadingColor = '#1f6feb';
 
-    if (variant === 'filled') {
-      if (color === 'black') {
-        colorClasses += ` text-white bg-black `;
-      } else {
-        colorClasses += ` text-white ${BACKGROUND_COLORS[color]} shadow-xs `;
-      }
-      loadingColor = 'white';
-      disabledClasses += ` bg-gray-100 text-gray-600 dark:bg-dark-gray-400 dark:text-dark-gray-200`;
-    } else if (variant === 'open') {
+    if (variant === 'open') {
       colorClasses += ` ${TEXT_COLORS[color]}`;
       disabledClasses += ` text-gray-500 `;
     } else if (variant === 'outlined') {
@@ -85,15 +123,13 @@ const Button = forwardRef(
     return (
       <button
         className={`
-            ${disabled ? disabledClasses : colorClasses} 
+            ${disabled ? disabledClasses : colorClasses}
             ${sizeClasses} ${fontClasses} ${roundedClasses} ${defaultClasses}`}
-        onClick={loading ? null : onClick}
+        onClick={loading ? undefined : onClick}
         disabled={disabled}
         onKeyUp={onKeyUp}
         style={style}
         tabIndex={tabIndex}
-        onFocus={onFocus?.()}
-        onBlur={onBlur?.()}
         aria-label={name}
         type={type}
         ref={ref}
@@ -106,7 +142,7 @@ const Button = forwardRef(
 
 export default Button;
 
-const IconButton = forwardRef(
+const IconButton = forwardRef<HTMLButtonElement, VariantProps>(
   (
     { size = 'md', className, children, disabled, color = 'gray', ...props },
     ref
@@ -132,7 +168,7 @@ const IconButton = forwardRef(
   }
 );
 
-const PrimaryButton = forwardRef(
+const PrimaryButton = forwardRef<HTMLButtonElement, VariantProps>(
   (
     {
       size = 'md',
@@ -168,7 +204,7 @@ const PrimaryButton = forwardRef(
   }
 );
 
-const AccentButton = forwardRef(
+const AccentButton = forwardRef<HTMLButtonElement, VariantProps>(
   (
     {
       size,
@@ -205,17 +241,7 @@ const AccentButton = forwardRef(
   }
 );
 
-Button.defaultProps = {
-  bold: true,
-  full: false,
-  color: 'blue',
-  variant: 'filled',
-  loading: false,
-  disabled: false,
-  size: 'sm',
-};
-
-const sizePaddings = {
+const sizePaddings: Partial<Record<ButtonSize, string>> = {
   square: '',
   xs: ' px-4 min-h-7 h-7',
   sm: ' px-3 h-9 ',
@@ -224,7 +250,7 @@ const sizePaddings = {
   medium: ' w-20 h-14 ',
 };
 
-export const TEXT_COLORS = {
+export const TEXT_COLORS: Record<ButtonColor, string> = {
   red: 'text-red-600 dark:text-dark-red',
   blue: 'text-blue-600 dark:text-dark-blue',
   green: 'text-green-600',
@@ -237,7 +263,7 @@ export const TEXT_COLORS = {
   white: 'text-white',
 };
 
-export const BACKGROUND_COLORS = {
+export const BACKGROUND_COLORS: Record<ButtonColor, string> = {
   red: 'bg-red-500 hover:bg-red-700 focus:bg-red-700',
   blue: 'bg-blue-600 hover:bg-blue-800 focus:bg-blue-800 dark:bg-dark-blue dark:hover:bg-blue-600 dark:focus:bg-blue-600',
   green:
@@ -254,17 +280,17 @@ export const BACKGROUND_COLORS = {
 const defaultClasses =
   'outline-hidden focus:outline-hidden transition-colors text-sm rounded-full font-semibold tracking-wide';
 
-const iconColors = {
+const iconColors: Partial<Record<ButtonColor, string>> = {
   gray: 'text-gray-700 dark:text-dark-gray-200',
   blue: 'text-blue-600 dark:text-dark-blue',
 };
 
-const accentColors = {
+const accentColors: Partial<Record<ButtonColor, string>> = {
   blue: 'text-blue-600 dark:text-dark-blue',
   red: 'text-red-600 dark:text-dark-red',
   purple: 'text-purple-600 dark:text-purple-500',
 };
-const iconSizes = {
+const iconSizes: Partial<Record<ButtonSize, string>> = {
   sm: 'p-1',
   md: 'p-2',
   lg: 'p-3',
