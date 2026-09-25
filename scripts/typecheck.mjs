@@ -39,12 +39,17 @@ const { ok, output } = tsc('tsconfig.json');
 // Paths can contain spaces and parentheses (src/components/mobile menus/...).
 const ERROR_LINE = /^(.+?)\(\d+,\d+\): error TS\d+/;
 const lines = output.split('\n');
-const errors = lines.filter(line => ERROR_LINE.test(line));
+const errors = lines.filter(
+  line => ERROR_LINE.test(line) && !/^tsconfig[^/]*\.json\(/.test(line)
+);
 
-// Errors without a file position (a bad compiler option, a missing types
-// package) can't be baselined, and would otherwise pass unnoticed.
+// Errors without a source file (a bad compiler option in tsconfig.json, a
+// missing types package) can't be baselined, and would otherwise pass
+// unnoticed.
 const unplaced = lines.filter(
-  line => /error TS\d+/.test(line) && !ERROR_LINE.test(line)
+  line =>
+    /error TS\d+/.test(line) &&
+    (!ERROR_LINE.test(line) || /^tsconfig[^/]*\.json\(/.test(line))
 );
 if (unplaced.length || (!ok && !errors.length)) {
   console.error('tsc failed:\n');

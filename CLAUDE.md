@@ -14,7 +14,7 @@ Only `public/` (served as-is) is exempt.
 
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
 `tsconfig.json` covers `src`. `tsconfig.node.json` covers all other
-TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, config files), is
+TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, `.github/`, config files), is
 `strict`, and has no baseline. Write ES modules there as `.mts` (package.json
 has no `"type": "module"`, so a `.ts` file counts as CommonJS). Node strips types without checking them, so
 `yarn typecheck` is what catches errors there.

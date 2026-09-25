@@ -10,12 +10,25 @@
     "lib": ["es2023"],
     "types": ["node"],
     "strict": true,
+    "jsx": "react-jsx",
     "allowUnreachableCode": false,
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["**/*.ts", "**/*.mts", "**/*.cts", "**/*.tsx"],
+  // `**` skips dot-directories, so .claude and .github are listed explicitly.
+  "include": [
+    "**/*.ts",
+    "**/*.mts",
+    "**/*.cts",
+    "**/*.tsx",
+    ".claude/**/*.ts",
+    ".claude/**/*.mts",
+    ".claude/**/*.cts",
+    ".github/**/*.ts",
+    ".github/**/*.mts",
+    ".github/**/*.cts"
+  ],
   "exclude": ["src", "node_modules", "build", "public"]
 }
