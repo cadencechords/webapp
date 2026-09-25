@@ -2,8 +2,8 @@ export default function Drawer({ open, onClose, children }) {
 	return (
 		<>
 			<div
-				className={`z-30 bg-black h-full fixed top-0 left-0 right-0 bottom-0 transition-all duration-200 ease-in-out
-                    ${open ? "visible bg-opacity-70" : "hidden bg-opacity-0"}
+				className={`z-30 h-full fixed top-0 left-0 right-0 bottom-0 transition-all duration-200 ease-in-out
+                    ${open ? "visible bg-black/70" : "hidden bg-black/0"}
                 `}
 				onClick={onClose}
 			></div>

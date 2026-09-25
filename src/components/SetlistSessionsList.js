@@ -47,7 +47,7 @@ export default function SetlistSessionsList({
       ) : (
         <div className="flex gap-4 my-4 overflow-x-auto flex-nowrap">
           {sessions.map(session => (
-            <div key={session.id} className="flex-shrink-0 w-72">
+            <div key={session.id} className="shrink-0 w-72">
               <SessionCard
                 session={session}
                 onSessionEnded={handleSessionEnded}

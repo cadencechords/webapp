@@ -10,7 +10,7 @@ export default function MarkingTabs({ selectedIndex }) {
         <Tab
           key={tab}
           className={classNames(
-            'rounded-full h-7 px-3 outline-none focus:outline-none transition-colors',
+            'rounded-full h-7 px-3 outline-hidden focus:outline-hidden transition-colors',
             selectedIndex === index
               ? 'text-white bg-blue-600 dark:bg-dark-blue'
               : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700'

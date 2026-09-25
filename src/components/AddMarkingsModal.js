@@ -194,4 +194,4 @@ const singerOptions = ['UNISON', 'HARMONY', 'SOLO', 'LEAD SINGER', 'EVERYONE'];
 const symbolOptions = ['{', '}', '[', ']', '(', ')'];
 
 const defaultOptionClasses =
-  'h-24 overflow-hidden text-lg whitespace-nowrap overflow-ellipsis dark:hover:bg-dark-gray-600 hover:bg-gray-100 rounded-lg focus:bg-gray-100 dark:focus:bg-dark-gray-600 p-2';
+  'h-24 overflow-hidden text-lg whitespace-nowrap text-ellipsis dark:hover:bg-dark-gray-600 hover:bg-gray-100 rounded-lg focus:bg-gray-100 dark:focus:bg-dark-gray-600 p-2';

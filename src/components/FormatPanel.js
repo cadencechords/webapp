@@ -30,7 +30,7 @@ export default function FormatPanel({
           <div className="flex-1 cursor-move handle">Formatting</div>
           <div>
             <button
-              className="w-6 flex-center focus:outline-none"
+              className="w-6 flex-center focus:outline-hidden"
               onClick={onClose}
             >
               <XIcon className="w-4 h-4 text-white" />

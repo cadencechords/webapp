@@ -17,7 +17,7 @@ export default function CalendarEventEntry({ event, onClick }) {
 	return (
 		<button
 			onClick={() => onClick(event)}
-			className={`outline-none focus:outline-none rounded-md px-1 py-0.5 w-full ${colors} text-xs text-left truncate`}
+			className={`outline-hidden focus:outline-hidden rounded-md px-1 py-0.5 w-full ${colors} text-xs text-left truncate`}
 		>
 			{getTimeFromDate(event.start_time)} {event.title}
 		</button>

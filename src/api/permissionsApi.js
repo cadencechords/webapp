@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const PERMISSIONS_URL = process.env.REACT_APP_API_URL + "/permissions";
+const PERMISSIONS_URL = import.meta.env.REACT_APP_API_URL + "/permissions";
 
 export default class PermissionsApi {
 	static getAll() {

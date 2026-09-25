@@ -4,7 +4,7 @@ export default function CalendarDateButton({ selected, children, className }) {
 		: "focus:bg-gray-200 hover:bg-gray-200 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700";
 	return (
 		<button
-			className={`focus:outline-none outline-none rounded-full w-7 h-7 text-sm transition-colors ${colorClasses} ${className}`}
+			className={`focus:outline-hidden outline-hidden rounded-full w-7 h-7 text-sm transition-colors ${colorClasses} ${className}`}
 		>
 			{children}
 		</button>

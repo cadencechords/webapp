@@ -12,8 +12,8 @@ export default function EditableData({
 		return (
 			<input
 				className={
-					`appearance-none p-1 w-full sm:text-sm text-base outline-none focus:outline-none ` +
-					` focus:bg-gray-100 hover:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700 rounded bg-transparent transition-colors ` +
+					`appearance-none p-1 w-full sm:text-sm text-base outline-hidden focus:outline-hidden ` +
+					` focus:bg-gray-100 hover:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700 rounded-sm bg-transparent transition-colors ` +
 					` ${centered ? " text-center " : ""}` +
 					` ${className} `
 				}

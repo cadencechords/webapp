@@ -11,7 +11,7 @@ export default function Toggle({ enabled, onChange, label, color, spacing }) {
 					onChange={onChange}
 					className={`${
 						enabled ? BACKGROUND_COLORS[color] : "bg-gray-200 dark:bg-dark-gray-400"
-					} relative inline-flex items-center md:h-6 h-7 rounded-full md:w-11 w-12 transition-colors focus:outline-none `}
+					} relative inline-flex items-center md:h-6 h-7 rounded-full md:w-11 w-12 transition-colors focus:outline-hidden `}
 				>
 					<span
 						className={`${

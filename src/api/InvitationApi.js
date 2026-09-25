@@ -1,7 +1,7 @@
 import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 import axios from 'axios';
 
-const INVITATIONS_URL = process.env.REACT_APP_API_URL + '/invitations';
+const INVITATIONS_URL = import.meta.env.REACT_APP_API_URL + '/invitations';
 
 export default class InvitationApi {
   static createOne(newInvite) {

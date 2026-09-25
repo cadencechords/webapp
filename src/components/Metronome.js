@@ -80,7 +80,7 @@ export default function Metronome({ bpm, onBpmChange }) {
       </div>
       <div className="relative flex-center">
         <button
-          className="outline-none focus:outline-none"
+          className="outline-hidden focus:outline-hidden"
           onClick={handleToggleMetronome}
         >
           {isOn ? (

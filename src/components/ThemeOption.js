@@ -9,7 +9,7 @@ export default function ThemeOption({ theme, onToggle, selected }) {
 
 	return (
 		<div
-			className={`rounded-md cursor-pointer flex items-center w-full text-left focus:outline-none outline-none py-2 px-3 ${
+			className={`rounded-md cursor-pointer flex items-center w-full text-left focus:outline-hidden outline-hidden py-2 px-3 ${
 				selected ? selectedClasses : ""
 			}`}
 			onClick={() => handleCheck(!selected)}

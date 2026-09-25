@@ -3,7 +3,7 @@ import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
 import axios from "axios";
 import { combineParamValues } from "../utils/ObjectUtils";
 
-const BINDERS_URL = process.env.REACT_APP_API_URL + "/binders";
+const BINDERS_URL = import.meta.env.REACT_APP_API_URL + "/binders";
 
 export default class BinderApi {
 	static search(name) {

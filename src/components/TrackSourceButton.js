@@ -13,7 +13,7 @@ export default function TrackSourceButton({
     <button
       onClick={() => onClick(source)}
       className={
-        `mr-4 flex items-center outline-none focus:outline-none transition-colors ` +
+        `mr-4 flex items-center outline-hidden focus:outline-hidden transition-colors ` +
         ` hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-400 dark:focus:bg-dark-gray-400 ` +
         ` ${selected ? "bg-gray-100 dark:bg-dark-gray-400" : ""} ` +
         ` p-2 rounded-md ${className}`

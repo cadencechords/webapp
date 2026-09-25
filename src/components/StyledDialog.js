@@ -48,7 +48,7 @@ export default function StyledDialog({
             leaveTo="opacity-0"
           >
             <Dialog.Overlay
-              className={`fixed inset-0 bg-black bg-opacity-20`}
+              className={`fixed inset-0 bg-black/20`}
             />
           </Transition.Child>
 

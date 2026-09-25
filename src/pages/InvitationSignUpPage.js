@@ -39,7 +39,7 @@ export default function InvitationSignUpPage() {
     document.title = 'Sign Up';
     const script = document.createElement('script');
 
-    script.src = process.env.REACT_APP_URL + '/scripts/passwords.js';
+    script.src = import.meta.env.REACT_APP_URL + '/scripts/passwords.js';
     script.async = true;
 
     document.body.appendChild(script);

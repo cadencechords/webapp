@@ -37,7 +37,7 @@ export default function FeedbackPopover() {
 		<>
 			<StyledPopover position="bottom-start" button={button}>
 				<textarea
-					className="p-3 outline-none resize-y focus:outline-none w-72 dark:bg-dark-gray-700 rounded-t-md"
+					className="p-3 outline-hidden resize-y focus:outline-hidden w-72 dark:bg-dark-gray-700 rounded-t-md"
 					placeholder="Submit feedback"
 					value={feedback}
 					onChange={(e) => setFeedback(e.target.value)}

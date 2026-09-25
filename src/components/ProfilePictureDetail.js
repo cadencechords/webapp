@@ -60,7 +60,7 @@ export default function ProfilePictureDetail({ url }) {
         </div>
         <button
           onClick={() => setShowMobileActionsDialog(true)}
-          className="focus:outline-none outline-none absolute bottom-0 left-1/2 ml-3 mb-1 border border-white bg-blue-700 p-1.5 rounded-full md:hidden"
+          className="focus:outline-hidden outline-hidden absolute bottom-0 left-1/2 ml-3 mb-1 border border-white bg-blue-700 p-1.5 rounded-full md:hidden"
         >
           <PencilIcon className="h-4 text-white" />
         </button>

@@ -29,7 +29,7 @@ module.exports = defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: 'BROWSER=none PORT=3000 yarn start',
+    command: 'yarn start',
     url: BASE_URL,
     reuseExistingServer: true,
     timeout: 240_000,

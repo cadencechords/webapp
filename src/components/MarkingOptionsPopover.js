@@ -31,7 +31,7 @@ export default function MarkingOptionsPopover({
     <Popover>
       {button && (
         <Popover.Button
-          className="w-full outline-none focus:outline-none"
+          className="w-full outline-hidden focus:outline-hidden"
           ref={referenceElement}
         >
           {button}

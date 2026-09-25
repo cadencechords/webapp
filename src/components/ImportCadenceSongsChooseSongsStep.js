@@ -116,7 +116,7 @@ function SongOption({ song, selected, onToggleSong }) {
         onChange={isChecked => onToggleSong(isChecked, song)}
         standAlone={false}
       />
-      <span className="inline-block overflow-hidden whitespace-nowrap overflow-ellipsis">
+      <span className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
         {song.name}{' '}
       </span>
       {hasAnyKeysSet(song) && (

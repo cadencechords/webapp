@@ -61,7 +61,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
       </div>
       <div className={`mt-2 transition-all ${open ? "block" : "hidden"}`}>
         <div
-          className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-sm cursor-pointer p-2 flex-between border-b dark:border-dark-gray-600"
+          className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-xs cursor-pointer p-2 flex-between border-b dark:border-dark-gray-600"
           onClick={handleToggleEmail}
         >
           <div className="flex items-center gap-2">
@@ -71,7 +71,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
           <Toggle enabled={setting?.email_enabled} onChange={noop} />
         </div>
         <div
-          className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-sm cursor-pointer p-2 flex-between border-b dark:border-dark-gray-600"
+          className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-xs cursor-pointer p-2 flex-between border-b dark:border-dark-gray-600"
           onClick={handleToggleSms}
         >
           <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ export default function NotificationSetting({ onChange, setting, icon }) {
           <Toggle enabled={setting?.sms_enabled} onChange={noop} />
         </div>
         <div
-          className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-sm cursor-pointer p-2 flex-between "
+          className="hover:bg-gray-100 dark:hover:bg-dark-gray-700 transition-colors rounded-xs cursor-pointer p-2 flex-between "
           onClick={handleTogglePush}
         >
           <div className="flex items-center gap-2">

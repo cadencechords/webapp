@@ -14,7 +14,7 @@ export default function EventForm() {
     <div>
       <Tab.Group as="div" className="col-span-4 pt-4 mb-10 lg:col-span-3">
         <Tab.List>
-          <Tab className="outline-none focus:outline-none">
+          <Tab className="outline-hidden focus:outline-hidden">
             {({ selected }) => (
               <div
                 className={`${
@@ -25,7 +25,7 @@ export default function EventForm() {
               </div>
             )}
           </Tab>
-          <Tab className="outline-none focus:outline-none">
+          <Tab className="outline-hidden focus:outline-hidden">
             {({ selected }) => (
               <div
                 className={`${
@@ -36,7 +36,7 @@ export default function EventForm() {
               </div>
             )}
           </Tab>
-          <Tab className="outline-none focus:outline-none">
+          <Tab className="outline-hidden focus:outline-hidden">
             {({ selected }) => (
               <div
                 className={`${
@@ -48,14 +48,14 @@ export default function EventForm() {
             )}
           </Tab>
         </Tab.List>
-        <Tab.Panels as="div" className="mt-6 outline-none focus:outline-none">
-          <Tab.Panel as="div" className="outline-none focus:outline-none">
+        <Tab.Panels as="div" className="mt-6 outline-hidden focus:outline-hidden">
+          <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
             <EventFormDetailsPanel />
           </Tab.Panel>
-          <Tab.Panel as="div" className="outline-none focus:outline-none">
+          <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
             <EventFormRemindersPanel />
           </Tab.Panel>
-          <Tab.Panel as="div" className="outline-none focus:outline-none">
+          <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
             <EventFormSetlistPanel />
           </Tab.Panel>
         </Tab.Panels>

@@ -28,7 +28,7 @@ export default function RoadmapSection({ section, color, onChange, onDelete }) {
 			ref={ref}
 			value={section || ""}
 			onChange={(e) => onChange?.(e.target.value)}
-			className={`bg-white dark:bg-dark-gray-800 focus:outline-none outline-none border dark:border-dark-gray-400 rounded-md px-1.5 text-sm h-9`}
+			className={`bg-white dark:bg-dark-gray-800 focus:outline-hidden outline-hidden border dark:border-dark-gray-400 rounded-md px-1.5 text-sm h-9`}
 			style={{ width: determineWidth() }}
 			onBlur={() => setIsEditing(false)}
 			onKeyDown={(e) => handleKeyDown(e.key)}
@@ -36,7 +36,7 @@ export default function RoadmapSection({ section, color, onChange, onDelete }) {
 	) : (
 		<div
 			onClick={handleClick}
-			className={`px-2 bg-white whitespace-nowrap dark:bg-dark-gray-900 focus:outline-none outline-none border dark:border-dark-gray-400 rounded-md text-sm h-9 flex-center`}
+			className={`px-2 bg-white whitespace-nowrap dark:bg-dark-gray-900 focus:outline-hidden outline-hidden border dark:border-dark-gray-400 rounded-md text-sm h-9 flex-center`}
 		>
 			{section}
 		</div>

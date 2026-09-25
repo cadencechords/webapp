@@ -29,7 +29,7 @@ export default function Checkbox({
       />
       <button
         className={`w-5 h-5 ${RING_COLORS[color]}
-				shadow-sm flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-offset-1 outline-none rounded-md cursor-pointer flex-center
+				shadow-xs shrink-0 focus:outline-hidden focus:ring-2 focus:ring-offset-1 outline-hidden rounded-md cursor-pointer flex-center
 				${
           checked
             ? BACKGROUND_COLORS[color]

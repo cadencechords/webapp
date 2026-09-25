@@ -5,7 +5,7 @@ import { selectCurrentMember } from '../store/authSlice';
 import { PUBLISH_SETLISTS } from '../utils/constants';
 import { reportError } from '../utils/error';
 
-const PUBLIC_URL = process.env.REACT_APP_PUBLIC_URL;
+const PUBLIC_URL = import.meta.env.REACT_APP_PUBLIC_URL;
 
 export default function PublicSetlistSection({ setlist, onChange }) {
   const currentMember = useSelector(selectCurrentMember);

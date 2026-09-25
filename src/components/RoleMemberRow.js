@@ -21,7 +21,7 @@ export default function RoleMemberRow({ role, member }) {
         'flex items-center justify-between h-12 px-3 py-2 border-b sm:h-10 dark:border-dark-gray-600 last:border-0 sm:rounded-lg sm:border-0'
       )}
     >
-      <div className="inline-block overflow-hidden whitespace-nowrap overflow-ellipsis">
+      <div className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
         {member.user.email}
       </div>
       {canRemoveFromRole && (

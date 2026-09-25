@@ -36,7 +36,7 @@ const OutlinedInput = React.forwardRef(
         <div className="flex gap-2">
           <input
             id={id}
-            className={`dark:bg-dark-gray-700 appearance-none transition-all px-3 py-2 shadow-sm border-gray-300 dark:border-dark-gray-400 focus:outline-none outline-none w-full border ${roundedClasses}  focus:ring-offset-1 focus:ring-2 focus:ring-blue-400 dark:focus:ring-offset-dark-gray-700 ${className}`}
+            className={`dark:bg-dark-gray-700 appearance-none transition-all px-3 py-2 shadow-xs border-gray-300 dark:border-dark-gray-400 focus:outline-hidden outline-hidden w-full border ${roundedClasses}  focus:ring-offset-1 focus:ring-2 focus:ring-blue-400 dark:focus:ring-offset-dark-gray-700 ${className}`}
             placeholder={placeholder}
             onBlur={onBlur}
             onFocus={onFocus}
@@ -54,7 +54,7 @@ const OutlinedInput = React.forwardRef(
             <button
               className={
                 'rounded-lg border-gray-300 dark:border-dark-gray-400 border px-2 bg-gray-50 dark:bg-dark-gray-400 ' +
-                ' focus:outline-none outline-none transition-all font-semibold text-sm ' +
+                ' focus:outline-hidden outline-hidden transition-all font-semibold text-sm ' +
                 ' text-gray-600 dark:text-dark-gray-200 ' +
                 `${
                   buttonLoading

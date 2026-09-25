@@ -2,7 +2,7 @@ import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
 
 import axios from "axios";
 
-const ONSONG_URL = process.env.REACT_APP_API_URL + "/onsong";
+const ONSONG_URL = import.meta.env.REACT_APP_API_URL + "/onsong";
 export default class OnsongApi {
 	static unzip(file) {
 		let formData = new FormData();

@@ -1,7 +1,7 @@
 import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 import api from './api';
 
-const BASE_URL = `${process.env.REACT_APP_API_URL}/format_presets`;
+const BASE_URL = `${import.meta.env.REACT_APP_API_URL}/format_presets`;
 
 export default class FormatPresetsApi {
   static getAll() {

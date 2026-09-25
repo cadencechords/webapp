@@ -48,7 +48,7 @@ export default function ImportSongsPage() {
                 width="48"
                 height="48"
                 alt="Mezzo"
-                className="shadow-sm rounded-xl"
+                className="shadow-xs rounded-xl"
               />
             }
           >
@@ -58,7 +58,7 @@ export default function ImportSongsPage() {
             title="File"
             to="/import/files"
             image={
-              <div className="self-start w-12 h-12 bg-white shadow-sm rounded-xl flex-center">
+              <div className="self-start w-12 h-12 bg-white shadow-xs rounded-xl flex-center">
                 <DocumentTextIcon className="w-6 h-6 text-blue-600" />
               </div>
             }

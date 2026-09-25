@@ -55,7 +55,7 @@ export default function NoteDialog({
         placeholder="Type here"
         onChange={e => handleUpdate('content', e.target.value)}
         value={updates.content || ''}
-        className="w-full p-2 mb-4 text-base transition-colors border rounded-md outline-none resize-none border-dark-gray-600 focus:outline-none focus:border-blue-400 dark:focus:border-dark-blue dark:bg-dark-gray-900 "
+        className="w-full p-2 mb-4 text-base transition-colors border rounded-md outline-hidden resize-none border-dark-gray-600 focus:outline-hidden focus:border-blue-400 dark:focus:border-dark-blue dark:bg-dark-gray-900 "
       ></textarea>
       <Label>Note color</Label>
       <NoteColorOption

@@ -92,7 +92,7 @@ export default function LoginPage() {
             <input
               className={classNames(
                 focusedElement === 'email' ? 'z-10' : 'border-b-0',
-                'relative w-full px-4 py-3 border border-gray-300 rounded-b-none outline-none appearance-none rounded-t-xl dark:border-dark-gray-400 focus:outline-none focus:ring-2 ring-offset-1 ring-blue-400 dark:bg-dark-gray-700'
+                'relative w-full px-4 py-3 border border-gray-300 rounded-b-none outline-hidden appearance-none rounded-t-xl dark:border-dark-gray-400 focus:outline-hidden focus:ring-2 ring-offset-1 ring-blue-400 dark:bg-dark-gray-700'
               )}
               placeholder="email"
               type="email"
@@ -106,7 +106,7 @@ export default function LoginPage() {
             <input
               className={classNames(
                 focusedElement === 'password' ? 'z-10' : 'border-t-0',
-                'relative w-full px-4 py-3 border border-gray-300 rounded-t-none shadow-sm outline-none appearance-none rounded-b-xl focus:outline-none dark:border-dark-gray-400 focus:ring-2 ring-offset-1 ring-blue-400 dark:bg-dark-gray-700'
+                'relative w-full px-4 py-3 border border-gray-300 rounded-t-none shadow-xs outline-hidden appearance-none rounded-b-xl focus:outline-hidden dark:border-dark-gray-400 focus:ring-2 ring-offset-1 ring-blue-400 dark:bg-dark-gray-700'
               )}
               placeholder="password"
               type="password"

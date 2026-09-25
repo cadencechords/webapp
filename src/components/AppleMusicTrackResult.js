@@ -37,7 +37,7 @@ export default function AppleMusicTrackResult({ track, selected, onClick }) {
     >
       <Checkbox className="mr-4" checked={selected} onChange={handleClick} />
       <button
-        className={`flex w-full text-left items-center outline-none focus:outline-none `}
+        className={`flex w-full text-left items-center outline-hidden focus:outline-hidden `}
         onClick={() => handleClick(!selected)}
       >
         <img

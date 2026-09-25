@@ -72,7 +72,7 @@ export default function AddMembersToRoleDialog({
                 onChange={checked => handleMemberToggled(member, checked)}
               />
               <button
-                className="w-full text-left outline-none focus:outline-none"
+                className="w-full text-left outline-hidden focus:outline-hidden"
                 onClick={() =>
                   handleMemberToggled(member, !membersToAdd.includes(member.id))
                 }

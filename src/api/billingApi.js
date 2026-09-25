@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 
-const BILLING_URL = process.env.REACT_APP_API_URL + '/billing';
+const BILLING_URL = import.meta.env.REACT_APP_API_URL + '/billing';
 
 export default class BillingApi {
   static createCustomerPortalSession(returnUrl) {

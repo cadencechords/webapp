@@ -40,7 +40,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
       <>
         <div className="grid grid-cols-10 gap-6">
           <div className="flex items-start justify-end col-span-1">
-            <UsersIcon className="flex-shrink-0 w-5 h-5 my-1 text-gray-600 dark:text-dark-gray-200" />
+            <UsersIcon className="shrink-0 w-5 h-5 my-1 text-gray-600 dark:text-dark-gray-200" />
           </div>
           <div className="flex flex-col items-start justify-start col-span-9">
             {event?.memberships?.length > 0 ? (
@@ -58,7 +58,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
             )}
           </div>
           <div className="flex items-start justify-end col-span-1">
-            <BellIcon className="flex-shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
+            <BellIcon className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
           </div>
           <div className="flex items-start justify-start col-span-9">
             {event.reminders_enabled ? (
@@ -74,7 +74,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
           </div>
 
           <div className="flex items-start justify-end col-span-1">
-            <MenuAlt2Icon className="flex-shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
+            <MenuAlt2Icon className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200" />
           </div>
           <div className="flex items-start justify-start col-span-9">
             {event.description ? (
@@ -89,7 +89,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
           {event.setlist && (
             <>
               <div className="flex items-start justify-end col-span-1">
-                <PlaylistIcon className="flex-shrink-0 w-6 h-6 text-gray-600 dark:text-dark-gray-200" />
+                <PlaylistIcon className="shrink-0 w-6 h-6 text-gray-600 dark:text-dark-gray-200" />
               </div>
               <Link
                 className="flex flex-col items-start justify-start col-span-9"

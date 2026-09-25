@@ -2,7 +2,7 @@ import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
 
 import axios from "axios";
 
-const ROLES_URL = process.env.REACT_APP_API_URL + "/roles";
+const ROLES_URL = import.meta.env.REACT_APP_API_URL + "/roles";
 
 export default class RolesApi {
 	static getAll() {

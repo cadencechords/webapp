@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const AUTH_URL = `${process.env.REACT_APP_API_URL}/auth`;
-const WEB_APP_URL = process.env.REACT_APP_URL;
+const AUTH_URL = `${import.meta.env.REACT_APP_API_URL}/auth`;
+const WEB_APP_URL = import.meta.env.REACT_APP_URL;
 
 export default class AuthApi {
   static signUp({
@@ -11,7 +11,7 @@ export default class AuthApi {
     firstName,
     lastName,
   }) {
-    return axios.post(process.env.REACT_APP_API_URL + '/auth', {
+    return axios.post(import.meta.env.REACT_APP_API_URL + '/auth', {
       email,
       password,
       password_confirmation: passwordConfirmation,
@@ -22,7 +22,7 @@ export default class AuthApi {
   }
 
   static login(email, password) {
-    return axios.post(process.env.REACT_APP_API_URL + '/auth/sign_in', {
+    return axios.post(import.meta.env.REACT_APP_API_URL + '/auth/sign_in', {
       email,
       password,
     });

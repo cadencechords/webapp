@@ -130,7 +130,7 @@ export default function SetlistDetailPage() {
           />
         </div>
         <div
-          className="inline-flex items-center flex-grow-0 mb-4 text-gray-500 cursor-pointer"
+          className="inline-flex items-center grow-0 mb-4 text-gray-500 cursor-pointer"
           onClick={handleClickDateDialog}
         >
           <CalendarIcon className="w-4 h-4 mr-2" />

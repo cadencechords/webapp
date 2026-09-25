@@ -75,13 +75,13 @@ export default function MemberCard({
           <ProfilePicture url={member.image_url} />
         </div>
         <div>{currentUserBubble}</div>
-        <div className="overflow-hidden font-semibold overflow-ellipsis">
+        <div className="overflow-hidden font-semibold text-ellipsis">
           {member.first_name
             ? member.first_name + ' ' + member.last_name
             : member.email}
         </div>
         {teamPosition}
-        <div className="flex-grow"></div>
+        <div className="grow"></div>
         <Link to={`/members/${member.id}`}>
           <Button variant="accent" size="xs" full className="mt-2">
             View profile

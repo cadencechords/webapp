@@ -26,7 +26,7 @@ export default function MobileNavLink({ text, to, icon, onClick }) {
     return (
       <button
         onClick={onClick}
-        className="flex-col flex-1 py-1 font-semibold text-gray-500 transition-all rounded outline-none focus:outline-none flex-center hover:text-gray-700 dark:text-dark-gray-200"
+        className="flex-col flex-1 py-1 font-semibold text-gray-500 transition-all rounded-sm outline-hidden focus:outline-hidden flex-center hover:text-gray-700 dark:text-dark-gray-200"
       >
         <span>{icon}</span>
         <span className="text-xs font-normal">{text}</span>

@@ -14,7 +14,7 @@ export default function CalendarHeader({
     <>
       <div className="mb-4 flex-between">
         <div className="flex-1 gap-2 mr-2 flex-center">
-          <h1 className="flex-grow text-2xl font-semibold">{title}</h1>
+          <h1 className="grow text-2xl font-semibold">{title}</h1>
           <Button
             variant="icon"
             size="md"

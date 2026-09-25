@@ -28,7 +28,7 @@ export default function SegmentedControl({
               SIZES[size].label
             } select-none font-medium ${
               selected === option
-                ? 'bg-white dark:bg-dark-gray-700 rounded-full shadow-sm'
+                ? 'bg-white dark:bg-dark-gray-700 rounded-full shadow-xs'
                 : ''
             }`}
             htmlFor={`${name}-segmented-control-${option}`}

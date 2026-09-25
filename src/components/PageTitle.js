@@ -3,8 +3,8 @@ export default function PageTitle({ title, editable, onChange, align, placeholde
 		return (
 			<input
 				className={
-					`bg-transparent appearance-none font-bold p-2 text-2xl w-full outline-none ` +
-					` focus:outline-none focus:bg-gray-100 hover:bg-gray-100 dark:hover:bg-dark-gray-800 dark:focus:bg-dark-gray-800 rounded transition-colors` +
+					`bg-transparent appearance-none font-bold p-2 text-2xl w-full outline-hidden ` +
+					` focus:outline-hidden focus:bg-gray-100 hover:bg-gray-100 dark:hover:bg-dark-gray-800 dark:focus:bg-dark-gray-800 rounded-sm transition-colors` +
 					` ${className}`
 				}
 				value={title || ""}

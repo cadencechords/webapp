@@ -4,7 +4,7 @@ import FileApi from './FileApi';
 import axios from 'axios';
 import api from './api';
 
-const USERS_URL = process.env.REACT_APP_API_URL + '/users';
+const USERS_URL = import.meta.env.REACT_APP_API_URL + '/users';
 
 export default class UserApi {
   static getCurrentUser() {

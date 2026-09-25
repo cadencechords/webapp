@@ -84,7 +84,7 @@ export default function KeyTransposerDialog({
             </div>
             <div className="relative flex-col flex-center">
               <button
-                className="absolute outline-none -top-1 -right-1 focus:outline-none"
+                className="absolute outline-hidden -top-1 -right-1 focus:outline-hidden"
                 onClick={() => handleKeyChange(null)}
               >
                 <TrashIcon className="w-4 h-4 text-red-600 dark:text-dark-red" />

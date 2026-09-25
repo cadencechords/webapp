@@ -3,7 +3,7 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import JoinLinkPage from './JoinLinkPage';
 import axios from 'axios';
 
-jest.mock('axios');
+vi.mock('axios');
 
 test('it should display join details if join link is valid', async () => {
   mockSuccessfulAxiosResponse();

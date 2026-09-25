@@ -10,13 +10,13 @@ export default function SetlistNavigation({ songs, onIndexChange, index }) {
 					full
 					disabled={index === 0}
 					onClick={() => onIndexChange(index - 1)}
-					className="border-r dark:border-dark-gray-600 flex-center overflow-hidden overflow-ellipsis whitespace-nowrap"
+					className="border-r dark:border-dark-gray-600 flex-center overflow-hidden text-ellipsis whitespace-nowrap"
 				>
 					{index === 0 ? (
 						<span className="text-gray-500 dark:text-dark-gray-400">Beginning</span>
 					) : (
 						<>
-							<ArrowNarrowLeftIcon className="h-4 w-4 mr-2 flex-shrink-0" />
+							<ArrowNarrowLeftIcon className="h-4 w-4 mr-2 shrink-0" />
 							{songs[index - 1]?.name}
 						</>
 					)}
@@ -32,7 +32,7 @@ export default function SetlistNavigation({ songs, onIndexChange, index }) {
 					) : (
 						<>
 							{songs[index + 1]?.name}
-							<ArrowNarrowRightIcon className="h-4 w-4 ml-2 flex-shrink-0" />
+							<ArrowNarrowRightIcon className="h-4 w-4 ml-2 shrink-0" />
 						</>
 					)}
 				</MobileMenuButton>

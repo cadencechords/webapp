@@ -2,7 +2,7 @@ import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
 
 import axios from "axios";
 
-const FILES_URL = process.env.REACT_APP_API_URL + "/files";
+const FILES_URL = import.meta.env.REACT_APP_API_URL + "/files";
 
 export default class FileApi {
 	static addImageToUser(image) {

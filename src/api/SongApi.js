@@ -3,7 +3,7 @@ import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 import axios from 'axios';
 import { combineParamValues } from '../utils/ObjectUtils';
 
-const SONGS_URL = process.env.REACT_APP_API_URL + '/songs';
+const SONGS_URL = import.meta.env.REACT_APP_API_URL + '/songs';
 
 export default class SongApi {
   static search(name) {

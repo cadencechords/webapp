@@ -1,7 +1,7 @@
 import axios from "axios";
 import { constructAuthHeaders, getTeamId } from "../utils/AuthUtils";
 
-const THEMES_URL = process.env.REACT_APP_API_URL + "/themes";
+const THEMES_URL = import.meta.env.REACT_APP_API_URL + "/themes";
 
 export default class ThemeApi {
 	static createOne(newTheme) {

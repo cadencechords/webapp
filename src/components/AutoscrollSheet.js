@@ -141,7 +141,7 @@ export default function AutoscrollSheet({
 					}
 				/>
 				<div className="flex-center mb-4">
-					<button className="outline-none focus:outline-none" onClick={handleToggleScroll}>
+					<button className="outline-hidden focus:outline-hidden" onClick={handleToggleScroll}>
 						{isScrolling ? (
 							<PauseIcon className={iconClasses} />
 						) : (
@@ -165,7 +165,7 @@ export default function AutoscrollSheet({
 				<div className={`fixed flex-center flex-col z-10 ${shortcutClasses}`}>
 					<button
 						onClick={() => (isScrolling ? handlePauseScrolling() : handleStartScrolling())}
-						className="focus:outline-none outline-none"
+						className="focus:outline-hidden outline-hidden"
 					>
 						{isScrolling ? (
 							<PauseIcon className={iconClasses} />
@@ -173,7 +173,7 @@ export default function AutoscrollSheet({
 							<PlayIcon className={iconClasses} />
 						)}
 					</button>
-					<button className="focus:outline-none outline-none" onClick={handleStopScrolling}>
+					<button className="focus:outline-hidden outline-hidden" onClick={handleStopScrolling}>
 						<XCircleIcon className="w-10 h-10 text-gray-500 dark:text-dark-gray-200" />
 					</button>
 				</div>

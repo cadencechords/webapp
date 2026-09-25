@@ -47,7 +47,7 @@ export default function OnsongChooseBinderForSongs({
 				{binders?.map((binder) => (
 					<div
 						key={binder.id}
-						className={`rounded-md cursor-pointer flex items-center w-full text-left focus:outline-none outline-none py-2 px-3 ${
+						className={`rounded-md cursor-pointer flex items-center w-full text-left focus:outline-hidden outline-hidden py-2 px-3 ${
 							selectedBinder === binder ? "ring-inset ring-2 ring-blue-400" : ""
 						}`}
 						onClick={() => onSelectBinder(binder)}

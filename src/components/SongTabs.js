@@ -19,7 +19,7 @@ export default function SongTabs({ song, onTrackDeleted, onTracksAdded }) {
     >
       <Tab.List>
         {currentSubscription.isPro && currentMember.can(VIEW_FILES) && (
-          <Tab className="outline-none focus:outline-none">
+          <Tab className="outline-hidden focus:outline-hidden">
             {({ selected }) => (
               <div
                 className={`${
@@ -32,7 +32,7 @@ export default function SongTabs({ song, onTrackDeleted, onTracksAdded }) {
           </Tab>
         )}
         {currentSubscription.isPro && (
-          <Tab className="outline-none focus:outline-none">
+          <Tab className="outline-hidden focus:outline-hidden">
             {({ selected }) => (
               <div
                 className={`${
@@ -45,14 +45,14 @@ export default function SongTabs({ song, onTrackDeleted, onTracksAdded }) {
           </Tab>
         )}
       </Tab.List>
-      <Tab.Panels as="div" className="mt-4 outline-none focus:outline-none">
+      <Tab.Panels as="div" className="mt-4 outline-hidden focus:outline-hidden">
         {currentSubscription.isPro && currentMember.can(VIEW_FILES) && (
-          <Tab.Panel as="div" className="outline-none focus:outline-none">
+          <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
             <SongFilesTab onFilesChange={setFiles} files={files} />
           </Tab.Panel>
         )}
         {currentSubscription.isPro && (
-          <Tab.Panel as="div" className="outline-none focus:outline-none">
+          <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
             <SongTracksTab
               song={song}
               onDeleted={onTrackDeleted}

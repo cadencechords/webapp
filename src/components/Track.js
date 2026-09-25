@@ -45,7 +45,7 @@ export default function Track({ songId, track, onDeleted }) {
     }
   }
   const button = (
-    <div className="mx-2 my-1 text-left outline-none focus:outline-none flex-shrink-0 relative">
+    <div className="mx-2 my-1 text-left outline-hidden focus:outline-hidden shrink-0 relative">
       <img
         src={track.artwork_url}
         alt="Artwork"

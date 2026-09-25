@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const SESSIONS_URL = process.env.REACT_APP_SESSIONS_URL;
+const SESSIONS_URL = import.meta.env.REACT_APP_SESSIONS_URL;
 
 export function findSessionCurrentUserIsHosting(user, sessions) {
   return sessions?.find(s => s.user_id === user.id);
