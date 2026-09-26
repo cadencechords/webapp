@@ -69,17 +69,13 @@ export default function NotesDragDropContext({
 
   async function handleAddNewNote(lineNumber: number) {
     const tempId = Math.random();
-    const note = {
-      id: tempId,
-      content: '',
-      color: 'yellow',
-      line_number: lineNumber,
-    };
+    const newNote = { content: '', color: 'yellow', line_number: lineNumber };
+    const note = { id: tempId, ...newNote };
 
     onAddTempNote(note);
 
     try {
-      const { data } = await notesApi.create(lineNumber, song.id);
+      const { data } = await notesApi.create(song.id, newNote);
       onReplaceTempNote(tempId, data);
     } catch (error) {
       reportError(error);
