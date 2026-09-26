@@ -4,6 +4,7 @@ import { execSync } from 'node:child_process';
 import { render } from '@testing-library/react';
 import Icon from './Icon';
 import { ICONS } from './icons/registry';
+import type { OutlinedIconName } from './icons/registry';
 
 test('renders a decorative SVG sized and colored by CSS', () => {
   const { container } = render(
@@ -35,7 +36,10 @@ test('size sets width and height', () => {
 
 test('unknown icons render nothing and warn', () => {
   const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-  expect(render(<Icon name="not_an_icon" />).container.innerHTML).toBe('');
+  // Unregistered on purpose: the name type rejects it, as a JavaScript caller
+  // or a stale name could still pass it at runtime.
+  const name = 'not_an_icon' as string as OutlinedIconName;
+  expect(render(<Icon name={name} />).container.innerHTML).toBe('');
   expect(warn).toHaveBeenCalled();
   warn.mockRestore();
 });
