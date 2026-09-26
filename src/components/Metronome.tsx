@@ -6,17 +6,29 @@ import OpenInput from './inputs/OpenInput';
 import TapTempo from './TapTempo';
 import Icon from './Icon';
 
-export default function Metronome({ bpm, onBpmChange }) {
+type MetronomeProps = {
+  /** Undefined for a song without a bpm. */
+  bpm?: number;
+  /** Gets undefined from the minus button when there's no bpm. */
+  onBpmChange: (bpm: number | undefined) => void;
+};
+
+export default function Metronome({ bpm, onBpmChange }: MetronomeProps) {
   const [isOn, setIsOn] = useState(false);
   const [metronome] = useState(() => new MetronomeTool(bpm));
   const iconClasses = 'w-14 h-14 text-blue-600 dark:text-dark-blue';
 
-  const handleBpmEdited = newBpm => {
-    if (parseInt(newBpm) >= 0) {
+  // The input passes a string, TapTempo a number.
+  const handleBpmEdited = (newBpm: string | number) => {
+    // `as` (both): parseInt converts its argument to a string first, so a
+    // number from TapTempo parses the same as its string (120.5 to 120).
+    if (parseInt(newBpm as string) >= 0) {
       if (newBpm !== '') {
-        newBpm = Number.parseInt(newBpm);
+        newBpm = Number.parseInt(newBpm as string);
       }
-      onBpmChange(newBpm);
+      // `as`: it's a number here. '' never gets past the check above:
+      // parseInt('') is NaN.
+      onBpmChange(newBpm as number);
     }
   };
 
@@ -54,7 +66,9 @@ export default function Metronome({ bpm, onBpmChange }) {
           variant="open"
           bold
           className="mr-2 text-2xl"
-          onClick={() => onBpmChange(bpm > 0 ? bpm - 1 : bpm)}
+          // Non-null (both): kept as before for a song without a bpm, where
+          // `undefined > 0` is false, so this passes undefined on.
+          onClick={() => onBpmChange(bpm! > 0 ? bpm! - 1 : bpm)}
         >
           <Icon name="remove" className="w-4 h-4" />
         </Button>
@@ -70,7 +84,9 @@ export default function Metronome({ bpm, onBpmChange }) {
           variant="open"
           bold
           className="ml-2 text-2xl"
-          onClick={() => onBpmChange(bpm + 1)}
+          // Non-null: kept as before for a song without a bpm, where this is
+          // NaN (undefined + 1).
+          onClick={() => onBpmChange(bpm! + 1)}
         >
           <Icon name="add" className="w-4 h-4" />
         </Button>

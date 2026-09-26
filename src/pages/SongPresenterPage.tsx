@@ -22,17 +22,21 @@ import Annotations from '../components/Annotations';
 import AnnotationsToolbar from '../components/AnnotationsToolbar';
 import usePerformanceMode from '../hooks/usePerformanceMode';
 import classNames from 'classnames';
+import type { RefObject } from 'react';
+import type { PresentedSong } from '../store/presenterSlice';
+import type { SongPresenterSheet } from '../components/SongPresenterBottomSheet';
+import type { Marking as MarkingModel, Song, SongFormat } from '../types';
 
 export default function SongPresenterPage() {
   // The route's path declares :id, which useParams can't see.
-  const id = /** @type {{ id: string }} */ (useParams()).id;
+  const id = useParams<{ id: string }>().id;
   const song = useSelector(selectSongBeingPresented);
   const { isAnnotating } = usePerformanceMode();
   const dispatch = useDispatch();
   const currentSubscription = useSelector(selectCurrentSubscription);
-  const pageRef = useRef();
+  const pageRef = useRef<HTMLDivElement>();
   const [isAddMarkingsVisible, setIsAddMarkingsVisible] = useState(false);
-  const [bottomSheet, setBottomSheet] = useState();
+  const [bottomSheet, setBottomSheet] = useState<SongPresenterSheet>();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const { data: currentUser } = useCurrentUser({
     refetchOnWindowFocus: false,
@@ -41,7 +45,9 @@ export default function SongPresenterPage() {
         adjustSongBeingPresented({
           format: {
             ...song.format,
-            chords_hidden: format_preferences.hide_chords,
+            // Non-null: kept as before, this throws for a user without
+            // format preferences.
+            chords_hidden: format_preferences!.hide_chords,
           },
         })
       );
@@ -51,7 +57,7 @@ export default function SongPresenterPage() {
   const [showOptionsDrawer, setShowOptionsDrawer] = useState(false);
 
   useEffect(() => {
-    const handler = e => e.preventDefault();
+    const handler = (e: Event) => e.preventDefault();
     document.addEventListener('gesturestart', handler);
     document.addEventListener('gesturechange', handler);
     document.addEventListener('gestureend', handler);
@@ -62,22 +68,27 @@ export default function SongPresenterPage() {
     };
   }, []);
 
-  function handleFormatChange(field, value) {
-    let updatedFormat = { ...song.format, [field]: value };
+  function handleFormatChange(field: keyof SongFormat, value: boolean) {
+    const updatedFormat = { ...song.format, [field]: value };
     dispatch(adjustSongBeingPresented({ format: updatedFormat }));
   }
 
-  function handleSongChange(field, value) {
+  // SongAdjustmentsDrawer passes any of the song's fields, with its value.
+  function handleSongChange(field: keyof Song, value: unknown) {
     dispatch(adjustSongBeingPresented({ [field]: value }));
   }
 
-  function handleDeleteNote(noteIdToDelete) {
-    let filteredNotes = song.notes.filter(note => note.id !== noteIdToDelete);
+  function handleDeleteNote(noteIdToDelete: number) {
+    // Non-null: NotesList renders only for a song with notes.
+    const filteredNotes = song.notes!.filter(
+      note => note.id !== noteIdToDelete
+    );
     dispatch(adjustSongBeingPresented({ notes: filteredNotes }));
   }
 
-  function handleMarkingDeleted(deletedId) {
-    const filteredMarkings = song.markings.filter(
+  function handleMarkingDeleted(deletedId: number) {
+    // Non-null: markings render only for a song with markings.
+    const filteredMarkings = song.markings!.filter(
       marking => marking.id !== deletedId
     );
     dispatch(adjustSongBeingPresented({ markings: filteredMarkings }));
@@ -85,20 +96,23 @@ export default function SongPresenterPage() {
 
   async function handleAddNote() {
     try {
-      let { data } = await notesApi.create(song.id);
-      dispatch(adjustSongBeingPresented({ notes: [...song.notes, data] }));
+      // Non-null (both): kept as before. The page renders, and so offers
+      // this, only with a whole song on screen; one without notes throws.
+      const { data } = await notesApi.create(song.id!);
+      dispatch(adjustSongBeingPresented({ notes: [...song.notes!, data] }));
       setShowOptionsDrawer(false);
     } catch (error) {
       reportError(error);
     }
   }
 
-  function handleMarkingAdded(marking) {
-    const markings = [...song.markings, marking];
+  function handleMarkingAdded(marking: MarkingModel) {
+    // Non-null: kept as before, this throws for a song without markings.
+    const markings = [...song.markings!, marking];
     dispatch(adjustSongBeingPresented({ markings }));
   }
 
-  function handleShowBottomSheet(sheet) {
+  function handleShowBottomSheet(sheet: SongPresenterSheet) {
     setShowBottomSheet(true);
     setShowOptionsDrawer(false);
     setBottomSheet(sheet);
@@ -108,15 +122,22 @@ export default function SongPresenterPage() {
     dispatch(adjustSongBeingPresented({ show_roadmap: !song.show_roadmap }));
   }
 
-  function handleUpdateSong(updates) {
+  function handleUpdateSong(updates: Partial<PresentedSong>) {
     dispatch(adjustSongBeingPresented(updates));
   }
 
   if (song && song.format && currentUser) {
+    // `as PresentedSong` below: SongDetailPage stores a whole song before it
+    // opens this page, so a stored song with a format is a whole one.
     return (
-      <div ref={pageRef} id="page">
+      <div
+        // `as`: React only writes this ref (it starts undefined, as before,
+        // and holds the div once mounted); nothing reads it.
+        ref={pageRef as RefObject<HTMLDivElement>}
+        id="page"
+      >
         <SongPresenterTopBar
-          song={song}
+          song={song as PresentedSong}
           onShowOptionsDrawer={() => setShowOptionsDrawer(true)}
           onAddNote={handleAddNote}
           onUpdateSong={handleUpdateSong}
@@ -130,16 +151,23 @@ export default function SongPresenterPage() {
           )}
         >
           <Roadmap
-            song={song}
+            song={song as PresentedSong}
             onSongChange={handleSongChange}
             onToggleRoadmap={handleToggleRoadmap}
           />
           <div className="relative w-full">
-            {currentSubscription?.isPro && song.notes?.length > 0 && (
-              <NotesList song={song} onDelete={handleDeleteNote} />
-            )}
+            {/* `song.notes &&`: the same as before, `undefined > 0` is false. */}
             {currentSubscription?.isPro &&
-              song.markings?.length > 0 &&
+              song.notes &&
+              song.notes.length > 0 && (
+                <NotesList
+                  song={song as PresentedSong}
+                  onDelete={handleDeleteNote}
+                />
+              )}
+            {currentSubscription?.isPro &&
+              song.markings &&
+              song.markings.length > 0 &&
               song.markings.map(marking => (
                 <Marking
                   marking={marking}
@@ -149,10 +177,15 @@ export default function SongPresenterPage() {
                 />
               ))}
             {currentSubscription?.isPro && song.annotations && (
-              <Annotations annotations={song.annotations} />
+              <Annotations
+                // `as`: Annotations is still JavaScript, and TypeScript
+                // infers never[] from its `= []` default. It takes the song's
+                // annotation paths.
+                annotations={song.annotations as never[]}
+              />
             )}
             <div id="song" className="relative mr-0">
-              {html(song)}
+              {html(song as PresentedSong)}
             </div>
           </div>
         </div>
@@ -160,7 +193,7 @@ export default function SongPresenterPage() {
         <SongAdjustmentsDrawer
           open={showOptionsDrawer}
           onClose={() => setShowOptionsDrawer(false)}
-          song={song}
+          song={song as PresentedSong}
           onFormatChange={handleFormatChange}
           onSongChange={handleSongChange}
           onAddNote={handleAddNote}
@@ -171,7 +204,7 @@ export default function SongPresenterPage() {
           sheet={bottomSheet}
           open={showBottomSheet}
           onClose={() => setShowBottomSheet(false)}
-          song={song}
+          song={song as PresentedSong}
           onSongChange={handleSongChange}
         />
 

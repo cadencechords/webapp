@@ -12,7 +12,8 @@ import { useSelector } from 'react-redux';
 
 type MetronomeSheetProps = {
   song: Song;
-  onSongChange: (field: 'bpm', value: number) => void;
+  /** Gets undefined from the metronome's minus button when there's no bpm. */
+  onSongChange: (field: 'bpm', value: number | undefined) => void;
   className?: string;
 };
 
@@ -21,7 +22,7 @@ export default function MetronomeSheet({
   onSongChange,
   className = '',
 }: MetronomeSheetProps) {
-  const [updates, setUpdates] = useState<{ bpm: number } | null>();
+  const [updates, setUpdates] = useState<{ bpm: number | undefined } | null>();
   const [loading, setLoading] = useState(false);
   const currentMember = useSelector(selectCurrentMember);
 
@@ -29,7 +30,7 @@ export default function MetronomeSheet({
     setUpdates(null);
   }, [song.id]);
 
-  function handleBpmChange(bpm: number) {
+  function handleBpmChange(bpm: number | undefined) {
     // Non-null: kept as before, this throws if the membership hasn't loaded.
     if (currentMember!.can(EDIT_SONGS)) {
       setUpdates({ bpm });

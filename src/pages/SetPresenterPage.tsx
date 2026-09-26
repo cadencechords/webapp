@@ -30,6 +30,10 @@ import AddMarkingsModal from '../components/AddMarkingsModal';
 import AnnotationsToolbar from '../components/AnnotationsToolbar';
 import usePerformanceMode from '../hooks/usePerformanceMode';
 import classNames from 'classnames';
+import type { AxiosError } from 'axios';
+import type { PresentedSong } from '../store/presenterSlice';
+import type { SetPresenterSheet } from '../components/SetPresenterBottomSheet';
+import type { Marking, Setlist } from '../types';
 
 export default function Page() {
   return (
@@ -43,18 +47,19 @@ function SetPresenter() {
   const { isPerforming, isAnnotating } = usePerformanceMode();
   const defaultSessionId = useQuery().get('session_id');
   const setlist = useSelector(selectSetlistBeingPresented);
-  const [songs, setSongs] = useState([]);
+  const [songs, setSongs] = useState<PresentedSong[]>([]);
   const [songBeingViewedIndex, setSongBeingViewedIndex] = useState(0);
-  /** @type {{ id: string }} */
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const router = useHistory();
   const dispatch = useDispatch();
   const [showBottomSheet, setShowBottomSheet] = useState(false);
-  const [bottomSheet, setBottomSheet] = useState('');
+  const [bottomSheet, setBottomSheet] = useState<SetPresenterSheet | ''>('');
   const [showDrawer, setShowDrawer] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAddMarkingsVisible, setIsAddMarkingsVisible] = useState(false);
-  const currentSubscription = useSelector(selectCurrentSubscription);
+  // Non-null: kept as before. SecuredRoutes renders pages once the team is
+  // set, and the subscription is dispatched right after it.
+  const currentSubscription = useSelector(selectCurrentSubscription)!;
   const {
     initializeHostSessionIfExists,
     onSongChange,
@@ -69,7 +74,9 @@ function SetPresenter() {
           ...song,
           format: {
             ...song.format,
-            chords_hidden: format_preferences.hide_chords,
+            // Non-null: kept as before, this throws for a user without
+            // format preferences.
+            chords_hidden: format_preferences!.hide_chords,
           },
         }))
       );
@@ -77,11 +84,11 @@ function SetPresenter() {
   });
 
   useEffect(() => {
-    let intervalId;
+    let intervalId: ReturnType<typeof setInterval> | undefined;
     if (currentSubscription.isPro && !activeSessionDetails.isHost) {
       intervalId = setInterval(async () => {
         try {
-          let { data } = await SessionsApi.getActiveSessions(id);
+          const { data } = await SessionsApi.getActiveSessions(id);
           setSessions(data);
         } catch (error) {
           reportError(error);
@@ -96,19 +103,21 @@ function SetPresenter() {
     async function fetchData() {
       try {
         setLoading(true);
-        let { data } = await SetlistApi.getOne(id);
+        const { data } = await SetlistApi.getOne(id);
 
         document.title = `${data.name} | Sets`;
 
         if (currentSubscription.isPro) {
-          let sessionsResult = await SessionsApi.getActiveSessions(id);
+          const sessionsResult = await SessionsApi.getActiveSessions(id);
           data.sessions = sessionsResult.data;
         }
 
         dispatch(setSetlistBeingPresented(data));
       } catch (e) {
         reportError(e);
-        if (e.response.status === 404) {
+        // `as` and non-null: kept as before, this reads the axios error's
+        // response, and throws for an error without one (a network error).
+        if ((e as AxiosError).response!.status === 404) {
           router.push('/sets');
         }
       } finally {
@@ -123,8 +132,11 @@ function SetPresenter() {
 
   useEffect(() => {
     if (!isEmpty(setlist) && currentSubscription.isPro) {
-      setSessions(setlist.sessions);
-      initializeHostSessionIfExists(setlist);
+      // `as`: a setlist that isn't `{}` was stored whole, by
+      // SetlistDetailPage or fetchData above. Non-null: for a pro team both
+      // store its sessions.
+      setSessions((setlist as Setlist).sessions!);
+      initializeHostSessionIfExists(setlist as Setlist);
     }
   }, [
     setlist,
@@ -136,13 +148,23 @@ function SetPresenter() {
   useEffect(() => {
     const { activeSession, isHost, socket } = activeSessionDetails;
     if (activeSession && !isHost && socket && currentSubscription.isPro) {
-      socket.on('initial data', ({ scrollTop, songIndex }) => {
-        const html = document.querySelector('html');
-        html.scrollTo({ top: scrollTop });
-        setSongBeingViewedIndex(songIndex);
-      });
+      socket.on(
+        'initial data',
+        ({
+          scrollTop,
+          songIndex,
+        }: {
+          scrollTop: number;
+          songIndex: number;
+        }) => {
+          // Non-null: every document has an <html> element.
+          const html = document.querySelector('html')!;
+          html.scrollTo({ top: scrollTop });
+          setSongBeingViewedIndex(songIndex);
+        }
+      );
 
-      socket.on('go to song', newSongIndex =>
+      socket.on('go to song', (newSongIndex: number) =>
         setSongBeingViewedIndex(newSongIndex)
       );
     }
@@ -155,7 +177,9 @@ function SetPresenter() {
           ...song,
           show_transposed: Boolean(song.transposed_key),
           show_capo: Boolean(song.capo),
-          show_roadmap: song.roadmap?.length > 0,
+          // Boolean(song.roadmap && ...): false without a roadmap, as before
+          // (`undefined > 0`).
+          show_roadmap: Boolean(song.roadmap && song.roadmap.length > 0),
         }))
       );
     }
@@ -173,11 +197,12 @@ function SetPresenter() {
     };
   }, [activeSessionDetails.socket]);
 
-  function handleSongBeingViewedIndexChange(index) {
+  function handleSongBeingViewedIndexChange(index: number) {
     if (currentSubscription.isPro) {
       onSongChange(index);
     }
-    let html = document.querySelector('html');
+    // Non-null: every document has an <html> element.
+    const html = document.querySelector('html')!;
     html.scrollTo({
       top: 0,
       behavior: 'smooth',
@@ -185,7 +210,7 @@ function SetPresenter() {
     setSongBeingViewedIndex(index);
   }
 
-  function handleBottomSheetChange(sheet) {
+  function handleBottomSheetChange(sheet: SetPresenterSheet) {
     setShowDrawer(false);
     setShowBottomSheet(true);
     setBottomSheet(sheet);
@@ -194,11 +219,13 @@ function SetPresenter() {
   async function handleAddNote() {
     const song = songs[songBeingViewedIndex];
     try {
-      let { data } = await notesApi.create(song.id);
+      const { data } = await notesApi.create(song.id);
       setSongs(currentSongs => {
         return currentSongs.map((song, index) => {
           return index === songBeingViewedIndex
-            ? { ...song, notes: [...song.notes, data] }
+            ? // Non-null: kept as before, this throws for a song without
+              // notes.
+              { ...song, notes: [...song.notes!, data] }
             : song;
         });
       });
@@ -207,18 +234,20 @@ function SetPresenter() {
     }
   }
 
-  function handleMarkingAdded(marking) {
+  function handleMarkingAdded(marking: Marking) {
     setSongs(currentSongs => {
       return currentSongs.map((song, index) => {
         return index === songBeingViewedIndex
-          ? { ...song, markings: [...song.markings, marking] }
+          ? // Non-null: kept as before, this throws for a song without
+            // markings.
+            { ...song, markings: [...song.markings!, marking] }
           : song;
       });
     });
   }
 
   const handleSongUpdate = useCallback(
-    (field, value) => {
+    <K extends keyof PresentedSong>(field: K, value: PresentedSong[K]) => {
       setSongs(currentSongs => {
         return currentSongs.map((song, index) => {
           return index === songBeingViewedIndex
@@ -234,7 +263,8 @@ function SetPresenter() {
     return <PageLoading />;
   }
 
-  if (setlist?.songs?.length > 0 && currentUser) {
+  // `setlist?.songs &&`: the same as before, `undefined > 0` is false.
+  if (setlist?.songs && setlist.songs.length > 0 && currentUser) {
     return (
       <>
         <SetPresenterTopBar
@@ -285,7 +315,9 @@ function SetPresenter() {
           onClose={() => setShowDrawer(false)}
           onSongUpdate={handleSongUpdate}
           onShowBottomSheet={handleBottomSheetChange}
-          setlist={setlist}
+          // `as`: a setlist with songs was stored whole, by SetlistDetailPage
+          // or fetchData above.
+          setlist={setlist as Setlist}
           currentSongIndex={songBeingViewedIndex}
           onAddNote={handleAddNote}
         />

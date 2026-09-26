@@ -1,6 +1,22 @@
 import AutoscrollSheet from './AutoscrollSheet';
 import BottomSheet from './BottomSheet';
 import MetronomeSheet from './MetronomeSheet';
+import type { Song } from '../types';
+
+/** The bottom sheets the song presenter shows. */
+export type SongPresenterSheet = 'autoscroll' | 'metronome';
+
+type SongPresenterBottomSheetProps = {
+  open: boolean;
+  onClose: () => void;
+  /** Unset until one is picked; then both sheets are hidden. */
+  sheet: SongPresenterSheet | undefined;
+  song: Song;
+  onSongChange: <K extends 'bpm' | 'scroll_speed'>(
+    field: K,
+    value: Song[K]
+  ) => void;
+};
 
 export default function SongPresenterBottomSheet({
   open,
@@ -8,8 +24,8 @@ export default function SongPresenterBottomSheet({
   sheet,
   song,
   onSongChange,
-}) {
-  function isHidden(sheetInQuestion) {
+}: SongPresenterBottomSheetProps) {
+  function isHidden(sheetInQuestion: SongPresenterSheet) {
     return sheet === sheetInQuestion ? '' : 'hidden';
   }
 

@@ -1,27 +1,40 @@
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import type {
+  DraggingStyle,
+  DropResult,
+  NotDraggingStyle,
+} from 'react-beautiful-dnd';
 
 import RoadmapSection from './RoadmapSection';
 import { useState } from 'react';
+
+type RoadmapDragDropContextProps = {
+  /** Section names in play order. */
+  sections: string[];
+  onChange: (sections: string[]) => void;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
+};
 
 export default function RoadmapDragDropContext({
   sections,
   onChange,
   onDragStart,
   onDragEnd,
-}) {
-  const [scrollTimeoutId, setScrollTimeoutId] = useState(
-    /** @type {ReturnType<typeof setTimeout> | undefined} */ (undefined)
-  );
+}: RoadmapDragDropContextProps) {
+  const [scrollTimeoutId, setScrollTimeoutId] = useState<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined);
 
-  function handleDragEnd({ source, destination }) {
+  function handleDragEnd({ source, destination }: DropResult) {
     onDragEnd?.();
     if (!destination) return;
 
-    let reordered = reorder(sections, source.index, destination.index);
+    const reordered = reorder(sections, source.index, destination.index);
     onChange(reordered);
   }
 
-  function reorder(list, startIndex, endIndex) {
+  function reorder(list: string[], startIndex: number, endIndex: number) {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -29,7 +42,10 @@ export default function RoadmapDragDropContext({
     return result;
   }
 
-  function handleChangeSection(updatedSectionName, indexToUpdate) {
+  function handleChangeSection(
+    updatedSectionName: string,
+    indexToUpdate: number
+  ) {
     onChange(
       sections.map((section, index) =>
         index === indexToUpdate ? updatedSectionName : section
@@ -37,11 +53,14 @@ export default function RoadmapDragDropContext({
     );
   }
 
-  function handleDeleteSection(indexToDelete) {
+  function handleDeleteSection(indexToDelete: number) {
     onChange(sections.filter((section, index) => index !== indexToDelete));
   }
 
-  function getItemStyle(isDragging, draggableStyle) {
+  function getItemStyle(
+    isDragging: boolean,
+    draggableStyle: DraggingStyle | NotDraggingStyle | undefined
+  ) {
     return {
       ...draggableStyle,
     };
