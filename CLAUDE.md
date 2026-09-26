@@ -5,19 +5,14 @@ and `docs/icons.md`.
 
 ## TypeScript only
 
-Write new files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`. The
-JavaScript that's left is being converted (Linear project "Web app: convert to
-TypeScript"). Converting a file means renaming it to `.ts`/`.tsx` with
-`git mv` and typing it. Only `public/` (served as-is) is exempt, and Cypress
-(`cypress.config.js`, `cypress/`): Cypress 10 compiles TypeScript through
-the `typescript` package, which has no compiler API in TypeScript 7, so a
-`.ts` config or spec wouldn't load.
+Write files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`: `src` has no
+JavaScript and `tsconfig.json` has `allowJs` off. Only `public/` (served as-is)
+is exempt, and Cypress (`cypress.config.js`, `cypress/`): Cypress 10 compiles
+TypeScript through the `typescript` package, which has no compiler API in
+TypeScript 7, so a `.ts` config or spec wouldn't load.
 
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
-`tsconfig.json` covers `src`, JavaScript included (`checkJs`), and isn't
-`strict`. `tsconfig.strict.json` checks the TypeScript files in `src` again
-with `strict` (the JavaScript gets it as it's converted), so new files must
-pass `strict`. `tsconfig.node.json` covers all other
+`tsconfig.json` covers `src` and is `strict`. `tsconfig.node.json` covers all other
 TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, `.github/`, config files) and is
 `strict`. Write ES modules there as `.mts` (package.json
 has no `"type": "module"`, so a `.ts` file counts as CommonJS). Node strips types without checking them, so
