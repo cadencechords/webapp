@@ -52,13 +52,16 @@ turning rules off in `.oxlintrc.json`.
 ## Pull requests
 
 **Every PR needs an adversarial review first.** Follow
-`.claude/skills/adversarial-review/SKILL.md`: independent reviewer agents
-attack the diff, a skeptic pass verifies each finding, confirmed problems get
-fixed, and a passing review is recorded for the exact commit. The
+`.claude/skills/adversarial-review/SKILL.md`: two independent reviewer agents
+(never more) attack the diff, a skeptic pass verifies each finding, confirmed
+problems get fixed, and a passing review is recorded for the exact commit. The
 `require-adversarial-review` hook (`.claude/settings.json`) blocks
 `create_pull_request` and `gh pr create` until that record exists. It's a
 guardrail, and the review's findings are self-reported. See the end of the
 skill for exactly what it does and doesn't guarantee.
+
+Skip the review only when the user asks for that PR in chat: record a bypass
+with their reason (`record.mts bypass`, see the skill) and say so in the PR.
 
 Branches follow Linear's suggested branch names. Redesign PRs are stacked on
 the branch of the previous issue.
