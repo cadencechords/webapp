@@ -6,7 +6,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
-import Module from 'node:module';
+import Module, { createRequire } from 'node:module';
 
 // typescript-eslint parses with the TypeScript compiler's JavaScript API.
 // TypeScript 7 (the `typescript` package, used by `yarn typecheck`) is a
@@ -16,11 +16,22 @@ import Module from 'node:module';
 // Only the bare `typescript` import is redirected, so type-aware linting
 // (`projectService`, which needs `typescript/lib/tsserverlibrary`) isn't
 // supported. This has to run before typescript-eslint is loaded, hence the
-// dynamic import below.
+// require() below.
 const USES_TS_API =
   /[\\/]node_modules[\\/](@typescript-eslint|typescript-eslint|ts-api-utils)[\\/]/;
-const resolveFilename = Module._resolveFilename;
-Module._resolveFilename = function (request, parent, ...rest) {
+type ResolveFilename = (
+  this: unknown,
+  request: string,
+  parent: { filename?: string | null } | undefined,
+  ...rest: unknown[]
+) => string;
+// _resolveFilename is Node's internal CommonJS resolver: every require() goes
+// through it, but it isn't public API, so @types/node doesn't declare it.
+const CjsModule = Module as typeof Module & {
+  _resolveFilename: ResolveFilename;
+};
+const resolveFilename = CjsModule._resolveFilename;
+CjsModule._resolveFilename = function (request, parent, ...rest) {
   const redirect =
     request === 'typescript' && USES_TS_API.test(parent?.filename ?? '');
   return resolveFilename.call(
@@ -30,7 +41,12 @@ Module._resolveFilename = function (request, parent, ...rest) {
     ...rest
   );
 };
-const { default: tseslint } = await import('typescript-eslint');
+// ESLint loads a TypeScript config through jiti, and jiti would load an
+// import()ed typescript-eslint itself, bypassing the redirect. Node's own
+// require() goes through it.
+const require = createRequire(import.meta.url);
+const tseslint: typeof import('typescript-eslint').default =
+  require('typescript-eslint').default;
 
 export default [
   {
@@ -82,9 +98,11 @@ export default [
     rules: {
       ...tseslint.configs.eslintRecommended.rules,
       // typescript-eslint's recommended rules that don't need type information.
+      // typescript-eslint ships this config; if a release renamed it, this
+      // throws (as it did in JavaScript) rather than silently dropping the rules.
       ...tseslint.configs.recommended.find(
         config => config.name === 'typescript-eslint/recommended'
-      ).rules,
+      )!.rules,
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       'react-hooks/rules-of-hooks': 'error',
@@ -106,7 +124,7 @@ export default [
     languageOptions: { globals: { ...globals.node, ...globals.vitest } },
   },
   {
-    files: ['scripts/**', 'e2e/**', '.claude/**', '*.config.{js,mjs,ts}'],
+    files: ['scripts/**', 'e2e/**', '.claude/**', '*.config.{js,mjs,ts,mts}'],
     languageOptions: { globals: { ...globals.node } },
   },
   {

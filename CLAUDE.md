@@ -21,7 +21,7 @@ any type error fails `yarn typecheck`.
 
 ESLint parses TypeScript with the TypeScript 6 API from
 `@typescript/typescript6`, because TypeScript 7 has no JavaScript API (see
-`eslint.config.mjs`). So `yarn install` warns that typescript-eslint wants
+`eslint.config.mts`). So `yarn install` warns that typescript-eslint wants
 `typescript@<6.1.0`. That's expected: don't downgrade `typescript` to silence
 it. TypeScript files get typescript-eslint's recommended rules (the ones that
 don't need type information), such as `no-explicit-any`.

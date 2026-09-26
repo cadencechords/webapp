@@ -1,4 +1,6 @@
 import { defineConfig, transformWithEsbuild } from 'vite';
+import type { ESBuildOptions, Plugin, Rollup, UserConfig } from 'vite';
+import type { InlineConfig as VitestConfig } from 'vitest/node';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -12,12 +14,14 @@ const jsxInJs = /src\/.*\.js$/;
 // Compiles .ts/.tsx with the same esbuild options as the legacy .js files,
 // but with the loader their extension implies. Once no .js is left in src,
 // delete this and the `esbuild` option and let Vite handle TypeScript itself.
-function typescript() {
-  let options;
+function typescript(): Plugin {
+  let options: ESBuildOptions;
   return {
     name: 'typescript',
     configResolved(config) {
-      const { include, exclude, loader, jsxInject, ...rest } = config.esbuild;
+      // Never false: the config below sets the `esbuild` option.
+      const { include, exclude, loader, jsxInject, ...rest } =
+        config.esbuild as ESBuildOptions;
       options = {
         target: 'esnext',
         charset: 'utf8',
@@ -32,12 +36,16 @@ function typescript() {
     async transform(code, id) {
       if (!/\.(m?ts|tsx)$/.test(id.split('?')[0])) return;
       const { code: js, map } = await transformWithEsbuild(code, id, options);
-      return { code: js, map };
+      // Rollup's SourceMap types sourcesContent entries as string | null, its
+      // map input type as string only. It accepts its own maps either way.
+      return { code: js, map: map as Rollup.ExistingRawSourceMap };
     },
   };
 }
 
-export default defineConfig({
+// Vitest's `test` option augments its own copy of Vite's types (it depends on
+// a different Vite version), not this one, so it's typed here.
+const config: UserConfig & { test: VitestConfig } = {
   // Keep CRA's variable names: REACT_APP_* from the environment (Netlify) or
   // .env files are exposed as import.meta.env.REACT_APP_*.
   envPrefix: 'REACT_APP_',
@@ -108,4 +116,6 @@ export default defineConfig({
     // Its 0.4.0 ESM build has extensionless imports that Node can't load directly.
     server: { deps: { inline: ['@material/material-color-utilities'] } },
   },
-});
+};
+
+export default defineConfig(config);
