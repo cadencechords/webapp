@@ -132,5 +132,8 @@ export const selectCurrentMember = (state: RootState) => {
   };
 };
 
+/** The current user with `permissions` and `can`, once the membership loads. */
+export type CurrentMember = NonNullable<ReturnType<typeof selectCurrentMember>>;
+
 export const selectHasCredentials = (state: RootState) =>
   state.auth.accessToken && state.auth.client && state.auth.uid;
