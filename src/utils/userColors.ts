@@ -1,6 +1,6 @@
 // Render-time mapping for colors users pick (binders, notes, events). The
 // stored names never change; this only decides how they look. Tokens come
-// from scripts/color-tokens.mjs (USER_COLORS). Class names are spelled out so
+// from scripts/color-tokens.mts (USER_COLORS). Class names are spelled out so
 // Tailwind can find them.
 
 /** Tailwind classes for one stored color. */
