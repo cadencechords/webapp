@@ -9,7 +9,9 @@ export default function RoadmapDragDropContext({
   onDragStart,
   onDragEnd,
 }) {
-  const [scrollTimeoutId, setScrollTimeoutId] = useState();
+  const [scrollTimeoutId, setScrollTimeoutId] = useState(
+    /** @type {ReturnType<typeof setTimeout> | undefined} */ (undefined)
+  );
 
   function handleDragEnd({ source, destination }) {
     onDragEnd?.();
@@ -49,7 +51,9 @@ export default function RoadmapDragDropContext({
     if (onDragStart && onDragEnd) {
       onDragStart();
       clearTimeout(scrollTimeoutId);
-      setScrollTimeoutId(setTimeout(onDragEnd), 150);
+      // No delay, as before: the 150 used to be passed to the state setter,
+      // which ignores a second argument, not to `setTimeout`.
+      setScrollTimeoutId(setTimeout(onDragEnd));
     }
   }
 

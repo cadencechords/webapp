@@ -136,6 +136,7 @@ export default function SongDetailPage() {
     );
   }
 
+  /** @param {import('../types').User} currentUser */
   function mergeUserPreferencesWithSongFormat({ format_preferences }) {
     if (song) {
       setSong(previousSong => ({

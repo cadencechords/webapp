@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { render } from '@testing-library/react';

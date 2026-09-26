@@ -2,7 +2,7 @@ import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 
 import axios from 'axios';
 import { combineParamValues } from '../utils/ObjectUtils';
-import type { Binder, Id } from '../types';
+import type { Binder, Id, Song } from '../types';
 
 const BINDERS_URL = import.meta.env.REACT_APP_API_URL + '/binders';
 
@@ -72,9 +72,10 @@ export default class BinderApi {
     );
   }
 
+  /** Responds with the songs added (`useAddSongsToBinder` appends them). */
   static addSongs(binderId: Id, songIds: Id[]) {
     if (songIds.length > 0) {
-      return axios.post<unknown>(
+      return axios.post<Song[]>(
         BINDERS_URL + `/${binderId}/songs`,
         { song_ids: songIds, team_id: getTeamId() },
         { headers: constructAuthHeaders() }
