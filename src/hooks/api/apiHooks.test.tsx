@@ -55,6 +55,16 @@ vi.mock('../../utils/error', () => ({ reportError: vi.fn() }));
  */
 const response = <T,>(data: T) => ({ data }) as AxiosResponse<T>;
 
+/** A request the test finishes with `resolve`. */
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>(r => (resolve = r));
+  return { promise, resolve };
+}
+
+const isInvalidated = (key: string[]) =>
+  queryClient.getQueryState(key)?.isInvalidated;
+
 /** A promise that never settles, for requests still in flight. */
 const pending = () => new Promise<never>(() => {});
 
@@ -134,6 +144,7 @@ describe('optimistic cache updates', () => {
     expect(queryClient.getQueryData<Binder>(['binders', '7'])?.songs).toEqual([
       song(2),
     ]);
+    expect(isInvalidated(['binders', '7'])).toBe(true);
   });
 
   test('useAddMembersToRole appends the new memberships to the cached role', async () => {
@@ -148,20 +159,24 @@ describe('optimistic cache updates', () => {
     act(() => hook.current.run({ memberIds: [2], roleId: 3 }));
 
     await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
+    expect(RolesApi.assignRoleBulk).toHaveBeenCalledWith([2], 3);
     expect(
       queryClient
         .getQueryData<Role>(['roles', '3'])
         ?.memberships?.map(m => m.id)
     ).toEqual([1, 2]);
+    expect(isInvalidated(['roles', '3'])).toBe(true);
   });
 
   test('useRemoveMemberFromRole removes the member before the request finishes', async () => {
     const role: Role = { id: 3, name: 'Editor' };
     role.memberships = [membership(1, role), membership(2, role)];
     queryClient.setQueryData(['roles', '3'], role);
-    vi.mocked(MembershipsApi.assignRole).mockReturnValue(pending());
+    const request = deferred<AxiosResponse<Membership>>();
+    vi.mocked(MembershipsApi.assignRole).mockReturnValue(request.promise);
+    const onSuccess = vi.fn();
 
-    const hook = renderHookValue(() => useRemoveMemberFromRole());
+    const hook = renderHookValue(() => useRemoveMemberFromRole({ onSuccess }));
     act(() => hook.current.run({ memberId: 1, roleId: 3 }));
 
     await waitFor(() =>
@@ -172,6 +187,12 @@ describe('optimistic cache updates', () => {
       ).toEqual([2])
     );
     expect(MembershipsApi.assignRole).toHaveBeenCalledWith(1, 'Member');
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(isInvalidated(['roles', '3'])).toBe(false);
+
+    await act(async () => request.resolve(response(membership(1, role))));
+    await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
+    expect(isInvalidated(['roles', '3'])).toBe(true);
   });
 
   test('useAssignRoleToMember gives the cached member the named role', async () => {
@@ -179,7 +200,8 @@ describe('optimistic cache updates', () => {
     const member: Role = { id: 4, name: 'Member' };
     queryClient.setQueryData(['roles'], [editor, member]);
     queryClient.setQueryData(['members'], [membership(1, member)]);
-    vi.mocked(MembershipsApi.assignRole).mockReturnValue(pending());
+    const request = deferred<AxiosResponse<Membership>>();
+    vi.mocked(MembershipsApi.assignRole).mockReturnValue(request.promise);
 
     const hook = renderHookValue(() => useAssignRoleToMember());
     act(() => hook.current.run({ memberId: 1, roleName: 'Editor' }));
@@ -189,6 +211,13 @@ describe('optimistic cache updates', () => {
         queryClient.getQueryData<Membership[]>(['members'])?.[0].role
       ).toEqual(editor)
     );
+    expect(MembershipsApi.assignRole).toHaveBeenCalledWith(1, 'Editor');
+    expect(isInvalidated(['members'])).toBe(false);
+    expect(isInvalidated(['roles'])).toBe(false);
+
+    await act(async () => request.resolve(response(membership(1, editor))));
+    await waitFor(() => expect(isInvalidated(['members'])).toBe(true));
+    expect(isInvalidated(['roles'])).toBe(true);
   });
 });
 
