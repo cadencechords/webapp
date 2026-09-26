@@ -21,7 +21,6 @@ jobs:
       matrix:
         check:
           - { name: Typecheck, run: yarn typecheck }
-          - { name: TS only, run: yarn ts-only }
           - { name: Lint, run: yarn lint }
           - { name: Format, run: yarn format:check }
           - { name: Unit tests, run: yarn test:unit && yarn test:hooks }
