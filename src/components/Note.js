@@ -54,17 +54,14 @@ export default function Note({
 
   // eslint-disable-next-line
   const debounce = useCallback(
-    _.debounce(
-      async content => {
-        try {
-          NotesApi.update(songId, note.id, { content });
-          onUpdate?.({ content });
-        } catch (error) {
-          reportError(error);
-        }
-      },
-      [1200]
-    ),
+    _.debounce(async content => {
+      try {
+        NotesApi.update(songId, note.id, { content });
+        onUpdate?.({ content });
+      } catch (error) {
+        reportError(error);
+      }
+    }, 1200),
     [songId, note.id]
   );
 
