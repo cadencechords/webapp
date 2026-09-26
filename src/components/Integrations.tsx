@@ -6,8 +6,13 @@ import { setCurrentUser } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import Icon from './Icon';
+import type { User } from '../types';
 
-export default function Integrations({ currentUser }) {
+type IntegrationsProps = {
+  currentUser: User;
+};
+
+export default function Integrations({ currentUser }: IntegrationsProps) {
   const [isDisconnectingPco, setIsDisconnectingPco] = useState(false);
   const dispatch = useDispatch();
 

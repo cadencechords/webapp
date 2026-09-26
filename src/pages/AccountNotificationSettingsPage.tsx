@@ -8,9 +8,10 @@ import settingsApi from '../api/settingsApi';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import Icon from '../components/Icon';
+import type { NotificationSetting } from '../types';
 
 export default function AccountNotificationSettingsPage() {
-  const [settings, setSettings] = useState([]);
+  const [settings, setSettings] = useState<NotificationSetting[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function AccountNotificationSettingsPage() {
     async function fetchData() {
       try {
         setLoading(true);
-        let { data } = await settingsApi.getNotificationSettings();
+        const { data } = await settingsApi.getNotificationSettings();
         setSettings(data);
       } catch (error) {
         reportError(error);
@@ -30,7 +31,7 @@ export default function AccountNotificationSettingsPage() {
     fetchData();
   }, []);
 
-  function handleSettingChanged(updatedSetting) {
+  function handleSettingChanged(updatedSetting: NotificationSetting) {
     setSettings(currentSettings => {
       return currentSettings.map(setting =>
         setting.id === updatedSetting.id ? updatedSetting : setting

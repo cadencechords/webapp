@@ -33,7 +33,7 @@ export default function AccountGeneralSettingsPage() {
           </div>
         ) : (
           <div className="text-center">
-            You haven't provided your name yet. You can do that
+            You haven&apos;t provided your name yet. You can do that
             <Link to="/account/profile"> here</Link>
           </div>
         )}

@@ -8,7 +8,7 @@ export default function CustomerPortalSessionGeneratorPage() {
   useEffect(() => {
     async function fetchSession() {
       try {
-        let { data } = await billingApi.createCustomerPortalSession();
+        const { data } = await billingApi.createCustomerPortalSession();
         window.location.href = data.url;
       } catch (error) {
         reportError(error);
