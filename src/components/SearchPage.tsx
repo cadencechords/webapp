@@ -29,7 +29,7 @@ export default function SearchPage() {
     document.title = 'Search';
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
     _.debounce(async (nameToSearchFor: string) => {
       if (nameToSearchFor && nameToSearchFor !== '') {

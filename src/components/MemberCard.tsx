@@ -35,7 +35,7 @@ export default function MemberCard({
     debounce(newPosition);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
     _.debounce((newPosition: string) => {
       try {

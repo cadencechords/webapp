@@ -335,7 +335,7 @@ test('determineCapos sorts the common keys and throws without a key', () => {
   expect(commonKeys.map(capo => capo.capoKey)).toEqual(['G', 'C', 'D', 'A']);
   expect(commonKeys.map(capo => capo.capoNumber)).toEqual([2, 9, 7, 0]);
   expect(uncommonKeys.map(capo => capo.capoNumber)).toEqual(
-    [...uncommonKeys.map(capo => capo.capoNumber)].sort((a, b) => a - b)
+    uncommonKeys.map(capo => capo.capoNumber).sort((a, b) => a - b)
   );
   expect(() => determineCapos(undefined)).toThrow(TypeError);
 });
