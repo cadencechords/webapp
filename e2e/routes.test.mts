@@ -1,4 +1,4 @@
-// Unit tests for the route list. Run with: node --test e2e/
+// Unit tests for the route list. Run with: yarn e2e:unit
 import test from 'node:test';
 import assert from 'node:assert';
 import { AUTHED_ROUTES, PUBLIC_ROUTES, resolveRoutes } from './routes.mts';
