@@ -6,7 +6,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, type ComponentProps, type ReactNode } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import type { AxiosResponse } from 'axios';
 import EventsApi from '../api/eventsApi';
@@ -44,11 +44,18 @@ import type {
   Setlist,
 } from '../types';
 
-vi.mock('../api/eventsApi', () => ({ default: { delete: vi.fn() } }));
-vi.mock('../api/SetlistApi', () => ({
-  default: { getAll: vi.fn(), getOne: vi.fn() },
+vi.mock('../api/eventsApi', () => ({
+  default: { delete: vi.fn<typeof EventsApi.delete>() },
 }));
-vi.mock('../api/TeamApi', () => ({ default: { getMemberships: vi.fn() } }));
+vi.mock('../api/SetlistApi', () => ({
+  default: {
+    getAll: vi.fn<typeof SetlistApi.getAll>(),
+    getOne: vi.fn<typeof SetlistApi.getOne>(),
+  },
+}));
+vi.mock('../api/TeamApi', () => ({
+  default: { getMemberships: vi.fn<typeof TeamApi.getMemberships>() },
+}));
 
 /**
  * A response with just `data`. A cast, because the hooks read nothing else
@@ -296,7 +303,7 @@ describe('EventMembers', () => {
     vi.mocked(TeamApi.getMemberships).mockResolvedValue(
       response<Membership[]>([ana, bo])
     );
-    const onChange = vi.fn();
+    const onChange = vi.fn<ComponentProps<typeof EventMembers>['onChange']>();
     renderWithProvider(<EventMembers members={members} onChange={onChange} />);
     return onChange;
   }
@@ -363,10 +370,12 @@ const eventPermissions = {
   },
 };
 
+type EventDetailSheetProps = ComponentProps<typeof EventDetailSheet>;
+
 describe('EventDetailSheet', () => {
   function renderSheet(sheetEvent: CalendarEvent | null) {
-    const onDeleted = vi.fn();
-    const onCloseDialog = vi.fn();
+    const onDeleted = vi.fn<EventDetailSheetProps['onDeleted']>();
+    const onCloseDialog = vi.fn<EventDetailSheetProps['onCloseDialog']>();
     const rendered = renderWithProvider(
       <MemoryRouter>
         <EventFormProvider>
@@ -421,6 +430,8 @@ describe('EventDetailSheet', () => {
   });
 });
 
+type EventDetailProps = ComponentProps<typeof EventDetail>;
+
 describe('EventDetail', () => {
   test('lists the members, or says there are none', () => {
     const { rerender } = render(<EventDetail event={event} />);
@@ -435,8 +446,8 @@ describe('EventDetail', () => {
   });
 
   test('shows the buttons the member may use', () => {
-    const onDelete = vi.fn();
-    const onEdit = vi.fn();
+    const onDelete = vi.fn<NonNullable<EventDetailProps['onDelete']>>();
+    const onEdit = vi.fn<NonNullable<EventDetailProps['onEdit']>>();
     const currentMember = {
       id: 1,
       email: 'ana@example.com',
@@ -459,6 +470,10 @@ describe('EventDetail', () => {
   });
 });
 
+type CalendarProps = ComponentProps<typeof Calendar>;
+type CalendarBodyProps = ComponentProps<typeof CalendarBody>;
+type CalendarHeaderProps = ComponentProps<typeof CalendarHeader>;
+
 describe('calendar', () => {
   afterEach(() => {
     vi.useRealTimers();
@@ -466,7 +481,7 @@ describe('calendar', () => {
   });
 
   test('CalendarEventEntry shows the time and title in the event color', () => {
-    const onClick = vi.fn();
+    const onClick = vi.fn<(event: CalendarEvent) => void>();
     render(<CalendarEventEntry event={event} onClick={onClick} />);
     const button = screen.getByRole('button');
     expect(button).toHaveTextContent('7:30pm Practice');
@@ -480,7 +495,7 @@ describe('calendar', () => {
     render(
       <CalendarEventEntry
         event={{ ...event, color: undefined }}
-        onClick={vi.fn()}
+        onClick={vi.fn<(event: CalendarEvent) => void>()}
       />
     );
     expect(screen.getByRole('button').className).toContain('text-black');
@@ -488,12 +503,15 @@ describe('calendar', () => {
 
   test('CalendarEventEntry follows its event color, including to none', () => {
     const { rerender } = render(
-      <CalendarEventEntry event={event} onClick={vi.fn()} />
+      <CalendarEventEntry
+        event={event}
+        onClick={vi.fn<(event: CalendarEvent) => void>()}
+      />
     );
     rerender(
       <CalendarEventEntry
         event={{ ...event, color: undefined }}
-        onClick={vi.fn()}
+        onClick={vi.fn<(event: CalendarEvent) => void>()}
       />
     );
     const button = screen.getByRole('button');
@@ -518,8 +536,8 @@ describe('calendar', () => {
         <EventFormProvider>
           <Calendar
             events={[event]}
-            onEventDeleted={vi.fn()}
-            onEventUpdated={vi.fn()}
+            onEventDeleted={vi.fn<CalendarProps['onEventDeleted']>()}
+            onEventUpdated={vi.fn<CalendarProps['onEventUpdated']>()}
           />
         </EventFormProvider>
       </MemoryRouter>,
@@ -551,8 +569,8 @@ describe('calendar', () => {
     const calendar = (events: CalendarEvent[]) => (
       <Calendar
         events={events}
-        onEventDeleted={vi.fn()}
-        onEventUpdated={vi.fn()}
+        onEventDeleted={vi.fn<CalendarProps['onEventDeleted']>()}
+        onEventUpdated={vi.fn<CalendarProps['onEventUpdated']>()}
       />
     );
     const { rerender } = render(calendar([september]));
@@ -582,14 +600,14 @@ describe('calendar', () => {
       <CalendarBody
         weeks={getCalendarDates(month, year)}
         events={[]}
-        onEventClick={vi.fn()}
+        onEventClick={vi.fn<CalendarBodyProps['onEventClick']>()}
       />
     );
     expect(container.firstElementChild?.children).toHaveLength(rowCount);
   });
 
   test('CalendarBody shows the events on their days', () => {
-    const onEventClick = vi.fn();
+    const onEventClick = vi.fn<CalendarBodyProps['onEventClick']>();
     render(
       <CalendarBody
         weeks={getCalendarDates(4, 2024)}
@@ -603,14 +621,17 @@ describe('calendar', () => {
 
   test('CalendarBody renders nothing without weeks', () => {
     const { container } = render(
-      <CalendarBody events={[]} onEventClick={vi.fn()} />
+      <CalendarBody
+        events={[]}
+        onEventClick={vi.fn<CalendarBodyProps['onEventClick']>()}
+      />
     );
     expect(container).toBeEmptyDOMElement();
   });
 
   test('CalendarHeader changes the month and offers a new event', () => {
-    const onNextMonth = vi.fn();
-    const onPreviousMonth = vi.fn();
+    const onNextMonth = vi.fn<CalendarHeaderProps['onNextMonth']>();
+    const onPreviousMonth = vi.fn<CalendarHeaderProps['onPreviousMonth']>();
     const { rerender } = render(
       <MemoryRouter>
         <CalendarHeader
@@ -646,19 +667,28 @@ describe('calendar', () => {
   });
 });
 
+type ReminderTimesListBoxProps = ComponentProps<typeof ReminderTimesListBox>;
+
 describe('ReminderTimesListBox', () => {
   test('shows the selected time, or 1 hour before', () => {
     const { rerender } = render(
-      <ReminderTimesListBox selectedTime={24} onChange={vi.fn()} />
+      <ReminderTimesListBox
+        selectedTime={24}
+        onChange={vi.fn<ReminderTimesListBoxProps['onChange']>()}
+      />
     );
     expect(screen.getByRole('button')).toHaveTextContent('1 day before');
 
-    rerender(<ReminderTimesListBox onChange={vi.fn()} />);
+    rerender(
+      <ReminderTimesListBox
+        onChange={vi.fn<ReminderTimesListBoxProps['onChange']>()}
+      />
+    );
     expect(screen.getByRole('button')).toHaveTextContent('1 hour before');
   });
 
   test('reports the hours of the chosen time', async () => {
-    const onChange = vi.fn();
+    const onChange = vi.fn<ReminderTimesListBoxProps['onChange']>();
     render(<ReminderTimesListBox selectedTime={1} onChange={onChange} />);
     fireEvent.click(screen.getByRole('button'));
     fireEvent.click(await screen.findByText('1 week before'));
@@ -668,7 +698,8 @@ describe('ReminderTimesListBox', () => {
 
 describe('WizardStepLink', () => {
   test('highlights the active step', () => {
-    const onClick = vi.fn();
+    const onClick =
+      vi.fn<NonNullable<ComponentProps<typeof WizardStepLink>['onClick']>>();
     const { rerender } = render(
       <WizardStepLink active className="extra" onClick={onClick}>
         Details

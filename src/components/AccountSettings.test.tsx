@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ComponentProps } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { MessageProvider, type MessageContextValue } from 'stream-chat-react';
 import type { StreamMessage } from 'stream-chat-react';
@@ -7,6 +8,7 @@ import FileApi from '../api/FileApi';
 import PcoApi from '../api/PlanningCenterApi';
 import settingsApi from '../api/settingsApi';
 import useSubscription from '../hooks/api/useSubscription';
+import type useCreateCustomerPortalSession from '../hooks/api/useCreateCustomerProtalSession';
 import { useUpdateCurrentUser } from '../hooks/api/currentUser.hooks';
 import AccountAppearancePage from '../pages/AccountAppearancePage';
 import AccountNotificationSettingsPage from '../pages/AccountNotificationSettingsPage';
@@ -31,13 +33,16 @@ vi.mock('../api/PlanningCenterApi');
 vi.mock('../api/settingsApi');
 vi.mock('../hooks/api/useSubscription');
 vi.mock('../hooks/api/useCreateCustomerProtalSession', () => ({
-  default: () => ({ isLoading: false, run: vi.fn() }),
+  default: () => ({
+    isLoading: false,
+    run: vi.fn<ReturnType<typeof useCreateCustomerPortalSession>['run']>(),
+  }),
 }));
 vi.mock('../hooks/api/currentUser.hooks', () => ({
   useCurrentUser: () => ({
     data: { id: 1, email: 'a@b.c', format_preferences: { hide_chords: false } },
   }),
-  useUpdateCurrentUser: vi.fn(),
+  useUpdateCurrentUser: vi.fn<typeof useUpdateCurrentUser>(),
 }));
 vi.mock('../utils/error');
 
@@ -65,7 +70,7 @@ test('MessageOptions offers reactions except on polls and hides for errors', () 
     const value = {
       getMessageActions: () => ['react'],
       message: message(fields),
-      onReactionListClick: vi.fn(),
+      onReactionListClick: vi.fn<MessageContextValue['onReactionListClick']>(),
     } as unknown as MessageContextValue;
     return render(
       <MessageProvider value={value}>
@@ -98,13 +103,13 @@ test.each([
 ])('MessageActions for mine=%s, poll=%s offers %j', (mine, poll, actions) => {
   // `as`: MessageActions reads only these fields of the message context.
   const value = {
-    handleDelete: vi.fn(),
-    handleFlag: vi.fn(),
-    handleMute: vi.fn(),
-    handlePin: vi.fn(),
+    handleDelete: vi.fn<MessageContextValue['handleDelete']>(),
+    handleFlag: vi.fn<MessageContextValue['handleFlag']>(),
+    handleMute: vi.fn<MessageContextValue['handleMute']>(),
+    handlePin: vi.fn<MessageContextValue['handlePin']>(),
     isMyMessage: () => mine,
     message: message(poll ? { attachments: [{ type: 'poll' }] } : {}),
-    setEditingState: vi.fn(),
+    setEditingState: vi.fn<MessageContextValue['setEditingState']>(),
   } as unknown as MessageContextValue;
   render(
     <MessageProvider value={value}>
@@ -126,7 +131,8 @@ test.each([
 });
 
 test('NotificationSetting toggles each channel and saves it', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<ComponentProps<typeof NotificationSetting>['onChange']>();
   const setting: NotificationSettingModel = {
     id: 7,
     notification_type: 'Event reminder',
@@ -160,7 +166,10 @@ test('NotificationSetting toggles each channel and saves it', () => {
 
 test('NotificationSetting renders without a setting', () => {
   const { container } = render(
-    <NotificationSetting setting={undefined} onChange={vi.fn()} />
+    <NotificationSetting
+      setting={undefined}
+      onChange={vi.fn<ComponentProps<typeof NotificationSetting>['onChange']>()}
+    />
   );
   expect(container.textContent).toContain('Email');
 });
@@ -197,7 +206,7 @@ test('AccountNotificationSettingsPage shows the event reminder setting and updat
 });
 
 test('TeamPlanOption picks its plan by name', () => {
-  const onClick = vi.fn();
+  const onClick = vi.fn<ComponentProps<typeof TeamPlanOption>['onClick']>();
   const { container, rerender } = render(
     <TeamPlanOption
       name="Pro"
@@ -262,7 +271,7 @@ test('BillingPage shows the trial end date while trialing', () => {
 });
 
 test('AccountAppearancePage saves the hide chords preference', () => {
-  const run = vi.fn();
+  const run = vi.fn<ReturnType<typeof useUpdateCurrentUser>['run']>();
   vi.mocked(useUpdateCurrentUser).mockReturnValue({
     run,
     isLoading: false,
@@ -303,8 +312,8 @@ describe('ProfilePictureDetail', () => {
   const currentUser = { id: 1, email: 'a@b.c', image_url: 'old.png' };
 
   beforeEach(() => {
-    URL.createObjectURL = vi.fn(() => 'blob:temp');
-    URL.revokeObjectURL = vi.fn();
+    URL.createObjectURL = vi.fn<typeof URL.createObjectURL>(() => 'blob:temp');
+    URL.revokeObjectURL = vi.fn<typeof URL.revokeObjectURL>();
   });
 
   function selectImage(container: HTMLElement, file: File) {

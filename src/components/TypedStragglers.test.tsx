@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import type { ReactElement } from 'react';
+import type { ComponentProps, ReactElement } from 'react';
 import { renderWithProvider } from '../utils/test';
 import { Crescendo, Decrescendo, NarrowArrow } from '../icons/markings';
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog';
@@ -52,7 +52,8 @@ test('NotesList renders one note per song note, with no wrapper', () => {
 });
 
 test('TimeInput parses its default value and reports typed times', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<NonNullable<ComponentProps<typeof TimeInput>['onChange']>>();
   render(<TimeInput defaultValue="7:30 PM" onChange={onChange} />);
   const [hour, minute] = screen.getAllByPlaceholderText('00');
   expect(hour).toHaveValue('7');
@@ -126,7 +127,8 @@ test('ConfirmDeleteDialog has a default message', () => {
 
 test('DetailSection shows edit controls only when editable', () => {
   const items = [{ id: 3, name: 'Rock' }];
-  const onDelete = vi.fn();
+  const onDelete =
+    vi.fn<NonNullable<ComponentProps<typeof DetailSection>['onDelete']>>();
   const { container, rerender } = render(
     <DetailSection title="Genres" items={items} onDelete={onDelete} />
   );
@@ -144,7 +146,7 @@ test('DetailSection shows edit controls only when editable', () => {
 });
 
 test('MobileNavLink renders a link for a route and a button otherwise', () => {
-  const onClick = vi.fn();
+  const onClick = vi.fn<() => void>();
   render(
     <MemoryRouter>
       <MobileNavLink to="/songs" text="Songs" />
@@ -160,8 +162,9 @@ test('MobileNavLink renders a link for a route and a button otherwise', () => {
 });
 
 test('IconButton and TrackSourceButton call their handlers', () => {
-  const onIconClick = vi.fn();
-  const onSourceClick = vi.fn();
+  const onIconClick = vi.fn<() => void>();
+  const onSourceClick =
+    vi.fn<ComponentProps<typeof TrackSourceButton>['onClick']>();
   render(
     <>
       <IconButton color="blue" onClick={onIconClick}>

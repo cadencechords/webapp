@@ -1,5 +1,6 @@
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import type { AxiosResponse } from 'axios';
+import type { ComponentProps } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { renderWithProvider } from '../utils/test';
 import BinderApi from '../api/BinderApi';
@@ -134,7 +135,8 @@ test('SetlistRow and BinderRow count songs, plural unless exactly one', () => {
 });
 
 test('SetlistsTabs maps the tab index to upcoming and past', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<NonNullable<ComponentProps<typeof SetlistsTabs>['onChange']>>();
   renderWithProvider(
     <SetlistsTabs selectedTab="upcoming" onChange={onChange} />
   );
@@ -144,11 +146,16 @@ test('SetlistsTabs maps the tab index to upcoming and past', () => {
   expect(onChange).toHaveBeenLastCalledWith('past');
 });
 
+type SetlistOptionsPopoverProps = ComponentProps<typeof SetlistOptionsPopover>;
+
 test('SetlistOptionsPopover hides without songs or the delete permission, and offers Perform only with songs', () => {
   const setlist: Setlist = { id: 8, name: 'Set', songs: [] };
   const { container } = renderWithProvider(
     <MemoryRouter>
-      <SetlistOptionsPopover setlist={setlist} onPerform={vi.fn()} />
+      <SetlistOptionsPopover
+        setlist={setlist}
+        onPerform={vi.fn<SetlistOptionsPopoverProps['onPerform']>()}
+      />
     </MemoryRouter>,
     { preloadedState: state([]) }
   );
@@ -157,7 +164,10 @@ test('SetlistOptionsPopover hides without songs or the delete permission, and of
   // With the delete permission it shows, but with no Perform for no songs.
   const { container: canDelete, unmount } = renderWithProvider(
     <MemoryRouter>
-      <SetlistOptionsPopover setlist={setlist} onPerform={vi.fn()} />
+      <SetlistOptionsPopover
+        setlist={setlist}
+        onPerform={vi.fn<SetlistOptionsPopoverProps['onPerform']>()}
+      />
     </MemoryRouter>,
     { preloadedState: state([DELETE_SETLISTS]) }
   );
@@ -166,7 +176,7 @@ test('SetlistOptionsPopover hides without songs or the delete permission, and of
   expect(screen.queryByText('Perform')).not.toBeInTheDocument();
   unmount();
 
-  const onPerform = vi.fn();
+  const onPerform = vi.fn<SetlistOptionsPopoverProps['onPerform']>();
   const { container: withSongs } = renderWithProvider(
     <MemoryRouter>
       <SetlistOptionsPopover
@@ -182,11 +192,13 @@ test('SetlistOptionsPopover hides without songs or the delete permission, and of
   expect(screen.queryByText('Delete')).not.toBeInTheDocument();
 });
 
+type SetlistSongsListProps = ComponentProps<typeof SetlistSongsList>;
+
 test('SetlistSongsList shows a message for no songs or unloaded songs', () => {
   const props = {
-    onSongsAdded: vi.fn(),
-    onReordered: vi.fn(),
-    onSongRemoved: vi.fn(),
+    onSongsAdded: vi.fn<SetlistSongsListProps['onSongsAdded']>(),
+    onReordered: vi.fn<SetlistSongsListProps['onReordered']>(),
+    onSongRemoved: vi.fn<SetlistSongsListProps['onSongRemoved']>(),
   };
   const { rerender } = renderWithProvider(
     <MemoryRouter>
@@ -242,6 +254,8 @@ test('BinderSongsList filters by more than one letter and shows a still-empty bi
   expect(screen.getByText('No songs to show')).toBeInTheDocument();
 });
 
+type AddSongsToSetDialogProps = ComponentProps<typeof AddSongsToSetDialog>;
+
 test('AddSongsToSetDialog lists the unbound songs and adds the picked ones to the routed set', async () => {
   vi.spyOn(SongApi, 'getAll').mockResolvedValue(
     response([song(1, 'Bound'), song(2, 'Free'), song(3, 'Other')])
@@ -250,8 +264,8 @@ test('AddSongsToSetDialog lists the unbound songs and adds the picked ones to th
   const addSongs = vi
     .spyOn(SetlistApi, 'addSongs')
     .mockResolvedValue(response(added));
-  const onAdded = vi.fn();
-  const onCloseDialog = vi.fn();
+  const onAdded = vi.fn<AddSongsToSetDialogProps['onAdded']>();
+  const onCloseDialog = vi.fn<AddSongsToSetDialogProps['onCloseDialog']>();
   renderWithProvider(
     <MemoryRouter initialEntries={['/sets/12']}>
       <Route path="/sets/:id">
@@ -282,7 +296,12 @@ test('CreateSetlistDialog asks to add a calendar event only for pro teams that c
   async function create(permissions: string[], isPro: boolean) {
     const { unmount } = renderWithProvider(
       <MemoryRouter>
-        <CreateSetlistDialog open onCloseDialog={vi.fn()} />
+        <CreateSetlistDialog
+          open
+          onCloseDialog={vi.fn<
+            ComponentProps<typeof CreateSetlistDialog>['onCloseDialog']
+          >()}
+        />
       </MemoryRouter>,
       { preloadedState: state(permissions, { isPro }) }
     );
@@ -328,7 +347,12 @@ test('SearchDialog searches binders, songs and sets once typing pauses', async (
     .mockResolvedValue(response([{ id: 3, name: 'Grace set' }]));
   renderWithProvider(
     <MemoryRouter>
-      <SearchDialog open onCloseDialog={vi.fn()} />
+      <SearchDialog
+        open
+        onCloseDialog={vi.fn<
+          ComponentProps<typeof SearchDialog>['onCloseDialog']
+        >()}
+      />
     </MemoryRouter>
   );
   const input = screen.getByPlaceholderText(

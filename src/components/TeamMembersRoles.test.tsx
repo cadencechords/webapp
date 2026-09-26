@@ -1,5 +1,6 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
+import type { ComponentProps } from 'react';
 import type { AxiosResponse } from 'axios';
 import InvitationApi from '../api/InvitationApi';
 import MembershipsApi from '../api/membershipsApi';
@@ -77,8 +78,10 @@ describe('SendInvitesDialog', () => {
     vi.mocked(InvitationApi.createOne).mockResolvedValueOnce(
       response(invitation)
     );
-    const onInviteSent = vi.fn();
-    const onCloseDialog = vi.fn();
+    const onInviteSent =
+      vi.fn<ComponentProps<typeof SendInvitesDialog>['onInviteSent']>();
+    const onCloseDialog =
+      vi.fn<ComponentProps<typeof SendInvitesDialog>['onCloseDialog']>();
     renderWithProvider(
       <SendInvitesDialog
         open
@@ -127,7 +130,10 @@ describe('PendingInvitationsList', () => {
 
   test('lists when each invitation was sent, and deletes one', async () => {
     vi.mocked(InvitationApi.deleteOne).mockResolvedValueOnce(response({}));
-    const onInvitationDeleted = vi.fn();
+    const onInvitationDeleted =
+      vi.fn<
+        ComponentProps<typeof PendingInvitationsList>['onInvitationDeleted']
+      >();
     renderWithProvider(
       <PendingInvitationsList
         invitations={[invitation]}
@@ -189,7 +195,8 @@ describe('JoinLinkSection', () => {
 describe('MemberCard', () => {
   test("saves the current user's position a second after they stop typing", () => {
     vi.useFakeTimers();
-    const onPositionChanged = vi.fn();
+    const onPositionChanged =
+      vi.fn<ComponentProps<typeof MemberCard>['onPositionChanged']>();
     renderWithProvider(
       <MemoryRouter>
         <MemberCard
@@ -233,7 +240,8 @@ describe('RolePermissions', () => {
   test('toggles a permission on and off for the role', async () => {
     vi.mocked(RolesApi.addPermission).mockResolvedValue(response({}));
     vi.mocked(RolesApi.removePermission).mockResolvedValue(response({}));
-    const onPermissionToggled = vi.fn();
+    const onPermissionToggled =
+      vi.fn<ComponentProps<typeof RolePermissions>['onPermissionToggled']>();
     renderWithProvider(
       <RolePermissions role={role} onPermissionToggled={onPermissionToggled} />,
       { preloadedState: auth([EDIT_ROLES]) }
@@ -253,7 +261,8 @@ describe('RolePermissions', () => {
   });
 
   test("the admin role's permissions can't be changed", () => {
-    const onPermissionToggled = vi.fn();
+    const onPermissionToggled =
+      vi.fn<ComponentProps<typeof RolePermissions>['onPermissionToggled']>();
     renderWithProvider(
       <RolePermissions
         role={{ ...role, is_admin: true }}

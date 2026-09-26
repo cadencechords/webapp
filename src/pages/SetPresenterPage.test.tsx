@@ -7,6 +7,7 @@ import {
   setSongBeingPresented,
   type PresentedSong,
 } from '../store/presenterSlice';
+import type { SessionsContextValue } from '../contexts/SessionsProvider';
 import SetPresenterPage from './SetPresenterPage';
 import type { Setlist, Song } from '../types';
 
@@ -15,11 +16,12 @@ import type { Setlist, Song } from '../types';
 vi.mock('../contexts/SessionsProvider', () => ({
   default: ({ children }: { children?: ReactNode }) => <>{children}</>,
   useSessionsContext: () => ({
-    initializeHostSessionIfExists: vi.fn(),
-    onSongChange: vi.fn(),
-    setSessions: vi.fn(),
+    initializeHostSessionIfExists:
+      vi.fn<SessionsContextValue['initializeHostSessionIfExists']>(),
+    onSongChange: vi.fn<SessionsContextValue['onSongChange']>(),
+    setSessions: vi.fn<SessionsContextValue['setSessions']>(),
     activeSessionDetails: {},
-    onTryToJoinAsMember: vi.fn(),
+    onTryToJoinAsMember: vi.fn<SessionsContextValue['onTryToJoinAsMember']>(),
   }),
 }));
 vi.mock('../hooks/api/currentUser.hooks', () => ({

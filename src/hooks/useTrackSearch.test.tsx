@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import useTrackSearch from './useTrackSearch';
 import { reportError } from '../utils/error';
 
-vi.mock('../utils/error', () => ({ reportError: vi.fn() }));
+vi.mock('../utils/error', () => ({ reportError: vi.fn<typeof reportError>() }));
 
 // The track search lists' loading, results and empty states (CAD-144).
 

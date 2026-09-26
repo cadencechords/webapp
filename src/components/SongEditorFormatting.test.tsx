@@ -5,7 +5,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import { useEffect } from 'react';
+import { useEffect, type ComponentProps } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import type { AxiosResponse } from 'axios';
 import AddGenreDialog from './AddGenreDialog';
@@ -60,7 +60,10 @@ afterEach(() => {
 });
 
 test('BoldItalicButtonGroup selects the set styles and reports toggles', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<
+      NonNullable<ComponentProps<typeof BoldItalicButtonGroup>['onChange']>
+    >();
   const { container } = render(
     <BoldItalicButtonGroup isBold isItalic={false} onChange={onChange} />
   );
@@ -174,8 +177,10 @@ test('useSongForm is valid once named, and clears', () => {
 });
 
 test('MeterDialog starts from the song meter and confirms the edit', () => {
-  const onMeterChange = vi.fn();
-  const onCloseDialog = vi.fn();
+  const onMeterChange =
+    vi.fn<ComponentProps<typeof MeterDialog>['onMeterChange']>();
+  const onCloseDialog =
+    vi.fn<ComponentProps<typeof MeterDialog>['onCloseDialog']>();
   render(
     <MeterDialog
       open
@@ -195,7 +200,8 @@ test('MeterDialog starts from the song meter and confirms the edit', () => {
 });
 
 test('MeterDialog without a meter starts at 4/4', () => {
-  const onMeterChange = vi.fn();
+  const onMeterChange =
+    vi.fn<ComponentProps<typeof MeterDialog>['onMeterChange']>();
   render(
     <MeterDialog open onMeterChange={onMeterChange} onCloseDialog={() => {}} />
   );
@@ -204,7 +210,8 @@ test('MeterDialog without a meter starts at 4/4', () => {
 });
 
 test('TransposedKeyField steps from the transposed key, else the original', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<ComponentProps<typeof TransposedKeyField>['onChange']>();
   const { container, rerender } = render(
     <TransposedKeyField originalKey="G" transposedKey="A" onChange={onChange} />
   );
@@ -234,8 +241,10 @@ test('AddGenreDialog offers the unbound genres and adds the picked ones', async 
   const addGenres = vi
     .spyOn(SongApi, 'addGenres')
     .mockResolvedValue(response([hymn]));
-  const onGenresAdded = vi.fn();
-  const onCloseDialog = vi.fn();
+  const onGenresAdded =
+    vi.fn<ComponentProps<typeof AddGenreDialog>['onGenresAdded']>();
+  const onCloseDialog =
+    vi.fn<ComponentProps<typeof AddGenreDialog>['onCloseDialog']>();
   render(
     <AddGenreDialog
       open
@@ -280,7 +289,7 @@ test('PrintSongDialog offers the song keys, with the capo number', () => {
 
 test('FormatPreview picks its preset, and unpicks it once selected', () => {
   const preset = { id: 3, name: 'Big', font_size: 20 };
-  const onChange = vi.fn();
+  const onChange = vi.fn<ComponentProps<typeof FormatPreview>['onChange']>();
   const { rerender } = render(
     <FormatPreview format={preset} selected={false} onChange={onChange} />
   );
@@ -293,7 +302,8 @@ test('FormatPreview picks its preset, and unpicks it once selected', () => {
 });
 
 test('SongPreferencesForm reports hiding chords when unchecked', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<ComponentProps<typeof SongPreferencesForm>['onChange']>();
   render(
     <SongPreferencesForm
       songPreferences={{ hide_chords: false }}

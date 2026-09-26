@@ -72,7 +72,6 @@
         // ESLint never ran these, and the tests have 167 violations to fix first.
         "vitest/expect-expect": "off",
         "vitest/no-conditional-expect": "off",
-        "vitest/require-mock-type-parameters": "off",
         "vitest/require-to-throw-message": "off"
       }
     },

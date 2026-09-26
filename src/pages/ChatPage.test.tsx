@@ -31,7 +31,7 @@ vi.mock('stream-chat-react', () => ({
   MessageList: () => null,
   MessageInput: () => null,
 }));
-vi.mock('../utils/error', () => ({ reportError: vi.fn() }));
+vi.mock('../utils/error', () => ({ reportError: vi.fn<typeof reportError>() }));
 // Both read window.matchMedia, which jsdom doesn't have.
 vi.mock('../hooks/useBreakPoints', () => ({
   default: () => ({ isMd: true }),

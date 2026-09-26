@@ -1,5 +1,6 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import type { ComponentProps } from 'react';
 import presenterReducer, {
   adjustSongBeingPresented,
   selectSetlistBeingPresented,
@@ -8,6 +9,7 @@ import presenterReducer, {
   setSongBeingPresented,
 } from '../store/presenterSlice';
 import { setupStore } from '../store/store';
+import type MetronomeTool from '../tools/metronome';
 import { findSessionCurrentUserIsHosting } from '../utils/sessions';
 import Metronome from './Metronome';
 import SetlistNavigation from './SetlistNavigation';
@@ -24,8 +26,8 @@ import type { Session, Setlist, Song, User } from '../types';
 vi.mock('../tools/metronome', () => ({
   default: class {
     tempo: number | undefined;
-    start = vi.fn();
-    stop = vi.fn();
+    start = vi.fn<MetronomeTool['start']>();
+    stop = vi.fn<MetronomeTool['stop']>();
     constructor(tempo = 120) {
       this.tempo = tempo;
     }
@@ -71,7 +73,8 @@ test('findSessionCurrentUserIsHosting finds the user’s session', () => {
 
 describe('Metronome', () => {
   function renderMetronome(bpm: number | undefined) {
-    const onBpmChange = vi.fn();
+    const onBpmChange =
+      vi.fn<ComponentProps<typeof Metronome>['onBpmChange']>();
     render(<Metronome bpm={bpm} onBpmChange={onBpmChange} />);
     const [minus, plus] = screen.getAllByRole('button');
     return { onBpmChange, minus, plus };
@@ -114,7 +117,8 @@ test('SetlistNavigation labels the ends and moves by one', () => {
     { ...song, id: 1, name: 'First' },
     { ...song, id: 2, name: 'Second' },
   ];
-  const onIndexChange = vi.fn();
+  const onIndexChange =
+    vi.fn<ComponentProps<typeof SetlistNavigation>['onIndexChange']>();
   const { rerender } = render(
     <SetlistNavigation songs={songs} index={0} onIndexChange={onIndexChange} />
   );
@@ -137,12 +141,13 @@ describe('SetlistAdjustmentsDrawer', () => {
     const value = {
       sessions: [session],
       activeSessionDetails: { activeSession, isHost, socket: null },
-      onStartSession: vi.fn(),
-      onEndSession: vi.fn(),
-      onLeaveAsMember: vi.fn(),
+      onStartSession: vi.fn<SessionsContextValue['onStartSession']>(),
+      onEndSession: vi.fn<SessionsContextValue['onEndSession']>(),
+      onLeaveAsMember: vi.fn<SessionsContextValue['onLeaveAsMember']>(),
       // `as`: the drawer reads only these; the rest would be unused stubs.
     } as Partial<SessionsContextValue> as SessionsContextValue;
-    const onSongUpdate = vi.fn();
+    const onSongUpdate =
+      vi.fn<ComponentProps<typeof SetlistAdjustmentsDrawer>['onSongUpdate']>();
     renderWithProvider(
       <MemoryRouter>
         <SessionsContext.Provider value={value}>

@@ -14,7 +14,7 @@ const results = {
 
 test('SearchResults links each result and keys the links', () => {
   const consoleError = vi.spyOn(console, 'error');
-  const onCloseDialog = vi.fn();
+  const onCloseDialog = vi.fn<() => void>();
   render(
     <MemoryRouter>
       <SearchResults
