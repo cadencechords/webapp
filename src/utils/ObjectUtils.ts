@@ -11,7 +11,10 @@ export function combineParamValues(paramName: string, values: readonly Id[]) {
 }
 
 /** Decides whether a field changed, given its incoming and original values. */
-export type FieldComparator<V> = (incomingValue: V, originalValue: V) => boolean;
+export type FieldComparator<V> = (
+  incomingValue: V,
+  originalValue: V
+) => boolean;
 
 /**
  * Comparators for the fields that need more than `!==`. A comparator can also
