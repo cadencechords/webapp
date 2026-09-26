@@ -42,7 +42,7 @@ function MeterChooser({
   meter,
   onMeterChange,
 }: Omit<MeterDialogProps, 'open'>) {
-  // Kept as before: with no meter, `undefined >= 3` is false and 4/4 is used.
+  // With no meter, `undefined >= 3` is false and 4/4 is used.
   // TypeScript doesn't narrow `meter` from the length check, hence the `!`s:
   // the check passing means meter is set.
   const hasMeter = (meter?.length as number) >= 3;

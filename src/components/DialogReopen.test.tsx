@@ -98,12 +98,12 @@ test('KeyChooserDialog opens on the key it was given since', async () => {
 
 test('KeyTransposerDialog drops an unconfirmed pick when reopened', async () => {
   const onChange = vi.fn<(key: string | null) => void>();
-  const dialog = (open: boolean) => (
+  const dialog = (open: boolean, transposedKey = 'D') => (
     <KeyTransposerDialog
       open={open}
       onCloseDialog={() => {}}
       originalKey="C"
-      transposedKey="D"
+      transposedKey={transposedKey}
       onChange={onChange}
     />
   );
@@ -112,7 +112,11 @@ test('KeyTransposerDialog drops an unconfirmed pick when reopened', async () => 
 
   await reopen(dialog, rerender);
   fireEvent.click(screen.getByText('Confirm'));
-  expect(onChange).toHaveBeenCalledWith('D');
+  expect(onChange).toHaveBeenLastCalledWith('D');
+
+  await reopen(open => dialog(open, 'F'), rerender);
+  fireEvent.click(screen.getByText('Confirm'));
+  expect(onChange).toHaveBeenLastCalledWith('F');
 });
 
 test('MeterDialog reopens on the meter, not an unconfirmed edit', async () => {
@@ -163,10 +167,12 @@ test('ChangeSetlistDateDialog reopens on the scheduled date', async () => {
 
 test('NoteDialog reopens on the note, not an unconfirmed edit', async () => {
   const onUpdate = vi.fn<(updates: NoteUpdates) => void>();
-  const dialog = (open: boolean, content = 'Slow down') => (
+  // One note object, so only reopening can reset the dialog.
+  const slowDown = { content: 'Slow down', color: 'blue' };
+  const dialog = (open: boolean, note = slowDown) => (
     <NoteDialog
       open={open}
-      note={{ content, color: 'blue' }}
+      note={note}
       onCloseDialog={() => {}}
       onUpdate={onUpdate}
       onDelete={() => {}}
@@ -176,11 +182,18 @@ test('NoteDialog reopens on the note, not an unconfirmed edit', async () => {
   const textarea = () => screen.getByPlaceholderText('Type here');
   expect(textarea()).toHaveValue('Slow down');
   fireEvent.change(textarea(), { target: { value: 'Speed up' } });
+  // The color options have no text; pink is the one with a pink background.
+  fireEvent.click(document.querySelector('button.bg-pink-200')!);
 
   await reopen(dialog, rerender);
   expect(textarea()).toHaveValue('Slow down');
+  fireEvent.click(screen.getByText('Confirm'));
+  expect(onUpdate).toHaveBeenLastCalledWith({ content: 'Slow down' });
 
-  await reopen(open => dialog(open, 'Build'), rerender);
+  await reopen(
+    open => dialog(open, { content: 'Build', color: 'blue' }),
+    rerender
+  );
   expect(textarea()).toHaveValue('Build');
   fireEvent.click(screen.getByText('Confirm'));
   expect(onUpdate).toHaveBeenCalledWith({ content: 'Build' });
