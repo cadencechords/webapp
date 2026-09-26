@@ -81,7 +81,7 @@ export default function Note({
     }
   }
 
-  // eslint-disable-next-line
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
     _.debounce(async (content: string) => {
       try {

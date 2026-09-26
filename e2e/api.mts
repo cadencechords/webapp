@@ -25,7 +25,7 @@ export function api<T = unknown>(
           client: String(localStorage.getItem('client')),
           uid: String(localStorage.getItem('uid')),
         },
-        body: body && JSON.stringify({ ...body, team_id: team }),
+        ...(body && { body: JSON.stringify({ ...body, team_id: team }) }),
       });
       if (!res.ok) throw new Error(`${method} ${path} -> ${res.status}`);
       return res.status === 204 ? null : res.json().catch(() => null);

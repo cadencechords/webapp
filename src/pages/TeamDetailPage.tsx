@@ -81,7 +81,7 @@ export default function TeamDetailPage() {
     debounce(newName);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
     _.debounce((newName: string) => {
       try {

@@ -16,7 +16,8 @@ type AlertColor = NonNullable<ComponentProps<typeof Alert>['color']>;
  * `errors.full_messages`.
  */
 type SignUpError =
-  AxiosError<{ errors?: { full_messages?: string[] } }> | undefined;
+  | AxiosError<{ errors?: { full_messages?: string[] } }>
+  | undefined;
 
 export default function SignUpPage() {
   const [firstName, setFirstName] = useState('');

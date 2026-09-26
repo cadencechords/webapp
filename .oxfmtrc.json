@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "arrowParens": "avoid",
+  "trailingComma": "es5",
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "build/",
+    "node_modules/",
+    "e2e/.results/",
+    "e2e/screenshots/",
+    "public/",
+    "coverage/",
+    "yarn.lock",
+    "src/styles/*-tokens.css",
+    ".claude/worktrees/"
+  ]
+}

@@ -78,7 +78,7 @@ export default function RoleDetailPage() {
     debounce(field, value);
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
     _.debounce((field: keyof RoleUpdates, newValue: string) => {
       try {
