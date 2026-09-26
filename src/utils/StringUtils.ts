@@ -10,6 +10,7 @@ export function extension(filename: string | null | undefined) {
   return filename?.split('.').slice(1).join('.');
 }
 
-export function pluralize(word: string, length: number) {
+/** An undefined length (a list that hasn't loaded) reads as plural. */
+export function pluralize(word: string, length: number | undefined) {
   return length === 1 ? word : `${word}s`;
 }
