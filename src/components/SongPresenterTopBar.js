@@ -55,6 +55,7 @@ function DefaultTopBar({
   onShowMarkingsModal,
   onShowOptionsDrawer,
 }) {
+  /** @type {{ id: string }} */
   const { id } = useParams();
   const currentSubscription = useSelector(selectCurrentSubscription);
   return (

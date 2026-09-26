@@ -36,7 +36,9 @@ export default function EditableData({
           ` ${className} `
         }
         value={value as string | number | undefined}
-        onChange={e => onChange(e.target.value)}
+        // Kept as before: MeterField's editable input passes no onChange (it
+        // opens a dialog on click), so typing there throws.
+        onChange={e => onChange!(e.target.value)}
         placeholder={placeholder}
         onClick={onClick}
         type={type}

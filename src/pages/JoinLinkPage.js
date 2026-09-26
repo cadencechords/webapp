@@ -14,6 +14,7 @@ import { setTeamId } from '../store/authSlice';
 import { hasName } from '../utils/model';
 
 export default function JoinLinkPage() {
+  /** @type {{ code: string }} */
   const { code } = useParams();
   const {
     loading: verifyingLink,

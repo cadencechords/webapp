@@ -21,7 +21,10 @@ export default function BinderDetailPage() {
   const [isColorPickerOpen, showColorPicker, hideColorPicker] = useDialog();
 
   const router = useHistory();
+  /** @type {{ id: string }} */
   const { id } = useParams();
+  // Whoever navigated here may pass the binder as the location state.
+  /** @type {{ state: import('../types').Binder | undefined }} */
   const { state } = useLocation();
 
   const {

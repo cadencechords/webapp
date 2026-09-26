@@ -45,7 +45,8 @@ export default function Roadmap({
   async function handleSaveChanges() {
     try {
       setLoading(true);
-      await SongApi.updateOneById(song.id, updates);
+      // Only the save button calls this, and it renders only with updates.
+      await SongApi.updateOneById(song.id, updates!);
       setUpdates(null);
     } catch (error) {
       reportError(error);

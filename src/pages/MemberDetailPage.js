@@ -14,6 +14,7 @@ import usePermissionsCheck from '../hooks/usePermissionsCheck';
 import { REMOVE_MEMBERS } from '../utils/constants';
 
 export default function MemberDetail() {
+  /** @type {{ id: string }} */
   const { id } = useParams();
   const [member, setMember] = useState(
     /** @type {import('../types').User | undefined} */ (undefined)

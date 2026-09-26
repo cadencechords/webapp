@@ -20,10 +20,12 @@ export default function useAddMembersToRole({
     },
     onSuccess: (data, { roleId }) => {
       const roleKey = ['roles', `${roleId}`];
-      const role = queryClient.getQueryData<Role>(roleKey);
+      // Members are added from the role's page, which has loaded the role and
+      // its memberships into this query.
+      const role = queryClient.getQueryData<Role>(roleKey)!;
       const updatedRole = {
         ...role,
-        memberships: role.memberships.concat(data),
+        memberships: role.memberships!.concat(data),
       };
       queryClient.setQueryData<Role>(roleKey, updatedRole);
 

@@ -6,8 +6,14 @@ import { useSongEditorContext } from '../contexts/SongEditorProvider';
 import { reportError } from '../utils/error';
 
 export default function useSongEditor() {
-  const initialData = useLocation().state;
+  // Location state is whatever the navigating code passed; routes to the
+  // editor pass the song (possibly missing), or nothing.
+  const initialData =
+    /** @type {import('../types').Song | null | undefined} */ (
+      useLocation().state
+    );
   const router = useHistory();
+  /** @type {{ id: string }} */
   const { id } = useParams();
 
   const {

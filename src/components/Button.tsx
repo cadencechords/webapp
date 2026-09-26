@@ -224,7 +224,7 @@ const AccentButton = forwardRef<HTMLButtonElement, VariantProps>(
         disabled={disabled || loading}
         className={classNames(
           defaultClasses,
-          sizePaddings[size],
+          size && sizePaddings[size],
           accentColors[color],
           disabled
             ? 'bg-gray-100 text-gray-500 dark:bg-dark-gray-400 dark:text-dark-gray-200 cursor-default'

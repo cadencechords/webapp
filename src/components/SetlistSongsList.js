@@ -18,7 +18,8 @@ export default function SetlistSongsList({
   onSongRemoved,
 }) {
   const [showSongsDialog, setShowSongsDialog] = useState(false);
-  const id = useParams().id;
+  // The route's path declares :id, which useParams can't see.
+  const id = /** @type {{ id: string }} */ (useParams()).id;
   const router = useHistory();
   const currentMember = useSelector(selectCurrentMember);
   const handleReordered = async (reorderedSongs, movedSong) => {

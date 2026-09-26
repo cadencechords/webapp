@@ -4,7 +4,7 @@ type OpenInputProps = {
   placeholder?: string;
   onFocus?: FocusEventHandler<HTMLInputElement>;
   value?: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   autoFocus?: boolean;
   className?: string;
 };

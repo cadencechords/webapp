@@ -1,5 +1,6 @@
-// Type-checks src (tsconfig.json: allowJs + checkJs) and the Node-side
-// TypeScript (tsconfig.node.json). Any type error in either fails.
+// Type-checks src (tsconfig.json: allowJs + checkJs), the TypeScript in src
+// with strict (tsconfig.strict.json) and the Node-side TypeScript
+// (tsconfig.node.json). Any type error in any of them fails.
 //
 //   yarn typecheck
 import { execFileSync } from 'node:child_process';
@@ -106,6 +107,15 @@ const src = tsc('tsconfig.json');
 if (!src.ok) {
   console.error('Type errors in tsconfig.json (src):\n');
   console.error(src.output);
+  process.exit(1);
+}
+
+// The same files with strict, reporting errors only in .ts/.tsx (checkJs is
+// off there): the JavaScript gets strict as it's converted.
+const strict = tsc('tsconfig.strict.json');
+if (!strict.ok) {
+  console.error('Type errors in tsconfig.strict.json (TypeScript in src):\n');
+  console.error(strict.output);
   process.exit(1);
 }
 

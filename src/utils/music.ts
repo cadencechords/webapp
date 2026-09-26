@@ -45,7 +45,7 @@ export function semitonesAway(
   return Math.abs(chromaticScale[keyOne] - chromaticScale[keyTwo]);
 }
 
-export const SEMITONES = {
+export const SEMITONES: ChromaticScale = {
   A: 0,
   'A#': 1,
   Bb: 1,

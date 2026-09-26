@@ -181,11 +181,16 @@ export default function SessionsProvider(props: { children?: ReactNode }) {
     }
   }
 
+  // Called only while hosting a session (SetlistAdjustmentsDrawer checks
+  // activeSession && isHost), and starting one sets the socket too.
   async function handleEndSession() {
     const { activeSession, socket } = activeSessionDetails;
     try {
       const id = toast.loading('Ending session');
-      await SessionsApi.endSession(activeSession.setlist_id, activeSession.id);
+      await SessionsApi.endSession(
+        activeSession!.setlist_id,
+        activeSession!.id
+      );
       toast.update(id, {
         render: 'Session ended!',
         isLoading: false,
@@ -193,8 +198,8 @@ export default function SessionsProvider(props: { children?: ReactNode }) {
         pauseOnHover: false,
         autoClose: 2000,
       });
-      socket.emit('end session', { sessionId: activeSession.id });
-      socket.disconnect();
+      socket!.emit('end session', { sessionId: activeSession!.id });
+      socket!.disconnect();
       setActiveSessionDetails({
         activeSession: null,
         socket: null,
@@ -226,7 +231,8 @@ export default function SessionsProvider(props: { children?: ReactNode }) {
       });
 
       initializedSocket.on('scroll to', scrollTop => {
-        const html = document.querySelector('html');
+        // Every document has an <html> element.
+        const html = document.querySelector('html')!;
         html.scrollTo({
           top: scrollTop,
         });
@@ -254,10 +260,12 @@ export default function SessionsProvider(props: { children?: ReactNode }) {
     [credentials]
   );
 
+  // Called only from a joined session's Leave control, and joining sets the
+  // socket.
   function handleLeaveAsMember() {
     const { socket } = activeSessionDetails;
 
-    socket.disconnect();
+    socket!.disconnect();
     setActiveSessionDetails({
       socket: null,
       isHost: false,

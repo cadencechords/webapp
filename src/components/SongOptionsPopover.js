@@ -14,7 +14,8 @@ import Icon from './Icon';
 export default function SongOptionsPopover({ onPrintClick }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useHistory();
-  const id = parseInt(useParams().id);
+  // The route's path declares :id, which useParams can't see.
+  const id = parseInt(/** @type {{ id: string }} */ (useParams()).id);
   const currentMember = useSelector(selectCurrentMember);
 
   const { run: deleteSong } = useDeleteSong({

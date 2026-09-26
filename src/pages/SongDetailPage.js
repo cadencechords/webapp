@@ -59,6 +59,7 @@ export default function SongDetailPage() {
   }, [song]);
 
   const router = useHistory();
+  /** @type {{ id: string }} */
   const { id } = useParams();
 
   function getKeyTypeOptions() {

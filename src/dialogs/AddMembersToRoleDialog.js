@@ -19,7 +19,8 @@ export default function AddMembersToRoleDialog({
   const { run: addMembersToRole, isLoading: isSaving } = useAddMembersToRole({
     onSuccess: handleClose,
   });
-  const id = useParams().id;
+  // The route's path declares :id, which useParams can't see.
+  const id = /** @type {{ id: string }} */ (useParams()).id;
 
   function membersNotInRole() {
     let membersInRoleIds = membersInRole?.map(member => member.id) || [];
