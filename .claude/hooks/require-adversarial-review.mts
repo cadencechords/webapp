@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // PreToolUse hook: blocks opening a pull request unless the commit it would
 // contain has a passing adversarial review recorded by
-// .claude/skills/adversarial-review/record.mjs.
+// .claude/skills/adversarial-review/record.mts.
 //
 // Covers the GitHub MCP create_pull_request tool (Copilot's variant is always
 // blocked) and Bash commands that run `gh pr create` / `gh pr new` / a POST to
@@ -11,7 +11,7 @@
 // This is a guardrail against opening a PR by mistake, not a security
 // boundary: the review's contents are self-reported (see SKILL.md).
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -20,15 +20,20 @@ const HOW =
   'It records a passing review for the exact commit the PR will contain; then open the PR again.';
 
 class Block extends Error {}
-const block = message => {
+// Annotated so TypeScript knows code after a block() call doesn't run.
+const block: (message: string) => never = message => {
   throw new Block(message);
 };
+
+type Heredoc = { length: number; delimiter: string; stripTabs: boolean };
+type Command = { words: string[]; heredocs: string[] };
+type PrCreation = { head: string | null; repo: string | null; moved: boolean };
 
 // ---------------------------------------------------------------- shell parsing
 
 // Reads a heredoc operator at text[i] ("<<", "<<-") and returns its delimiter,
 // or null for "<<<" (here-string) and "<<=" (arithmetic).
-function heredocAt(text, i) {
+function heredocAt(text: string, i: number): Heredoc | null {
   if (
     text[i] !== '<' ||
     text[i + 1] !== '<' ||
@@ -43,8 +48,12 @@ function heredocAt(text, i) {
 
 // Returns [body, index after the delimiter line] for a heredoc whose body
 // starts at text[i] (the character after the newline).
-function readHeredocBody(text, i, { delimiter, stripTabs }) {
-  const lines = [];
+function readHeredocBody(
+  text: string,
+  i: number,
+  { delimiter, stripTabs }: Heredoc
+): [string, number] {
+  const lines: string[] = [];
   while (i < text.length) {
     const end = text.indexOf('\n', i);
     const line = text.slice(i, end === -1 ? text.length : end);
@@ -59,10 +68,10 @@ function readHeredocBody(text, i, { delimiter, stripTabs }) {
 // Given text[start] just after "$(", returns the index just after the
 // matching ")". Aware of quotes, escapes, nested substitutions, comments and
 // heredocs, so parentheses inside a PR body don't confuse it.
-function substitutionEnd(text, start) {
+function substitutionEnd(text: string, start: number): number {
   let depth = 1;
   let i = start;
-  const pending = [];
+  const pending: Heredoc[] = [];
   while (i < text.length) {
     const c = text[i];
     if (c === '\\') i += 2;
@@ -89,12 +98,14 @@ function substitutionEnd(text, start) {
     } else if (c === '#' && (i === start || /[\s;&|(]/.test(text[i - 1]))) {
       while (i < text.length && text[i] !== '\n') i++;
     } else if (heredocAt(text, i)) {
-      const h = heredocAt(text, i);
+      // Same pure call as the condition, which returned a heredoc.
+      const h = heredocAt(text, i)!;
       pending.push(h);
       i += h.length;
     } else if (c === '\n' && pending.length) {
       i++;
-      while (pending.length) [, i] = readHeredocBody(text, i, pending.shift());
+      // The loop condition means shift() returns an element.
+      while (pending.length) [, i] = readHeredocBody(text, i, pending.shift()!);
     } else if (c === '(') {
       depth++;
       i++;
@@ -111,14 +122,17 @@ function substitutionEnd(text, start) {
 // have quotes and escapes resolved and heredocs are the bodies fed to that
 // command. The contents of $(...) and `...` are returned separately, since
 // they run too.
-export function parseShell(text) {
-  const commands = [{ words: [], heredocs: [] }];
-  const substitutions = [];
-  const pending = [];
-  let word = null;
+export function parseShell(text: string): {
+  commands: Command[];
+  substitutions: string[];
+} {
+  const commands: Command[] = [{ words: [], heredocs: [] }];
+  const substitutions: string[] = [];
+  const pending: { target: Command; heredoc: Heredoc }[] = [];
+  let word: string | null = null;
   let i = 0;
   const cmd = () => commands[commands.length - 1];
-  const add = s => (word = (word ?? '') + s);
+  const add = (s: string) => (word = (word ?? '') + s);
   const endWord = () => {
     if (word !== null) cmd().words.push(word);
     word = null;
@@ -128,7 +142,7 @@ export function parseShell(text) {
     if (cmd().words.length || cmd().heredocs.length)
       commands.push({ words: [], heredocs: [] });
   };
-  const substitution = at => {
+  const substitution = (at: number) => {
     const end = substitutionEnd(text, at + 2);
     substitutions.push(text.slice(at + 2, end - 1));
     return end;
@@ -142,8 +156,9 @@ export function parseShell(text) {
       endCommand();
       i++;
       while (pending.length) {
-        const { target, heredoc } = pending.shift();
-        let body;
+        // The loop condition means shift() returns an element.
+        const { target, heredoc } = pending.shift()!;
+        let body: string;
         [body, i] = readHeredocBody(text, i, heredoc);
         (target || owner).heredocs.push(body);
       }
@@ -271,7 +286,10 @@ const API_WRITE_FLAGS = /^(-f|-F|--field|--raw-field|--input)(=|$)/;
 
 // Parses gh's arguments (after the "gh" word). Returns { head, repo } for a PR
 // creation, null otherwise; blocks on `gh api` PR creation.
-function analyzeGh(args, env) {
+function analyzeGh(
+  args: string[],
+  env: Record<string, string>
+): { head: string | null; repo: string | null } | null {
   let repo = env.GH_REPO || null;
   let k = 0;
   while (k < args.length && args[k].startsWith('-')) {
@@ -285,7 +303,7 @@ function analyzeGh(args, env) {
   const rest = args.slice(k + 2);
 
   if (group === 'pr' && (action === 'create' || action === 'new')) {
-    let head = null;
+    let head: string | null = null;
     let help = false;
     for (let j = 0; j < rest.length; j++) {
       const a = rest[j];
@@ -344,12 +362,12 @@ function analyzeGh(args, env) {
 // Deliberately broad: `gh` is looked for anywhere in each simple command (so
 // `then gh`, `timeout 60 gh`, `sudo -u me gh` are caught), and strings or
 // heredocs given to a shell (`bash -lc '…'`, `eval`, `xargs`) are parsed too.
-export function findPrCreations(text, depth = 0) {
+export function findPrCreations(text: string, depth = 0): PrCreation[] {
   if (depth > 5) block('the command nests shells too deeply to check');
-  const found = [];
+  const found: PrCreation[] = [];
   const { commands, substitutions } = parseShell(text);
   let moved = false;
-  const nested = inner =>
+  const nested = (inner: string) =>
     found.push(
       ...findPrCreations(inner, depth + 1).map(f => ({
         ...f,
@@ -358,7 +376,7 @@ export function findPrCreations(text, depth = 0) {
     );
 
   for (const { words, heredocs } of commands) {
-    const env = {};
+    const env: Record<string, string> = {};
     let s = 0;
     for (; s < words.length && /^[A-Za-z_]\w*=/.test(words[s]); s++) {
       const [name, value] = words[s].split(/=(.*)/s);
@@ -392,15 +410,15 @@ export function findPrCreations(text, depth = 0) {
 
 // ---------------------------------------------------------------- git
 
-function makeGit(cwd) {
-  const run = (...args) =>
+function makeGit(cwd: string) {
+  const run = (...args: string[]) =>
     execFileSync('git', args, {
       cwd,
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 15000,
     }).trim();
-  const tryRun = (...args) => {
+  const tryRun = (...args: string[]) => {
     try {
       return run(...args);
     } catch {
@@ -411,7 +429,7 @@ function makeGit(cwd) {
 }
 
 // "owner/repo" of a remote URL: https, ssh, scp-like, local and proxy paths.
-export function ownerRepo(url) {
+export function ownerRepo(url: unknown): string | null {
   const m = String(url || '')
     .replace(/\/+$/, '')
     .replace(/\.git$/, '')
@@ -419,7 +437,19 @@ export function ownerRepo(url) {
   return m ? `${m[1]}/${m[2]}`.toLowerCase() : null;
 }
 
-function checkPr({ cwd, head, repo, moved }) {
+type Review = { sha?: unknown; verdict?: unknown; checks?: unknown };
+
+function checkPr({
+  cwd,
+  head,
+  repo,
+  moved,
+}: {
+  cwd: string;
+  head: string | null | undefined;
+  repo: string | null;
+  moved: boolean;
+}) {
   const { run, tryRun } = makeGit(cwd);
   if (tryRun('rev-parse', '--git-dir') === null)
     block(`${cwd} isn't a git repository`);
@@ -444,7 +474,9 @@ function checkPr({ cwd, head, repo, moved }) {
     'origin';
   const remoteUrl = tryRun('remote', 'get-url', remote);
   if (!remoteUrl) block(`no git remote "${remote}"`);
-  const [remoteOwner] = ownerRepo(remoteUrl).split('/');
+  // Null only for a URL without an owner/repo; then this throws, and a crash
+  // blocks the PR.
+  const [remoteOwner] = ownerRepo(remoteUrl)!.split('/');
 
   if (repo && ownerRepo(repo) !== ownerRepo(remoteUrl)) {
     block(
@@ -486,7 +518,7 @@ function checkPr({ cwd, head, repo, moved }) {
   const file = path.join(dir, `${sha}.json`);
   if (!existsSync(file))
     block(`no adversarial review recorded for ${head} @ ${sha.slice(0, 7)}`);
-  let record;
+  let record: Review;
   try {
     record = JSON.parse(readFileSync(file, 'utf8'));
   } catch {
@@ -494,7 +526,7 @@ function checkPr({ cwd, head, repo, moved }) {
   }
   if (record.sha !== sha)
     block(
-      `the review record for ${sha.slice(0, 7)} wasn't written by record.mjs for this commit`
+      `the review record for ${sha.slice(0, 7)} wasn't written by record.mts for this commit`
     );
   if (record.verdict !== 'pass')
     block(
@@ -510,7 +542,18 @@ function checkPr({ cwd, head, repo, moved }) {
 
 // ---------------------------------------------------------------- main
 
-export function main(input) {
+type HookInput = {
+  tool_name?: string;
+  tool_input?: {
+    owner?: string;
+    repo?: string;
+    head?: string;
+    command?: string;
+  };
+  cwd?: string;
+};
+
+export function main(input: HookInput): void {
   const tool = input.tool_name || '';
   const args = input.tool_input || {};
   const cwd = input.cwd || process.cwd();
@@ -529,11 +572,18 @@ export function main(input) {
       moved: false,
     });
   } else if (tool === 'Bash' && /\bgh\b/.test(args.command || '')) {
-    for (const pr of findPrCreations(args.command)) checkPr({ cwd, ...pr });
+    // The test above only matches a command that is a non-empty string.
+    for (const pr of findPrCreations(args.command!)) checkPr({ cwd, ...pr });
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+// Real paths on both sides: run through a symlinked directory, argv[1] keeps
+// the symlink while import.meta.url is resolved, and a plain comparison would
+// skip main() and exit 0, letting the PR through.
+if (
+  process.argv[1] &&
+  realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))
+) {
   try {
     main(JSON.parse(readFileSync(0, 'utf8')));
     process.exit(0);
@@ -541,7 +591,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const reason =
       error instanceof Block
         ? error.message
-        : `the review hook failed (${error.message}); blocking to be safe`;
+        : // Node, git and JSON.parse only throw Errors here.
+          `the review hook failed (${(error as Error).message}); blocking to be safe`;
     console.error(`Blocked: ${reason}.\n\n${HOW}`);
     process.exit(2);
   }

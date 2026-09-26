@@ -16,7 +16,7 @@ contrast). Light values are on `:root` and dark values on `.dark`, so the
 `ThemeProvider` class toggle switches them.
 
 - Utilities: `bg-primary`, `text-on-primary-container`, `bg-surface-container-high`, `border-outline-variant`, `bg-scrim/50`, …
-- Regenerate: change the seed or variant in `scripts/color-tokens.mjs`, then run `yarn tokens:color`.
+- Regenerate: change the seed or variant in `scripts/color-tokens.mts`, then run `yarn tokens:color`.
   A test fails if the checked-in file is out of date. Another test checks that every on-X/X pair meets 4.5:1.
 
 ## User colors (binders, notes, events)
@@ -30,7 +30,7 @@ Anything unknown falls back to neutral roles.
 
 - The groups are generated from the v2 500 shades the app has always shown,
   using M3 custom color tones in light and dark (`USER_COLORS` in
-  `scripts/color-tokens.mjs`).
+  `scripts/color-tokens.mts`).
 - **They are not harmonized.** Pulling them toward the blue primary merges
   purple and indigo into blue and pink into purple, and these colors exist to
   tell items apart. A test keeps the chromatic ones at least 10° apart.
@@ -50,7 +50,7 @@ has an `-emphasized` variant that is one weight heavier (400 → 500, 500 → 70
 - Utilities: `text-display-large` … `text-label-small`, and `text-title-medium-emphasized` etc.
   Each sets size, line height, tracking and weight. `font-plain` / `font-brand` set the family.
 - Tokens: `--md-sys-typescale-<role>-<size>[-emphasized]-{font,weight,size,line-height,tracking}`.
-- Regenerate: edit `scripts/type-tokens.mjs`, then run `yarn tokens:type`.
+- Regenerate: edit `scripts/type-tokens.mts`, then run `yarn tokens:type`.
 
 ## Shape, elevation, state layers (`src/styles/shape-elevation-state.css`)
 

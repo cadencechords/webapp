@@ -38,7 +38,7 @@ Catalog options:
 - `CATALOG_DIR=/tmp/before yarn e2e:catalog` writes screenshots to another folder.
   Run it once on `master` and once on your branch, then compare the two folders.
 - `CATALOG_ONLY=songs,song-detail yarn e2e:catalog` limits the run to the named
-  routes. Route names are listed in `e2e/routes.js`.
+  routes. Route names are listed in `e2e/routes.mts`.
 
 ## Notes
 
@@ -51,7 +51,7 @@ Catalog options:
 - **Network idle doesn't work here.** The dev server and third-party SDKs keep
   connections open, so pages never go network-idle. The catalog waits until no
   infinite CSS animation (spinner, pulse skeleton) is running instead.
-- **New routes.** Add them to `e2e/routes.js`.
+- **New routes.** Add them to `e2e/routes.mts`.
 - **Cypress.** The older Cypress specs in `cypress/` still exist. The new
   flows use Playwright so that the catalog and the smoke flows share one tool
   and one login.
