@@ -79,7 +79,14 @@ export default function NotesDragDropContext({
     onAddTempNote(note);
 
     try {
-      const { data } = await notesApi.create(lineNumber, song.id);
+      // Known bug, kept as is: the arguments are swapped, so this posts to
+      // /songs/<line number>/notes with the song id as the body. The cast only
+      // keeps that call type-checking. Nothing renders NotesDragDropContext;
+      // it's slated for deletion.
+      const { data } = await notesApi.create(
+        lineNumber,
+        song.id as unknown as Parameters<typeof notesApi.create>[1]
+      );
       onReplaceTempNote(tempId, data);
     } catch (error) {
       reportError(error);

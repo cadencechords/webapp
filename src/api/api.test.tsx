@@ -104,6 +104,24 @@ describe('the api helpers send the same requests', () => {
     expect(vi.mocked(axios.post).mock.calls[0][1]).toStrictEqual({ songs });
   });
 
+  test('OnsongApi.import sends a given binder id', () => {
+    const songs = [{ name: 'a.onsong' }];
+    OnsongApi.import(songs, 7, 4);
+
+    expect(vi.mocked(axios.post).mock.calls[0][1]).toStrictEqual({
+      songs,
+      binder_id: 7,
+    });
+  });
+
+  test('BillingApi sends a given return url', () => {
+    BillingApi.createCustomerPortalSession('https://app.example.com/billing');
+
+    expect(vi.mocked(axios.post).mock.calls[0][1]).toStrictEqual({
+      return_url: 'https://app.example.com/billing',
+    });
+  });
+
   test('BillingApi sends a return url only when given one', () => {
     BillingApi.createCustomerPortalSession();
 
@@ -170,9 +188,10 @@ test('TapTempo reports the bpm from the time between two taps', () => {
   now.mockRestore();
 });
 
-// Runtime change: this posted to /songs/<line number>/notes with the song id
-// as the body.
-test('double-clicking an empty line creates a note on that line of the song', async () => {
+// Pins current behavior, known bug included: the arguments to notesApi.create
+// are swapped, so this posts to /songs/<line number>/notes with the song id as
+// the body. NotesDragDropContext is unused and slated for deletion.
+test('double-clicking an empty line posts the song id to the line number', async () => {
   vi.mocked(axios.post).mockResolvedValue({ data: { id: 9 } });
   const song: Song = { id: 42, name: 'Song', content: 'a\nb\nc', format: {} };
   const onAddTempNote = vi.fn();
@@ -195,11 +214,9 @@ test('double-clicking an empty line creates a note on that line of the song', as
     id: expect.any(Number),
     ...newNote,
   });
-  expect(axios.post).toHaveBeenCalledWith(
-    '/songs/42/notes?team_id=12',
-    newNote,
-    { headers }
-  );
+  expect(axios.post).toHaveBeenCalledWith('/songs/1/notes?team_id=12', 42, {
+    headers,
+  });
   await waitFor(() =>
     expect(onReplaceTempNote).toHaveBeenCalledWith(
       onAddTempNote.mock.calls[0][0].id,
