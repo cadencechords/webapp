@@ -1,5 +1,6 @@
 import CalendarDateButton from '../buttons/CalendarDateButton';
 import CalendarEventEntry from './CalendarEventEntry';
+import type { CalendarEvent as FullCalendarEvent } from '../../types';
 
 /** A day in the calendar grid, from `utils/date`. */
 export type CalendarDay = {
@@ -8,10 +9,11 @@ export type CalendarDay = {
   isToday: boolean;
 };
 
-type CalendarEvent = {
-  id: number;
-  color?: string;
-};
+/** The fields of an event that the cell and its CalendarEventEntry read. */
+type CalendarEvent = Pick<
+  FullCalendarEvent,
+  'id' | 'color' | 'start_time' | 'title'
+>;
 
 type CalendarCellProps<E extends CalendarEvent> = {
   /** Empty for the padding cells before the 1st and after the last day. */
