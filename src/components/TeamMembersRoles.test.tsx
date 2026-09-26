@@ -281,13 +281,17 @@ describe('RoleDetailPage', () => {
     memberships: [membership],
   };
 
-  function renderPage() {
-    vi.mocked(RolesApi.getOne).mockResolvedValue(response(role));
+  function renderPage(
+    roleRequest: ReturnType<typeof RolesApi.getOne> = Promise.resolve(
+      response(role)
+    )
+  ) {
+    vi.mocked(RolesApi.getOne).mockReturnValue(roleRequest);
     vi.mocked(PermissionApi.getAll).mockResolvedValue(
       response([{ name: 'Add songs' }, { name: 'Edit songs' }])
     );
     vi.mocked(TeamApi.getMemberships).mockResolvedValue(response([]));
-    renderWithProvider(
+    return renderWithProvider(
       <MemoryRouter initialEntries={['/permissions/4']}>
         <Route path="/permissions/:id">
           <RoleDetailPage />
@@ -296,6 +300,26 @@ describe('RoleDetailPage', () => {
       { preloadedState: auth([EDIT_ROLES, ASSIGN_ROLES]) }
     );
   }
+
+  // useRole's placeholder must be the same object each render, or useCopy
+  // resets during render until React gives up ("Too many re-renders"). Both
+  // tests re-render the page before the role arrives.
+  test('keeps loading when the permissions arrive before the role', async () => {
+    const { container } = renderPage(new Promise(() => {}));
+    await waitFor(() => expect(PermissionApi.getAll).toHaveBeenCalled());
+    // react-query passes the permissions on after a timeout.
+    await act(() => new Promise(resolve => setTimeout(resolve, 20)));
+    // PageLoading's spinner: a crash would have emptied the page.
+    expect(container).not.toBeEmptyDOMElement();
+    expect(screen.queryByText('Add songs')).not.toBeInTheDocument();
+  });
+
+  test('says so when the role fails to load', async () => {
+    renderPage(Promise.reject(new Error('offline')));
+    expect(
+      await screen.findByText('There was an issue retrieving this role.')
+    ).toBeInTheDocument();
+  });
 
   test('checks a permission once it is added to the role', async () => {
     vi.mocked(RolesApi.addPermission).mockResolvedValue(response({}));

@@ -161,7 +161,11 @@ describe('hooks', () => {
   test('useUpdates follows the original only while nothing is edited', () => {
     type Binder = { name: string; color: string };
     function Probe({ binder }: { binder: Binder }) {
-      const { updatedValue, onChange, clearUpdates } = useUpdates(binder);
+      // A new object each render, as useBinder's placeholder is: only its
+      // JSON may count as a change.
+      const { updatedValue, onChange, clearUpdates } = useUpdates({
+        ...binder,
+      });
       return (
         <>
           <output>{`${updatedValue.name} ${updatedValue.color}`}</output>

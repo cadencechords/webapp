@@ -2,6 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import RoleApi from '../../api/rolesApi';
 import type { Id, Role } from '../../types';
 
+// The same object on every render: useCopy compares the role by reference, so
+// a new `{}` each render would reset it during render forever. It has none of
+// `Role`'s fields.
+const noRole: Partial<Role> = {};
+
 export default function useRole(
   id: Id,
   {
@@ -10,8 +15,7 @@ export default function useRole(
   }: { placeholderData?: Role; onSuccess?: (role: Role) => void } = {}
 ) {
   const {
-    // A new `{}` each time, as before. It has none of `Role`'s fields.
-    data = {} as Partial<Role>,
+    data = noRole,
     isLoading,
     isError,
     isSuccess,
