@@ -11,17 +11,14 @@ import Card from './Card';
 import DragAndDropTable from './DragAndDropTable';
 import MetronomeSheet from './MetronomeSheet';
 import MobileHeader from './MobileHeader';
-import NotesDragDropContext from './NotesDragDropContext';
 import PageTitle from './PageTitle';
 import PasswordRequirements from './PasswordRequirements';
 import ScrollIcon from '../icons/ScrollIcon';
 import SectionTitle from './SectionTitle';
-import SelectedPcoSongsTable from './SelectedPcoSongsTable';
 import SessionIcon from '../icons/SessionIcon';
 import StackedList from './StackedList';
 import StyledDialog from './StyledDialog';
 import StyledPopover from './StyledPopover';
-import Table from './Table';
 import TableRow from './TableRow';
 import TeamLoginOptions from './TeamLoginOptions';
 import type { Song } from '../types';
@@ -91,11 +88,6 @@ test('TableRow is not removable by default', () => {
 });
 
 test('list components render with no data', () => {
-  render(<Table />);
-  const table = screen.getByRole('table');
-  expect(table.querySelectorAll('thead th')).toHaveLength(0);
-  expect(table.querySelectorAll('tbody tr')).toHaveLength(0);
-  render(<SelectedPcoSongsTable onRemove={() => {}} />);
   renderWithProvider(
     <MemoryRouter>
       <TeamLoginOptions />
@@ -119,25 +111,6 @@ test('DragAndDropTable defaults to rearrangeable rows without remove buttons', (
     </MemoryRouter>
   );
   expect(container.querySelector('[data-rbd-draggable-id]')).toBeNull();
-});
-
-test('NotesDragDropContext defaults to rearrangeable notes', () => {
-  render(
-    <NotesDragDropContext
-      song={{
-        ...song,
-        notes: [{ id: 5, content: '', color: 'yellow', line_number: 0 }],
-      }}
-      onAddTempNote={() => {}}
-      onReplaceTempNote={() => {}}
-      onUpdateNote={() => {}}
-      onDeleteNote={() => {}}
-    />
-  );
-  expect(screen.getByTestId('note')).toHaveAttribute(
-    'data-drag-disabled',
-    'false'
-  );
 });
 
 test('AutoscrollSheet has no stray classes', () => {

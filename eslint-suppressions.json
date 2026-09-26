@@ -340,14 +340,6 @@
       "count": 1
     }
   },
-  "src/components/SupportButton.js": {
-    "no-unused-vars": {
-      "count": 1
-    },
-    "react/no-unknown-property": {
-      "count": 1
-    }
-  },
   "src/components/Track.js": {
     "no-unused-vars": {
       "count": 1
@@ -419,11 +411,6 @@
     }
   },
   "src/icons/ItalicIcon.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/icons/SupportIcon.js": {
     "no-unused-vars": {
       "count": 1
     }

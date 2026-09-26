@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import AnnotationsApi from './annotationsApi';
 import BillingApi from './billingApi';
 import BinderApi from './BinderApi';
@@ -9,13 +9,11 @@ import OnsongApi from './onsongApi';
 import SetlistApi from './SetlistApi';
 import SongApi from './SongApi';
 import UserApi from './UserApi';
-import NotesDragDropContext from '../components/NotesDragDropContext';
 import TapTempo from '../components/TapTempo';
 import subscriptionReducer, {
   selectCurrentSubscription,
   setSubscription,
 } from '../store/subscriptionSlice';
-import type { Song } from '../types';
 
 vi.mock('axios');
 vi.mock('../utils/AuthUtils', () => ({
@@ -186,41 +184,4 @@ test('TapTempo reports the bpm from the time between two taps', () => {
   expect(onBpmChange).toHaveBeenCalledWith(120);
   expect(onTap).toHaveBeenCalledTimes(2);
   now.mockRestore();
-});
-
-// Pins current behavior, known bug included: the arguments to notesApi.create
-// are swapped, so this posts to /songs/<line number>/notes with the song id as
-// the body. NotesDragDropContext is unused and slated for deletion.
-test('double-clicking an empty line posts the song id to the line number', async () => {
-  vi.mocked(axios.post).mockResolvedValue({ data: { id: 9 } });
-  const song: Song = { id: 42, name: 'Song', content: 'a\nb\nc', format: {} };
-  const onAddTempNote = vi.fn();
-  const onReplaceTempNote = vi.fn();
-  const { container } = render(
-    <NotesDragDropContext
-      song={song}
-      onAddTempNote={onAddTempNote}
-      onReplaceTempNote={onReplaceTempNote}
-      onUpdateNote={vi.fn()}
-      onDeleteNote={vi.fn()}
-    />
-  );
-
-  const lines = container.querySelectorAll('[data-rbd-draggable-id]');
-  fireEvent.doubleClick(lines[1]);
-
-  const newNote = { content: '', color: 'yellow', line_number: 1 };
-  expect(onAddTempNote).toHaveBeenCalledWith({
-    id: expect.any(Number),
-    ...newNote,
-  });
-  expect(axios.post).toHaveBeenCalledWith('/songs/1/notes?team_id=12', 42, {
-    headers,
-  });
-  await waitFor(() =>
-    expect(onReplaceTempNote).toHaveBeenCalledWith(
-      onAddTempNote.mock.calls[0][0].id,
-      { id: 9 }
-    )
-  );
 });
