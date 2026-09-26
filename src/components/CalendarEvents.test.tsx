@@ -4,6 +4,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { MemoryRouter } from 'react-router-dom';
@@ -458,6 +459,7 @@ describe('EventDetail', () => {
 describe('calendar', () => {
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllGlobals();
   });
 
   test('CalendarEventEntry shows the time and title in the event color', () => {
@@ -494,6 +496,38 @@ describe('calendar', () => {
     const button = screen.getByRole('button');
     expect(button.className).toContain('text-black');
     expect(button.className).not.toContain('bg-red-500');
+  });
+
+  test('Calendar opens the clicked event', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2024, 4, 1));
+    // headlessui's Dialog can use ResizeObserver, which jsdom doesn't have.
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      }
+    );
+    renderWithProvider(
+      <MemoryRouter>
+        <EventFormProvider>
+          <Calendar
+            events={[event]}
+            onEventDeleted={vi.fn()}
+            onEventUpdated={vi.fn()}
+          />
+        </EventFormProvider>
+      </MemoryRouter>,
+      { preloadedState: eventPermissions }
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText(/Practice/));
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByText('Practice')).toBeInTheDocument();
+    expect(within(dialog).getByText('Bring music')).toBeInTheDocument();
   });
 
   test('Calendar shows the events of the month it moves to', () => {
