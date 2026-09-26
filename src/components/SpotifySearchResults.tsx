@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { reportError } from '../utils/error';
 import PageLoading from './PageLoading';
-import TracksApi from '../api/tracksApi';
+import TracksApi, { type SpotifyTrack } from '../api/tracksApi';
 import SpotifyTrackResult from './SpotifyTrackResult';
+import type { NewTrack } from '../types';
+
+type SpotifySearchResultsProps = {
+  query: string;
+  onTrackClick: (track: NewTrack, selected: boolean) => void;
+  selectedTracks: NewTrack[];
+};
 
 export default function SpotifySearchResults({
   query,
   onTrackClick,
   selectedTracks,
-}) {
-  const [results, setResults] = useState([]);
+}: SpotifySearchResultsProps) {
+  const [results, setResults] = useState<SpotifyTrack[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -17,7 +24,7 @@ export default function SpotifySearchResults({
     const id = setTimeout(() => {
       async function search() {
         try {
-          let { data } = await TracksApi.searchSpotify(query);
+          const { data } = await TracksApi.searchSpotify(query);
           setResults(data?.tracks?.items || []);
         } catch (error) {
           reportError(error);
@@ -33,7 +40,7 @@ export default function SpotifySearchResults({
     return () => clearTimeout(id);
   }, [query]);
 
-  function isSelected(resultInQuestion) {
+  function isSelected(resultInQuestion: SpotifyTrack) {
     return !!selectedTracks.find(
       selectedTrack =>
         selectedTrack.external_id === resultInQuestion.id &&

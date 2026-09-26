@@ -1,21 +1,36 @@
 import React from 'react';
 import Checkbox from './Checkbox';
+import type { AppleMusicSong } from '../api/tracksApi';
+import type { NewTrack } from '../types';
 
-export default function AppleMusicTrackResult({ track, selected, onClick }) {
+type AppleMusicTrackResultProps = {
+  track: AppleMusicSong;
+  selected: boolean;
+  onClick: (track: NewTrack, selected: boolean) => void;
+};
+
+export default function AppleMusicTrackResult({
+  track,
+  selected,
+  onClick,
+}: AppleMusicTrackResultProps) {
   function getArtworkUrl() {
-    let url = track?.attributes?.artwork?.url;
+    // As: Apple Music songs come with artwork; like before, one without would
+    // throw below.
+    let url = track?.attributes?.artwork?.url as string;
 
-    url = url.replace('{w}', 100);
-    url = url.replace('{h}', 100);
+    url = url.replace('{w}', '100');
+    url = url.replace('{h}', '100');
 
     return url;
   }
 
-  function handleClick(newToggleValue) {
-    let artworkUrl = track?.attributes?.artwork?.url;
+  function handleClick(newToggleValue: boolean) {
+    // As: see getArtworkUrl.
+    let artworkUrl = track?.attributes?.artwork?.url as string;
 
-    artworkUrl = artworkUrl.replace('{w}', 400);
-    artworkUrl = artworkUrl.replace('{h}', 400);
+    artworkUrl = artworkUrl.replace('{w}', '400');
+    artworkUrl = artworkUrl.replace('{h}', '400');
     onClick(
       {
         source: 'Apple Music',

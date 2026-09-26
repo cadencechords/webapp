@@ -12,16 +12,24 @@ import SpotifyIcon from '../images/spotify_icon.png';
 import YouTubeIcon from '../images/youtube_icon.png';
 import { reportError } from '../utils/error';
 import { pluralize } from '../utils/StringUtils';
+import type { NewTrack, Song, Track } from '../types';
+
+type AddTracksDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  song: Song;
+  onTracksAdded: (tracks: Track[]) => void;
+};
 
 export default function AddTracksDialog({
   open,
   onCloseDialog,
   song,
   onTracksAdded,
-}) {
+}: AddTracksDialogProps) {
   const [selectedSource, setSelectedSource] = useState('Spotify');
   const [query, setQuery] = useState(song?.name || '');
-  const [selectedTracks, setSelectedTracks] = useState([]);
+  const [selectedTracks, setSelectedTracks] = useState<NewTrack[]>([]);
   const [saving, setSaving] = useState(false);
 
   function getSearchResultsComponent() {
@@ -52,7 +60,7 @@ export default function AddTracksDialog({
     }
   }
 
-  function handleTrackClick(track, checked) {
+  function handleTrackClick(track: NewTrack, checked: boolean) {
     setSelectedTracks(currentTracks => {
       if (checked) {
         return currentTracks.concat([track]);
@@ -73,7 +81,7 @@ export default function AddTracksDialog({
   async function handleSave() {
     try {
       setSaving(true);
-      let { data } = await TracksApi.createBulk(selectedTracks, song.id);
+      const { data } = await TracksApi.createBulk(selectedTracks, song.id);
       onTracksAdded(data);
       setSaving(false);
       onCloseDialog();

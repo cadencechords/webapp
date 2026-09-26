@@ -1,8 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import KeyBadge from './KeyBadge';
+import type { Song } from '../types';
 
-export default function SongRow({ song }) {
+type SongRowProps = {
+  song: Song;
+};
+
+export default function SongRow({ song }: SongRowProps) {
   return (
     <Link
       to={{ pathname: `/songs/${song.id}`, state: song }}

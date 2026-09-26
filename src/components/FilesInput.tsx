@@ -1,25 +1,41 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ChangeEvent, type ReactNode } from 'react';
 
 import Button from './Button';
 import Icon from './Icon';
 
-export default function FilesInput({ onChange, onRemove, accept, buttonText }) {
-  const input = useRef(/** @type {HTMLInputElement | null} */ (null));
-  const [files, setFiles] = useState([]);
+type FilesInputProps = {
+  /** Called with every file chosen, replacing the earlier choice. */
+  onChange: (files: File[]) => void;
+  onRemove: (file: File) => void;
+  /** The input's `accept`, e.g. `'.pdf,.txt'`. */
+  accept?: string;
+  buttonText?: ReactNode;
+};
 
-  function handleFilesChosen(e) {
-    let filesArray = Object.values(e.target.files);
+export default function FilesInput({
+  onChange,
+  onRemove,
+  accept,
+  buttonText,
+}: FilesInputProps) {
+  const input = useRef<HTMLInputElement | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+
+  function handleFilesChosen(e: ChangeEvent<HTMLInputElement>) {
+    // Non-null: a file input's change event always has its files.
+    const filesArray = Object.values(e.target.files!);
     setFiles(filesArray);
     onChange(filesArray);
   }
 
-  function handleRemove(fileToRemove) {
+  function handleRemove(fileToRemove: File) {
     setFiles(currentFiles => {
-      let updatedFilesList = currentFiles?.filter(
+      const updatedFilesList = currentFiles?.filter(
         file => file !== fileToRemove
       );
 
-      if (updatedFilesList?.length === 0) input.current.value = '';
+      // Non-null: the input is always rendered.
+      if (updatedFilesList?.length === 0) input.current!.value = '';
 
       return updatedFilesList;
     });
@@ -38,7 +54,7 @@ export default function FilesInput({ onChange, onRemove, accept, buttonText }) {
         onChange={handleFilesChosen}
       />
       {files?.length === 0 && (
-        <Button full onClick={() => input.current.click()}>
+        <Button full onClick={() => input.current!.click()}>
           {buttonText}
         </Button>
       )}

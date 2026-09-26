@@ -27,16 +27,6 @@
       "count": 1
     }
   },
-  "src/components/AppleMusicSearchResults.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/AppleMusicTrackResult.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/BinderRow.js": {
     "no-unused-vars": {
       "count": 1
@@ -170,16 +160,6 @@
       "count": 12
     }
   },
-  "src/components/KeyOptionsPopover.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/KeyOptionsSheet.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/LastScheduledField.js": {
     "no-unused-vars": {
       "count": 1
@@ -265,47 +245,7 @@
       "count": 1
     }
   },
-  "src/components/SongRow.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/SpotifySearchResults.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/SpotifyTrackResult.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/StrokeWidthPopover.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/Track.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/TrackOptionsPopover.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/TransposeKeySheet.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/YouTubeSearchResults.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/YouTubeTrackResult.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -321,11 +261,6 @@
     }
   },
   "src/components/pdf/HighlightedText.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/dialogs/AddTracksDialog.js": {
     "no-unused-vars": {
       "count": 1
     }

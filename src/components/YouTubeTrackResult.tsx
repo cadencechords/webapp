@@ -1,7 +1,19 @@
 import React from 'react';
 import Checkbox from './Checkbox';
+import type { YouTubeVideo } from '../api/tracksApi';
+import type { NewTrack } from '../types';
 
-export default function YouTubeTrackResult({ track, selected, onClick }) {
+type YouTubeTrackResultProps = {
+  track: YouTubeVideo;
+  selected: boolean;
+  onClick: (track: NewTrack, selected: boolean) => void;
+};
+
+export default function YouTubeTrackResult({
+  track,
+  selected,
+  onClick,
+}: YouTubeTrackResultProps) {
   function getThumbnailUrl() {
     return (
       track?.snippet?.thumbnails?.standard?.url ||
@@ -9,7 +21,7 @@ export default function YouTubeTrackResult({ track, selected, onClick }) {
     );
   }
 
-  function handleClick(newToggleValue) {
+  function handleClick(newToggleValue: boolean) {
     onClick(
       {
         source: 'YouTube',

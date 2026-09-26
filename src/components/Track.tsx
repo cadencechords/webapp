@@ -4,8 +4,15 @@ import AppleMusicIcon from '../images/apple_music_icon.png';
 import SpotifyIcon from '../images/spotify_icon.png';
 import YouTubeIcon from '../images/youtube_icon.png';
 import TracksApi from '../api/tracksApi';
+import type { Track as TrackModel } from '../types';
 
-export default function Track({ songId, track, onDeleted }) {
+type TrackProps = {
+  songId: number;
+  track: TrackModel;
+  onDeleted: (trackId: number) => void;
+};
+
+export default function Track({ songId, track, onDeleted }: TrackProps) {
   function handleDelete() {
     onDeleted(track.id);
     TracksApi.deleteOne(songId, track.id);

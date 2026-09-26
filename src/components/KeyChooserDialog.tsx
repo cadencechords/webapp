@@ -6,12 +6,20 @@ import ButtonSwitch from './buttons/ButtonSwitch';
 import SongKeyButton from './buttons/SongKeyButton';
 import StyledDialog from './StyledDialog';
 
+type KeyChooserDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  currentSongKey?: string;
+  /** Called with the chosen key, e.g. `'Am'`. */
+  onChange: (key: string) => void;
+};
+
 export default function KeyChooserDialog({
   open,
   onCloseDialog,
   currentSongKey,
   onChange,
-}) {
+}: KeyChooserDialogProps) {
   const [keyNote, setKeyNote] = useState(() => {
     if (currentSongKey) {
       return parseNote(currentSongKey);
@@ -26,7 +34,8 @@ export default function KeyChooserDialog({
 
   useEffect(() => {
     if (currentSongKey?.charAt?.(0)) {
-      setKeyNote(parseNote(currentSongKey));
+      // As: a first character means currentSongKey is a non-empty string.
+      setKeyNote(parseNote(currentSongKey as string));
     } else {
       setKeyNote('G');
     }
@@ -34,12 +43,12 @@ export default function KeyChooserDialog({
     setKeyQuality(parseQuality(currentSongKey));
   }, [currentSongKey, open]);
 
-  const handleKeyChange = newKey => {
+  const handleKeyChange = (newKey: string) => {
     setKeyNote(newKey);
   };
 
-  const handleQualityChange = newQuality => {
-    let shortQuality = newQuality === 'Major' ? '' : 'm';
+  const handleQualityChange = (newQuality: string) => {
+    const shortQuality = newQuality === 'Major' ? '' : 'm';
     setKeyQuality(shortQuality);
   };
 

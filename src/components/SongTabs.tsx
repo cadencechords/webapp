@@ -6,11 +6,24 @@ import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import SongTracksTab from './SongTracksTab';
+import type { Song, SongFile, Track } from '../types';
 
-export default function SongTabs({ song, onTrackDeleted, onTracksAdded }) {
-  const [files, setFiles] = useState();
-  const currentSubscription = useSelector(selectCurrentSubscription);
-  const currentMember = useSelector(selectCurrentMember);
+type SongTabsProps = {
+  song: Song;
+  onTrackDeleted: (trackId: number) => void;
+  onTracksAdded: (tracks: Track[]) => void;
+};
+
+export default function SongTabs({
+  song,
+  onTrackDeleted,
+  onTracksAdded,
+}: SongTabsProps) {
+  const [files, setFiles] = useState<SongFile[]>();
+  // Non-null (both): Content renders the pages only once the membership
+  // loads, and SecuredRoutes dispatches the subscription before it.
+  const currentSubscription = useSelector(selectCurrentSubscription)!;
+  const currentMember = useSelector(selectCurrentMember)!;
 
   return (
     <Tab.Group

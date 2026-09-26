@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import StyledPopover from './StyledPopover';
 import Icon from './Icon';
+import type { Track } from '../types';
 
-export default function TrackOptionsPopover({ track, button, onDelete }) {
+type TrackOptionsPopoverProps = {
+  track: Track;
+  /** What opens the popover. */
+  button: ReactNode;
+  onDelete: () => void;
+};
+
+export default function TrackOptionsPopover({
+  track,
+  button,
+  onDelete,
+}: TrackOptionsPopoverProps) {
   return (
     <StyledPopover button={button} position="top">
       <div className="overflow-hidden rounded-lg w-60">

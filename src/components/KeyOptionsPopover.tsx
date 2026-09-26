@@ -6,8 +6,17 @@ import classNames from 'classnames';
 import TransposeKeySheet from './TransposeKeySheet';
 import CapoKeySheet from './CapoKeySheet';
 import { determineCapoNumber } from '../utils/capo';
+import type { Song } from '../types';
 
-export default function KeyOptionsPopover({ song, onUpdateSong }) {
+type KeyOptionsPopoverProps = {
+  song: Song;
+  onUpdateSong: (updates: Partial<Song>) => void;
+};
+
+export default function KeyOptionsPopover({
+  song,
+  onUpdateSong,
+}: KeyOptionsPopoverProps) {
   const [sheet, setSheet] = useState('options');
 
   function getDisplayKey() {
@@ -41,7 +50,13 @@ export default function KeyOptionsPopover({ song, onUpdateSong }) {
           {getDisplayKey()}
           {song.capo && song.show_capo && (
             <span className="text-xs">
-              {determineCapoNumber(getNonCapoKey(), song.capo.capo_key)}
+              {determineCapoNumber(
+                // As (both): kept as before, an unset key (a song with only a
+                // capo, or a capo cleared in CapoKeySheet and shown again)
+                // is passed through.
+                getNonCapoKey() as string,
+                song.capo.capo_key as string
+              )}
             </span>
           )}
         </Button>
@@ -69,7 +84,7 @@ export default function KeyOptionsPopover({ song, onUpdateSong }) {
     </StyledPopover>
   );
 }
-const SHEET_WIDTHS = {
+const SHEET_WIDTHS: Record<string, string> = {
   options: 'w-48',
   transpose: 'w-80',
   capo: 'w-80',

@@ -4,10 +4,16 @@ import SongFileOptionsPopover from './SongFileOptionsPopover';
 import { toKb } from '../utils/numberUtils';
 import { useParams } from 'react-router';
 import { useState } from 'react';
+import type { SongFile as SongFileModel } from '../types';
 
-export default function SongFile({ file, onDelete, onUpdate }) {
-  /** @type {{ id: string }} */
-  const { id: songId } = useParams();
+type SongFileProps = {
+  file: SongFileModel;
+  onDelete: (fileId: number) => void;
+  onUpdate: (file: SongFileModel) => void;
+};
+
+export default function SongFile({ file, onDelete, onUpdate }: SongFileProps) {
+  const { id: songId } = useParams<{ id: string }>();
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   function handleDelete() {
