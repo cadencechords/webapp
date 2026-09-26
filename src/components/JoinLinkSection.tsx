@@ -4,8 +4,13 @@ import TeamApi from '../api/TeamApi';
 import { setCurrentTeam } from '../store/authSlice';
 import { reportError } from '../utils/error';
 import DetailTitle from './DetailTitle';
+import type { Team } from '../types';
 
-export default function JoinLinkSection({ team }) {
+type JoinLinkSectionProps = {
+  team: Team;
+};
+
+export default function JoinLinkSection({ team }: JoinLinkSectionProps) {
   const [copyButtonText, setCopyButtonText] = useState('Copy');
   const dispatch = useDispatch();
   const joinLink = `${window.origin}/join/${team.join_link}`;

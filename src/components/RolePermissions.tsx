@@ -4,28 +4,45 @@ import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import useAddPermission from '../hooks/api/useAddPermission';
 import useRemovePermission from '../hooks/api/useRemovePermission';
+import type { Role } from '../types';
 
-export default function RolePermissions({ role, onPermissionToggled }) {
+type RolePermissionsProps = {
+  /** RoleDetailPage's copy of the role, `{}` until it loads. */
+  role: Partial<Role>;
+  onPermissionToggled: (permissionName: string, checked: boolean) => void;
+};
+
+export default function RolePermissions({
+  role,
+  onPermissionToggled,
+}: RolePermissionsProps) {
   const { permissions } = role;
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: RoleDetailPage renders inside Content, which renders nothing
+  // until the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   const { run: addPermission } = useAddPermission();
   const { run: removePermission } = useRemovePermission();
 
-  function isPermissionEnabled(permissionName) {
-    let permission = permissions?.find(
+  function isPermissionEnabled(permissionName: string) {
+    const permission = permissions?.find(
       permission => permission.name === permissionName
     );
 
     return !!permission;
   }
 
-  function handlePermissionToggled(permissionName, checkedValue) {
+  function handlePermissionToggled(
+    permissionName: string,
+    checkedValue: boolean
+  ) {
     onPermissionToggled(permissionName, checkedValue);
+    // Non-null (both): a permission is toggled only once the role has loaded,
+    // so it has its id.
     if (checkedValue) {
-      addPermission({ roleId: role.id, permissionName });
+      addPermission({ roleId: role.id!, permissionName });
     } else {
-      removePermission({ roleId: role.id, permissionName });
+      removePermission({ roleId: role.id!, permissionName });
     }
   }
 

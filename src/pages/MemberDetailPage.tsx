@@ -12,18 +12,14 @@ import { useHistory } from 'react-router-dom';
 import { useParams } from 'react-router';
 import usePermissionsCheck from '../hooks/usePermissionsCheck';
 import { REMOVE_MEMBERS } from '../utils/constants';
+import type { User } from '../types';
 
 export default function MemberDetail() {
-  /** @type {{ id: string }} */
-  const { id } = useParams();
-  const [member, setMember] = useState(
-    /** @type {import('../types').User | undefined} */ (undefined)
-  );
+  const { id } = useParams<{ id: string }>();
+  const [member, setMember] = useState<User | undefined>(undefined);
   const [loadingMember, setLoadingMember] = useState(true);
   const [memberMenuOpen, setMemberMenuOpen] = useState(false);
-  const [alert, setAlert] = useState(
-    /** @type {string | undefined} */ (undefined)
-  );
+  const [alert, setAlert] = useState<string | undefined>(undefined);
   const router = useHistory();
 
   const { can } = usePermissionsCheck();
@@ -31,7 +27,7 @@ export default function MemberDetail() {
   useEffect(() => {
     async function fetchTeamMember() {
       try {
-        let { data } = await UserApi.getMember(id);
+        const { data } = await UserApi.getMember(id);
         setMember(data);
       } catch (error) {
         reportError(error);
@@ -48,7 +44,8 @@ export default function MemberDetail() {
   };
 
   const getFullName = () => {
-    return `${member.first_name} ${member.last_name}`;
+    // Non-null: called only once the member has loaded.
+    return `${member!.first_name} ${member!.last_name}`;
   };
 
   const handleMemberRemoved = () => {
@@ -95,7 +92,8 @@ export default function MemberDetail() {
             </div>
             <div className="py-2 text-gray-600 dark:text-dark-gray-200 flex-between">
               <div className="font-semibold">Joined:</div>
-              {toMonthYearDate(member.created_at)}
+              {/* Non-null: the API sends when the member joined. */}
+              {toMonthYearDate(member.created_at!)}
             </div>
           </div>
           {can(REMOVE_MEMBERS) && (

@@ -20,10 +20,11 @@ import useDeleteRole from '../hooks/api/useDeleteRole';
 import usePermissions from '../hooks/api/usePermissions';
 import useCopy from '../hooks/useCopy';
 import Icon from '../components/Icon';
+import type { RoleUpdates } from '../api/rolesApi';
 
 export default function RoleDetailPage() {
-  // The route's path declares :id, which useParams can't see.
-  const id = /** @type {{ id: string }} */ (useParams()).id;
+  // The route's path declares :id.
+  const id = useParams<{ id: string }>().id;
   const {
     data: originalRole,
     isLoading: isLoadingRole,
@@ -36,7 +37,8 @@ export default function RoleDetailPage() {
     isError: isErrorPermissions,
   } = usePermissions();
 
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: Content renders the page only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const router = useHistory();
   const { run: deleteRole } = useDeleteRole({
@@ -49,13 +51,16 @@ export default function RoleDetailPage() {
 
   const [role, setRole] = useCopy(originalRole);
 
-  function handlePermissionToggled(permissionName, checked) {
-    let updatedRolePermissions = [...role.permissions];
+  function handlePermissionToggled(permissionName: string, checked: boolean) {
+    // Non-null: a permission is toggled only once the role has loaded, and
+    // the API sends a role with its permissions.
+    let updatedRolePermissions = [...role.permissions!];
     if (checked) {
-      let permission = permissions.find(
+      const permission = permissions.find(
         permission => permission.name === permissionName
       );
-      updatedRolePermissions.push(permission);
+      // Non-null: the names RolePermissions toggles are the API's permissions.
+      updatedRolePermissions.push(permission!);
     } else {
       updatedRolePermissions = updatedRolePermissions.filter(
         permission => permission.name !== permissionName
@@ -68,14 +73,14 @@ export default function RoleDetailPage() {
     }));
   }
 
-  function handleChange(field, value) {
+  function handleChange(field: keyof RoleUpdates, value: string) {
     setRole(previousRole => ({ ...previousRole, [field]: value }));
     debounce(field, value);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
-    _.debounce((field, newValue) => {
+    _.debounce((field: keyof RoleUpdates, newValue: string) => {
       try {
         RolesApi.updateOne({ [field]: newValue }, id);
       } catch (error) {
@@ -131,7 +136,10 @@ export default function RoleDetailPage() {
         show={showConfirmDelete}
         onCloseDialog={() => setShowConfirmDelete(false)}
         onCancel={() => setShowConfirmDelete(false)}
-        onConfirm={() => deleteRole(role.id)}
+        onConfirm={() =>
+          // Non-null: the delete button shows only once the role has loaded.
+          deleteRole(role.id!)
+        }
       >
         Deleting this role will move everyone from this role into the members
         role.

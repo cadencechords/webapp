@@ -8,28 +8,36 @@ import useTeamMembers from '../hooks/api/useTeamMembers';
 import useAddMembersToRole from '../hooks/api/useAddMembersToRole';
 import PageLoading from '../components/PageLoading';
 import Alert from '../components/Alert';
+import type { Membership } from '../types';
+
+type AddMembersToRoleDialogProps = {
+  /** The role's memberships, undefined until the role loads. */
+  membersInRole?: Membership[];
+  open: boolean;
+  onCloseDialog: () => void;
+};
 
 export default function AddMembersToRoleDialog({
   membersInRole,
   open,
   onCloseDialog,
-}) {
+}: AddMembersToRoleDialogProps) {
   const { data: teamMembers, isLoading, isError, isSuccess } = useTeamMembers();
-  const [membersToAdd, setMembersToAdd] = useState([]);
+  const [membersToAdd, setMembersToAdd] = useState<number[]>([]);
   const { run: addMembersToRole, isLoading: isSaving } = useAddMembersToRole({
     onSuccess: handleClose,
   });
-  // The route's path declares :id, which useParams can't see.
-  const id = /** @type {{ id: string }} */ (useParams()).id;
+  // The route's path declares :id.
+  const id = useParams<{ id: string }>().id;
 
   function membersNotInRole() {
-    let membersInRoleIds = membersInRole?.map(member => member.id) || [];
+    const membersInRoleIds = membersInRole?.map(member => member.id) || [];
     return teamMembers.filter(
       teamMember => !membersInRoleIds.includes(teamMember.id)
     );
   }
 
-  function handleMemberToggled(member, checked) {
+  function handleMemberToggled(member: Membership, checked: boolean) {
     if (checked) {
       setMembersToAdd(currentMembers => [...currentMembers, member.id]);
     } else {

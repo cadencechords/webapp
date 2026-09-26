@@ -6,9 +6,18 @@ import { ASSIGN_ROLES } from '../utils/constants';
 import useRemoveMemberFromRole from '../hooks/api/useRemoveMemberFromRole';
 import classNames from 'classnames';
 import Icon from './Icon';
+import type { Membership, Role } from '../types';
 
-export default function RoleMemberRow({ role, member }) {
-  const currentMember = useSelector(selectCurrentMember);
+type RoleMemberRowProps = {
+  /** RoleDetailPage's copy of the role, `{}` until it loads. */
+  role: Partial<Role>;
+  member: Membership;
+};
+
+export default function RoleMemberRow({ role, member }: RoleMemberRowProps) {
+  // Non-null: RoleDetailPage renders inside Content, which renders nothing
+  // until the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
   const { run: removeMemberFromRole } = useRemoveMemberFromRole();
   const canRemoveFromRole =
     currentMember.can(ASSIGN_ROLES) && role?.name !== 'Member';
@@ -29,7 +38,9 @@ export default function RoleMemberRow({ role, member }) {
           variant="icon"
           color="gray"
           onClick={() =>
-            removeMemberFromRole({ memberId: member.id, roleId: role.id })
+            // Non-null: the rows list the loaded role's memberships, so the
+            // role has its id.
+            removeMemberFromRole({ memberId: member.id, roleId: role.id! })
           }
           loading={false}
           size="md"

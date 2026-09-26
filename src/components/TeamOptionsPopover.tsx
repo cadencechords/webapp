@@ -3,9 +3,14 @@ import MobileMenuButton from './buttons/MobileMenuButton';
 import ProfilePicture from './ProfilePicture';
 import StyledPopover from './StyledPopover';
 import Icon from './Icon';
+import type { Team } from '../types';
 
-export default function TeamOptionsPopover({ team }) {
-  let button = (
+type TeamOptionsPopoverProps = {
+  team: Team;
+};
+
+export default function TeamOptionsPopover({ team }: TeamOptionsPopoverProps) {
+  const button = (
     <div className="flex items-center w-full h-16 px-3 py-2 text-base font-semibold transition-colors dark:hover:bg-dark-gray-700 hover:bg-gray-200">
       <span className="w-8 mr-3">
         <ProfilePicture url={team.image_url} size="xs" />

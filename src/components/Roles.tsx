@@ -6,9 +6,16 @@ import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import Icon from './Icon';
+import type { Role } from '../types';
 
-export default function Roles({ roles }) {
-  const currentMember = useSelector(selectCurrentMember);
+type RolesProps = {
+  roles?: Role[];
+};
+
+export default function Roles({ roles }: RolesProps) {
+  // Non-null: RolesIndexPage renders inside Content, which renders nothing
+  // until the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   return (
