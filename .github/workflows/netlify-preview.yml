@@ -105,8 +105,9 @@ jobs:
 
       # `netlify build` runs the site's build command with the deploy-preview
       # context's environment variables (from netlify.toml and the Netlify UI).
-      # Deploying is a separate step so the build's log output can't end up in
-      # the JSON that `netlify deploy --json` prints.
+      # Deploying is a separate step (`--no-build`) that uploads that output.
+      # The CLI only accepts --context on deploy when it also builds, so the
+      # deploy-preview context is applied here, where the env vars are read.
       # The Netlify secrets are only given to the two steps that need them, not
       # to `yarn install` (dependency install scripts) or the comment steps.
       - name: Build
@@ -124,7 +125,6 @@ jobs:
           npx --yes netlify-cli@27 deploy \
             --no-build \
             --dir build \
-            --context deploy-preview \
             --alias "pr-${PR_NUMBER}" \
             --message "PR #${PR_NUMBER} @ ${HEAD_SHA}" \
             --json > "$RUNNER_TEMP/deploy.json"
