@@ -25,6 +25,13 @@ export default function PrintSongDialog({
 }: PrintSongDialogProps) {
   const [keyType, setKeyType] = useState<string>(determineInitialKeyType);
   const [song, setSong] = useState({ ...initialSong });
+  // Start over from the song whenever it changes. Print settings otherwise
+  // carry over between openings, so the contents can't remount on open.
+  const [previousInitialSong, setPreviousInitialSong] = useState(initialSong);
+  if (initialSong !== previousInitialSong) {
+    setPreviousInitialSong(initialSong);
+    setSong(initialSong);
+  }
   const keyOptions = getKeyOptions();
   const showChords = keyType !== 'none';
 
@@ -69,10 +76,6 @@ export default function PrintSongDialog({
   const handleCloseDialog = () => {
     onCloseDialog();
   };
-
-  useEffect(() => {
-    setSong(initialSong);
-  }, [initialSong]);
 
   function getKeyOptions() {
     const options = [];

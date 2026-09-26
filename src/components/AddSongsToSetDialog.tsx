@@ -31,7 +31,6 @@ export default function AddSongsToSetDialog({
   const [songs, setSongs] = useState<Song[]>([]);
   const [songsToAdd, setSongsToAdd] = useState<Song[]>([]);
   const [query, setQuery] = useState('');
-  const [filteredSongs, setFilteredSongs] = useState<Song[]>([]);
   const [savingAdds, setSavingAdds] = useState(false);
 
   // The route's path declares :id, which useParams can't see.
@@ -58,13 +57,9 @@ export default function AddSongsToSetDialog({
     fetchSongs();
   }, [open, boundSongs]);
 
-  useEffect(() => {
-    setFilteredSongs(
-      songs.filter(song =>
-        song.name.toLowerCase().includes(query.toLowerCase())
-      )
-    );
-  }, [query, songs]);
+  const filteredSongs = songs.filter(song =>
+    song.name.toLowerCase().includes(query.toLowerCase())
+  );
 
   const handleChecked = (shouldAdd: boolean, song: Song) => {
     const songsSet = new Set(songsToAdd);
@@ -81,7 +76,6 @@ export default function AddSongsToSetDialog({
     setSongs([]);
     setSongsToAdd([]);
     setQuery('');
-    setFilteredSongs([]);
   };
 
   const handleCloseDialog = () => {

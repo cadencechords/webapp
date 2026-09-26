@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from './Button';
 import AddCancelActions from './buttons/AddCancelActions';
 import EditableData from './inputs/EditableData';
@@ -18,9 +18,41 @@ export default function MeterDialog({
   meter,
   onMeterChange,
 }: MeterDialogProps) {
+  return (
+    <StyledDialog
+      open={open}
+      onCloseDialog={onCloseDialog}
+      title="Choose the meter"
+      borderedTop={false}
+      fullscreen={false}
+    >
+      {/* StyledDialog unmounts its contents while closed, so each opening
+          starts from the current meter. */}
+      <MeterChooser
+        onCloseDialog={onCloseDialog}
+        meter={meter}
+        onMeterChange={onMeterChange}
+      />
+    </StyledDialog>
+  );
+}
+
+function MeterChooser({
+  onCloseDialog,
+  meter,
+  onMeterChange,
+}: Omit<MeterDialogProps, 'open'>) {
+  // Kept as before: with no meter, `undefined >= 3` is false and 4/4 is used.
+  // TypeScript doesn't narrow `meter` from the length check, hence the `!`s:
+  // the check passing means meter is set.
+  const hasMeter = (meter?.length as number) >= 3;
   // EditableData hands back strings, so these hold strings after an edit.
-  const [numerator, setNumerator] = useState<number | string>(4);
-  const [denominator, setDenominator] = useState<number | string>(4);
+  const [numerator, setNumerator] = useState<number | string>(() =>
+    hasMeter ? meter!.substring(0, meter!.indexOf('/')) : 4
+  );
+  const [denominator, setDenominator] = useState<number | string>(() =>
+    hasMeter ? meter!.charAt(meter!.length - 1) : 4
+  );
 
   const handleChooseCommonMeter = (num: number, denom: number) => {
     setNumerator(num);
@@ -32,26 +64,8 @@ export default function MeterDialog({
     onCloseDialog();
   };
 
-  useEffect(() => {
-    // Kept as before: with no meter, `undefined >= 3` is false and skips this.
-    // TypeScript doesn't narrow `meter` from the length check, hence the `!`s:
-    // the check passing means meter is set.
-    if ((meter?.length as number) >= 3) {
-      const indexOfSlash = meter!.indexOf('/');
-
-      setNumerator(meter!.substring(0, indexOfSlash));
-      setDenominator(meter!.charAt(meter!.length - 1));
-    }
-  }, [meter, open]);
-
   return (
-    <StyledDialog
-      open={open}
-      onCloseDialog={onCloseDialog}
-      title="Choose the meter"
-      borderedTop={false}
-      fullscreen={false}
-    >
+    <>
       <div>
         <h4 className="mb-2">Common meters:</h4>
         <div className="flex-between">
@@ -96,7 +110,7 @@ export default function MeterDialog({
         onCancel={onCloseDialog}
         onAdd={handleConfirm}
       />
-    </StyledDialog>
+    </>
   );
 }
 
