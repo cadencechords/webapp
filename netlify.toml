@@ -28,7 +28,8 @@ REACT_APP_PUBLIC_URL        = "https://public.mezzochords.com"
 
 # PR previews (.github/workflows/netlify-preview.yml) use the production
 # backends, so they read and write real data. Only the Sentry environment
-# differs, to keep preview errors out of production's.
+# differs, to keep preview errors out of production's. Planning Center sign-in
+# and emailed links (like password resets) return to production, not the preview.
 [context.deploy-preview.environment]
 REACT_APP_API_URL           = "https://chords-api.herokuapp.com"
 REACT_APP_PCO_CLIENT_ID     = "fb5fe2aa8e69d8e2fc436b5a07ce22cac022aa92d7e2070ff1edd6efdf41d4f5"
