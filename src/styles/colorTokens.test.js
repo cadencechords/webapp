@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { generateScheme, renderCss } from '../../scripts/color-tokens.mjs';
+import { generateScheme, renderCss } from '../../scripts/color-tokens.mts';
 
 const PAIRS = [
   ['on-primary', 'primary'],

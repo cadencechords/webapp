@@ -20,10 +20,12 @@ export default function useRemoveMemberFromRole({
     onMutate: async ({ roleId, memberId }) => {
       await queryClient.cancelQueries({ queryKey: ['roles', `${roleId}`] });
       const roleKey = ['roles', `${roleId}`];
-      const role = queryClient.getQueryData<Role>(roleKey);
+      // Members are removed from the role's page, which has loaded the role
+      // and its memberships into this query.
+      const role = queryClient.getQueryData<Role>(roleKey)!;
       const updatedRole = {
         ...role,
-        memberships: role.memberships.filter(member => member.id !== memberId),
+        memberships: role.memberships!.filter(member => member.id !== memberId),
       };
       queryClient.setQueryData<Role>(roleKey, updatedRole);
     },

@@ -28,7 +28,8 @@ export default function SetlistDetailPage() {
   const [loading, setLoading] = useState(true);
   const [showChangeDateDialog, setShowChangeDateDialog] = useState(false);
   const router = useHistory();
-  const id = useParams().id;
+  // The route's path declares :id, which useParams can't see.
+  const id = /** @type {{ id: string }} */ (useParams()).id;
   const currentMember = useSelector(selectCurrentMember);
   const currentSubscription = useSelector(selectCurrentSubscription);
   const dispatch = useDispatch();

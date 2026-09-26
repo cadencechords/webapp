@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 
 export default function SongFilesTab({ onFilesChange, files }) {
   const [loading, setLoading] = useState(false);
+  /** @type {{ id: string }} */
   const { id: songId } = useParams();
   const currentMember = useSelector(selectCurrentMember);
 

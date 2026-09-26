@@ -59,7 +59,10 @@ export default function SongAdjustmentsDrawerMainSheet({
         <Toggle enabled={song.show_roadmap} onChange={noop} spacing="between" />
       </MobileMenuButton>
 
-      {currentSubscription.isPro && (
+      {/* SecuredRoutes renders pages once the team is set, and the
+          subscription is dispatched right after it, before this drawer can
+          be opened by a user action. */}
+      {currentSubscription!.isPro && (
         <MobileMenuButton
           className="hidden sm:flex sm:items-center"
           onClick={onAddNote}
@@ -70,14 +73,16 @@ export default function SongAdjustmentsDrawerMainSheet({
       )}
       <MobileMenuButton
         className="flex items-center"
-        onClick={() => onShowBottomSheet('autoscroll')}
+        // The drawer passes it wherever it renders this sheet (see the prop).
+        onClick={() => onShowBottomSheet!('autoscroll')}
         full
       >
         <ScrollIcon className={iconClasses} /> Auto scroll
       </MobileMenuButton>
       <MobileMenuButton
         className="flex items-center"
-        onClick={() => onShowBottomSheet('metronome')}
+        // The drawer passes it wherever it renders this sheet (see the prop).
+        onClick={() => onShowBottomSheet!('metronome')}
       >
         <MetronomeIcon className={iconClasses} /> Metronome
       </MobileMenuButton>

@@ -1,0 +1,12 @@
+{
+  // strict for the TypeScript in src. It extends tsconfig.json, so the
+  // TypeScript files are still checked against the JavaScript they import,
+  // but checkJs is off: errors are reported only in .ts/.tsx files. The
+  // JavaScript gets strict as it's converted. scripts/typecheck.mts runs
+  // this after tsconfig.json.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "checkJs": false
+  }
+}

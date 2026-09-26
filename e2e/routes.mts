@@ -1,13 +1,17 @@
 // Every screen the screenshot catalog visits. `:song`, `:set`, etc. are filled
-// in at runtime with IDs from the signed-in test team (see discoverIds in catalog.spec.js).
+// in at runtime with IDs from the signed-in test team (see discoverIds in catalog.spec.mts).
 
-const PUBLIC_ROUTES = [
+export type Route = { name: string; path: string; skip?: string };
+// IDs by param name; null (or missing) when the test team has none.
+export type Ids = Record<string, string | number | null | undefined>;
+
+export const PUBLIC_ROUTES: Route[] = [
   { name: 'login', path: '/login' },
   { name: 'signup', path: '/signup' },
   { name: 'forgot-password', path: '/forgot_password' },
 ];
 
-const AUTHED_ROUTES = [
+export const AUTHED_ROUTES: Route[] = [
   { name: 'team-picker', path: '/login/teams' },
   { name: 'team-new', path: '/login/teams/new' },
   { name: 'dashboard', path: '/' },
@@ -43,7 +47,11 @@ const AUTHED_ROUTES = [
   { name: 'billing', path: '/billing' },
 ];
 
-const VARIANTS = [
+export const VARIANTS: {
+  name: string;
+  viewport: { width: number; height: number };
+  theme: string;
+}[] = [
   {
     name: 'desktop-light',
     viewport: { width: 1280, height: 800 },
@@ -64,10 +72,10 @@ const VARIANTS = [
 
 // Fills `:param` placeholders from `ids`. Routes whose IDs are missing come back
 // with `skip` set, so the catalog reports them instead of screenshotting a 404.
-function resolveRoutes(routes, ids) {
+export function resolveRoutes(routes: Route[], ids: Ids): Route[] {
   return routes.map(route => {
-    const missing = [];
-    const path = route.path.replace(/:(\w+)/g, (_, key) => {
+    const missing: string[] = [];
+    const path = route.path.replace(/:(\w+)/g, (_, key: string) => {
       if (ids[key] == null) {
         missing.push(key);
         return `:${key}`;
@@ -79,5 +87,3 @@ function resolveRoutes(routes, ids) {
       : { ...route, path };
   });
 }
-
-module.exports = { PUBLIC_ROUTES, AUTHED_ROUTES, VARIANTS, resolveRoutes };

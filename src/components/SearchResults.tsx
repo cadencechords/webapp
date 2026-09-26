@@ -7,7 +7,7 @@ import type { Binder, Setlist, Song } from '../types';
 
 type SearchResultsProps = {
   /** Null until the first search. */
-  results?: { binders?: Binder[]; songs?: Song[]; setlists?: Setlist[] } | null;
+  results?: { binders: Binder[]; songs: Song[]; setlists: Setlist[] } | null;
   onCloseDialog?: () => void;
   searchQuery: string;
 };

@@ -9,7 +9,7 @@ The author of a change is the worst person to judge it. This review assumes
 the branch is wrong and tries to prove it: fresh-context reviewers attack the
 diff, a separate pass tries to disprove each finding, and only what survives
 counts. A PR can't be opened until a passing review is recorded for the
-**exact commit** it will contain. `.claude/hooks/require-adversarial-review.mjs`
+**exact commit** it will contain. `.claude/hooks/require-adversarial-review.mts`
 enforces this; see "What the gate guarantees" at the end for its limits.
 
 ## 0. Preconditions
@@ -28,7 +28,7 @@ yarn typecheck && yarn lint && yarn format:check && yarn test:unit && yarn test:
 ```
 
 Fix any failure before going on. A reviewer's time is wasted on a branch that
-CI would reject anyway. (`record.mjs` runs these again itself in step 5.)
+CI would reject anyway. (`record.mts` runs these again itself in step 5.)
 
 ## 2. Attack: independent reviewers
 
@@ -88,7 +88,7 @@ Stop when a round produces no confirmed blocker or major finding.
 Write the summary to a temp file (not in the repo) and record it. Every
 blocker or major finding must be `confirmed` or `refuted`; minors may be
 `unverified`. It can't set `verdict`, `sha`, `branch`, `recordedAt` or `checks`:
-`record.mjs` sets those itself, and runs the checks as the repo's
+`record.mts` sets those itself, and runs the checks as the repo's
 `package.json` scripts.
 
 ```json
@@ -118,16 +118,16 @@ blocker or major finding must be `confirmed` or `refuted`; minors may be
 ```
 
 ```bash
-node .claude/skills/adversarial-review/record.mjs pass /path/to/summary.json
+node .claude/skills/adversarial-review/record.mts pass /path/to/summary.json
 ```
 
-`record.mjs` runs the checks from step 1 itself and refuses to record `pass`
+`record.mts` runs the checks from step 1 itself and refuses to record `pass`
 in any of these cases:
 
 - tracked files have uncommitted changes
 - `HEAD` is detached, or isn't what's on the remote branch (it fetches first)
 - the summary has fewer than two lenses, no `findings` array, no `base`, or
-  sets a field `record.mjs` owns
+  sets a field `record.mts` owns
 - a blocker or major finding is unverified, or confirmed and not `fixed`
 - any check fails
 
@@ -149,7 +149,7 @@ commits with the same process before asking for another review.
 
 ## What the gate guarantees, and what it doesn't
 
-The hook blocks opening a PR unless a `pass` record written by `record.mjs`
+The hook blocks opening a PR unless a `pass` record written by `record.mts`
 exists for the commit currently on the remote head branch. It fetches that
 branch first, so a stale local ref can't be used. It covers:
 
@@ -174,7 +174,7 @@ ignored. `gh pr create --help` is allowed.
 **Limits:**
 
 - **The review's content is self-reported.** The checks are real, because
-  `record.mjs` runs them. Whether reviewer agents actually ran, and what they
+  `record.mts` runs them. Whether reviewer agents actually ran, and what they
   found, is only as good as the summary. Nothing stops a session from writing
   a summary without doing the review. The PR's **Adversarial review** section
   is where human reviewers can see what was attacked and fixed, and

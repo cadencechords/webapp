@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { compile } from '@tailwindcss/node';
-import { SCALE, emphasize, renderCss } from '../../scripts/type-tokens.mjs';
+import { SCALE, emphasize, renderCss } from '../../scripts/type-tokens.mts';
 
 test('checked-in type-tokens.css matches the generator (run yarn tokens:type)', () => {
   expect(readFileSync('src/styles/type-tokens.css', 'utf8')).toBe(renderCss());

@@ -1,11 +1,6 @@
 // Create a set, add songs to it, then move between songs in performance mode.
-const { test, expect } = require('@playwright/test');
-const {
-  uniqueName,
-  createSong,
-  cleanup,
-  quickAddButton,
-} = require('./helpers');
+import { test, expect } from '@playwright/test';
+import { uniqueName, createSong, cleanup, quickAddButton } from './helpers.mts';
 
 test.afterEach(async ({ page }) => cleanup(page));
 

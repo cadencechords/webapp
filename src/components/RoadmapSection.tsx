@@ -21,12 +21,14 @@ export default function RoadmapSection({
     return section.length + 3 + 'ch';
   }
 
-  function handleKeyDown(key) {
+  // The input's own key handler, so ref.current is that input.
+  function handleKeyDown(key: string) {
     if (key === 'Backspace' && section === '') {
-      ref.current.blur();
-      onDelete();
+      ref.current!.blur();
+      // Only the drag clone has no onDelete, and it isn't edited.
+      onDelete!();
     }
-    if (key === 'Enter') ref.current.blur();
+    if (key === 'Enter') ref.current!.blur();
   }
 
   function handleClick() {

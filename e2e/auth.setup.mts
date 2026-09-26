@@ -1,8 +1,8 @@
 // Signs in once with TEST_USER_EMAIL / TEST_USER_PASSWORD, picks the team and
 // saves the session (localStorage tokens) for the catalog and smoke projects.
-const { test: setup, expect } = require('@playwright/test');
-const { AUTH_FILE } = require('./playwright.config');
-const { api } = require('./api');
+import { test as setup, expect } from '@playwright/test';
+import { AUTH_FILE } from './playwright.config.mts';
+import { api } from './api.mts';
 
 const TEAM = process.env.TEST_TEAM_NAME || 'Claude Team';
 
@@ -35,15 +35,18 @@ setup('seed sample data', async ({ browser }) => {
   const page = await context.newPage();
   await page.goto('/songs');
   const name = 'Catalog sample';
-  const [song] = await api(page, 'GET', '/songs');
+  const [song] = await api<{ id: number }[]>(page, 'GET', '/songs');
 
   for (const kind of ['setlists', 'binders']) {
-    if ((await api(page, 'GET', `/${kind}`)).length) continue;
+    if ((await api<unknown[]>(page, 'GET', `/${kind}`)).length) continue;
     const extra =
       kind === 'setlists'
         ? { scheduled_date: '2030-01-01' }
         : { color: 'blue' };
-    const { id } = await api(page, 'POST', `/${kind}`, { name, ...extra });
+    const { id } = await api<{ id: number }>(page, 'POST', `/${kind}`, {
+      name,
+      ...extra,
+    });
     if (song)
       await api(page, 'POST', `/${kind}/${id}/songs`, { song_ids: [song.id] });
   }

@@ -24,7 +24,8 @@ import usePerformanceMode from '../hooks/usePerformanceMode';
 import classNames from 'classnames';
 
 export default function SongPresenterPage() {
-  const id = useParams().id;
+  // The route's path declares :id, which useParams can't see.
+  const id = /** @type {{ id: string }} */ (useParams()).id;
   const song = useSelector(selectSongBeingPresented);
   const { isAnnotating } = usePerformanceMode();
   const dispatch = useDispatch();

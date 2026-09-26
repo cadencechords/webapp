@@ -22,8 +22,8 @@ export default function MarkingOptionsPopover({
   style,
   onClose,
 }: MarkingOptionsPopoverProps) {
-  const referenceElement = useRef<HTMLButtonElement>();
-  const popperElement = useRef<HTMLDivElement>();
+  const referenceElement = useRef<HTMLButtonElement>(null);
+  const popperElement = useRef<HTMLDivElement>(null);
 
   const { styles, attributes } = usePopper(
     referenceElement.current,

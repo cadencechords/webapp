@@ -89,7 +89,7 @@ export default class SongApi {
   }
 
   static removeThemes(songId: Id, themeIds: Id[] | undefined) {
-    if (themeIds?.length > 0) {
+    if (themeIds && themeIds.length > 0) {
       return axios.delete<unknown>(
         SONGS_URL +
           `/${songId}/themes?${combineParamValues(
@@ -112,7 +112,7 @@ export default class SongApi {
   }
 
   static removeGenres(songId: Id, genreIds: Id[] | undefined) {
-    if (genreIds?.length > 0) {
+    if (genreIds && genreIds.length > 0) {
       return axios.delete<unknown>(
         SONGS_URL +
           `/${songId}/genres?${combineParamValues(

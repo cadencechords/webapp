@@ -17,6 +17,7 @@ export default function EditSongFileDialog({
   const [name, setName] = useState(basename(file.name));
   const [loading, setLoading] = useState(false);
   const [dirty, setDirty] = useState(false);
+  /** @type {{ id: string }} */
   const { id: songId } = useParams();
 
   function handleNameChange(updatedName) {

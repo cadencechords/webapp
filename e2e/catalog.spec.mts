@@ -3,33 +3,46 @@
 //   yarn e2e:catalog                       -> e2e/screenshots/
 //   CATALOG_DIR=/tmp/before yarn e2e:catalog
 //   CATALOG_ONLY=songs,song-detail yarn e2e:catalog
-const path = require('path');
-const { test } = require('@playwright/test');
-const { api } = require('./api');
-const {
+/// <reference lib="dom" />
+import path from 'node:path';
+import { test } from '@playwright/test';
+import type { Browser, BrowserContextOptions, Page } from '@playwright/test';
+import { api } from './api.mts';
+import {
   PUBLIC_ROUTES,
   AUTHED_ROUTES,
   VARIANTS,
   resolveRoutes,
-} = require('./routes');
+} from './routes.mts';
+import type { Ids, Route } from './routes.mts';
 
-const OUT_DIR = process.env.CATALOG_DIR || path.join(__dirname, 'screenshots');
+type StorageState = BrowserContextOptions['storageState'];
+
+const OUT_DIR =
+  process.env.CATALOG_DIR || path.join(import.meta.dirname, 'screenshots');
 const ONLY = process.env.CATALOG_ONLY?.split(',');
 
 // browser.newContext() inherits the project's storageState, so opt out explicitly.
 const SIGNED_OUT = { cookies: [], origins: [] };
 const HIDE_DEV_OVERLAYS =
   'aside[aria-label="React Query Devtools"] { display: none !important; }';
-const selected = routes =>
+const selected = (routes: Route[]) =>
   ONLY ? routes.filter(r => ONLY.includes(r.name)) : routes;
 
-// One ID of each kind from the test team (auth.setup.js seeds a set and binder).
-async function discoverIds(browser, storageState) {
+// One ID of each kind from the test team (auth.setup.mts seeds a set and binder).
+async function discoverIds(
+  browser: Browser,
+  storageState: StorageState
+): Promise<Ids> {
   const context = await browser.newContext({ storageState });
   const page = await context.newPage();
   await page.goto('/songs');
-  const firstId = async (path, pick = data => data) => {
-    const list = pick(await api(page, 'GET', path).catch(() => null));
+  // pick gets the response (null if the request failed) and returns the list.
+  const firstId = async <T,>(
+    path: string,
+    pick: (data: T | null) => unknown = data => data
+  ): Promise<string | number | null> => {
+    const list = pick(await api<T>(page, 'GET', path).catch(() => null));
     return Array.isArray(list) && list.length ? list[0].id : null;
   };
 
@@ -39,7 +52,10 @@ async function discoverIds(browser, storageState) {
     set: await firstId('/setlists'),
     binder: await firstId('/binders'),
     event: await firstId('/events'),
-    member: await firstId(`/teams/${team}`, data => data?.members),
+    member: await firstId<{ members?: unknown }>(
+      `/teams/${team}`,
+      data => data?.members
+    ),
     role: await firstId('/roles'),
   };
   await context.close();
@@ -49,7 +65,7 @@ async function discoverIds(browser, storageState) {
 // The dev server and third-party SDKs keep connections open, so 'networkidle'
 // never fires. Instead wait until no loading indicator (an infinite CSS
 // animation: spinners, pulse skeletons) is running, then a beat for layout.
-async function settle(page) {
+async function settle(page: Page) {
   await page.waitForTimeout(500);
   await page
     .waitForFunction(
@@ -64,7 +80,11 @@ async function settle(page) {
   await page.waitForTimeout(500);
 }
 
-async function shoot(browser, route, { storageState }) {
+async function shoot(
+  browser: Browser,
+  route: Route,
+  { storageState }: { storageState: StorageState }
+) {
   for (const variant of VARIANTS) {
     const context = await browser.newContext({
       storageState,
@@ -101,7 +121,7 @@ test.describe('public routes', () => {
 });
 
 test.describe('signed-in routes', () => {
-  let routes;
+  let routes: Route[];
 
   test.beforeAll(async ({ browser }, testInfo) => {
     routes = resolveRoutes(
@@ -112,7 +132,8 @@ test.describe('signed-in routes', () => {
 
   for (const { name } of selected(AUTHED_ROUTES)) {
     test(name, async ({ browser }, testInfo) => {
-      const route = routes.find(r => r.name === name);
+      // Every name comes from AUTHED_ROUTES, and resolveRoutes keeps them all.
+      const route = routes.find(r => r.name === name)!;
       test.skip(!!route.skip, route.skip);
       await shoot(browser, route, {
         storageState: testInfo.project.use.storageState,
