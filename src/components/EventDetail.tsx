@@ -4,13 +4,23 @@ import Button from './Button';
 import { format } from '../utils/date';
 import { hasName } from '../utils/model';
 import Icon from './Icon';
+import type { MouseEventHandler } from 'react';
+import type { CurrentMember } from '../store/authSlice';
+import type { CalendarEvent } from '../types';
+
+type EventDetailProps = {
+  event?: CalendarEvent | null;
+  currentMember?: CurrentMember | null;
+  onDelete?: MouseEventHandler<HTMLButtonElement>;
+  onEdit?: MouseEventHandler<HTMLButtonElement>;
+};
 
 export default function EventDetail({
   event,
   currentMember,
   onDelete,
   onEdit,
-}) {
+}: EventDetailProps) {
   return (
     <>
       {event && (
@@ -19,7 +29,7 @@ export default function EventDetail({
             <Icon name="group" filled className="text-gray-600 w-5 h-5 my-1" />
           </div>
           <div className="col-span-9 flex justify-start items-start">
-            {event?.memberships?.length > 0 ? (
+            {event?.memberships?.length ? (
               event.memberships.map(member => (
                 <div key={member.id} className="my-1">
                   {hasName(member.user)

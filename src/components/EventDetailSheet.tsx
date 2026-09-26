@@ -12,9 +12,22 @@ import PlaylistIcon from '../icons/PlaylistIcon';
 import useSetlist from '../hooks/api/useSetlist';
 import { pluralize } from '../utils/StringUtils';
 import Icon from './Icon';
+import type { CalendarEvent, Id } from '../types';
 
-export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
-  const { data: setlist } = useSetlist(event?.setlist_id, {
+type EventDetailSheetProps = {
+  event?: CalendarEvent | null;
+  onDeleted: (eventId: number) => void;
+  onCloseDialog: () => void;
+};
+
+export default function EventDetailSheet({
+  event,
+  onDeleted,
+  onCloseDialog,
+}: EventDetailSheetProps) {
+  // `as`: without a setlist_id the query is disabled, so the missing id is
+  // only part of its key, never fetched.
+  const { data: setlist } = useSetlist(event?.setlist_id as Id, {
     enabled: !!event?.setlist_id,
   });
 
@@ -22,13 +35,15 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
   const { setForm } = useEventForm();
 
   function handleDelete() {
-    eventsApi.delete(event.id);
-    onDeleted(event.id);
+    // Non-null: the delete button only renders when there's an event.
+    eventsApi.delete(event!.id);
+    onDeleted(event!.id);
     onCloseDialog();
   }
 
   function handleEdit() {
-    setForm(event);
+    // Non-null: the edit link only renders when there's an event.
+    setForm(event!);
   }
 
   if (event)
@@ -43,7 +58,7 @@ export default function EventDetailSheet({ event, onDeleted, onCloseDialog }) {
             />
           </div>
           <div className="flex flex-col items-start justify-start col-span-9">
-            {event?.memberships?.length > 0 ? (
+            {event?.memberships?.length ? (
               event.memberships.map(member => (
                 <div key={member.id} className="my-1">
                   {hasName(member.user)

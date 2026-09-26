@@ -72,29 +72,6 @@
       "count": 1
     }
   },
-  "src/components/EventForm.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EventFormDetailsPanel.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EventFormRemindersPanel.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EventFormSetlistPanel.js": {
-    "no-unused-vars": {
-      "count": 1
-    },
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
   "src/components/FormatBottomSheet.js": {
     "no-unused-vars": {
       "count": 1
@@ -350,18 +327,8 @@
       "count": 1
     }
   },
-  "src/pages/CreateCalendarEventPage.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/pages/CreateNewTeamPage.js": {
     "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/pages/EditCalendarEventPage.js": {
-    "no-unused-vars": {
       "count": 1
     }
   },

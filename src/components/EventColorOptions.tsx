@@ -1,7 +1,17 @@
 import EventColorOption from './EventColorOption';
 import Label from './Label';
+import type { ButtonColor } from './Button';
 
-export default function EventColorOptions({ selectedColor, onClick }) {
+type EventColorOptionsProps = {
+  selectedColor?: ButtonColor;
+  /** EventColorOption hands on its color as optional. */
+  onClick: (color: ButtonColor | undefined) => void;
+};
+
+export default function EventColorOptions({
+  selectedColor,
+  onClick,
+}: EventColorOptionsProps) {
   return (
     <div className="mb-8">
       <Label className="flex items-center gap-2 mb-4">

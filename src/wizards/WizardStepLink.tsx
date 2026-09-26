@@ -1,9 +1,18 @@
+import type { MouseEventHandler, ReactNode } from 'react';
+
+type WizardStepLinkProps = {
+  children?: ReactNode;
+  className?: string;
+  active?: boolean;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+};
+
 export default function WizardStepLink({
   children,
   className,
   active,
   onClick,
-}) {
+}: WizardStepLinkProps) {
   return (
     <button
       className={

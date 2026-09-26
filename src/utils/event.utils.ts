@@ -1,8 +1,12 @@
-import dayjs from 'dayjs';
+import dayjs, { type ConfigType } from 'dayjs';
 import { diffInHours, subtractHours } from './date';
-import _ from 'lodash';
+// The same function as `_.isEqual`, from lodash's per-function module, which
+// src/vendor.d.ts types (lodash itself ships no types).
+import isEqual from 'lodash/isEqual';
+import type { EventRequest } from '../api/eventsApi';
+import type { CalendarEvent, EventForm, Id, Setlist } from '../types';
 
-export function toEventForm(event) {
+export function toEventForm(event: CalendarEvent): EventForm {
   const form = {
     ...event,
     title: event.title || '',
@@ -29,8 +33,8 @@ export function toEventForm(event) {
   return form;
 }
 
-export function fromEventForm(form) {
-  let event = {
+export function fromEventForm(form: EventForm) {
+  const event: EventRequest = {
     title: form.title,
     description: form.description,
     color: form.color,
@@ -71,14 +75,20 @@ export function fromEventForm(form) {
   return event;
 }
 
-export function hasDifferentMembers(listOne, listTwo) {
+export function hasDifferentMembers(
+  listOne: readonly Id[] | null | undefined,
+  listTwo: readonly Id[] | null | undefined
+) {
   const setOne = new Set(listOne);
   const setTwo = new Set(listTwo);
 
-  return !_.isEqual(setOne, setTwo);
+  return !isEqual(setOne, setTwo);
 }
 
-export function hasDifferentSetlist(setlistA, setlistB) {
+export function hasDifferentSetlist(
+  setlistA: Pick<Setlist, 'id'> | null | undefined,
+  setlistB: Pick<Setlist, 'id'> | null | undefined
+) {
   if (!setlistA && !setlistB) {
     return false;
   }
@@ -87,10 +97,11 @@ export function hasDifferentSetlist(setlistA, setlistB) {
     return true;
   }
 
-  return parseInt(setlistA.id) !== parseInt(setlistB.id);
+  // parseInt converts its argument to a string first; String() does that here.
+  return parseInt(String(setlistA.id)) !== parseInt(String(setlistB.id));
 }
 
-export function hasDifferentTimes(timeA, timeB) {
+export function hasDifferentTimes(timeA: ConfigType, timeB: ConfigType) {
   if (timeA && !timeB) {
     return true;
   }
@@ -108,7 +119,10 @@ export function hasDifferentTimes(timeA, timeB) {
   return !dayA.isSame(dayB);
 }
 
-export function hasDifferentReminderTimes(timeA, timeB) {
+export function hasDifferentReminderTimes(
+  timeA: ConfigType,
+  timeB: ConfigType
+) {
   if (timeA && !timeB) {
     return true;
   }
