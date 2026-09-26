@@ -18,7 +18,6 @@
     "verbatimModuleSyntax": true
   },
   // `**` skips dot-directories, so .claude and .github are listed explicitly.
-  // scripts/typecheck.mts fails on any TypeScript file this misses.
   "include": [
     "**/*.ts",
     "**/*.mts",

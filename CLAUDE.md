@@ -5,21 +5,19 @@ and `docs/icons.md`.
 
 ## TypeScript only
 
-Write new files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`. The
-JavaScript that's left is being converted (Linear project "Web app: convert to
-TypeScript"). Converting a file means renaming it to `.ts`/`.tsx` with
-`git mv` and typing it. Only `public/` (served as-is) is exempt, and Cypress
-(`cypress.config.js`, `cypress/`): Cypress 10 compiles TypeScript through
-the `typescript` package, which has no compiler API in TypeScript 7, so a
-`.ts` config or spec wouldn't load.
+Write files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`. `src` has no
+JavaScript. `tsconfig.json` has `allowJs` off, so importing a `.js` file from
+TypeScript fails `yarn typecheck`, but nothing catches a `.js` file that isn't
+imported (Vitest doesn't run `.js` tests): keep it that way by hand. Only `public/` (served as-is)
+is exempt, and Cypress (`cypress.config.js`, `cypress/`): Cypress 10 compiles
+TypeScript through the `typescript` package, which has no compiler API in
+TypeScript 7, so a `.ts` config or spec wouldn't load.
 
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
-`tsconfig.json` covers `src`, JavaScript included (`checkJs`), and isn't
-`strict`. `tsconfig.strict.json` checks the TypeScript files in `src` again
-with `strict` (the JavaScript gets it as it's converted), so new files must
-pass `strict`. `tsconfig.node.json` covers all other
+`tsconfig.json` covers `src` and is `strict`. `tsconfig.node.json` covers the other
 TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, `.github/`, config files) and is
-`strict`. Write ES modules there as `.mts` (package.json
+`strict`. Its `**` globs skip dot-directories, so TypeScript in a new one isn't
+checked until it's added to that file's `include`. Write ES modules there as `.mts` (package.json
 has no `"type": "module"`, so a `.ts` file counts as CommonJS). Node strips types without checking them, so
 `yarn typecheck` is what catches errors there. No project has a baseline:
 any type error fails `yarn typecheck`.

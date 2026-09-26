@@ -69,7 +69,7 @@
     "preview": "vite preview",
     "tokens:color": "vite-node --options.deps.inline=@material/material-color-utilities scripts/generate-color-tokens.mts",
     "tokens:type": "node scripts/generate-type-tokens.mts",
-    "typecheck": "node scripts/typecheck.mts",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
     "lint": "eslint .",
     "lint:prune": "eslint . --prune-suppressions",
     "format": "prettier --write .",
