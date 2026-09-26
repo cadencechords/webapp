@@ -3,7 +3,8 @@ import type { FocusEventHandler } from 'react';
 type OpenInputProps = {
   placeholder?: string;
   onFocus?: FocusEventHandler<HTMLInputElement>;
-  value?: string;
+  /** Metronome passes its bpm, a number. */
+  value?: string | number;
   onChange: (value: string) => void;
   autoFocus?: boolean;
   className?: string;
