@@ -203,6 +203,8 @@ test('FilesInput reports chosen and removed files, and clears the input when emp
   expect(screen.getByText('song.pdf')).toBeInTheDocument();
   expect(screen.queryByText('Choose')).not.toBeInTheDocument();
 
+  // jsdom leaves a file input's value empty, so give it one to clear.
+  Object.defineProperty(input, 'value', { value: 'song.pdf', writable: true });
   fireEvent.click(screen.getByRole('button'));
   expect(onRemove).toHaveBeenCalledWith(file);
   expect(screen.getByText('Choose')).toBeInTheDocument();
