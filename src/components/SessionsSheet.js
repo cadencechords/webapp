@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { SessionsContext } from '../contexts/SessionsProvider';
+import React from 'react';
+import { useSessionsContext } from '../contexts/SessionsProvider';
 import NoDataMessage from './NoDataMessage';
 import SectionTitle from './SectionTitle';
 import SessionCard from './SessionCard';
@@ -10,7 +10,7 @@ export default function SessionsSheet({ className, onClose }) {
     onJoinAsMember,
     onLeaveAsMember,
     activeSessionDetails: { activeSession },
-  } = useContext(SessionsContext);
+  } = useSessionsContext();
 
   function handleJoin(session) {
     onJoinAsMember(session);

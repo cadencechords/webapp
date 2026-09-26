@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import { AnnotationsToolbarContext } from '../contexts/AnnotationsToolbarProvider';
+import { useAnnotationsToolbarContext } from '../contexts/AnnotationsToolbarProvider';
 
 export default function useAnnotationsToolbar() {
   const {
@@ -11,7 +10,7 @@ export default function useAnnotationsToolbar() {
     setUtensil,
     annotationChanges,
     setAnnotationChanges,
-  } = useContext(AnnotationsToolbarContext);
+  } = useAnnotationsToolbarContext();
 
   return {
     strokeWidth,

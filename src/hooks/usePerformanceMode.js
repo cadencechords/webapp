@@ -1,8 +1,8 @@
-import { useCallback, useContext } from 'react';
-import { PerformanceModeContext } from '../contexts/PerformanceModeProvider';
+import { useCallback } from 'react';
+import { usePerformanceModeContext } from '../contexts/PerformanceModeProvider';
 import { performanceModes } from '../utils/constants';
 export default function usePerformanceMode() {
-  const { mode, setMode } = useContext(PerformanceModeContext);
+  const { mode, setMode } = usePerformanceModeContext();
 
   const isPerforming = mode === performanceModes.PERFORM;
   const isAnnotating = mode === performanceModes.ANNOTATE;

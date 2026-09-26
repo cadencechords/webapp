@@ -1,8 +1,32 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import type { ReactNode } from 'react';
 
-export const ThemeContext = createContext();
+export interface ThemeContextValue {
+  isDark: boolean;
+  /** Also saves the choice to localStorage. */
+  setIsDark: (isDark: boolean) => void;
+}
 
-export default function ThemeProvider(props) {
+export const ThemeContext = createContext<ThemeContextValue | undefined>(
+  undefined
+);
+
+/** The theme context. Throws outside a `ThemeProvider`. */
+export function useThemeContext(): ThemeContextValue {
+  const value = useContext(ThemeContext);
+  if (value === undefined) {
+    throw new Error('useThemeContext must be used inside a ThemeProvider');
+  }
+  return value;
+}
+
+export default function ThemeProvider(props: { children?: ReactNode }) {
   const [isDark, setIsDark] = useState(() => {
     const theme = localStorage.getItem('theme');
     return theme === 'dark';
@@ -21,7 +45,7 @@ export default function ThemeProvider(props) {
   }, [isDark]);
 
   const handleThemeChange = useCallback(
-    newIsDarkValue => {
+    (newIsDarkValue: boolean) => {
       localStorage.setItem('theme', newIsDarkValue ? 'dark' : 'light');
       setIsDark(newIsDarkValue);
     },

@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../components/Button';
@@ -21,7 +21,7 @@ import { useHistory } from 'react-router-dom';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SessionsApi from '../api/sessionsApi';
 import SessionsProvider, {
-  SessionsContext,
+  useSessionsContext,
 } from '../contexts/SessionsProvider';
 import useQuery from '../hooks/useQuery';
 import notesApi from '../api/notesApi';
@@ -60,7 +60,7 @@ function SetPresenter() {
     setSessions,
     activeSessionDetails,
     onTryToJoinAsMember,
-  } = useContext(SessionsContext);
+  } = useSessionsContext();
   const { data: currentUser } = useCurrentUser({
     onSuccess: ({ format_preferences }) => {
       setSongs(previousSongs =>
@@ -167,7 +167,9 @@ function SetPresenter() {
   }, [setlist, defaultSessionId, currentSubscription, onTryToJoinAsMember]);
 
   useEffect(() => {
-    return () => activeSessionDetails?.socket?.disconnect();
+    return () => {
+      activeSessionDetails?.socket?.disconnect();
+    };
   }, [activeSessionDetails.socket]);
 
   function handleSongBeingViewedIndexChange(index) {

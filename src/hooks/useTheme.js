@@ -1,8 +1,7 @@
-import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeProvider';
+import { useThemeContext } from '../contexts/ThemeProvider';
 
 export default function useTheme() {
-  const { isDark, setIsDark } = useContext(ThemeContext);
+  const { isDark, setIsDark } = useThemeContext();
 
   return { isDark, setIsDark };
 }
