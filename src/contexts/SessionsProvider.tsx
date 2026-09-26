@@ -1,4 +1,12 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import type { Socket } from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import { selectCredentials, selectCurrentUser } from '../store/authSlice';
 import {
@@ -8,16 +16,54 @@ import {
 import { toast } from 'react-toastify';
 import SessionsApi from '../api/sessionsApi';
 import { reportError } from '../utils/error';
+import type { Session, Setlist } from '../types';
 
-export const SessionsContext = createContext();
+export interface ActiveSessionDetails {
+  /** Whether the current user hosts `activeSession`. */
+  isHost: boolean;
+  activeSession: Session | null;
+  socket: Socket | null;
+}
 
-export default function SessionsProvider(props) {
-  const [sessions, setSessions] = useState([]);
-  const [activeSessionDetails, setActiveSessionDetails] = useState({
-    isHost: false,
-    activeSession: null,
-    socket: null,
-  });
+export interface SessionsContextValue {
+  /** The setlist's active sessions. */
+  sessions: Session[];
+  setSessions: Dispatch<SetStateAction<Session[]>>;
+  activeSessionDetails: ActiveSessionDetails;
+  /** Reconnects to the setlist's session the current user hosts, if any. */
+  initializeHostSessionIfExists: (setlist: Setlist) => void;
+  onStartSession: (setlist: Setlist, currentSongIndex: number) => Promise<void>;
+  onEndSession: () => Promise<void>;
+  onSongChange: (newIndex: number) => void;
+  onJoinAsMember: (session: Session) => void;
+  onLeaveAsMember: () => void;
+  /** Joins the session with this id (from the URL) unless the user hosts it. */
+  onTryToJoinAsMember: (sessionId: string, sessions: Session[]) => void;
+}
+
+export const SessionsContext = createContext<SessionsContextValue | undefined>(
+  undefined
+);
+
+/** The sessions context. Throws outside a `SessionsProvider`. */
+export function useSessionsContext(): SessionsContextValue {
+  const value = useContext(SessionsContext);
+  if (value === undefined) {
+    throw new Error(
+      'useSessionsContext must be used inside a SessionsProvider'
+    );
+  }
+  return value;
+}
+
+export default function SessionsProvider(props: { children?: ReactNode }) {
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [activeSessionDetails, setActiveSessionDetails] =
+    useState<ActiveSessionDetails>({
+      isHost: false,
+      activeSession: null,
+      socket: null,
+    });
 
   const currentUser = useSelector(selectCurrentUser);
   const credentials = useSelector(selectCredentials);
@@ -43,7 +89,7 @@ export default function SessionsProvider(props) {
   );
 
   const initializeHostSessionIfExists = useCallback(
-    setlist => {
+    (setlist: Setlist) => {
       const currentSession = findSessionCurrentUserIsHosting(
         currentUser,
         setlist.sessions
@@ -86,10 +132,13 @@ export default function SessionsProvider(props) {
     [credentials, currentUser]
   );
 
-  async function handleStartSession(setlist, currentSongIndex) {
+  async function handleStartSession(
+    setlist: Setlist,
+    currentSongIndex: number
+  ) {
     try {
       const toastId = toast.loading('Starting session');
-      let { data: newSession } = await SessionsApi.startSession(setlist.id);
+      const { data: newSession } = await SessionsApi.startSession(setlist.id);
       const initializedSocket = joinSession(newSession, credentials);
 
       initializedSocket.emit('perform scroll', {
@@ -156,7 +205,7 @@ export default function SessionsProvider(props) {
     }
   }
 
-  function handleSongChange(newIndex) {
+  function handleSongChange(newIndex: number) {
     const { activeSession, socket, isHost } = activeSessionDetails;
     if (activeSession && socket && isHost) {
       socket.emit('perform change song', {
@@ -167,7 +216,7 @@ export default function SessionsProvider(props) {
   }
 
   const handleJoinAsMember = useCallback(
-    session => {
+    (session: Session) => {
       const initializedSocket = joinSession(session, credentials);
 
       toast.success('Connected to session', {
@@ -177,7 +226,7 @@ export default function SessionsProvider(props) {
       });
 
       initializedSocket.on('scroll to', scrollTop => {
-        let html = document.querySelector('html');
+        const html = document.querySelector('html');
         html.scrollTo({
           top: scrollTop,
         });
@@ -206,7 +255,7 @@ export default function SessionsProvider(props) {
   );
 
   function handleLeaveAsMember() {
-    let { socket } = activeSessionDetails;
+    const { socket } = activeSessionDetails;
 
     socket.disconnect();
     setActiveSessionDetails({
@@ -223,7 +272,7 @@ export default function SessionsProvider(props) {
   }
 
   const handleTryToJoinAsMember = useCallback(
-    (sessionId, sessions) => {
+    (sessionId: string, sessions: Session[]) => {
       const sessionToConnectTo = sessions.find(
         session => session.id === parseInt(sessionId)
       );

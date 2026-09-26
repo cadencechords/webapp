@@ -9,8 +9,7 @@ import { selectCurrentMember } from '../store/authSlice';
 import { Link } from 'react-router-dom';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SessionIcon from '../icons/SessionIcon';
-import { useContext } from 'react';
-import { SessionsContext } from '../contexts/SessionsProvider';
+import { useSessionsContext } from '../contexts/SessionsProvider';
 import NumberBadge from './NumberBadge';
 import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
 import Icon from './Icon';
@@ -34,7 +33,7 @@ export default function SetlistAdjustmentsDrawer({
     onEndSession,
     onLeaveAsMember,
     activeSessionDetails: { isHost, activeSession },
-  } = useContext(SessionsContext);
+  } = useSessionsContext();
 
   function handleFormatUpdate(field, value) {
     let updatedFormat = { ...song.format, [field]: value };

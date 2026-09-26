@@ -398,31 +398,6 @@
       "count": 1
     }
   },
-  "src/contexts/AnnotationsToolbarProvider.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/contexts/EventFormProvider.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/contexts/PerformanceModeProvider.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/contexts/SongEditorProvider.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/contexts/ThemeProvider.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/dialogs/AddTracksDialog.js": {
     "no-unused-vars": {
       "count": 1

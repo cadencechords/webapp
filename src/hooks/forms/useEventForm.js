@@ -1,8 +1,8 @@
-import { useCallback, useContext } from 'react';
-import { EventFormContext } from '../../contexts/EventFormProvider';
+import { useCallback } from 'react';
+import { useEventFormContext } from '../../contexts/EventFormProvider';
 
 export default function useEventForm() {
-  const { form, setForm, isValid, populateForm } = useContext(EventFormContext);
+  const { form, setForm, isValid, populateForm } = useEventFormContext();
 
   function onChange(field, value) {
     setForm(previousForm => ({ ...previousForm, [field]: value }));

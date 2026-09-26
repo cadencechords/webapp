@@ -1,8 +1,8 @@
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import FormatApi from '../api/FormatApi';
 import SongApi from '../api/SongApi';
-import { SongEditorContext } from '../contexts/SongEditorProvider';
+import { useSongEditorContext } from '../contexts/SongEditorProvider';
 import { reportError } from '../utils/error';
 
 export default function useSongEditor() {
@@ -21,7 +21,7 @@ export default function useSongEditor() {
     setEditedFormat,
     saving,
     setSaving,
-  } = useContext(SongEditorContext);
+  } = useSongEditorContext();
 
   useEffect(() => {
     async function fetchData() {
