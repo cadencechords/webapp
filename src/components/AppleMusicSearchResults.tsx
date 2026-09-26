@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { reportError } from '../utils/error';
+import useTrackSearch from '../hooks/useTrackSearch';
 import PageLoading from './PageLoading';
 import TracksApi, { type AppleMusicSong } from '../api/tracksApi';
 import AppleMusicTrackResult from './AppleMusicTrackResult';
 import type { NewTrack } from '../types';
+
+async function searchAppleMusic(query: string) {
+  const { data } = await TracksApi.searchAppleMusic(query);
+  return data?.results?.songs?.data || [];
+}
 
 type AppleMusicSearchResultsProps = {
   query: string;
@@ -16,29 +20,7 @@ export default function AppleMusicSearchResults({
   onTrackClick,
   selectedTracks,
 }: AppleMusicSearchResultsProps) {
-  const [results, setResults] = useState<AppleMusicSong[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    const id = setTimeout(() => {
-      async function search() {
-        try {
-          const { data } = await TracksApi.searchAppleMusic(query);
-          setResults(data?.results?.songs?.data || []);
-        } catch (error) {
-          reportError(error);
-        } finally {
-          setLoading(false);
-        }
-      }
-      if (query) {
-        search();
-      }
-    }, 800);
-
-    return () => clearTimeout(id);
-  }, [query]);
+  const { results, loading } = useTrackSearch(query, searchAppleMusic);
 
   function isSelected(resultInQuestion: AppleMusicSong) {
     return !!selectedTracks.find(
