@@ -15,7 +15,9 @@ export function useCurrentUser(options = {}) {
 export function useUpdateCurrentUser({ onSuccess } = {}) {
   const queryClient = useQueryClient();
   const { mutate, isLoading, isError, error } = useMutation({
-    mutationFn: async updates => {
+    mutationFn: async (
+      /** @type {import('../../api/UserApi').UserUpdates} */ updates
+    ) => {
       return (await UserApi.updateCurrentUser(updates)).data;
     },
     onSuccess: data => {

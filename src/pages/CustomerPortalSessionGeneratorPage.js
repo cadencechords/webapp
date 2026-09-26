@@ -9,7 +9,7 @@ export default function CustomerPortalSessionGeneratorPage() {
     async function fetchSession() {
       try {
         let { data } = await billingApi.createCustomerPortalSession();
-        window.location = data.url;
+        window.location.href = data.url;
       } catch (error) {
         reportError(error);
       }

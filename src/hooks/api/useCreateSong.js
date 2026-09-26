@@ -11,7 +11,7 @@ export default function useCreateSong({ onSuccess }) {
     error,
     mutate: run,
   } = useMutation({
-    mutationFn: async song => {
+    mutationFn: async (/** @type {{ name: string }} */ song) => {
       const { data } = await SongApi.createOne(song);
       return data;
     },

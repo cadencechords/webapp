@@ -62,11 +62,6 @@
       "count": 1
     }
   },
-  "src/components/CapoKeySheet.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/ColorPicker.js": {
     "no-unused-vars": {
       "count": 1
@@ -452,11 +447,6 @@
     }
   },
   "src/pages/BillingPage.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/ChatPage.js": {
     "no-unused-vars": {
       "count": 1
     }

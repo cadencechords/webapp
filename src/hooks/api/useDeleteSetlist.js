@@ -11,7 +11,7 @@ export default function useDeleteSetlist({ onSuccess } = {}) {
     error,
     mutate: run,
   } = useMutation({
-    mutationFn: async id => {
+    mutationFn: async (/** @type {import('../../types').Id} */ id) => {
       await SetlistApi.deleteOne(id);
     },
     onSuccess: () => {

@@ -11,7 +11,7 @@ export default function useDeleteSong({ onSuccess } = {}) {
     error,
     mutate: run,
   } = useMutation({
-    mutationFn: async id => {
+    mutationFn: async (/** @type {import('../../types').Id} */ id) => {
       const { data } = await SongApi.deleteOneById(id);
       return data;
     },

@@ -9,7 +9,7 @@ export default function useCreateCustomerPortalSession() {
       ).data;
     },
     onSuccess: data => {
-      window.location = data.url;
+      window.location.href = data.url;
     },
   });
 
