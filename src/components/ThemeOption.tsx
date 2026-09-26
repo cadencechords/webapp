@@ -1,9 +1,20 @@
 import Checkbox from './Checkbox';
+import type { Tag } from '../types';
 
-export default function ThemeOption({ theme, onToggle, selected }) {
-  let selectedClasses = ' ring-inset ring-2 ring-blue-400 ';
+type ThemeOptionProps = {
+  theme: Tag;
+  onToggle: (checked: boolean, theme: Tag) => void;
+  selected?: boolean;
+};
 
-  const handleCheck = checkValue => {
+export default function ThemeOption({
+  theme,
+  onToggle,
+  selected,
+}: ThemeOptionProps) {
+  const selectedClasses = ' ring-inset ring-2 ring-blue-400 ';
+
+  const handleCheck = (checkValue: boolean) => {
     onToggle(checkValue, theme);
   };
 

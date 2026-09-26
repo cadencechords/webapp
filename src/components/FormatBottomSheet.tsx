@@ -4,7 +4,15 @@ import FormatBottomSheetChordOptions from './FormatBottomSheetChordOptions';
 import FormatBottomSheetGeneralOptions from './FormatBottomSheetGeneralOptions';
 import SegmentedControl from './SegmentedControl';
 
-export default function FormatBottomSheet({ show, onClose }) {
+type FormatBottomSheetProps = {
+  show: boolean;
+  onClose: () => void;
+};
+
+export default function FormatBottomSheet({
+  show,
+  onClose,
+}: FormatBottomSheetProps) {
   const [selectedTab, setSelectedTab] = useState('General');
 
   return (

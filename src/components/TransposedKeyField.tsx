@@ -7,26 +7,37 @@ import KeyTransposerDialog from './KeyTransposerDialog';
 import { useState } from 'react';
 import Icon from './Icon';
 
+type TransposedKeyFieldProps = {
+  transposedKey?: string;
+  originalKey?: string;
+  onChange: (key: string) => void;
+  /** The song's content, previewed in the transposer. */
+  content?: string;
+  editable?: boolean;
+};
+
 export default function TransposedKeyField({
   transposedKey,
   originalKey,
   onChange,
   content,
   editable,
-}) {
+}: TransposedKeyFieldProps) {
   const [showKeyTransposerDialog, setShowKeyTransposerDialog] = useState(false);
 
-  const handleKeyChange = newKey => {
+  const handleKeyChange = (newKey: string) => {
     onChange(newKey);
     setShowKeyTransposerDialog(false);
   };
 
   const handleTransposeUpHalfKey = () => {
-    onChange(getHalfStepHigher(transposedKey || originalKey));
+    // The half-step buttons are disabled without an original key.
+    onChange(getHalfStepHigher((transposedKey || originalKey) as string));
   };
 
   const handleTransposeDownHalfKey = () => {
-    onChange(getHalfStepLower(transposedKey || originalKey));
+    // The half-step buttons are disabled without an original key.
+    onChange(getHalfStepLower((transposedKey || originalKey) as string));
   };
 
   return (

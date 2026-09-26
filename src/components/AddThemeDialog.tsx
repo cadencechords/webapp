@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { AxiosResponse } from 'axios';
 
 import AddCancelActions from './buttons/AddCancelActions';
 import FixedBottomMobile from './FixedBottomMobile';
@@ -11,18 +12,26 @@ import StyledDialog from './StyledDialog';
 import ThemeApi from '../api/ThemeApi';
 import ThemeOptions from './ThemeOptions';
 import { reportError } from '../utils/error';
+import type { Song, Tag } from '../types';
+
+type AddThemeDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  currentSong: Pick<Song, 'id' | 'themes'>;
+  onThemesAdded: (themes: Tag[]) => void;
+};
 
 export default function AddThemeDialog({
   open,
   onCloseDialog,
   currentSong,
   onThemesAdded,
-}) {
-  const [availableThemes, setAvailableThemes] = useState([]);
+}: AddThemeDialogProps) {
+  const [availableThemes, setAvailableThemes] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
   const [newTheme, setNewTheme] = useState('');
-  const [themesToAdd, setThemesToAdd] = useState([]);
+  const [themesToAdd, setThemesToAdd] = useState<Tag[]>([]);
   const [savingAdditions, setSavingAdditions] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -30,12 +39,12 @@ export default function AddThemeDialog({
     async function fetchThemes() {
       setLoading(true);
       try {
-        let { data } = await ThemeApi.getAll();
+        const { data } = await ThemeApi.getAll();
 
-        let availableThemes = [];
+        const availableThemes: Tag[] = [];
 
         data?.forEach(possiblyAvailableTheme => {
-          let index = currentSong.themes?.findIndex(
+          const index = currentSong.themes?.findIndex(
             alreadyBoundTheme =>
               alreadyBoundTheme.id === possiblyAvailableTheme.id
           );
@@ -61,7 +70,7 @@ export default function AddThemeDialog({
   const handleCreateTheme = async () => {
     setCreating(true);
     try {
-      let { data } = await ThemeApi.createOne({ name: newTheme });
+      const { data } = await ThemeApi.createOne({ name: newTheme });
       setNewTheme('');
       setAvailableThemes([...availableThemes, data]);
     } catch (error) {
@@ -74,8 +83,15 @@ export default function AddThemeDialog({
   const handleSaveThemes = async () => {
     setSavingAdditions(true);
     try {
-      let idsToAdd = themesToAdd.map(theme => theme.id);
-      let result = await SongApi.addThemes(currentSong.id, idsToAdd);
+      const idsToAdd = themesToAdd.map(theme => theme.id);
+      // Add is disabled until a theme is picked, so addThemes has ids to send
+      // and returns a request (it returns undefined only for no ids). The response
+      // is read as the added themes: SongDetailPage concatenates it onto the
+      // song's themes.
+      const result = (await SongApi.addThemes(
+        currentSong.id,
+        idsToAdd
+      )) as AxiosResponse<Tag[]>;
       onThemesAdded(result.data);
       handleClose();
     } catch (error) {
@@ -96,11 +112,11 @@ export default function AddThemeDialog({
     onCloseDialog();
   };
 
-  const handleThemeToggled = (checked, theme) => {
+  const handleThemeToggled = (checked: boolean, theme: Tag) => {
     if (checked) {
       setThemesToAdd([...themesToAdd, theme]);
     } else {
-      let updatedThemes = themesToAdd.filter(
+      const updatedThemes = themesToAdd.filter(
         addedTheme => addedTheme !== theme
       );
       setThemesToAdd(updatedThemes);
@@ -129,7 +145,7 @@ export default function AddThemeDialog({
       {availableThemes.length === 0 ? (
         <div className="py-4">
           <NoDataMessage loading={loading}>
-            You haven't created any themes yet
+            You haven&apos;t created any themes yet
           </NoDataMessage>
         </div>
       ) : (

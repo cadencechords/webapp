@@ -1,7 +1,17 @@
 import { View, Text } from '@react-pdf/renderer';
 import React from 'react';
+import type { ReactNode } from 'react';
 
-export default function HighlightedText({ children, backgroundColor }) {
+type HighlightedTextProps = {
+  children?: ReactNode;
+  /** A CSS color. */
+  backgroundColor?: string;
+};
+
+export default function HighlightedText({
+  children,
+  backgroundColor,
+}: HighlightedTextProps) {
   return (
     <View
       style={{

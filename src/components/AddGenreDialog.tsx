@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { AxiosResponse } from 'axios';
 
 import AddCancelActions from './buttons/AddCancelActions';
 import FixedBottomMobile from './FixedBottomMobile';
@@ -9,16 +10,24 @@ import OutlinedInput from './inputs/OutlinedInput';
 import SongApi from '../api/SongApi';
 import StyledDialog from './StyledDialog';
 import { reportError } from '../utils/error';
+import type { Song, Tag } from '../types';
+
+type AddGenreDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  currentSong: Pick<Song, 'id' | 'genres'>;
+  onGenresAdded: (genres: Tag[]) => void;
+};
 
 export default function AddGenreDialog({
   open,
   onCloseDialog,
   currentSong,
   onGenresAdded,
-}) {
-  const [availableGenres, setAvailableGenres] = useState([]);
+}: AddGenreDialogProps) {
+  const [availableGenres, setAvailableGenres] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
-  const [genresToAdd, setGenresToAdd] = useState([]);
+  const [genresToAdd, setGenresToAdd] = useState<Tag[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -26,12 +35,12 @@ export default function AddGenreDialog({
     async function fetchGenres() {
       setLoading(true);
       try {
-        let { data } = await GenreApi.getAll();
+        const { data } = await GenreApi.getAll();
 
         if (data) {
-          let availableGenres = [];
+          const availableGenres: Tag[] = [];
           data.forEach(possiblyAvailableGenre => {
-            let index = currentSong?.genres?.findIndex(alreadyBoundGenre => {
+            const index = currentSong?.genres?.findIndex(alreadyBoundGenre => {
               return alreadyBoundGenre.id === possiblyAvailableGenre.id;
             });
 
@@ -54,11 +63,11 @@ export default function AddGenreDialog({
     }
   }, [currentSong, open]);
 
-  const handleGenreToggled = (checked, genre) => {
+  const handleGenreToggled = (checked: boolean, genre: Tag) => {
     if (checked) {
       setGenresToAdd([...genresToAdd, genre]);
     } else {
-      let updatedGenres = genresToAdd.filter(
+      const updatedGenres = genresToAdd.filter(
         addedGenre => addedGenre !== genre
       );
       setGenresToAdd(updatedGenres);
@@ -88,7 +97,14 @@ export default function AddGenreDialog({
     try {
       setSaving(true);
       const genresIdsToAdd = genresToAdd.map(genre => genre.id);
-      let { data } = await SongApi.addGenres(currentSong.id, genresIdsToAdd);
+      // Add is disabled until a genre is picked, so addGenres has ids to send
+      // and returns a request (it returns undefined only for no ids). The response
+      // is read as the added genres: SongDetailPage concatenates it onto the
+      // song's genres.
+      const { data } = (await SongApi.addGenres(
+        currentSong.id,
+        genresIdsToAdd
+      )) as AxiosResponse<Tag[]>;
       onGenresAdded(data);
       handleCloseDialog();
     } catch (error) {

@@ -1,6 +1,17 @@
 import GenreOption from './GenreOption';
+import type { Tag } from '../types';
 
-export default function GenreOptions({ genres, selectedGenres, onToggle }) {
+type GenreOptionsProps = {
+  genres: Tag[];
+  selectedGenres?: Tag[];
+  onToggle: (checked: boolean, genre: Tag) => void;
+};
+
+export default function GenreOptions({
+  genres,
+  selectedGenres,
+  onToggle,
+}: GenreOptionsProps) {
   return (
     <div
       className={

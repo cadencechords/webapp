@@ -1,5 +1,6 @@
 import React from 'react';
 import useSongEditor from '../hooks/useSongEditor';
+import type { SongFormat } from '../types';
 import FormatOption from './FormatOption';
 import FormatOptionLabel from './FormatOptionLabel';
 import { FONT_OPTIONS, FONT_SIZES } from './FormatPanelGeneralOptions';
@@ -7,9 +8,12 @@ import Select from './Select';
 
 export default function FormatBottomSheetGeneralOptions() {
   const { song, updateFormat } = useSongEditor();
-  const { font_size: size, font } = song?.format || {};
+  const { font_size: size, font }: SongFormat = song?.format || {};
 
-  function handleUpdateFormat(field, value) {
+  function handleUpdateFormat<Field extends keyof SongFormat>(
+    field: Field,
+    value: SongFormat[Field]
+  ) {
     updateFormat({ [field]: value });
   }
   return (

@@ -9,10 +9,22 @@ import NoDataMessage from './NoDataMessage';
 import FormatPreview from './FormatPreview';
 import Button from './Button';
 import { EDIT_TEAM } from '../utils/constants';
+import type { CurrentMember } from '../store/authSlice';
+import type { FormatPreset } from '../types';
 
-export default function FormatPresets({ defaultFormatPreset, currentMember }) {
-  const [selectedFormatPreset, setSelectedFormatPreset] =
-    useState(defaultFormatPreset);
+type FormatPresetsProps = {
+  /** The team's default preset, if it has one. */
+  defaultFormatPreset?: FormatPreset | null;
+  currentMember: CurrentMember;
+};
+
+export default function FormatPresets({
+  defaultFormatPreset,
+  currentMember,
+}: FormatPresetsProps) {
+  const [selectedFormatPreset, setSelectedFormatPreset] = useState<
+    FormatPreset | null | undefined
+  >(defaultFormatPreset);
   const { data: formatPresets, error } = useFormatPresets();
   const { run: setDefaultFormat, isLoading: isSaving } = useSetDefaultFormat();
   const canEditTeam = currentMember.can(EDIT_TEAM);

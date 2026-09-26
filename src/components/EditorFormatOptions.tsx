@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import FormatBottomSheet from './FormatBottomSheet';
 import FormatPanel from './FormatPanel';
+import type { Coordinates } from './FormatPanel';
 
-export default function EditorFormatOptions({ show, onClose }) {
-  const [formatPanelCoordinates, setFormatPanelCoordinates] = useState({
-    x: 100,
-    y: 100,
-  });
+type EditorFormatOptionsProps = {
+  show: boolean;
+  onClose: () => void;
+};
+
+export default function EditorFormatOptions({
+  show,
+  onClose,
+}: EditorFormatOptionsProps) {
+  const [formatPanelCoordinates, setFormatPanelCoordinates] =
+    useState<Coordinates>({
+      x: 100,
+      y: 100,
+    });
 
   return show ? (
     <>

@@ -1,6 +1,7 @@
 import { html } from '../utils/SongUtils';
+import type { RenderableSong } from '../utils/SongUtils';
 
-export default function SongPreview({ song }) {
+export default function SongPreview({ song }: { song: RenderableSong }) {
   return (
     <div className="p-4 whitespace-pre-wrap border border-gray-300 rounded-md shadow-md resize-none dark:border-dark-gray-700">
       {html(song)}

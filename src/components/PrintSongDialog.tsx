@@ -10,13 +10,20 @@ import FormatOption from './FormatOption';
 import FormatOptionLabel from './FormatOptionLabel';
 import { FONT_OPTIONS, FONT_SIZES } from './FormatPanelGeneralOptions';
 import { determineCapoNumber } from '../utils/capo';
+import type { Song, SongFormat } from '../types';
+
+type PrintSongDialogProps = {
+  song: Song;
+  open: boolean;
+  onCloseDialog: () => void;
+};
 
 export default function PrintSongDialog({
   song: initialSong,
   open,
   onCloseDialog,
-}) {
-  const [keyType, setKeyType] = useState(determineInitialKeyType);
+}: PrintSongDialogProps) {
+  const [keyType, setKeyType] = useState<string>(determineInitialKeyType);
   const [song, setSong] = useState({ ...initialSong });
   const keyOptions = getKeyOptions();
   const showChords = keyType !== 'none';
@@ -84,8 +91,10 @@ export default function PrintSongDialog({
       const currentKey = song.transposed_key || song.original_key;
       options.push({
         value: 'capo',
+        // A capo is picked for the song's current key (the capo sheet lists
+        // capos for it), so a song with a capo_key has a key.
         display: `Capo ${determineCapoNumber(
-          currentKey,
+          currentKey as string,
           song.capo.capo_key
         )} (${song.capo.capo_key})`,
       });
@@ -97,7 +106,10 @@ export default function PrintSongDialog({
     return options;
   }
 
-  function handleChange(field, value) {
+  function handleChange<Field extends keyof SongFormat>(
+    field: Field,
+    value: SongFormat[Field]
+  ) {
     setSong({ ...song, format: { ...song.format, [field]: value } });
   }
 
@@ -167,17 +179,26 @@ export default function PrintSongDialog({
             <FormatOptionLabel>Highlight color</FormatOptionLabel>
             <ColorPicker
               color={song.format.highlight_color}
-              onChange={newColor => handleChange('highlight_color', newColor)}
+              onChange={(newColor: string) =>
+                handleChange('highlight_color', newColor)
+              }
             />
           </FormatOption>
           <FormatOption>
             <FormatOptionLabel>Chord color</FormatOptionLabel>
             <ColorPicker
               color={song.format.chord_color}
-              onChange={newColor => handleChange('chord_color', newColor)}
+              onChange={(newColor: string) =>
+                handleChange('chord_color', newColor)
+              }
             />
           </FormatOption>
-          <a href={instance.url} download={`${song.name}.pdf`}>
+          <a
+            // The url is null until the PDF renders; React leaves out an href
+            // of null, as it does undefined.
+            href={instance.url as string | undefined}
+            download={`${song.name}.pdf`}
+          >
             <Button full className="mt-4">
               Download
             </Button>

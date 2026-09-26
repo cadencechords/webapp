@@ -4,17 +4,14 @@ import FormatApi from '../api/FormatApi';
 import SongApi from '../api/SongApi';
 import { useSongEditorContext } from '../contexts/SongEditorProvider';
 import { reportError } from '../utils/error';
+import type { Song, SongFormat } from '../types';
 
 export default function useSongEditor() {
   // Location state is whatever the navigating code passed; routes to the
   // editor pass the song (possibly missing), or nothing.
-  const initialData =
-    /** @type {import('../types').Song | null | undefined} */ (
-      useLocation().state
-    );
+  const initialData = useLocation().state as Song | null | undefined;
   const router = useHistory();
-  /** @type {{ id: string }} */
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   const {
     loading,
@@ -33,7 +30,7 @@ export default function useSongEditor() {
     async function fetchData() {
       try {
         setLoading(true);
-        let { data } = await SongApi.getOneById(id);
+        const { data } = await SongApi.getOneById(id);
 
         setSong({
           ...data,
@@ -55,24 +52,27 @@ export default function useSongEditor() {
     }
   }, [id, initialData, setLoading, setSong, song]);
 
-  function updateFormat(updates) {
+  // Non-null song (`previousSong!`, `song!`) in updateFormat, updateContent
+  // and saveChanges: they're called from the format options, the editor and
+  // the Save button, which SongEditorPage renders only once the song loads.
+  function updateFormat(updates: Partial<SongFormat>) {
     setSong(previousSong => ({
-      ...previousSong,
-      format: { ...previousSong.format, ...updates },
+      ...previousSong!,
+      format: { ...previousSong!.format, ...updates },
     }));
     setEditedFormat(previousFormat => ({ ...previousFormat, ...updates }));
   }
 
-  function updateContent(updatedContent) {
+  function updateContent(updatedContent: string) {
     setEditedContent(updatedContent);
-    setSong(previousSong => ({ ...previousSong, content: updatedContent }));
+    setSong(previousSong => ({ ...previousSong!, content: updatedContent }));
   }
 
   async function saveChanges() {
     setSaving(true);
     if (editedContent !== null && editedContent !== undefined) {
       try {
-        await SongApi.updateOneById(song.id, {
+        await SongApi.updateOneById(song!.id, {
           content: editedContent,
         });
         setEditedContent(null);
@@ -83,8 +83,8 @@ export default function useSongEditor() {
 
     if (editedFormat) {
       try {
-        await FormatApi.updateSongFormat(song.id, editedFormat);
-        router.replace(`/songs/${song.id}/edit`, song);
+        await FormatApi.updateSongFormat(song!.id, editedFormat);
+        router.replace(`/songs/${song!.id}/edit`, song);
         setEditedFormat(null);
       } catch (error) {
         reportError(error);

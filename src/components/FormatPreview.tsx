@@ -2,13 +2,22 @@ import React from 'react';
 import { html } from '../utils/SongUtils';
 import classNames from 'classnames';
 import Badge from './Badge';
+import type { FormatPreset } from '../types';
+
+type FormatPreviewProps = {
+  format: FormatPreset;
+  selected: boolean;
+  /** The preset clicked, or null when the selected one is clicked again. */
+  onChange: (format: FormatPreset | null) => void;
+  disabled?: boolean;
+};
 
 export default function FormatPreview({
   format,
   selected,
   onChange,
   disabled,
-}) {
+}: FormatPreviewProps) {
   return (
     <button
       className="shrink-0 text-left w-96"

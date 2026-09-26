@@ -3,10 +3,20 @@ import EditableData from './inputs/EditableData';
 import KeyChooserDialog from './KeyChooserDialog';
 import { useState } from 'react';
 
-export default function SongKeyField({ songKey, onChange, editable }) {
+type SongKeyFieldProps = {
+  songKey?: string;
+  onChange: (key: string) => void;
+  editable?: boolean;
+};
+
+export default function SongKeyField({
+  songKey,
+  onChange,
+  editable,
+}: SongKeyFieldProps) {
   const [showKeyChooserDialog, setShowKeyChooserDialog] = useState(false);
 
-  const handleKeyChange = newKey => {
+  const handleKeyChange = (newKey: string) => {
     onChange(newKey);
     setShowKeyChooserDialog(false);
   };

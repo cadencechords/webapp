@@ -1,7 +1,17 @@
 import DetailTitle from './DetailTitle';
 import EditableData from './inputs/EditableData';
 
-export default function ArtistField({ onChange, artist, editable }) {
+type ArtistFieldProps = {
+  onChange: (artist: string) => void;
+  artist?: string;
+  editable?: boolean;
+};
+
+export default function ArtistField({
+  onChange,
+  artist,
+  editable,
+}: ArtistFieldProps) {
   return (
     <div className="flex flex-row items-center mb-1">
       <DetailTitle>Artist:</DetailTitle>

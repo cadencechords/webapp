@@ -3,7 +3,18 @@ import EditableData from './inputs/EditableData';
 import MeterDialog from './MeterDialog';
 import { useState } from 'react';
 
-export default function MeterField({ meter, onChange, editable }) {
+type MeterFieldProps = {
+  /** Such as `'4/4'`. */
+  meter?: string;
+  onChange: (meter: string) => void;
+  editable?: boolean;
+};
+
+export default function MeterField({
+  meter,
+  onChange,
+  editable,
+}: MeterFieldProps) {
   const [showDialog, setShowDialog] = useState(false);
 
   return (

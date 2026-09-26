@@ -5,6 +5,15 @@ import { setSetlistBeingPresented } from '../store/presenterSlice';
 import Button from './Button';
 import Icon from './Icon';
 
+type EditorNavbarProps = {
+  dirty: boolean;
+  name: string;
+  onSave: () => void;
+  saving: boolean;
+  onToggleFormatOptions: () => void;
+  isFormatOpen: boolean;
+};
+
 export default function EditorNavbar({
   dirty,
   name,
@@ -12,7 +21,7 @@ export default function EditorNavbar({
   saving,
   onToggleFormatOptions,
   isFormatOpen,
-}) {
+}: EditorNavbarProps) {
   const router = useHistory();
   const dispatch = useDispatch();
 

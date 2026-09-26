@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
 import Draggable from 'react-draggable';
+import type { DraggableData, DraggableEvent } from 'react-draggable';
 import FormatPanelChordOptions from './FormatPanelChordOptions';
 import FormatPanelGeneralOptions from './FormatPanelGeneralOptions';
 import SegmentedControl from './SegmentedControl';
 import Icon from './Icon';
 
+/** Where the panel sits, in pixels from where it starts. */
+export type Coordinates = { x: number; y: number };
+
+type FormatPanelProps = {
+  onClose: () => void;
+  defaultCoordinates: Coordinates;
+  onCoordinatesChange: (coordinates: Coordinates) => void;
+};
+
 export default function FormatPanel({
   onClose,
   defaultCoordinates,
   onCoordinatesChange,
-}) {
+}: FormatPanelProps) {
   const [selectedTab, setSelectedTab] = useState('General');
 
-  function handleDragEnd(_, data) {
+  function handleDragEnd(_: DraggableEvent, data: DraggableData) {
     const newCoordinates = { x: data.x, y: data.y };
     onCoordinatesChange(newCoordinates);
   }

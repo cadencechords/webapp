@@ -1,5 +1,6 @@
 import React from 'react';
 import useSongEditor from '../hooks/useSongEditor';
+import type { SongFormat } from '../types';
 import BoldItalicButtonGroup from './BoldItalicButtonGroup';
 import ColorPicker from './ColorPicker';
 import FormatOption from './FormatOption';
@@ -12,9 +13,12 @@ export default function FormatBottomSheetChordOptions() {
     italic_chords: isItalic,
     chord_color: chordColor,
     highlight_color: highlightColor,
-  } = song?.format || {};
+  }: SongFormat = song?.format || {};
 
-  function handleUpdateFormat(field, value) {
+  function handleUpdateFormat<Field extends keyof SongFormat>(
+    field: Field,
+    value: SongFormat[Field]
+  ) {
     updateFormat({ [field]: value });
   }
 
@@ -35,7 +39,7 @@ export default function FormatBottomSheetChordOptions() {
           <div className="flex justify-end w-32 mr-2">
             <ColorPicker
               color={highlightColor}
-              onChange={newColor =>
+              onChange={(newColor: string) =>
                 handleUpdateFormat('highlight_color', newColor)
               }
             />
@@ -47,7 +51,9 @@ export default function FormatBottomSheetChordOptions() {
         <div className="flex justify-end w-32 mr-2">
           <ColorPicker
             color={chordColor}
-            onChange={newColor => handleUpdateFormat('chord_color', newColor)}
+            onChange={(newColor: string) =>
+              handleUpdateFormat('chord_color', newColor)
+            }
           />
         </div>
       </FormatOption>

@@ -1,9 +1,15 @@
 import { useState } from 'react';
 
-export default function useSongForm() {
-  const [form, setForm] = useState({ name: '' });
+/** The create-song form. */
+export type SongForm = { name: string };
 
-  function onChange(field, value) {
+export default function useSongForm() {
+  const [form, setForm] = useState<SongForm>({ name: '' });
+
+  function onChange<Field extends keyof SongForm>(
+    field: Field,
+    value: SongForm[Field]
+  ) {
     setForm(previousForm => ({ ...previousForm, [field]: value }));
   }
 

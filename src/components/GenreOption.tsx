@@ -1,9 +1,20 @@
 import Checkbox from './Checkbox';
+import type { Tag } from '../types';
 
-export default function GenreOption({ genre, onToggle, selected }) {
-  let selectedClasses = ' ring-inset ring-2 ring-blue-400 ';
+type GenreOptionProps = {
+  genre: Tag;
+  onToggle: (checked: boolean, genre: Tag) => void;
+  selected?: boolean;
+};
 
-  const handleCheck = checkValue => {
+export default function GenreOption({
+  genre,
+  onToggle,
+  selected,
+}: GenreOptionProps) {
+  const selectedClasses = ' ring-inset ring-2 ring-blue-400 ';
+
+  const handleCheck = (checkValue: boolean) => {
     onToggle(checkValue, genre);
   };
 

@@ -8,7 +8,15 @@ import useSongForm from '../hooks/forms/useSongForm';
 import { Link, useHistory } from 'react-router-dom';
 import useCreateSong from '../hooks/api/useCreateSong';
 
-export default function CreateSongDialog({ open, onCloseDialog }) {
+type CreateSongDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+};
+
+export default function CreateSongDialog({
+  open,
+  onCloseDialog,
+}: CreateSongDialogProps) {
   const { form, onChange, isValid, clearForm } = useSongForm();
   const { name } = form;
   const router = useHistory();
@@ -21,7 +29,7 @@ export default function CreateSongDialog({ open, onCloseDialog }) {
     },
   });
 
-  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setTimeout(() => {

@@ -4,21 +4,25 @@ import AddCancelActions from './buttons/AddCancelActions';
 import EditableData from './inputs/EditableData';
 import StyledDialog from './StyledDialog';
 
+type MeterDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  /** Such as `'4/4'`. */
+  meter?: string;
+  onMeterChange: (meter: string) => void;
+};
+
 export default function MeterDialog({
   open,
   onCloseDialog,
   meter,
   onMeterChange,
-}) {
+}: MeterDialogProps) {
   // EditableData hands back strings, so these hold strings after an edit.
-  const [numerator, setNumerator] = useState(
-    /** @type {number | string} */ (4)
-  );
-  const [denominator, setDenominator] = useState(
-    /** @type {number | string} */ (4)
-  );
+  const [numerator, setNumerator] = useState<number | string>(4);
+  const [denominator, setDenominator] = useState<number | string>(4);
 
-  const handleChooseCommonMeter = (num, denom) => {
+  const handleChooseCommonMeter = (num: number, denom: number) => {
     setNumerator(num);
     setDenominator(denom);
   };
@@ -29,11 +33,14 @@ export default function MeterDialog({
   };
 
   useEffect(() => {
-    if (meter?.length >= 3) {
-      let indexOfSlash = meter.indexOf('/');
+    // Kept as before: with no meter, `undefined >= 3` is false and skips this.
+    // TypeScript doesn't narrow `meter` from the length check, hence the `!`s:
+    // the check passing means meter is set.
+    if ((meter?.length as number) >= 3) {
+      const indexOfSlash = meter!.indexOf('/');
 
-      setNumerator(meter.substring(0, indexOfSlash));
-      setDenominator(meter.charAt(meter.length - 1));
+      setNumerator(meter!.substring(0, indexOfSlash));
+      setDenominator(meter!.charAt(meter!.length - 1));
     }
   }, [meter, open]);
 
