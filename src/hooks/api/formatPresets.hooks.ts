@@ -28,7 +28,9 @@ export function useSetDefaultFormat({
   onSuccess,
 }: { onSuccess?: () => void } = {}) {
   const dispatch = useDispatch();
-  const currentTeam = useSelector(selectCurrentTeam);
+  // Non-null: used by TeamDetailPage, under SecuredRoutes, which renders only
+  // once the current team loads.
+  const currentTeam = useSelector(selectCurrentTeam)!;
   const {
     isLoading,
     isSuccess,

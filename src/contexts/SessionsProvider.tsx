@@ -65,7 +65,9 @@ export default function SessionsProvider(props: { children?: ReactNode }) {
       socket: null,
     });
 
-  const currentUser = useSelector(selectCurrentUser);
+  // Non-null: SetPresenterPage mounts this under SecuredRoutes, which renders
+  // only once the current user loads.
+  const currentUser = useSelector(selectCurrentUser)!;
   const credentials = useSelector(selectCredentials);
 
   useEffect(

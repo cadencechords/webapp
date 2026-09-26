@@ -20,8 +20,10 @@ import Icon from '../components/Icon';
 const client = new StreamChat('svcbduxgv7sw');
 
 export default function ChatPage() {
-  const { chat_token, id } = useSelector(selectCurrentUser);
-  const { id: teamId } = useSelector(selectCurrentTeam);
+  // Non-null: a page under SecuredRoutes, which renders only once the current
+  // user and team load.
+  const { chat_token, id } = useSelector(selectCurrentUser)!;
+  const { id: teamId } = useSelector(selectCurrentTeam)!;
   const [channel, setChannel] = useState<StreamChannel>();
   const { isMd } = useBreakPoints();
 

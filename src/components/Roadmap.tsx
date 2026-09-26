@@ -35,7 +35,8 @@ export default function Roadmap({
   }
 
   function handleChange(newSections: string[]) {
-    if (currentMember.can(EDIT_SONGS)) {
+    // Non-null: kept as before, this throws if the membership hasn't loaded.
+    if (currentMember!.can(EDIT_SONGS)) {
       setUpdates({ roadmap: newSections });
     }
 

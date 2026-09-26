@@ -62,7 +62,8 @@ export default function AutoscrollSheet({
     cancelFrame(animationFrameId);
     setAnimationFrameId(null);
 
-    if (currentMember.can(EDIT_SONGS)) {
+    // Non-null: kept as before, this throws if the membership hasn't loaded.
+    if (currentMember!.can(EDIT_SONGS)) {
       setUpdates({ scroll_speed: newSpeed });
     }
 
@@ -146,7 +147,8 @@ export default function AutoscrollSheet({
           title={
             <>
               Auto scroll
-              {updates && currentMember.can(EDIT_SONGS) && (
+              {/* Non-null: updates are set only once can() passed above. */}
+              {updates && currentMember!.can(EDIT_SONGS) && (
                 <Button
                   variant="open"
                   size="xs"
