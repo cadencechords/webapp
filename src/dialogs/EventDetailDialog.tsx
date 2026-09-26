@@ -4,15 +4,25 @@ import { useEffect, useState } from 'react';
 import EventColorOption from '../components/EventColorOption';
 import EventDetailSheet from '../components/EventDetailSheet';
 import StyledDialog from '../components/StyledDialog';
+import type { CalendarEvent } from '../types';
+
+type EventDetailDialogProps = {
+  open: boolean;
+  event?: CalendarEvent | null;
+  onCloseDialog: () => void;
+  onDeleted: (eventId: number) => void;
+  /** Not read. */
+  onUpdated?: (updatedEvent: CalendarEvent) => void;
+};
 
 export default function EventDetailDialog({
   open,
   event,
   onCloseDialog,
   onDeleted,
-}) {
-  const [startTime, setStartTime] = useState();
-  const [endTime, setEndTime] = useState();
+}: EventDetailDialogProps) {
+  const [startTime, setStartTime] = useState<string>();
+  const [endTime, setEndTime] = useState<string>();
   useEffect(() => {
     if (event?.start_time) {
       setStartTime(getTimeFromDate(event.start_time));

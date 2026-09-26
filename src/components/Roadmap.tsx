@@ -14,6 +14,8 @@ type RoadmapProps = {
   onSongChange: (field: 'roadmap', value: string[]) => void;
   onDragStart?: () => void;
   onDragEnd?: () => void;
+  /** Not read. */
+  onToggleRoadmap?: () => void;
 };
 
 export default function Roadmap({

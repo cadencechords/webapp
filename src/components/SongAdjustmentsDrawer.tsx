@@ -2,6 +2,20 @@ import Drawer from './Drawer';
 import SongAdjustmentsDrawerAutoscrollSheet from './SongAdjustmentsDrawerAutoscrollSheet';
 import SongAdjustmentsDrawerMainSheet from './SongAdjustmentsDrawerMainSheet';
 import { useState } from 'react';
+import type { Song, SongFormat } from '../types';
+
+type SongAdjustmentsDrawerProps = {
+  open: boolean;
+  onClose: () => void;
+  song: Song;
+  onFormatChange: (field: keyof SongFormat, value: boolean) => void;
+  onSongChange: (field: keyof Song, value: unknown) => void;
+  onAddNote?: () => void;
+  /** SongPresenterPage doesn't pass it; the autoscroll sheet gets undefined. */
+  autoScrolling?: boolean;
+  onToggleAutoScrolling?: () => void;
+  onShowSheet?: (sheet: 'autoscroll' | 'metronome') => void;
+};
 
 export default function SongAdjustmentsDrawer({
   open,
@@ -13,7 +27,7 @@ export default function SongAdjustmentsDrawer({
   autoScrolling,
   onToggleAutoScrolling,
   onShowSheet,
-}) {
+}: SongAdjustmentsDrawerProps) {
   const [sheetToShow, setSheetToShow] = useState('main');
 
   function getSheet() {

@@ -20,7 +20,9 @@ import { useSelector } from 'react-redux';
 import JoinLinkSection from '../components/JoinLinkSection';
 
 export default function MembersIndexPage() {
-  useEffect(() => (document.title = 'Members'), []);
+  useEffect(() => {
+    document.title = 'Members';
+  }, []);
   const [showInvitationDialog, setShowInvitationDialog] = useState(false);
   const [loadingInvitations, setLoadingInvitations] = useState(false);
   const [members, setMembers] = useState([]);

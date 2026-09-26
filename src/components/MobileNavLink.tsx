@@ -1,9 +1,22 @@
 import { Link, useRouteMatch } from 'react-router-dom';
 
-import PropTypes from 'prop-types';
+import type { ReactNode } from 'react';
 
-export default function MobileNavLink({ text, to, icon, onClick }) {
-  let isCurrentRoute = useRouteMatch({
+type MobileNavLinkProps = {
+  text?: string;
+  /** A route renders a link; without one, a button that calls onClick. */
+  to?: string;
+  icon?: ReactNode;
+  onClick?: () => void;
+};
+
+export default function MobileNavLink({
+  text,
+  to,
+  icon,
+  onClick,
+}: MobileNavLinkProps) {
+  const isCurrentRoute = useRouteMatch({
     path: to,
   });
   if (to) {
@@ -34,7 +47,3 @@ export default function MobileNavLink({ text, to, icon, onClick }) {
     );
   }
 }
-
-MobileNavLink.propTypes = {
-  text: PropTypes.string,
-};

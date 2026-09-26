@@ -6,6 +6,18 @@ import Toggle from './Toggle';
 import { noop } from '../utils/constants';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
+import type { Song, SongFormat } from '../types';
+
+type SongAdjustmentsDrawerMainSheetProps = {
+  song: Song;
+  onFormatChange: (field: keyof SongFormat, value: boolean) => void;
+  onAddNote?: () => void;
+  /** The drawer's default branch doesn't pass it; that branch never renders. */
+  onShowBottomSheet?: (sheet: 'autoscroll' | 'metronome') => void;
+  onSongChange: (field: keyof Song, value: boolean) => void;
+  /** Not read. */
+  onShowAutoScrollSheet?: () => void;
+};
 
 export default function SongAdjustmentsDrawerMainSheet({
   song,
@@ -13,7 +25,7 @@ export default function SongAdjustmentsDrawerMainSheet({
   onAddNote,
   onShowBottomSheet,
   onSongChange,
-}) {
+}: SongAdjustmentsDrawerMainSheetProps) {
   const currentSubscription = useSelector(selectCurrentSubscription);
   const iconClasses = 'w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue';
 

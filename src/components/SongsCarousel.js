@@ -19,31 +19,11 @@ export default function SongsCarousel({
       <SongsCarouselSlide
         key={song.id}
         song={song}
-        onDeleteNote={handleDeleteNote}
-        onUpdateNote={handleUpdateNote}
         onEnableSwipe={() => setIsSwipeEnabled(true)}
         onDisableSwipe={() => setIsSwipeEnabled(false)}
         onSongUpdate={onSongUpdate}
       />
     ));
-  }
-
-  function handleUpdateNote(noteId, updates) {
-    let updatedNotes = songs[index].notes?.map(note => {
-      if (note.id === noteId) {
-        return { ...note, ...updates };
-      } else {
-        return note;
-      }
-    });
-
-    onSongUpdate('notes', updatedNotes);
-  }
-
-  function handleDeleteNote(noteId) {
-    let updatedNotes = songs[index].notes?.filter(note => note.id !== noteId);
-
-    onSongUpdate('notes', updatedNotes);
   }
 
   return (

@@ -11,8 +11,21 @@ import {
 
 import Button from '../Button';
 
-export default function TimeInput({ onChange, className, defaultValue }) {
-  const [hour, setHour] = useState(() =>
+type TimeInputProps = {
+  /** Called with a time such as `'7:30 PM'`, or null when it's cleared. */
+  onChange?: (time: string | null) => void;
+  className?: string;
+  /** A time such as `'7:30 PM'`. */
+  defaultValue?: string;
+};
+
+export default function TimeInput({
+  onChange,
+  className,
+  defaultValue,
+}: TimeInputProps) {
+  // A number once typed; a string when parsed from defaultValue or cleared.
+  const [hour, setHour] = useState<number | string>(() =>
     defaultValue ? parseHours(defaultValue) : ''
   );
   const [minute, setMinute] = useState(() =>
@@ -21,16 +34,16 @@ export default function TimeInput({ onChange, className, defaultValue }) {
   const [period, setPeriod] = useState(() =>
     defaultValue ? parsePeriod(defaultValue) : 'PM'
   );
-  const hourInput = createRef();
-  const minuteInput = createRef();
+  const hourInput = createRef<HTMLInputElement>();
+  const minuteInput = createRef<HTMLInputElement>();
   const [isFocused, setIsFocused] = useState(false);
 
   const [inputClasses] = useState(
     'appearance-none focus:outline-hidden outline-hidden w-10 text-center dark:bg-transparent '
   );
 
-  const handleHourChange = potentialHour => {
-    potentialHour = parseInt(potentialHour);
+  const handleHourChange = (typedHour: string) => {
+    const potentialHour = parseInt(typedHour);
 
     if (isNaN(potentialHour)) {
       setHour('');
@@ -47,8 +60,8 @@ export default function TimeInput({ onChange, className, defaultValue }) {
     fireOnChangeIfValidTime(potentialHour);
   };
 
-  const handleMinuteChange = potentialMinute => {
-    let parsedMinute = parseInt(potentialMinute);
+  const handleMinuteChange = (potentialMinute: string) => {
+    const parsedMinute = parseInt(potentialMinute);
 
     if (isNaN(parsedMinute)) {
       setMinute('');
@@ -61,7 +74,7 @@ export default function TimeInput({ onChange, className, defaultValue }) {
 
   const handleTogglePeriod = () => {
     setPeriod(currentPeriod => {
-      let newPeriod = currentPeriod === 'AM' ? 'PM' : 'AM';
+      const newPeriod = currentPeriod === 'AM' ? 'PM' : 'AM';
       fireOnChangeIfValidTime(null, null, newPeriod);
       return newPeriod;
     });
@@ -75,14 +88,18 @@ export default function TimeInput({ onChange, className, defaultValue }) {
     setIsFocused(false);
   };
 
-  const fireOnChangeIfValidTime = (passedHour, passedMinute, passedPeriod) => {
+  const fireOnChangeIfValidTime = (
+    passedHour: number | null,
+    passedMinute?: string | null,
+    passedPeriod?: string
+  ) => {
     if (!passedHour && !passedMinute && !passedPeriod) {
       onChange?.(null);
     }
 
-    let hourToCheck = passedHour ? passedHour : hour;
-    let minuteToCheck = passedMinute ? passedMinute : minute;
-    let periodToCheck = passedPeriod ? passedPeriod : period;
+    const hourToCheck = passedHour ? passedHour : hour;
+    const minuteToCheck = passedMinute ? passedMinute : minute;
+    const periodToCheck = passedPeriod ? passedPeriod : period;
 
     if (isValidHour(hourToCheck) && isValidMinute(minuteToCheck)) {
       onChange?.(

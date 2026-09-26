@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import JoinLinkPage from './JoinLinkPage';
 import axios from 'axios';
@@ -27,7 +28,7 @@ test('it should display an alert if the join link is invalid', async () => {
   await screen.findByText(/we were unable to find a team with this link/i);
 });
 
-function renderWithRouter(component, preloadedState) {
+function renderWithRouter(component: ReactElement, preloadedState?: object) {
   renderWithProvider(
     <MemoryRouter initialEntries={['/join/12345']}>
       <Route path="/join/:code">{component}</Route>
@@ -37,13 +38,15 @@ function renderWithRouter(component, preloadedState) {
 }
 
 function mockSuccessfulAxiosResponse() {
-  axios.create.mockReturnValueOnce(axios);
-  axios.get.mockResolvedValueOnce({ data: team });
+  vi.mocked(axios.create).mockReturnValueOnce(axios);
+  vi.mocked(axios.get).mockResolvedValueOnce({ data: team });
 }
 
 function mockFailedAxiosResponse() {
-  axios.create.mockReturnValueOnce(axios);
-  axios.get.mockRejectedValueOnce({ response: { data: 'Does not exist' } });
+  vi.mocked(axios.create).mockReturnValueOnce(axios);
+  vi.mocked(axios.get).mockRejectedValueOnce({
+    response: { data: 'Does not exist' },
+  });
 }
 
 const currentUser = { id: 7, email: 'someone@example.com' };

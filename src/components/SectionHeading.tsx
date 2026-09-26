@@ -1,7 +1,17 @@
 import classNames from 'classnames';
-import React from 'react';
+import type { ReactNode } from 'react';
 
-export default function SectionHeading({ heading, withBorder, className }) {
+type SectionHeadingProps = {
+  heading?: ReactNode;
+  withBorder?: boolean;
+  className?: string;
+};
+
+export default function SectionHeading({
+  heading,
+  withBorder,
+  className,
+}: SectionHeadingProps) {
   return (
     <h2
       className={classNames(

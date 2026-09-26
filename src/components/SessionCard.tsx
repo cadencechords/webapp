@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import SessionsApi from '../api/sessionsApi';
 import { selectCurrentUser } from '../store/authSlice';
@@ -7,6 +7,21 @@ import { hasName } from '../utils/model';
 import Button from './Button';
 import Card from './Card';
 import ProfilePicture from './ProfilePicture';
+import type { Session } from '../types';
+
+type SessionCardProps = {
+  isActive?: boolean;
+  session: Session;
+  /**
+   * Called after the host ends the session. SessionsSheet doesn't pass it, so
+   * there the call throws and handleEndSession reports that error.
+   */
+  onSessionEnded?: (session: Session) => void;
+  onJoin: (session: Session) => void;
+  /** Only called when isActive. */
+  onLeave?: (session: Session) => void;
+  className?: string;
+};
 
 export default function SessionCard({
   isActive,
@@ -15,7 +30,7 @@ export default function SessionCard({
   onJoin,
   onLeave,
   className,
-}) {
+}: SessionCardProps) {
   const currentUser = useSelector(selectCurrentUser);
   const isUserSessionHost = session.user.id === currentUser.id;
   const [ending, setEnding] = useState(false);

@@ -1,8 +1,23 @@
 import CalendarCell from './CalendarCell';
+import type { CalendarDay } from './CalendarCell';
 import { isSameDay } from '../../utils/date';
+import type { CalendarEvent } from '../../types';
 
-export default function CalendarRow({ days, events, className, onEventClick }) {
-  function findEventsForDay(day) {
+type CalendarRowProps = {
+  /** Seven days; the padding days before the 1st and after the last are empty. */
+  days: (CalendarDay | null)[];
+  events?: CalendarEvent[];
+  className?: string;
+  onEventClick?: (event: CalendarEvent) => void;
+};
+
+export default function CalendarRow({
+  days,
+  events,
+  className,
+  onEventClick,
+}: CalendarRowProps) {
+  function findEventsForDay(day: CalendarDay | null) {
     if (day && events) {
       return events.filter(event => isSameDay(event.start_time, day.fullDate));
     } else {

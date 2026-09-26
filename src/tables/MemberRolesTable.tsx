@@ -3,8 +3,20 @@ import StyledListBox from '../components/StyledListBox';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import useAssignRoleToMember from '../hooks/api/useAssignRoleToMember';
+import type { Membership, Role } from '../types';
 
-export default function MemberRolesTable({ roles, members, onRoleAssigned }) {
+type MemberRolesTableProps = {
+  roles?: Role[];
+  members: Membership[];
+  /** Not called; the role is saved through useAssignRoleToMember. */
+  onRoleAssigned?: () => void;
+};
+
+export default function MemberRolesTable({
+  roles,
+  members,
+  onRoleAssigned,
+}: MemberRolesTableProps) {
   const roleOptions = roles?.map(role => ({
     value: role.name,
     template: role.name,

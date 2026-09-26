@@ -1,6 +1,16 @@
 import Button from '../components/Button';
 import StyledDialog from '../components/StyledDialog';
 import { useState } from 'react';
+import type { ReactNode } from 'react';
+
+type ConfirmDeleteDialogProps = {
+  onConfirm?: () => void;
+  onCancel: () => void;
+  show: boolean;
+  onCloseDialog: () => void;
+  /** Defaults to "Deleting this item is irreversible." */
+  children?: ReactNode;
+};
 
 export default function ConfirmDeleteDialog({
   onConfirm,
@@ -8,7 +18,7 @@ export default function ConfirmDeleteDialog({
   show,
   onCloseDialog,
   children,
-}) {
+}: ConfirmDeleteDialogProps) {
   const [loading, setLoading] = useState(false);
 
   const handleConfirm = () => {

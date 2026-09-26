@@ -254,7 +254,6 @@ function SetPresenter() {
             onIndexChange={handleSongBeingViewedIndexChange}
             index={songBeingViewedIndex}
             onSongUpdate={handleSongUpdate}
-            currentSubscription={currentSubscription}
           />
         </div>
 

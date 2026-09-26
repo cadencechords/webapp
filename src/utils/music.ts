@@ -34,7 +34,14 @@ export const MINOR_KEYS = [
   'G#m',
 ];
 
-export function semitonesAway(keyOne, keyTwo, chromaticScale = SEMITONES) {
+/** Semitones above the scale's first note, by note name (both spellings). */
+type ChromaticScale = Record<string, number>;
+
+export function semitonesAway(
+  keyOne: string,
+  keyTwo: string,
+  chromaticScale: ChromaticScale = SEMITONES
+) {
   return Math.abs(chromaticScale[keyOne] - chromaticScale[keyTwo]);
 }
 
@@ -73,8 +80,8 @@ const SEMITONES_ARRAY = [
   ['G#', 'Ab'],
 ];
 
-export function buildChromaticScale(startingNote) {
-  let chromaticScale = {};
+export function buildChromaticScale(startingNote: string) {
+  const chromaticScale: ChromaticScale = {};
   let index = SEMITONES[startingNote];
   let scaleIndex = 0;
 
@@ -93,22 +100,22 @@ export function buildChromaticScale(startingNote) {
   return chromaticScale;
 }
 
-export function getHalfStepHigher(key) {
-  let keys = isMinor(key) ? MINOR_KEYS : MAJOR_KEYS;
+export function getHalfStepHigher(key: string) {
+  const keys = isMinor(key) ? MINOR_KEYS : MAJOR_KEYS;
 
-  let indexOfKey = keys.findIndex(keyInList => keyInList === key);
+  const indexOfKey = keys.findIndex(keyInList => keyInList === key);
   if (indexOfKey > -1) {
-    let indexOfNextKey = (indexOfKey + 1) % keys.length;
+    const indexOfNextKey = (indexOfKey + 1) % keys.length;
     return keys[indexOfNextKey];
   } else {
     return key;
   }
 }
 
-export function getHalfStepLower(key) {
-  let keys = isMinor(key) ? MINOR_KEYS : MAJOR_KEYS;
+export function getHalfStepLower(key: string) {
+  const keys = isMinor(key) ? MINOR_KEYS : MAJOR_KEYS;
 
-  let indexOfKey = keys.findIndex(keyInList => keyInList === key);
+  const indexOfKey = keys.findIndex(keyInList => keyInList === key);
   if (indexOfKey > -1) {
     let indexOfNextKey;
 

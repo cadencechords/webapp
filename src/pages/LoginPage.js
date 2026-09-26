@@ -13,7 +13,9 @@ import UserApi from '../api/UserApi';
 import classNames from 'classnames';
 
 export default function LoginPage() {
-  useEffect(() => (document.title = 'Login'));
+  useEffect(() => {
+    document.title = 'Login';
+  });
   const [canLogin, setCanLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

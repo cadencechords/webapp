@@ -1,10 +1,19 @@
 import { Popover } from '@headlessui/react';
 import { usePopper } from 'react-popper';
 import { useRef } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { noop } from '../utils/constants';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import Icon from './Icon';
+
+type MarkingOptionsPopoverProps = {
+  onDelete: () => void;
+  button?: ReactNode;
+  isOpen?: boolean;
+  style?: CSSProperties;
+  onClose?: () => void;
+};
 
 export default function MarkingOptionsPopover({
   onDelete,
@@ -12,11 +21,11 @@ export default function MarkingOptionsPopover({
   isOpen = true,
   style,
   onClose,
-}) {
-  const referenceElement = useRef();
-  const popperElement = useRef();
+}: MarkingOptionsPopoverProps) {
+  const referenceElement = useRef<HTMLButtonElement>();
+  const popperElement = useRef<HTMLDivElement>();
 
-  let { styles, attributes } = usePopper(
+  const { styles, attributes } = usePopper(
     referenceElement.current,
     popperElement.current,
     {

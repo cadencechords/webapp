@@ -35,10 +35,9 @@ export default function SetlistDetailPage() {
   const [errored, setErrored] = useState(false);
   const [sessions, setSessions] = useState([]);
 
-  useEffect(
-    () => (document.title = setlist ? setlist.name + ' | Sets' : 'Set'),
-    [setlist]
-  );
+  useEffect(() => {
+    document.title = setlist ? setlist.name + ' | Sets' : 'Set';
+  }, [setlist]);
 
   useEffect(() => {
     async function fetchData() {

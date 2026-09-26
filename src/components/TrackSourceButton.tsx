@@ -1,4 +1,13 @@
-import React from 'react';
+type TrackSourceButtonProps = {
+  source: string;
+  /** Image URL. */
+  icon: string;
+  iconHeight?: number;
+  iconWidth?: number;
+  className?: string;
+  selected?: boolean;
+  onClick: (source: string) => void;
+};
 
 export default function TrackSourceButton({
   source,
@@ -8,7 +17,7 @@ export default function TrackSourceButton({
   className,
   selected,
   onClick,
-}) {
+}: TrackSourceButtonProps) {
   return (
     <button
       onClick={() => onClick(source)}

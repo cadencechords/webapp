@@ -1,4 +1,7 @@
 import { Document, Font, Page, Text, View } from '@react-pdf/renderer';
+import type ReactPDF from '@react-pdf/renderer';
+import type { ReactNode } from 'react';
+import type { Song, SongFormat } from '../types';
 import { isNewLine } from './SongUtils';
 import { build, isChord, isChordLine } from '@cadencechords/chord-kit';
 
@@ -16,20 +19,32 @@ import RobotoItalic from '../fonts/RobotoMono-Italic.ttf';
 import RobotoRegular from '../fonts/RobotoMono-Regular.ttf';
 import HighlightedText from '../components/pdf/HighlightedText';
 
-export function toPdf(song, showChords) {
-  let pdfLines = '';
+type Style = ReactPDF.Styles[string];
+
+type SongWithContent = Song & { content: string };
+
+/** A font file for Font.register. */
+type FontStyle = {
+  src: string;
+  fontStyle?: 'italic';
+  fontWeight?: 'bold';
+};
+
+export function toPdf(song: Song, showChords: boolean) {
+  let pdfLines: ReactNode = '';
   registerFonts(song.format);
   if (song?.content) {
-    pdfLines = constructPdfLines(song, showChords);
+    // The if above checked that content is set.
+    pdfLines = constructPdfLines(song as SongWithContent, showChords);
   } else {
     pdfLines = <Text></Text>;
   }
 
-  function getFontName(font) {
+  function getFontName(font: string) {
     return isAllowedFont(font) ? font : 'Liberation Sans';
   }
 
-  let pdf = (
+  const pdf = (
     <Document creator="Mezzo" producer="Mezzo" author="Mezzo">
       <Page size="A4" style={PDF_STYLES}>
         <View style={{ fontFamily: getFontName(song.format.font) }}>
@@ -52,7 +67,7 @@ export function toPdf(song, showChords) {
   return pdf;
 }
 
-function registerFonts(format) {
+function registerFonts(format: SongFormat) {
   const fontStyles = isAllowedFont(format.font)
     ? constructFontStyles(format)
     : constructFontStyles({ ...format, font: 'Liberation Sans' });
@@ -60,12 +75,12 @@ function registerFonts(format) {
   Font.register({ family: format.font, fonts: fontStyles });
 }
 
-function isAllowedFont(font) {
+function isAllowedFont(font: string) {
   return ALLOWED_FONTS.includes(font);
 }
 
-function constructFontStyles(format) {
-  let fontStyles = [];
+function constructFontStyles(format: SongFormat) {
+  const fontStyles: FontStyle[] = [];
   fontStyles.push(constructNormalFontStyle(format.font));
 
   if (format.bold_chords && format.italic_chords) {
@@ -79,28 +94,28 @@ function constructFontStyles(format) {
   return fontStyles;
 }
 
-function constructNormalFontStyle(font) {
-  let importedFontSrc = FONT_IMPORTS[font]?.regular;
+function constructNormalFontStyle(font: string): FontStyle {
+  const importedFontSrc = FONT_IMPORTS[font]?.regular;
   return { src: importedFontSrc };
 }
 
-function constructBoldItalicFontStyle(font) {
-  let importedFontSrc = FONT_IMPORTS[font].boldItalic;
+function constructBoldItalicFontStyle(font: string): FontStyle {
+  const importedFontSrc = FONT_IMPORTS[font].boldItalic;
   return { src: importedFontSrc, fontStyle: 'italic', fontWeight: 'bold' };
 }
 
-function constructBoldFontStyle(font) {
-  let importedFontSrc = FONT_IMPORTS[font].bold;
+function constructBoldFontStyle(font: string): FontStyle {
+  const importedFontSrc = FONT_IMPORTS[font].bold;
   return { src: importedFontSrc, fontWeight: 'bold' };
 }
 
-function constructItalicFontStyle(font) {
-  let importedFontSrc = FONT_IMPORTS[font].italic;
+function constructItalicFontStyle(font: string): FontStyle {
+  const importedFontSrc = FONT_IMPORTS[font].italic;
   return { src: importedFontSrc, fontStyle: 'italic' };
 }
 
-function constructChordStyles(format) {
-  let chordStyles = {};
+function constructChordStyles(format: SongFormat) {
+  const chordStyles: Style = {};
 
   if (format.bold_chords) {
     chordStyles.fontWeight = 'bold';
@@ -117,15 +132,15 @@ function constructChordStyles(format) {
   return chordStyles;
 }
 
-function constructPdfLines(song, showChords) {
-  let chordStyles = constructChordStyles(song.format);
-  let content = build({
+function constructPdfLines(song: SongWithContent, showChords: boolean) {
+  const chordStyles = constructChordStyles(song.format);
+  const content = build({
     ...song,
     format: { ...song.format, chords_hidden: !showChords },
   });
 
-  let linesOfSong = content.split(/\r\n|\r|\n/);
-  let pdfLines = linesOfSong.map((line, index) => {
+  const linesOfSong = content.split(/\r\n|\r|\n/);
+  const pdfLines = linesOfSong.map((line, index) => {
     if (isNewLine(line)) {
       return <Text key={index}> &nbsp;</Text>;
     } else if (isChordLine(line) && showChords) {
@@ -164,10 +179,13 @@ function constructPdfLines(song, showChords) {
   return pdfLines;
 }
 
-function buildHighlightedLine(line, { backgroundColor } = {}) {
-  let tokens = line.split(/(\s+)/);
+function buildHighlightedLine(
+  line: string,
+  { backgroundColor }: { backgroundColor?: string } = {}
+) {
+  const tokens = line.split(/(\s+)/);
 
-  tokens = tokens.map((token, index) => {
+  return tokens.map((token, index) => {
     if (isChord(token)) {
       return (
         <HighlightedText
@@ -181,8 +199,6 @@ function buildHighlightedLine(line, { backgroundColor } = {}) {
       return <Text key={`token-${index}`}>{token}</Text>;
     }
   });
-
-  return tokens;
 }
 
 const ALLOWED_FONTS = ['Roboto Mono', 'Open Sans', 'Liberation Sans'];

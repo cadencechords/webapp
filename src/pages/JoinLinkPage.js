@@ -43,7 +43,9 @@ export default function JoinLinkPage() {
     }
   }, [hasCredentials, refreshCurrentUser, currentUser]);
 
-  useEffect(() => (document.title = 'Join team'), []);
+  useEffect(() => {
+    document.title = 'Join team';
+  }, []);
 
   useEffect(() => {
     let timeout;

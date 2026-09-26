@@ -2,7 +2,18 @@ import Button from './Button';
 import DetailTag from './DetailTag';
 import DetailTitle from './DetailTitle';
 import NoDataMessage from './NoDataMessage';
+import type { ReactNode } from 'react';
 import Icon from './Icon';
+
+type DetailSectionItem = { id: number; name: ReactNode };
+
+type DetailSectionProps = {
+  title: string;
+  items?: DetailSectionItem[];
+  onAdd?: () => void;
+  onDelete?: (id: number) => void;
+  canEdit?: boolean;
+};
 
 export default function DetailSection({
   title,
@@ -10,7 +21,7 @@ export default function DetailSection({
   onAdd,
   onDelete,
   canEdit,
-}) {
+}: DetailSectionProps) {
   return (
     <div className="mb-1">
       <div className="mb-2 flex-between">

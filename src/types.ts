@@ -5,6 +5,8 @@
 // Only the fields the code reads are listed. Add fields as more code gets
 // typed.
 
+import type { ButtonColor } from './components/Button';
+
 /** An id: a number from the API, or a string from a route param or input. */
 export type Id = number | string;
 
@@ -191,6 +193,8 @@ export interface Track {
 
 export interface SongFormat {
   chords_hidden?: boolean;
+  /** Fit the lyrics to the screen width. */
+  autosize?: boolean;
   bold_chords?: boolean;
   italic_chords?: boolean;
   /** A CSS color. */
@@ -225,11 +229,12 @@ export interface Song {
   original_key?: string;
   transposed_key?: string;
   /** No `id` until a capo picked in the capo sheet is saved. */
-  capo?: Partial<Capo> | null;
+  capo?: (Omit<Capo, 'id'> & { id?: number }) | null;
   format: SongFormat;
   /** Client-side display flags, not persisted. */
   show_capo?: boolean;
   show_transposed?: boolean;
+  show_roadmap?: boolean;
   genres?: Tag[];
   themes?: Tag[];
   tracks?: Track[];
@@ -280,7 +285,8 @@ export interface CalendarEvent {
   id: number;
   title?: string;
   description?: string;
-  color?: string;
+  /** One of the colors EventColorOptions offers. */
+  color?: ButtonColor;
   start_time?: string;
   end_time?: string | null;
   reminders_enabled?: boolean;

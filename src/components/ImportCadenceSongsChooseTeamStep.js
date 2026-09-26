@@ -35,7 +35,6 @@ export default function ImportCadenceSongsChooseTeamStep({
             <div className="grid grid-cols-1 gap-4 mt-4 mb-8 sm:grid-cols-2">
               {teams.map(team => (
                 <TeamOption
-                  id={team.id}
                   selected={team === selectedTeam}
                   onChange={setSelectedTeam}
                   team={team}

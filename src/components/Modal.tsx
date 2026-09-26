@@ -1,19 +1,29 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import StyledDialog from './StyledDialog';
+import type { DialogSize } from './StyledDialog';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css';
 import useBreakPoints from '../hooks/useBreakPoints';
 import Button from './Button';
 import Icon from './Icon';
 
+type ModalProps = {
+  open: boolean;
+  onClose: () => void;
+  children?: ReactNode;
+  headerRight?: ReactNode;
+  dialogSize?: DialogSize;
+  title?: ReactNode;
+};
+
 export default function Modal({
   open,
   onClose,
   children,
   headerRight,
-  dialogSize = /** @type {import('./StyledDialog').DialogSize} */ ('xl'),
+  dialogSize = 'xl',
   title,
-}) {
+}: ModalProps) {
   const { isSm } = useBreakPoints();
   return (
     <>

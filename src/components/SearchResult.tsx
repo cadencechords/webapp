@@ -1,6 +1,19 @@
+import type { ReactNode } from 'react';
 import Highlighter from 'react-highlight-words';
 
-export default function SearchResult({ children, onClick, query, name }) {
+type SearchResultProps = {
+  children?: ReactNode;
+  onClick?: () => void;
+  query: string;
+  name: string;
+};
+
+export default function SearchResult({
+  children,
+  onClick,
+  query,
+  name,
+}: SearchResultProps) {
   return (
     <div
       onClick={onClick}

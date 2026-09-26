@@ -1,6 +1,16 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import PageTitle from './PageTitle';
 import MobileHeader from './MobileHeader';
+
+type PageHeaderProps = {
+  title?: string;
+  /** Not read. */
+  headerRight?: ReactNode;
+  onHeaderRightClick?: () => void;
+  /** Not read. */
+  headerRightDisabled?: boolean;
+  headerRightVisible?: boolean;
+};
 
 export default function PageHeader({
   title,
@@ -8,7 +18,7 @@ export default function PageHeader({
   onHeaderRightClick,
   headerRightDisabled,
   headerRightVisible,
-}) {
+}: PageHeaderProps) {
   return (
     <div>
       <div className="hidden sm:block">

@@ -11,7 +11,7 @@ export default function usePlanningCenterAuthCheck() {
 
   useEffect(() => {
     if (!isConnected) {
-      window.location =
+      window.location.href =
         `https://api.planningcenteronline.com/oauth/authorize?client_id=${PCO_CLIENT_ID}` +
         `&redirect_uri=${PCO_REDIRECT_URI}&response_type=code&scope=services`;
     }

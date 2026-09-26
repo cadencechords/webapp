@@ -1,8 +1,21 @@
 import { useRef, useState } from 'react';
 
-export default function RoadmapSection({ section, color, onChange, onDelete }) {
+type RoadmapSectionProps = {
+  section: string;
+  /** Not read; RoadmapDragDopContext doesn't pass it either. */
+  color?: string;
+  onChange?: (value: string) => void;
+  onDelete?: () => void;
+};
+
+export default function RoadmapSection({
+  section,
+  color,
+  onChange,
+  onDelete,
+}: RoadmapSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const ref = useRef(/** @type {HTMLInputElement | null} */ (null));
+  const ref = useRef<HTMLInputElement>(null);
 
   function determineWidth() {
     return section.length + 3 + 'ch';
