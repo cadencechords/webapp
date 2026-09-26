@@ -260,6 +260,10 @@ export interface Setlist {
   songs?: Song[];
   /** Active sessions, loaded for pro teams when presenting. */
   sessions?: Session[];
+  /** The code at the end of the set's public link, `/setlists/<code>`. */
+  public_link?: string;
+  /** The dashboard's sets list their songs here; only counted. */
+  scheduled_songs?: unknown[];
 }
 
 /** A live session of a setlist, which members follow along with its host. */

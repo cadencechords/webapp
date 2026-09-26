@@ -4,8 +4,14 @@ import KeyBadge from './KeyBadge';
 import Button from './Button';
 import useRemoveSongFromBinder from '../hooks/api/useRemoveSongFromBinder';
 import Icon from './Icon';
+import type { Id, Song } from '../types';
 
-export default function BinderSongRow({ song, binderId }) {
+type BinderSongRowProps = {
+  song: Song;
+  binderId: Id;
+};
+
+export default function BinderSongRow({ song, binderId }: BinderSongRowProps) {
   const router = useHistory();
   const { isLoading: isRemoving, run: removeSongFromBinder } =
     useRemoveSongFromBinder({

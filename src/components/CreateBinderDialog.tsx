@@ -6,12 +6,20 @@ import StyledDialog from './StyledDialog';
 import { useHistory } from 'react-router';
 import useCreateBinder from '../hooks/api/useCreateBinder';
 
-export default function CreateBinderDialog({ open, onCloseDialog }) {
+type CreateBinderDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+};
+
+export default function CreateBinderDialog({
+  open,
+  onCloseDialog,
+}: CreateBinderDialogProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [color, setColor] = useState('none');
   const router = useHistory();
-  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleCloseDialog = () => {
     setName('');

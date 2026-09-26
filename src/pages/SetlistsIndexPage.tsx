@@ -16,20 +16,21 @@ import List from '../components/List';
 import SetlistRow from '../components/SetlistRow';
 import WellInput from '../components/inputs/WellInput';
 import FadeIn from '../components/FadeIn';
-import SetlistsTabs from '../components/SetlistsTabs';
+import SetlistsTabs, { type SetlistsTab } from '../components/SetlistsTabs';
+import type { Setlist } from '../types';
 
 export default function SetlistsIndexPage() {
   useEffect(() => {
     document.title = 'Sets';
   });
   const { data: setlists, isLoading, isError, isSuccess } = useSetlists();
-  const [selectedTab, setSelectedTab] = useState('upcoming');
+  const [selectedTab, setSelectedTab] = useState<SetlistsTab>('upcoming');
 
   const [query, setQuery] = useState('');
 
   const sortSetlists = useCallback(() => {
-    let upcoming = [];
-    let past = [];
+    const upcoming: Setlist[] = [];
+    const past: Setlist[] = [];
 
     if (setlists?.length) {
       setlists.forEach(set =>
@@ -52,7 +53,8 @@ export default function SetlistsIndexPage() {
   ]);
 
   const [isCreateOpen, showCreateDialog, hideCreateDialog] = useDialog();
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   function searchSetlists() {
     const selectedTabSetlists =

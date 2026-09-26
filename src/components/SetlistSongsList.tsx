@@ -10,19 +10,31 @@ import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import type { Id, Song } from '../types';
+
+type SetlistSongsListProps = {
+  songs?: Song[];
+  onSongsAdded: (addedSongs: Song[]) => void;
+  onReordered: (reorderedSongs: Song[]) => void;
+  onSongRemoved: (removedSongId: number) => void;
+};
 
 export default function SetlistSongsList({
   songs,
   onSongsAdded,
   onReordered,
   onSongRemoved,
-}) {
+}: SetlistSongsListProps) {
   const [showSongsDialog, setShowSongsDialog] = useState(false);
   // The route's path declares :id, which useParams can't see.
-  const id = /** @type {{ id: string }} */ (useParams()).id;
+  const id = useParams<{ id: string }>().id;
   const router = useHistory();
-  const currentMember = useSelector(selectCurrentMember);
-  const handleReordered = async (reorderedSongs, movedSong) => {
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
+  const handleReordered = async (
+    reorderedSongs: Song[],
+    movedSong: { id: string; newPosition: number }
+  ) => {
     reorderedSongs = reorderedSongs.map((reorderedSong, index) => ({
       ...reorderedSong,
       position: index,
@@ -30,7 +42,7 @@ export default function SetlistSongsList({
     onReordered(reorderedSongs);
 
     try {
-      let updates = { position: movedSong.newPosition };
+      const updates = { position: movedSong.newPosition };
       await SetlistApi.updateScheduledSong(
         updates,
         Number.parseInt(movedSong.id),
@@ -41,7 +53,7 @@ export default function SetlistSongsList({
     }
   };
 
-  const handleRemoveSong = async songIdToRemove => {
+  const handleRemoveSong = async (songIdToRemove: number) => {
     try {
       await SetlistApi.removeSongs(id, [songIdToRemove]);
       onSongRemoved(songIdToRemove);
@@ -50,7 +62,7 @@ export default function SetlistSongsList({
     }
   };
 
-  const handleRouteToSongDetail = songId => {
+  const handleRouteToSongDetail = (songId: Id) => {
     router.push(`/songs/${songId}`);
   };
 
@@ -69,7 +81,7 @@ export default function SetlistSongsList({
         )}
       </div>
 
-      {songs?.length > 0 ? (
+      {songs && songs.length > 0 ? (
         <DragAndDropTable
           items={songs}
           onReorder={handleReordered}

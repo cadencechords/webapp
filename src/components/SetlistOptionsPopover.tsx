@@ -10,16 +10,28 @@ import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { DELETE_SETLISTS } from '../utils/constants';
 import Icon from './Icon';
+import type { Setlist } from '../types';
 
-export default function SetlistOptionsPopover({ setlist, onPerform }) {
+type SetlistOptionsPopoverProps = {
+  setlist: Setlist;
+  onPerform: () => void;
+};
+
+export default function SetlistOptionsPopover({
+  setlist,
+  onPerform,
+}: SetlistOptionsPopoverProps) {
   const [isConfirmationOpen, showConfirmation, hideConfirmation] = useDialog();
   const { run: deleteSetlist } = useDeleteSetlist({
     onSuccess: () => router.replace('/sets'),
   });
   const router = useHistory();
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
 
-  if (!currentMember.can(DELETE_SETLISTS) && !setlist.songs.length) return null;
+  // Non-null: kept as before; a set loaded by id comes with its songs.
+  if (!currentMember.can(DELETE_SETLISTS) && !setlist.songs!.length)
+    return null;
 
   return (
     <>
@@ -32,7 +44,7 @@ export default function SetlistOptionsPopover({ setlist, onPerform }) {
         }
       >
         <div className="overflow-hidden rounded-lg w-60">
-          {setlist.songs?.length > 0 && (
+          {setlist.songs && setlist.songs.length > 0 && (
             <MobileMenuButton
               full
               color="gray"

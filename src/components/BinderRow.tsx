@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { pluralize } from '../utils/StringUtils';
 import BinderColor from './BinderColor';
+import type { Binder } from '../types';
 
-export default function BinderRow({ binder }) {
+export default function BinderRow({ binder }: { binder: Binder }) {
   return (
     <Link
       to={{ pathname: `/binders/${binder.id}`, state: binder }}

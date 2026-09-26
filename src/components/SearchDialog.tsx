@@ -8,24 +8,45 @@ import SongApi from '../api/SongApi';
 import StyledDialog from './StyledDialog';
 import _ from 'lodash';
 import { reportError } from '../utils/error';
+import type { Binder, Setlist, Song } from '../types';
 
-export default function SearchDialog({ open, onCloseDialog }) {
+type SearchResultsData = {
+  binders: Binder[];
+  songs: Song[];
+  setlists: Setlist[];
+};
+
+type SearchDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+};
+
+export default function SearchDialog({
+  open,
+  onCloseDialog,
+}: SearchDialogProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState(null);
+  const [searchResults, setSearchResults] = useState<SearchResultsData | null>(
+    null
+  );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
-    _.debounce(async nameToSearchFor => {
+    _.debounce(async (nameToSearchFor: string) => {
       if (nameToSearchFor && nameToSearchFor !== '') {
-        let results = { binders: [], songs: [], setlists: [] };
+        const results: SearchResultsData = {
+          binders: [],
+          songs: [],
+          setlists: [],
+        };
         try {
-          let bindersResponse = await BinderApi.search(nameToSearchFor);
+          const bindersResponse = await BinderApi.search(nameToSearchFor);
           results.binders = bindersResponse.data;
 
-          let songsResponse = await SongApi.search(nameToSearchFor);
+          const songsResponse = await SongApi.search(nameToSearchFor);
           results.songs = songsResponse.data;
 
-          let setlistsResponse = await SetlistApi.search(nameToSearchFor);
+          const setlistsResponse = await SetlistApi.search(nameToSearchFor);
           results.setlists = setlistsResponse.data;
 
           setSearchResults(results);
@@ -37,7 +58,7 @@ export default function SearchDialog({ open, onCloseDialog }) {
     []
   );
 
-  const handleSearchQueryChange = newQuery => {
+  const handleSearchQueryChange = (newQuery: string) => {
     setSearchQuery(newQuery);
     debounce(newQuery);
   };

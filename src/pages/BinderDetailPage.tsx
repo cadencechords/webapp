@@ -16,16 +16,15 @@ import PageLoading from '../components/PageLoading';
 import useUpdateBinder from '../hooks/api/useUpdateBinder';
 import Alert from '../components/Alert';
 import useDialog from '../hooks/useDialog';
+import type { Binder } from '../types';
 
 export default function BinderDetailPage() {
   const [isColorPickerOpen, showColorPicker, hideColorPicker] = useDialog();
 
   const router = useHistory();
-  /** @type {{ id: string }} */
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   // Whoever navigated here may pass the binder as the location state.
-  /** @type {{ state: import('../types').Binder | undefined }} */
-  const { state } = useLocation();
+  const { state } = useLocation<Binder | undefined>();
 
   const {
     data: originalBinder,
@@ -40,7 +39,8 @@ export default function BinderDetailPage() {
     clearUpdates,
   } = useUpdates(originalBinder);
 
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   const { isLoading: isSaving, run: updateBinder } = useUpdateBinder({
     onSuccess: () => {
@@ -71,7 +71,7 @@ export default function BinderDetailPage() {
             open={isColorPickerOpen}
             onCloseDialog={hideColorPicker}
             binderColor={binder.color}
-            onChange={editedColor => onChange('color', editedColor)}
+            onChange={(editedColor: string) => onChange('color', editedColor)}
           />
         </span>
         <PageTitle
@@ -107,7 +107,12 @@ export default function BinderDetailPage() {
   );
 }
 
-function SaveButton({ isSaving, onSave }) {
+type SaveButtonProps = {
+  isSaving: boolean;
+  onSave: () => void;
+};
+
+function SaveButton({ isSaving, onSave }: SaveButtonProps) {
   return (
     <>
       <Button
