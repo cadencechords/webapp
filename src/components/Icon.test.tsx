@@ -41,7 +41,7 @@ test('unknown icons render nothing and warn', () => {
 
 test('every icon the app uses is registered, and no Heroicons remain', () => {
   const files = execSync(
-    'grep -rhoE --exclude=*.test.js \'<Icon name="[a-z_0-9]+"( filled)?\' src || true'
+    'grep -rhoE --exclude=*.test.* \'<Icon name="[a-z_0-9]+"( filled)?\' src || true'
   )
     .toString()
     .trim()
@@ -51,7 +51,7 @@ test('every icon the app uses is registered, and no Heroicons remain', () => {
     expect(ICONS[filled ? `${name}-fill` : name], use).toBeDefined();
   }
   expect(
-    execSync('grep -rl --exclude=*.test.js "@heroicons" src || true').toString()
+    execSync('grep -rl --exclude=*.test.* "@heroicons" src || true').toString()
   ).toBe('');
   expect(
     JSON.parse(readFileSync('package.json', 'utf8')).dependencies[

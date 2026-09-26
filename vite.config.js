@@ -103,7 +103,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: './src/setupTests.js',
+    setupFiles: './src/setupTests.ts',
     include: ['src/**/*.test.{js,ts,tsx}'],
     // Its 0.4.0 ESM build has extensionless imports that Node can't load directly.
     server: { deps: { inline: ['@material/material-color-utilities'] } },
