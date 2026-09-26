@@ -11,7 +11,10 @@ declare module 'chord-transposer' {
     toString(): string;
   }
 
-  /** Throws if `text` has no chords. */
+  /**
+   * Wraps `text` for transposing. `up`, `down` and `toKey` throw if it has no
+   * chords (there's no key to start from).
+   */
   export function transpose(text: string): Transposer;
 }
 

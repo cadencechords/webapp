@@ -86,14 +86,25 @@ describe('authSlice', () => {
   });
 
   test('logOut deletes the credentials and user', () => {
-    localStorage.setItem('uid', 'UID');
+    for (const key of ['access-token', 'uid', 'client', 'teamId']) {
+      localStorage.setItem(key, 'stored');
+    }
     const store = setupStore({
-      auth: { accessToken: 'T', client: 'C', uid: 'U', currentUser: user },
+      auth: {
+        accessToken: 'T',
+        client: 'C',
+        uid: 'U',
+        teamId: 3,
+        currentTeam: { id: 3, name: 'Team' },
+        currentUser: user,
+      },
     });
     expect(selectHasCredentials(store.getState())).toBe('U');
     store.dispatch(logOut());
     expect(store.getState().auth).toEqual({});
-    expect(localStorage.getItem('uid')).toBeNull();
+    for (const key of ['access-token', 'uid', 'client', 'teamId']) {
+      expect(localStorage.getItem(key)).toBeNull();
+    }
   });
 });
 
@@ -157,6 +168,17 @@ describe('hooks', () => {
     expect(screen.getByText('edited')).toBeInTheDocument();
   });
 
+  test('useCopy resets when the original changes', () => {
+    function Probe({ value }: { value: string }) {
+      const [copy] = useCopy(value);
+      return <div>{copy}</div>;
+    }
+    const { rerender } = render(<Probe value="first" />);
+    expect(screen.getByText('first')).toBeInTheDocument();
+    rerender(<Probe value="second" />);
+    expect(screen.getByText('second')).toBeInTheDocument();
+  });
+
   test('usePermissionsCheck asks the current member', () => {
     function Probe() {
       const { can } = usePermissionsCheck();
@@ -176,6 +198,7 @@ describe('date', () => {
       true,
       false,
     ]);
+    expect([isValidHour(0), isValidHour('1')]).toEqual([false, true]);
     expect([
       isValidMinute('05'),
       isValidMinute(60),
@@ -194,6 +217,32 @@ describe('date', () => {
     expect(weeks[0][4]?.fullDate.getDate()).toBe(1);
   });
 
+  test('getCalendarDates pads week 4 from the month end, even with a 6th week', () => {
+    // Kept as is: June 2024 needs six weeks. padRight pads week 4 by the
+    // weekday of June 30 (a Sunday), so week 4 gets six nulls after the 29th
+    // and week 5 holds just the 30th, unpadded.
+    const numbers = getCalendarDates(5, 2024).map(week =>
+      week.map(day => day?.dateNumber ?? null)
+    );
+    expect(numbers[0]).toEqual([null, null, null, null, null, null, 1]);
+    expect(numbers[4]).toEqual([
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    ]);
+    expect(numbers[5]).toEqual([30]);
+  });
+
   test('getTimeFromDate: empty, midnight, and a time', () => {
     expect(getTimeFromDate(null)).toBe('');
     expect(getTimeFromDate(new Date(2024, 0, 1))).toBeNull();
@@ -207,6 +256,13 @@ describe('date', () => {
 });
 
 describe('ObjectUtils', () => {
+  test("getModifiedFields reads incoming's fields, not original's", () => {
+    type Fields = { name: string; extra?: string; onlyOriginal?: string };
+    const incoming: Fields = { name: 'A', extra: 'new' };
+    const original: Fields = { name: 'A', onlyOriginal: 'old' };
+    expect(getModifiedFields(incoming, original, {})).toEqual({ extra: 'new' });
+  });
+
   test('getModifiedFields uses a comparator when there is one', () => {
     const incoming = { name: 'B', ids: [1, 2], color: 'red' };
     const original = { name: 'A', ids: [1, 2], color: 'red' };
