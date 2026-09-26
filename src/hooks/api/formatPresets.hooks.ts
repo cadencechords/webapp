@@ -28,7 +28,9 @@ export function useSetDefaultFormat({
   onSuccess,
 }: { onSuccess?: () => void } = {}) {
   const dispatch = useDispatch();
-  const currentTeam = useSelector(selectCurrentTeam);
+  // Non-null: used by TeamDetailPage, under SecuredRoutes, which renders only
+  // once the current team loads.
+  const currentTeam = useSelector(selectCurrentTeam)!;
   const {
     isLoading,
     isSuccess,
@@ -39,8 +41,8 @@ export function useSetDefaultFormat({
     AxiosResponse<unknown>,
     Error,
     // `FormatPresets` passes its selected preset, which starts as the team's
-    // default and can be unset.
-    FormatPreset | undefined
+    // default and can be unset (null, from FormatPreview).
+    FormatPreset | null | undefined
   >({
     mutationFn: async formatPreset => {
       return await TeamApi.setDefaultFormat(formatPreset?.id);

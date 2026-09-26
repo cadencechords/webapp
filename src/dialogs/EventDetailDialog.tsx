@@ -21,8 +21,8 @@ export default function EventDetailDialog({
   onCloseDialog,
   onDeleted,
 }: EventDetailDialogProps) {
-  const [startTime, setStartTime] = useState<string>();
-  const [endTime, setEndTime] = useState<string>();
+  const [startTime, setStartTime] = useState<string | null>();
+  const [endTime, setEndTime] = useState<string | null>();
   useEffect(() => {
     if (event?.start_time) {
       setStartTime(getTimeFromDate(event.start_time));

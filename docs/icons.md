@@ -17,7 +17,7 @@ import Icon from '../components/Icon';
 - **Icons are decorative** (`aria-hidden`). Give icon-only buttons an
   `aria-label` or sr-only text.
 - **Adding an icon:** find it at https://fonts.google.com/icons (Rounded
-  style), then import it in `src/components/icons/registry.js`. The filled
+  style), then import it in `src/components/icons/registry.ts`. The filled
   variant is `<name>-fill.svg`. A test fails if the app uses an icon that
   isn't registered.
 - **Custom icons** in `src/icons/` (music-specific: metronome, markings,

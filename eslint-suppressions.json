@@ -1,9 +1,4 @@
 {
-  "src/components/AddThemeDialog.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
   "src/components/Annotation.js": {
     "no-unused-vars": {
       "count": 1
@@ -27,11 +22,6 @@
       "count": 1
     }
   },
-  "src/components/AppFallback.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
   "src/components/AppleMusicSearchResults.js": {
     "no-unused-vars": {
       "count": 1
@@ -52,32 +42,12 @@
       "count": 1
     }
   },
-  "src/components/BoldItalicButtonGroup.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/ButtonGroup.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/ColorPicker.js": {
     "no-unused-vars": {
       "count": 1
     }
   },
   "src/components/ColorPickerPopover.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EditorFormatOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EditorNavbar.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -102,56 +72,6 @@
       "count": 1
     },
     "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/components/FormatBottomSheet.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatBottomSheetChordOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatBottomSheetGeneralOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatOption.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatOptionLabel.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPanel.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPanelChordOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPanelGeneralOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPresets.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPreview.js": {
-    "no-unused-vars": {
       "count": 1
     }
   },
@@ -190,11 +110,6 @@
       "count": 1
     }
   },
-  "src/components/LastScheduledField.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/Marking.js": {
     "no-unused-vars": {
       "count": 1
@@ -206,16 +121,6 @@
     }
   },
   "src/components/MarkupPopover.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/NoTeamYet.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/components/NumberBadge.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -255,11 +160,6 @@
       "count": 1
     }
   },
-  "src/components/SegmentedControl.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/SessionsSheet.js": {
     "no-unused-vars": {
       "count": 1
@@ -281,11 +181,6 @@
     }
   },
   "src/components/SetlistsTabs.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/SongPreferencesForm.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -345,37 +240,12 @@
       "count": 1
     }
   },
-  "src/components/pdf/HighlightedText.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/dialogs/AddTracksDialog.js": {
     "no-unused-vars": {
       "count": 1
     }
   },
   "src/dialogs/SongsSelectedForImportModal.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/hooks/useSegmentedControl.js": {
-    "no-unused-vars": {
-      "count": 2
-    }
-  },
-  "src/icons/AnnotationIcons.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/icons/BoldIcon.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/icons/ItalicIcon.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -435,16 +305,6 @@
       "count": 1
     },
     "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/utils/SongUtils.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/utils/test.js": {
-    "no-unused-vars": {
       "count": 1
     }
   }

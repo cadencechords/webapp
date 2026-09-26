@@ -37,7 +37,8 @@ export default function MemberRolesTable({
             className="px-1 py-2 border-b dark:border-dark-gray-600 flex-between last:border-0"
           >
             {member.user.email}
-            {currentMember.can(ASSIGN_ROLES) ? (
+            {/* Non-null: kept as before, this throws if the membership hasn't loaded. */}
+            {currentMember!.can(ASSIGN_ROLES) ? (
               <div className="w-44">
                 <StyledListBox
                   options={roleOptions}

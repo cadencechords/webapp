@@ -31,7 +31,9 @@ export default function SessionCard({
   onLeave,
   className,
 }: SessionCardProps) {
-  const currentUser = useSelector(selectCurrentUser);
+  // Non-null: rendered under SecuredRoutes, which renders only once the
+  // current user loads.
+  const currentUser = useSelector(selectCurrentUser)!;
   const isUserSessionHost = session.user.id === currentUser.id;
   const [ending, setEnding] = useState(false);
 

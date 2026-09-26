@@ -2,10 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { performanceModes } from '../utils/constants';
 
-/**
- * One of the `performanceModes` values ('perform' or 'annotate'). The type is
- * `string`, because `performanceModes` in constants.js isn't `as const`.
- */
+/** One of the `performanceModes` values: 'perform' or 'annotate'. */
 export type PerformanceMode =
   (typeof performanceModes)[keyof typeof performanceModes];
 

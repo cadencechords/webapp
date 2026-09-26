@@ -120,7 +120,7 @@ export default [
     },
   },
   {
-    files: ['**/*.test.{js,ts,tsx}', 'src/setupTests.js'],
+    files: ['**/*.test.{js,ts,tsx}', 'src/setupTests.ts'],
     languageOptions: { globals: { ...globals.node, ...globals.vitest } },
   },
   {

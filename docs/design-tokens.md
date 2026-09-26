@@ -23,7 +23,7 @@ contrast). Light values are on `:root` and dark values on `.dark`, so the
 
 Users pick colors by name (`red`, `blue`, `green`, `yellow`, `pink`,
 `purple`, `indigo`, `gray`, `black`, and `none` for binders). The stored
-values never change. `userColorClasses(name)` in `src/utils/userColors.js`
+values never change. `userColorClasses(name)` in `src/utils/userColors.ts`
 maps each name to `color`, `onColor`, `container` and `onContainer` Tailwind
 classes, for example `bg-user-blue-container text-on-user-blue-container`.
 Anything unknown falls back to neutral roles.

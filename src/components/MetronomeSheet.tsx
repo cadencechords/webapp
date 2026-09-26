@@ -30,7 +30,8 @@ export default function MetronomeSheet({
   }, [song.id]);
 
   function handleBpmChange(bpm: number) {
-    if (currentMember.can(EDIT_SONGS)) {
+    // Non-null: kept as before, this throws if the membership hasn't loaded.
+    if (currentMember!.can(EDIT_SONGS)) {
       setUpdates({ bpm });
     }
 
@@ -56,7 +57,8 @@ export default function MetronomeSheet({
         title={
           <>
             Metronome
-            {updates && currentMember.can(EDIT_SONGS) && (
+            {/* Non-null: updates are set only once can() passed above. */}
+            {updates && currentMember!.can(EDIT_SONGS) && (
               <Button
                 variant="open"
                 size="xs"

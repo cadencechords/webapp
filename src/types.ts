@@ -27,6 +27,10 @@ export interface User {
   format_preferences?: FormatPreferences;
   /** The user's role on the current team, set by `setMembership`. */
   role?: Role;
+  /** Signs the user in to Stream Chat (ChatPage). */
+  chat_token?: string;
+  /** devise_token_auth's id for the user; OneSignal's external user id. */
+  uid?: string;
 }
 
 /** The current user's display preferences. */
@@ -43,7 +47,8 @@ export interface Team {
   /** The code at the end of the team's join link, `/join/<code>`. */
   join_link?: string;
   join_link_enabled?: boolean;
-  default_format?: FormatPreset;
+  /** Null once the default is unset (FormatPresets). */
+  default_format?: FormatPreset | null;
 }
 
 /** `TeamApi.getCurrentTeam`. */
@@ -144,7 +149,7 @@ export interface Binder {
 }
 
 /** A saved song format a team can make its default. */
-export interface FormatPreset {
+export interface FormatPreset extends SongFormat {
   id: number;
   name?: string;
 }
