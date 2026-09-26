@@ -9,13 +9,22 @@ import PageTitle from '../components/PageTitle';
 import PasswordRequirements from '../components/PasswordRequirements';
 import { useHistory } from 'react-router-dom';
 import { useQuery } from './ClaimInvitationPage';
+import type { AxiosError } from 'axios';
+
+/**
+ * A failed reset, as axios rejects it. devise_token_auth says why in
+ * `errors`.
+ */
+type ResetPasswordError = AxiosError<{ errors?: string[] }> | undefined;
 
 export default function ResetPasswordage() {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [isLongEnough, setIsLongEnough] = useState(false);
   const [isUncommon, setIsUncommon] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(null);
+  const [alertMessage, setAlertMessage] = useState<string[] | null | undefined>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const router = useHistory();
 
@@ -48,12 +57,12 @@ export default function ResetPasswordage() {
     };
   }, []);
 
-  const handlePasswordChange = passwordValue => {
+  const handlePasswordChange = (passwordValue: string) => {
     setPassword(passwordValue);
 
     setIsLongEnough(passwordValue.length >= MIN_PASSWORD_LENGTH);
 
-    let { score } = window.zxcvbn(passwordValue);
+    const { score } = window.zxcvbn(passwordValue);
 
     setIsUncommon(score >= 3);
   };
@@ -64,11 +73,15 @@ export default function ResetPasswordage() {
       await AuthApi.resetPassword({
         password,
         passwordConfirmation,
-        ...authConfig,
+        // `as`: the button is enabled only once hasAuthConfig() found every
+        // param in the link.
+        ...(authConfig as { [K in keyof typeof authConfig]: string }),
       });
       router.push('/login');
     } catch (error) {
-      setAlertMessage(error?.response?.data?.errors);
+      // `as`: the request rejects with an axios error. Anything else thrown
+      // here has no response, so this reads undefined, as before.
+      setAlertMessage((error as ResetPasswordError)?.response?.data?.errors);
       setLoading(false);
     }
   };

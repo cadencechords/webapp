@@ -9,9 +9,7 @@ import PageTitle from '../components/PageTitle';
 import { reportError } from '../utils/error';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState(
-    /** @type {string | undefined} */ (undefined)
-  );
+  const [email, setEmail] = useState<string | undefined>(undefined);
   const [sending, setSending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -22,7 +20,9 @@ export default function ForgotPasswordPage() {
   const handleSendInstructions = async () => {
     try {
       setSending(true);
-      await AuthApi.sendResetPasswordInstructions(email);
+      // Non-null: the button is disabled, and Enter does nothing, until an
+      // email is typed.
+      await AuthApi.sendResetPasswordInstructions(email!);
       setShowSuccess(true);
     } catch (error) {
       reportError(error);
@@ -42,8 +42,8 @@ export default function ForgotPasswordPage() {
       <PageTitle title="Reset Password" align="center" />
       <div className="mb-6 text-lg font-semibold text-gray-600 dark:text-dark-gray-200">
         Enter the email address you used to register with Mezzo. If the email
-        matches an account in Mezzo, we'll send you instructions to reset your
-        password.
+        matches an account in Mezzo, we&apos;ll send you instructions to reset
+        your password.
       </div>
       <OutlinedInput
         className="mb-6"

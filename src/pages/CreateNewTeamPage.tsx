@@ -34,8 +34,8 @@ export default function CreateNewTeamPage() {
     setLoading(!loading);
 
     try {
-      let newTeam = { name: teamName, plan: selectedPlan };
-      let { data } = await TeamApi.createOne(newTeam);
+      const newTeam = { name: teamName, plan: selectedPlan };
+      const { data } = await TeamApi.createOne(newTeam);
       dispatch(setTeamId(data.id));
       router.push('/');
     } catch (error) {
@@ -67,7 +67,7 @@ export default function CreateNewTeamPage() {
         }
         trialMessage="7 Day Free Trial"
       />
-      <div className="mb-1 font-semibold text-left">Your team's name</div>
+      <div className="mb-1 font-semibold text-left">Your team&apos;s name</div>
       <OutlinedInput
         placeholder="Name"
         value={teamName}

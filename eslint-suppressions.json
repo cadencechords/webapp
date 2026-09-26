@@ -355,18 +355,8 @@
       "count": 1
     }
   },
-  "src/pages/CreateNewTeamPage.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
   "src/pages/EditCalendarEventPage.js": {
     "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/ForgotPasswordPage.js": {
-    "react/no-unescaped-entities": {
       "count": 1
     }
   },
@@ -378,19 +368,6 @@
   "src/pages/ImportSongsPage.js": {
     "react/no-unescaped-entities": {
       "count": 3
-    }
-  },
-  "src/pages/InvitationSignUpPage.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/pages/JoinLinkPage.js": {
-    "no-unused-vars": {
-      "count": 1
-    },
-    "react/no-unescaped-entities": {
-      "count": 1
     }
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ComponentProps } from 'react';
 
 import Alert from '../components/Alert';
 import AuthApi from '../api/AuthApi';
@@ -7,6 +7,16 @@ import { Link } from 'react-router-dom';
 import OutlinedInput from '../components/inputs/OutlinedInput';
 import PasswordRequirements from '../components/PasswordRequirements';
 import useQuery from '../hooks/useQuery';
+import type { AxiosError } from 'axios';
+
+type AlertColor = NonNullable<ComponentProps<typeof Alert>['color']>;
+
+/**
+ * A failed sign up, as axios rejects it. devise_token_auth lists why in
+ * `errors.full_messages`.
+ */
+type SignUpError =
+  AxiosError<{ errors?: { full_messages?: string[] } }> | undefined;
 
 export default function SignUpPage() {
   const [firstName, setFirstName] = useState('');
@@ -18,8 +28,10 @@ export default function SignUpPage() {
   const [isLongEnough, setIsLongEnough] = useState(false);
   const [isUncommon, setIsUncommon] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(null);
-  const [alertColor, setAlertColor] = useState(null);
+  const [alertMessage, setAlertMessage] = useState<
+    string | string[] | null | undefined
+  >(null);
+  const [alertColor, setAlertColor] = useState<AlertColor | null>(null);
 
   const MIN_PASSWORD_LENGTH = 8;
 
@@ -40,12 +52,12 @@ export default function SignUpPage() {
     };
   }, []);
 
-  const handlePasswordChange = passwordValue => {
+  const handlePasswordChange = (passwordValue: string) => {
     setPassword(passwordValue);
 
     setIsLongEnough(passwordValue.length >= MIN_PASSWORD_LENGTH);
 
-    let { score } = window.zxcvbn(passwordValue);
+    const { score } = window.zxcvbn(passwordValue);
 
     setIsUncommon(score >= 3);
   };
@@ -67,7 +79,11 @@ export default function SignUpPage() {
       );
     } catch (error) {
       setAlertColor('red');
-      setAlertMessage(error?.response?.data?.errors?.full_messages);
+      // `as`: the request rejects with an axios error. Anything else thrown
+      // here has no response, so this reads undefined, as before.
+      setAlertMessage(
+        (error as SignUpError)?.response?.data?.errors?.full_messages
+      );
     } finally {
       setLoading(false);
       clearFields();
@@ -169,7 +185,8 @@ export default function SignUpPage() {
         {alertMessage && (
           <div className="mb-6">
             <Alert
-              color={alertColor}
+              // Non-null: the color is set with the message (handleSignUp).
+              color={alertColor!}
               dismissable
               onDismiss={() => setAlertMessage(null)}
             >
