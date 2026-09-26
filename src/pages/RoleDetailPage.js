@@ -22,7 +22,8 @@ import useCopy from '../hooks/useCopy';
 import Icon from '../components/Icon';
 
 export default function RoleDetailPage() {
-  const id = useParams().id;
+  // The route's path declares :id, which useParams can't see.
+  const id = /** @type {{ id: string }} */ (useParams()).id;
   const {
     data: originalRole,
     isLoading: isLoadingRole,

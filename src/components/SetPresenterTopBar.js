@@ -52,6 +52,7 @@ function DefaultTopBar({
   onShowMarkingsModal,
 }) {
   const currentSubscription = useSelector(selectCurrentSubscription);
+  /** @type {{ id: string }} */
   const { id } = useParams();
 
   function handleUpdateSong(updates) {
