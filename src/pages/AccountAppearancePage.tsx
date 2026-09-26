@@ -11,14 +11,15 @@ import Alert from '../components/Alert';
 import PageLoading from '../components/PageLoading';
 import SongPreferencesForm from '../components/SongPreferencesForm';
 import Icon from '../components/Icon';
+import type { UserUpdates } from '../api/UserApi';
 
 export default function AccountAppearancePage() {
   const { data: currentUser, error } = useCurrentUser({
     refetchOnWindowFocus: false,
   });
   const { run: updateCurrentUser } = useUpdateCurrentUser();
-  function handleSongPreferencesChange(field, value) {
-    const updates = {};
+  function handleSongPreferencesChange(field: string, value: boolean) {
+    const updates: UserUpdates = {};
     if (field === 'hide_chords') {
       updates.prefers_hide_chords = value;
     }

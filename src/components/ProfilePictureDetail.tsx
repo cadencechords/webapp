@@ -9,21 +9,32 @@ import MobileProfilePictureMenu from './mobile menus/MobileProfilePictureMenu';
 import ProfilePicture from './ProfilePicture';
 import { reportError } from '../utils/error';
 import Icon from './Icon';
+import type { User } from '../types';
 
-export default function ProfilePictureDetail({ url }) {
+type ProfilePictureDetailProps = {
+  url: User['image_url'];
+};
+
+export default function ProfilePictureDetail({
+  url,
+}: ProfilePictureDetailProps) {
   const [showMobileActionsDialog, setShowMobileActionsDialog] = useState(false);
   const dispatch = useDispatch();
-  const currentUser = useSelector(selectCurrentUser);
-  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
+  // Non-null: only AccountProfilePage renders this, once the current user
+  // loads.
+  const currentUser = useSelector(selectCurrentUser)!;
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
 
   const handleOpenFileDialog = () => {
-    inputRef.current.click();
+    // Non-null: the file input always renders, so the ref is set by the time
+    // a button calls this.
+    inputRef.current!.click();
   };
 
-  const handleImageSelected = async files => {
-    let tempImageUrl = URL.createObjectURL(files[0]);
+  const handleImageSelected = async (files: FileList) => {
+    const tempImageUrl = URL.createObjectURL(files[0]);
     dispatch(setCurrentUser({ ...currentUser, image_url: tempImageUrl }));
 
     try {
@@ -71,7 +82,8 @@ export default function ProfilePictureDetail({ url }) {
         className="hidden"
         ref={inputRef}
         accept="image/*"
-        onChange={e => handleImageSelected(e.target.files)}
+        // Non-null: `files` is null only on inputs that aren't type="file".
+        onChange={e => handleImageSelected(e.target.files!)}
       />
       <div className="hidden md:flex md:justify-end">
         <span className="md:mr-2 md:w-20">

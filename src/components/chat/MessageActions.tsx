@@ -1,13 +1,20 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  type PropsWithChildren,
+} from 'react';
 
 import {
   MessageActionsBox,
   ActionsIcon as DefaultActionsIcon,
   useMessageContext,
+  type MessageActionsProps,
+  type MessageActionsWrapperProps,
 } from 'stream-chat-react';
 import { isPoll } from '../../utils/chat';
 
-export const MessageActions = props => {
+export const MessageActions = (props: MessageActionsProps) => {
   const {
     ActionsIcon = DefaultActionsIcon,
     customWrapperClass = '',
@@ -35,7 +42,7 @@ export const MessageActions = props => {
 
   const [actionsBoxOpen, setActionsBoxOpen] = useState(false);
 
-  const hideOptions = useCallback(event => {
+  const hideOptions = useCallback((event: Event) => {
     if (event instanceof KeyboardEvent && event.key !== 'Escape') {
       return;
     }
@@ -68,7 +75,7 @@ export const MessageActions = props => {
   }, [actionsBoxOpen, hideOptions]);
 
   function getMessageActions() {
-    let actions = ['quote', 'pin'];
+    const actions = ['quote', 'pin'];
 
     if (isMyMessage()) actions.push('delete');
     if (isMyMessage() && !isPoll(message)) actions.push('edit');
@@ -107,7 +114,9 @@ export const MessageActions = props => {
   );
 };
 
-const MessageActionsWrapper = props => {
+const MessageActionsWrapper = (
+  props: PropsWithChildren<MessageActionsWrapperProps>
+) => {
   const { children, customWrapperClass, inline, setActionsBoxOpen } = props;
 
   const defaultWrapperClass = `
@@ -117,7 +126,7 @@ const MessageActionsWrapper = props => {
 
   const wrapperClass = customWrapperClass || defaultWrapperClass;
 
-  const onClickOptionsAction = event => {
+  const onClickOptionsAction = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     setActionsBoxOpen(prev => !prev);
   };

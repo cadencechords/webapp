@@ -75,13 +75,16 @@ export default function BillingPage() {
         </div>
 
         <div className="my-6 font-bold">
-          {price > 0 ? (
-            <>
-              <span className="text-xl">$20.00</span> / month
-            </>
-          ) : (
-            <span className="text-xl">Free</span>
-          )}
+          {
+            // `?? 0`: no price is free, as `undefined > 0` was false.
+            (price ?? 0) > 0 ? (
+              <>
+                <span className="text-xl">$20.00</span> / month
+              </>
+            ) : (
+              <span className="text-xl">Free</span>
+            )
+          }
         </div>
 
         <div className="flex flex-col mt-4 text-sm md:flex-row">
