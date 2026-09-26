@@ -17,6 +17,16 @@ import { useQueryClient } from '@tanstack/react-query';
 import { reportError } from '../utils/error';
 import TeamApi from '../api/TeamApi';
 import UserApi from '../api/UserApi';
+import type { Id } from '../types';
+
+/** The data the API sends with a push notification. */
+interface NotificationData {
+  /** 'chat' for a new chat message. */
+  type?: string;
+  /** The team the chat message was sent on. */
+  team_id?: Id;
+  message_id?: Id;
+}
 
 export default function useOneSignal() {
   const isConfigured = useRef(false);
@@ -32,17 +42,19 @@ export default function useOneSignal() {
   const userId = currentUser?.id;
 
   const switchTeams = useCallback(
-    async newTeamId => {
+    async (newTeamId: Id) => {
       dispatch(setTeamId(newTeamId));
-      localStorage.setItem('teamId', newTeamId);
+      // `as`: setItem stores a number as its string (Web Storage converts the
+      // value with String()), the same as setTeamId does.
+      localStorage.setItem('teamId', newTeamId as string);
       queryClient.removeQueries();
 
       try {
-        let { data } = await TeamApi.getCurrentTeam();
+        const { data } = await TeamApi.getCurrentTeam();
         dispatch(setCurrentTeam(data.team));
         dispatch(setSubscription(data.subscription));
 
-        let membershipResponse = await UserApi.getTeamMembership();
+        const membershipResponse = await UserApi.getTeamMembership();
         dispatch(
           setMembership({
             role: membershipResponse.data.role,
@@ -68,11 +80,12 @@ export default function useOneSignal() {
         await OneSignal.setExternalUserId(uid);
         OneSignal.showSlidedownPrompt();
         OneSignal.addListenerForNotificationOpened(async ({ data }) => {
-          let { team_id, type, message_id } = data || {};
+          const { team_id, type, message_id }: NotificationData = data || {};
 
           if (type === 'chat') {
             if (team_id !== teamId) {
-              await switchTeams(team_id);
+              // Non-null: chat notifications carry the team they were sent on.
+              await switchTeams(team_id!);
             }
 
             router.push(`/chat?messageId=${message_id}`);

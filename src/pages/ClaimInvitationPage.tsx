@@ -9,6 +9,10 @@ import InvitationApi from '../api/InvitationApi';
 import PulseLoader from 'react-spinners/PulseLoader';
 import { reportError } from '../utils/error';
 import { useDispatch } from 'react-redux';
+import type { AxiosResponse } from 'axios';
+
+/** A failed claim, as axios rejects it. A 404 says why in `message`. */
+type ClaimError = { response: AxiosResponse<{ message: string }> };
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -17,7 +21,7 @@ export function useQuery() {
 export default function ClaimInvitationPage() {
   const token = useQuery().get('token');
   const [claimingToken, setClaimingToken] = useState(false);
-  const [errors, setErrors] = useState(null);
+  const [errors, setErrors] = useState<string | null>(null);
 
   const dispatch = useDispatch();
   const router = useHistory();
@@ -26,19 +30,23 @@ export default function ClaimInvitationPage() {
     async function claimToken() {
       setClaimingToken(true);
       try {
-        let result = await InvitationApi.claimOne(token);
-        let accessToken = result.headers['access-token'];
-        let client = result.headers['client'];
-        let uid = result.headers['uid'];
+        // Non-null: claimToken is only called when there's a token (below).
+        const result = await InvitationApi.claimOne(token!);
+        const accessToken = result.headers['access-token'];
+        const client = result.headers['client'];
+        const uid = result.headers['uid'];
         dispatch(setAuth({ accessToken, client, uid }));
         dispatch(setTeamId(result.data.team_id));
         router.push('/');
       } catch (error) {
         reportError(error);
-        if (error.response.status === 404) {
-          setErrors(error.response.data.message);
+        // `as` (here and below): the API rejects with an axios error that has
+        // the response. An error without one (a network error, or anything
+        // else thrown) throws here reading it, as it always has.
+        if ((error as ClaimError).response.status === 404) {
+          setErrors((error as ClaimError).response.data.message);
           setClaimingToken(false);
-        } else if (error.response.status === 400) {
+        } else if ((error as ClaimError).response.status === 400) {
           router.push(`/invitations/signup?token=${token}`);
         }
       }

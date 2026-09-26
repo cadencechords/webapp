@@ -9,7 +9,13 @@ import {
   setCurrentUser,
 } from '../store/authSlice';
 import { reportError } from '../utils/error';
-import { ERRORED, IDLE, LOADING, RESOLVED } from '../utils/requestStatuses';
+import {
+  ERRORED,
+  IDLE,
+  LOADING,
+  RESOLVED,
+  type RequestStatus,
+} from '../utils/requestStatuses';
 
 export default function useAuth() {
   const credentials = useSelector(selectCredentials);
@@ -18,7 +24,7 @@ export default function useAuth() {
 
   const dispatch = useDispatch();
 
-  const [status, setStatus] = useState(IDLE);
+  const [status, setStatus] = useState<RequestStatus>(IDLE);
   const resolved = status === RESOLVED;
   const loading = status === LOADING;
   const errored = status === ERRORED;
@@ -27,7 +33,7 @@ export default function useAuth() {
   const refreshCurrentUser = useCallback(async () => {
     try {
       setStatus(LOADING);
-      let { data } = await UserApi.getCurrentUser();
+      const { data } = await UserApi.getCurrentUser();
       setStatus(RESOLVED);
       dispatch(setCurrentUser(data));
     } catch (error) {

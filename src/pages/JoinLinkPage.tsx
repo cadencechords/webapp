@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Alert from '../components/Alert';
@@ -14,8 +14,7 @@ import { setTeamId } from '../store/authSlice';
 import { hasName } from '../utils/model';
 
 export default function JoinLinkPage() {
-  /** @type {{ code: string }} */
-  const { code } = useParams();
+  const { code } = useParams<{ code: string }>();
   const {
     loading: verifyingLink,
     errored,
@@ -49,7 +48,7 @@ export default function JoinLinkPage() {
   }, []);
 
   useEffect(() => {
-    let timeout;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     if (isEverythingResolved && !currentUser) {
       timeout = setTimeout(() => {
         router.push(`/login?target_url=${window.location.pathname}`);
@@ -62,15 +61,17 @@ export default function JoinLinkPage() {
     return !!team?.users?.find(user => user.id === currentUser?.id);
   }
 
+  // Non-null (in both handlers): their buttons show only once the link has
+  // resolved to the team.
   function handleGoToTeam() {
-    localStorage.setItem('teamId', String(team.id));
-    dispatch(setTeamId(team.id));
+    localStorage.setItem('teamId', String(team!.id));
+    dispatch(setTeamId(team!.id));
   }
 
   async function handleJoinTeam() {
     await join();
-    localStorage.setItem('teamId', String(team.id));
-    dispatch(setTeamId(team.id));
+    localStorage.setItem('teamId', String(team!.id));
+    dispatch(setTeamId(team!.id));
     router.push('/');
   }
 
@@ -105,7 +106,7 @@ export default function JoinLinkPage() {
     return (
       <CenteredPage>
         <h1 className="mb-8 text-xl text-center">
-          You're already on <span className="font-bold">{team?.name}</span>
+          You&apos;re already on <span className="font-bold">{team?.name}</span>
         </h1>
         <Link to="/">
           <Button full={true} onClick={handleGoToTeam} name="go to team">
@@ -122,6 +123,8 @@ export default function JoinLinkPage() {
     );
   }
 
+  // Non-null (currentUser! below): past the returns above, the link and the
+  // user have loaded, and a signed-out user got the log-in alert instead.
   return (
     <CenteredPage>
       <>
@@ -130,13 +133,13 @@ export default function JoinLinkPage() {
         </h1>
         <div>
           <Card className="flex flex-col items-center text-center">
-            <ProfilePicture url={currentUser.image_url} />
+            <ProfilePicture url={currentUser!.image_url} />
             {hasName(currentUser) && (
               <div className="mb-1 text-xl font-semibold">
-                {currentUser.first_name} {currentUser.last_name}
+                {currentUser!.first_name} {currentUser!.last_name}
               </div>
             )}
-            <span className="mb-4">{currentUser.email}</span>
+            <span className="mb-4">{currentUser!.email}</span>
 
             {errored && error && <Alert color="yellow">{error}</Alert>}
 

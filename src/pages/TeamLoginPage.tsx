@@ -6,9 +6,10 @@ import PulseLoader from 'react-spinners/PulseLoader';
 import TeamApi from '../api/TeamApi';
 import TeamLoginOptions from '../components/TeamLoginOptions';
 import { reportError } from '../utils/error';
+import type { Team } from '../types';
 
 export default function TeamLoginPage() {
-  const [teams, setTeamIds] = useState([]);
+  const [teams, setTeamIds] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function TeamLoginPage() {
 
     async function fetchTeams() {
       try {
-        let result = await TeamApi.getAll();
+        const result = await TeamApi.getAll();
         setTeamIds(result.data);
       } catch (error) {
         reportError(error);

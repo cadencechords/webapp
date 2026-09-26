@@ -1,7 +1,12 @@
 import * as Sentry from '@sentry/react';
 
 import { Link, useHistory } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import {
+  useEffect,
+  useState,
+  type ComponentProps,
+  type FormEvent,
+} from 'react';
 
 import Alert from '../components/Alert';
 import AuthApi from '../api/AuthApi';
@@ -11,6 +16,18 @@ import { useDispatch } from 'react-redux';
 import { useQuery } from './ClaimInvitationPage';
 import UserApi from '../api/UserApi';
 import classNames from 'classnames';
+import type { AxiosError } from 'axios';
+
+type AlertColor = NonNullable<ComponentProps<typeof Alert>['color']>;
+
+/**
+ * A failed sign in, as axios rejects it. devise_token_auth says why in
+ * `errors`, e.g. ['Invalid login credentials. Please try again.'].
+ */
+type LoginError = AxiosError<{ errors?: string[] }> | undefined;
+
+/** The headers devise_token_auth signs in with. */
+type AuthHeaders = { 'access-token': string; client: string; uid: string };
 
 export default function LoginPage() {
   useEffect(() => {
@@ -20,51 +37,55 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(null);
-  const [alertColor, setAlertColor] = useState(null);
+  const [alertMessage, setAlertMessage] = useState<string[] | null | undefined>(
+    null
+  );
+  const [alertColor, setAlertColor] = useState<AlertColor | null>(null);
   const dispatch = useDispatch();
   const router = useHistory();
   const targetUrl = useQuery().get('target_url');
   const [focusedElement, setFocusedElement] = useState('email');
 
-  const handlePasswordChange = passwordValue => {
+  const handlePasswordChange = (passwordValue: string) => {
     setPassword(passwordValue);
     setCanLogin(passwordValue !== '' && email !== '');
   };
 
-  const handleEmailChange = emailValue => {
+  const handleEmailChange = (emailValue: string) => {
     setEmail(emailValue);
     setCanLogin(emailValue !== '' && password !== '');
   };
 
-  const handleLogin = async e => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
-      let result = await AuthApi.login(email, password);
-      let headers = result.headers;
+      const result = await AuthApi.login(email, password);
+      const headers = result.headers;
 
       setAuthInLocalStorage(headers);
       Sentry.setUser({ email });
 
-      let currentUserResult = await UserApi.getCurrentUser();
+      const currentUserResult = await UserApi.getCurrentUser();
       dispatch(setCurrentUser(currentUserResult.data));
 
-      let nextUrl = targetUrl || '/login/teams';
+      const nextUrl = targetUrl || '/login/teams';
       router.push(nextUrl);
     } catch (error) {
       setAlertColor('red');
-      setAlertMessage(error?.response?.data?.errors);
+      // `as`: the request rejects with an axios error. Anything else thrown
+      // here has no response, so this reads undefined, as before.
+      setAlertMessage((error as LoginError)?.response?.data?.errors);
       setLoading(false);
       setPassword('');
       setCanLogin(false);
     }
   };
 
-  const setAuthInLocalStorage = headers => {
-    let accessToken = headers['access-token'];
-    let client = headers['client'];
-    let uid = headers['uid'];
+  const setAuthInLocalStorage = (headers: AuthHeaders) => {
+    const accessToken = headers['access-token'];
+    const client = headers['client'];
+    const uid = headers['uid'];
 
     dispatch(setAuth({ accessToken, client, uid }));
 
@@ -125,7 +146,8 @@ export default function LoginPage() {
           {alertMessage && (
             <div className="mb-6">
               <Alert
-                color={alertColor}
+                // Non-null: the color is set with the message (handleLogin).
+                color={alertColor!}
                 dismissable
                 onDismiss={() => setAlertMessage(null)}
               >

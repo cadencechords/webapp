@@ -10,6 +10,10 @@ import PasswordRequirements from '../components/PasswordRequirements';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { useQuery } from './ClaimInvitationPage';
+import type { AxiosError } from 'axios';
+
+/** A failed sign up, as axios rejects it. The API says why in `message`. */
+type SignUpError = AxiosError<{ message?: string }> | undefined;
 
 export default function InvitationSignUpPage() {
   const [firstName, setFirstName] = useState('');
@@ -19,7 +23,9 @@ export default function InvitationSignUpPage() {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isLongEnough, setIsLongEnough] = useState(false);
   const [isUncommon, setIsUncommon] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(null);
+  const [alertMessage, setAlertMessage] = useState<string | null | undefined>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const router = useHistory();
@@ -49,12 +55,12 @@ export default function InvitationSignUpPage() {
     };
   }, []);
 
-  const handlePasswordChange = passwordValue => {
+  const handlePasswordChange = (passwordValue: string) => {
     setPassword(passwordValue);
 
     setIsLongEnough(passwordValue.length >= MIN_PASSWORD_LENGTH);
 
-    let { score } = window.zxcvbn(passwordValue);
+    const { score } = window.zxcvbn(passwordValue);
 
     setIsUncommon(score >= 3);
   };
@@ -62,22 +68,25 @@ export default function InvitationSignUpPage() {
   const handleSignUp = async () => {
     setLoading(true);
     try {
-      let result = await InvitationApi.signUpThroughToken({
-        token,
+      const result = await InvitationApi.signUpThroughToken({
+        // Non-null: the button is disabled without a token (canSignUp).
+        token: token!,
         password,
         passwordConfirmation,
         firstName,
         lastName,
       });
-      let accessToken = result.headers['access-token'];
-      let client = result.headers['client'];
-      let uid = result.headers['uid'];
+      const accessToken = result.headers['access-token'];
+      const client = result.headers['client'];
+      const uid = result.headers['uid'];
       dispatch(setAuth({ accessToken, client, uid }));
       dispatch(setTeamId(result.data.team_id));
 
       router.push('/');
     } catch (error) {
-      setAlertMessage(error?.response?.data?.message);
+      // `as`: the request rejects with an axios error. Anything else thrown
+      // here has no response, so this reads undefined, as before.
+      setAlertMessage((error as SignUpError)?.response?.data?.message);
       setLoading(false);
     }
   };
@@ -86,7 +95,8 @@ export default function InvitationSignUpPage() {
     return (
       <CenteredPage>
         <h1 className="mb-8 text-3xl font-bold text-center">
-          You're almost there! <br /> Create a password for your new account
+          You&apos;re almost there! <br /> Create a password for your new
+          account
         </h1>
 
         <div className="flex items-center mb-4">

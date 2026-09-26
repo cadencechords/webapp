@@ -1,7 +1,7 @@
 import store from '../store/store';
 
 export function constructAuthHeaders() {
-  let headers = {
+  const headers = {
     'access-token': store.getState()?.auth?.accessToken,
     client: store.getState()?.auth?.client,
     uid: store.getState()?.auth?.uid,

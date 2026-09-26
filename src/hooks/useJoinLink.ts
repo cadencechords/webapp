@@ -1,15 +1,27 @@
 import { useEffect, useState } from 'react';
+import type { AxiosError } from 'axios';
 import JoinLinkApi from '../api/joinLinkApi';
-import { ERRORED, IDLE, LOADING, RESOLVED } from '../utils/requestStatuses';
+import {
+  ERRORED,
+  IDLE,
+  LOADING,
+  RESOLVED,
+  type RequestStatus,
+} from '../utils/requestStatuses';
 import { reportError } from '../utils/error';
+import type { Team } from '../types';
 
-export default function useJoinLink(code) {
-  const [status, setStatus] = useState(IDLE);
-  const [joinStatus, setJoinStatus] = useState(IDLE);
-  const [error, setError] = useState();
-  const [data, setData] = useState(
-    /** @type {import('../types').Team | undefined} */ (undefined)
-  );
+/**
+ * A failed join link request. The API responds with a message, e.g. 'Does not
+ * exist'.
+ */
+type JoinLinkError = AxiosError<string> | undefined;
+
+export default function useJoinLink(code: string) {
+  const [status, setStatus] = useState<RequestStatus>(IDLE);
+  const [joinStatus, setJoinStatus] = useState<RequestStatus>(IDLE);
+  const [error, setError] = useState<string>();
+  const [data, setData] = useState<Team | undefined>(undefined);
   const loading = status === LOADING;
   const resolved = status === RESOLVED;
   const errored = status === ERRORED;
@@ -24,12 +36,14 @@ export default function useJoinLink(code) {
     async function fetchData() {
       try {
         setStatus(LOADING);
-        let { data } = await JoinLinkApi.getByJoinLinkCode(code);
+        const { data } = await JoinLinkApi.getByJoinLinkCode(code);
         setData(data);
         setStatus(RESOLVED);
       } catch (error) {
         reportError(error);
-        setError(error?.response?.data);
+        // `as`: the request rejects with an axios error. Anything else thrown
+        // here has no response, so this reads undefined, as before.
+        setError((error as JoinLinkError)?.response?.data);
         setStatus(ERRORED);
       }
     }
@@ -47,7 +61,8 @@ export default function useJoinLink(code) {
     } catch (error) {
       setJoinStatus(ERRORED);
       reportError(error);
-      setError(error?.response?.data);
+      // `as`: as above, the request rejects with an axios error.
+      setError((error as JoinLinkError)?.response?.data);
     }
   }
 

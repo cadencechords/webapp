@@ -1,7 +1,16 @@
 import MobileMenuButton from './buttons/MobileMenuButton';
 import ProfilePicture from './ProfilePicture';
+import type { Team } from '../types';
 
-export default function TeamLoginOption({ team, onLoginTeam }) {
+type TeamLoginOptionProps = {
+  team: Team;
+  onLoginTeam: (teamId: number) => void;
+};
+
+export default function TeamLoginOption({
+  team,
+  onLoginTeam,
+}: TeamLoginOptionProps) {
   return (
     <MobileMenuButton
       className="flex-between p-3 border-b last:border-0 dark:border-dark-gray-400"
