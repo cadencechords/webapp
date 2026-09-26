@@ -71,7 +71,9 @@ export default function BinderDetailPage() {
             open={isColorPickerOpen}
             onCloseDialog={hideColorPicker}
             binderColor={binder.color}
-            onChange={(editedColor: string) => onChange('color', editedColor)}
+            onChange={(editedColor: string | undefined) =>
+              onChange('color', editedColor)
+            }
           />
         </span>
         <PageTitle

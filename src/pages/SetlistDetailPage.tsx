@@ -178,7 +178,9 @@ export default function SetlistDetailPage() {
         />
         {currentSubscription.isPro && (
           <SetlistSessionsList
-            setlist={setlist}
+            // Non-null: kept as before; SetlistSessionsList reads the
+            // setlist's id straight away.
+            setlist={setlist!}
             sessions={sessions}
             onSessionsChange={handleSessionsChanged}
             onJoinSession={handleJoinSession}
