@@ -1,6 +1,6 @@
 // Open and close a dialog and a menu, and toggle the theme. Nothing is saved.
-const { test, expect } = require('@playwright/test');
-const { quickAddButton, optionsMenuButton } = require('./helpers');
+import { test, expect } from '@playwright/test';
+import { quickAddButton, optionsMenuButton } from './helpers.mts';
 
 test('dialog opens and closes', async ({ page }) => {
   await page.goto('/songs');

@@ -2,7 +2,7 @@
 // Records the outcome of an adversarial review for the current commit, so the
 // require-adversarial-review hook lets a PR for exactly this commit be opened.
 //
-//   node .claude/skills/adversarial-review/record.mjs <pass|fail> <summary.json>
+//   node .claude/skills/adversarial-review/record.mts <pass|fail> <summary.json>
 //
 // It runs the repo's checks itself (the same ones as CI) rather than trusting
 // a reported result, and validates the review summary described in SKILL.md.
@@ -24,27 +24,29 @@ const CHECKS = [
   'test:hooks',
   'build',
 ];
-// Fields record.mjs sets itself; a summary can't supply them.
+// Fields record.mts sets itself; a summary can't supply them.
 const RESERVED = ['sha', 'branch', 'verdict', 'recordedAt', 'checks'];
 const SEVERITIES = ['blocker', 'major', 'minor'];
 const VERDICTS = ['confirmed', 'refuted', 'unverified'];
 
-const git = (...args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
-const tryGit = (...args) => {
+const git = (...args: string[]) =>
+  execFileSync('git', args, { encoding: 'utf8' }).trim();
+const tryGit = (...args: string[]) => {
   try {
     return git(...args);
   } catch {
     return null;
   }
 };
-const fail = message => {
+// Annotated so TypeScript knows code after a fail() call doesn't run.
+const fail: (message: string) => never = message => {
   console.error(`record: ${message}`);
   process.exit(1);
 };
 
 const [verdict, summaryFile] = process.argv.slice(2);
 if (!['pass', 'fail'].includes(verdict) || !summaryFile) {
-  fail('usage: record.mjs <pass|fail> <summary.json>');
+  fail('usage: record.mts <pass|fail> <summary.json>');
 }
 
 // The review must cover exactly what the PR will contain. Untracked files
@@ -74,16 +76,25 @@ if (pushed !== sha) {
   );
 }
 
-let summary;
+// A review summary as SKILL.md describes it. Nothing about it is trusted:
+// each field is checked below.
+type Finding = {
+  severity?: unknown;
+  verdict?: unknown;
+  resolution?: unknown;
+  [field: string]: unknown;
+};
+let summary: Record<string, unknown>;
 try {
   summary = JSON.parse(readFileSync(summaryFile, 'utf8'));
 } catch (error) {
-  fail(`can't read the summary: ${error.message}`);
+  // readFileSync and JSON.parse only throw Errors.
+  fail(`can't read the summary: ${(error as Error).message}`);
 }
 const reserved = RESERVED.filter(key => key in summary);
 if (reserved.length)
   fail(
-    `the summary can't set ${reserved.join(', ')}; record.mjs sets those itself`
+    `the summary can't set ${reserved.join(', ')}; record.mts sets those itself`
   );
 if (typeof summary.base !== 'string' || !summary.base)
   fail('summary.base must name the PR base branch');
@@ -94,7 +105,7 @@ if (lenses.length < 2)
   fail('summary.lenses must list at least two distinct review lenses');
 if (!Array.isArray(summary.findings))
   fail('summary.findings must be an array (empty if nothing was found)');
-const findings = summary.findings.map((f, i) => {
+const findings = summary.findings.map((f: Finding, i: number) => {
   const severity = String(f.severity || '').toLowerCase();
   const status = String(f.verdict || '').toLowerCase();
   if (!SEVERITIES.includes(severity))
@@ -124,7 +135,7 @@ if (verdict === 'pass' && open.length)
   );
 
 // Run the checks here instead of trusting reported results.
-const checks = {};
+const checks: Record<string, string> = {};
 for (const name of CHECKS) {
   process.stdout.write(`check ${name}: `);
   const result = spawnSync('yarn', ['-s', name], { stdio: 'ignore' });

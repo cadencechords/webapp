@@ -35,7 +35,7 @@ shell running the command. Kill it by PID instead.
 ## 3. Sign in and screenshot
 
 ```bash
-node /home/user/webapp/.claude/skills/run-app/login.js <out-dir> ["Claude Team"] [/path/to/open]
+node /home/user/webapp/.claude/skills/run-app/login.mts <out-dir> ["Claude Team"] [/path/to/open]
 ```
 
 - The script logs in, picks the team (default "Claude Team"), optionally
