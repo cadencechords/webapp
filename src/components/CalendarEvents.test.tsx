@@ -6,7 +6,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import type { AxiosResponse } from 'axios';
 import EventsApi from '../api/eventsApi';
@@ -212,7 +212,10 @@ describe('isEventValid', () => {
 function renderEventForm(children?: ReactNode) {
   const result: { current?: ReturnType<typeof useEventForm> } = {};
   function Probe() {
-    result.current = useEventForm();
+    const value = useEventForm();
+    useEffect(() => {
+      result.current = value;
+    });
     return null;
   }
   const rendered = renderWithProvider(

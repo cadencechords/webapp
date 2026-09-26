@@ -21,6 +21,15 @@ export default function CalendarPage() {
   }, []);
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const { data } = await eventsApi.getAll();
+        setEvents(data);
+      } catch (error) {
+        reportError(error);
+      }
+    }
+
     if (
       (currentSubscription && !currentSubscription.isPro) ||
       (currentMember?.permissions && !currentMember.can(VIEW_EVENTS))
@@ -30,15 +39,6 @@ export default function CalendarPage() {
       fetchData();
     }
   }, [currentSubscription, router, currentMember]);
-
-  async function fetchData() {
-    try {
-      const { data } = await eventsApi.getAll();
-      setEvents(data);
-    } catch (error) {
-      reportError(error);
-    }
-  }
 
   function handleEventCreated(createdEvent: CalendarEvent) {
     setEvents(currentEvents => [...currentEvents, createdEvent]);

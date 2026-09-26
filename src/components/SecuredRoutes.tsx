@@ -32,6 +32,13 @@ const CustomerPortalSessionGeneratorPage = lazy(
 const SetPresenterPage = lazy(() => import('../pages/SetPresenterPage'));
 const SongPresenterPage = lazy(() => import('../pages/SongPresenterPage'));
 
+async function saveTimeZone() {
+  const currentTimeZone = Intl?.DateTimeFormat().resolvedOptions().timeZone;
+  if (currentTimeZone) {
+    await UserApi.updateCurrentUser({ timezone: currentTimeZone });
+  }
+}
+
 export default function SecuredRoutes() {
   const dispatch = useDispatch();
   const hasCredentials = useSelector(selectHasCredentials);
@@ -85,13 +92,6 @@ export default function SecuredRoutes() {
       }
     }
   }, [hasCredentials, router, teamId, dispatch]);
-
-  async function saveTimeZone() {
-    const currentTimeZone = Intl?.DateTimeFormat().resolvedOptions().timeZone;
-    if (currentTimeZone) {
-      await UserApi.updateCurrentUser({ timezone: currentTimeZone });
-    }
-  }
 
   if (currentUser && currentTeam) {
     return (

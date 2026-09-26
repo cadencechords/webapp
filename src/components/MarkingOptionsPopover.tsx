@@ -1,6 +1,6 @@
 import { Popover } from '@headlessui/react';
 import { usePopper } from 'react-popper';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { noop } from '../utils/constants';
@@ -22,26 +22,28 @@ export default function MarkingOptionsPopover({
   style,
   onClose,
 }: MarkingOptionsPopoverProps) {
-  const referenceElement = useRef<HTMLButtonElement>(null);
-  const popperElement = useRef<HTMLDivElement>(null);
-
-  const { styles, attributes } = usePopper(
-    referenceElement.current,
-    popperElement.current,
-    {
-      placement: 'bottom-start',
-      strategy: 'fixed',
-    }
+  // usePopper takes the elements as state (react-popper's documented usage),
+  // so it runs again once they mount. useOnClickOutside takes a ref.
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
+    null
   );
+  const popperRef = useRef<HTMLDivElement | null>(null);
 
-  useOnClickOutside(popperElement, onClose || noop);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: 'bottom-start',
+    strategy: 'fixed',
+  });
+
+  useOnClickOutside(popperRef, onClose || noop);
 
   return (
     <Popover>
       {button && (
         <Popover.Button
           className="w-full outline-hidden focus:outline-hidden"
-          ref={referenceElement}
+          ref={setReferenceElement}
         >
           {button}
         </Popover.Button>
@@ -51,7 +53,10 @@ export default function MarkingOptionsPopover({
         <Popover.Panel
           static={true}
           className={`bg-white dark:bg-dark-gray-700 rounded-lg shadow-2xl z-50 absolute`}
-          ref={popperElement}
+          ref={(element: HTMLDivElement | null) => {
+            popperRef.current = element;
+            setPopperElement(element);
+          }}
           style={{ ...styles.popper, ...style }}
           {...attributes.popper}
         >

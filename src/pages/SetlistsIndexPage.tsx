@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { ADD_SETLISTS } from '../utils/constants';
 import CreateSetlistDialog from '../components/CreateSetlistDialog';
@@ -28,7 +28,7 @@ export default function SetlistsIndexPage() {
 
   const [query, setQuery] = useState('');
 
-  const sortSetlists = useCallback(() => {
+  const { pastSetlists, upcomingSetlists } = useMemo(() => {
     const upcoming: Setlist[] = [];
     const past: Setlist[] = [];
 
@@ -48,9 +48,6 @@ export default function SetlistsIndexPage() {
 
     return { upcomingSetlists: upcoming, pastSetlists: past };
   }, [setlists]);
-  const { pastSetlists, upcomingSetlists } = useMemo(sortSetlists, [
-    sortSetlists,
-  ]);
 
   const [isCreateOpen, showCreateDialog, hideCreateDialog] = useDialog();
   // Non-null: kept as before, this throws if the membership hasn't loaded.

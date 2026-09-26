@@ -5,6 +5,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
+import { useEffect } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import type { AxiosResponse } from 'axios';
 import AddGenreDialog from './AddGenreDialog';
@@ -91,7 +92,10 @@ const editorSong: Song = {
 function renderEditor(song: Song, children?: React.ReactNode) {
   const editor: { current?: ReturnType<typeof useSongEditor> } = {};
   function Probe() {
-    editor.current = useSongEditor();
+    const value = useSongEditor();
+    useEffect(() => {
+      editor.current = value;
+    });
     return null;
   }
   render(
@@ -154,7 +158,10 @@ test('the chord options update the edited format', () => {
 test('useSongForm is valid once named, and clears', () => {
   const form: { current?: ReturnType<typeof useSongForm> } = {};
   function Probe() {
-    form.current = useSongForm();
+    const value = useSongForm();
+    useEffect(() => {
+      form.current = value;
+    });
     return null;
   }
   render(<Probe />);
