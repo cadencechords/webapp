@@ -1,0 +1,144 @@
+# Netlify preview deploys for pull requests, opt-in with the `preview` label.
+#
+# Production deploys are not handled here: they stay with Netlify's own Git
+# integration, and this workflow only ever creates alias (draft) deploys.
+#
+# Trigger logic:
+# - `labeled`: deploy only when the label just added is `preview`. Adding any
+#   other label to a PR never deploys, even if the PR already has `preview`.
+# - `synchronize` (new commits pushed) and `reopened`: redeploy only when the
+#   PR already has the `preview` label.
+# - Everything else is skipped, so PRs without the label never deploy.
+#   Removing the label stops future deploys; the last preview stays up.
+#
+# Every deploy of a PR uses the alias `pr-<number>`, so the preview URL
+# (https://pr-<number>--<site>.netlify.app) stays the same across pushes.
+#
+# Fork PRs: `pull_request` runs from forks get no repository secrets and a
+# read-only GITHUB_TOKEN, so they can neither deploy nor comment. The job skips
+# them. This workflow assumes PRs come from branches in this repository. Don't
+# switch it to `pull_request_target` to get around that: that would run a
+# fork's code with this repository's secrets.
+
+name: Netlify preview
+
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  deploy:
+    name: Deploy preview
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      (
+        (github.event.action == 'labeled' && github.event.label.name == 'preview') ||
+        (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'preview'))
+      )
+    runs-on: ubuntu-latest
+    # One preview build per PR at a time. A newer commit cancels the older
+    # in-progress build, and the cancelled run leaves the comment alone (its
+    # success/failure steps don't run on cancellation), so the comment tracks
+    # the newest run. This is at job level, not workflow level, so a skipped
+    # run (e.g. another label being added) never cancels a real build.
+    concurrency:
+      group: netlify-preview-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      CYPRESS_INSTALL_BINARY: 0 # the Cypress binary isn't needed to build
+    steps:
+      # Sticky comment: the PR gets exactly one preview comment, found by the
+      # hidden marker in its body. Each state below edits that comment in
+      # place; it's only created if no comment has the marker yet. The script
+      # is defined once here (&update-comment) and reused by the later steps.
+      - name: 'Comment: deploying'
+        uses: actions/github-script@v7
+        env:
+          STATE: deploying
+        with:
+          script: &update-comment |
+            const marker = '<!-- netlify-preview-comment -->';
+            const { STATE, HEAD_SHA, PREVIEW_URL } = process.env;
+            const commit = `Commit: \`${HEAD_SHA.slice(0, 7)}\``;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const lines = {
+              deploying: ['🟡 Deploying…', commit],
+              success: ['✅ Preview ready', `Preview: ${PREVIEW_URL}`, commit],
+              failure: ['❌ Deployment failed', commit, `View GitHub Actions logs: ${runUrl}`],
+            }[STATE];
+            const body = [marker, '### Netlify Preview', '', ...lines.map((line) => `${line}  `)].join('\n');
+
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              ...context.repo,
+              issue_number,
+              per_page: 100,
+            });
+            const existing = comments.find(
+              (comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker),
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number, body });
+            }
+
+      - uses: actions/checkout@v4
+        with:
+          # The PR's head commit, not the merge commit `pull_request` checks out by default.
+          ref: ${{ env.HEAD_SHA }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile
+
+      # `netlify build` runs the site's build command with the deploy-preview
+      # context's environment variables (from netlify.toml and the Netlify UI).
+      # Deploying is a separate step so the build's log output can't end up in
+      # the JSON that `netlify deploy --json` prints.
+      - name: Build
+        run: npx --yes netlify-cli@27 build --context deploy-preview
+
+      - name: Deploy
+        id: deploy
+        run: |
+          npx --yes netlify-cli@27 deploy \
+            --no-build \
+            --dir build \
+            --context deploy-preview \
+            --alias "pr-${PR_NUMBER}" \
+            --message "PR #${PR_NUMBER} @ ${HEAD_SHA}" \
+            --json > "$RUNNER_TEMP/deploy.json"
+          jq . "$RUNNER_TEMP/deploy.json"
+          # The JSON's deploy_url can be the unique per-deploy URL, so build the
+          # stable alias URL from the site name instead.
+          url=$(jq -er '"https://pr-\(env.PR_NUMBER)--\(.site_name // error("no site_name")).netlify.app"' "$RUNNER_TEMP/deploy.json")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: 'Comment: ready'
+        if: success()
+        uses: actions/github-script@v7
+        env:
+          STATE: success
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+        with:
+          script: *update-comment
+
+      - name: 'Comment: failed'
+        if: failure()
+        uses: actions/github-script@v7
+        env:
+          STATE: failure
+        with:
+          script: *update-comment
