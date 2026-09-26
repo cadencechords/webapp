@@ -14,7 +14,10 @@ if (process.argv.length > 2) {
   process.exit(1);
 }
 
-function tsc(project, ...args) {
+function tsc(
+  project: string,
+  ...args: string[]
+): { ok: boolean; output: string } {
   try {
     const output = execFileSync(
       'npx',
@@ -24,9 +27,15 @@ function tsc(project, ...args) {
     return { ok: true, output };
   } catch (error) {
     // tsc exits non-zero when it reports errors
-    if (!error.stdout) throw error;
+    if (!hasStdout(error) || !error.stdout) throw error;
     return { ok: false, output: error.stdout };
   }
+}
+
+// execFileSync's error carries the child's stdout (a string, given
+// `encoding`); anything else thrown has none.
+function hasStdout(error: unknown): error is { stdout: string } {
+  return typeof error === 'object' && error !== null && 'stdout' in error;
 }
 
 // The TypeScript outside src: tracked, or untracked and not ignored. Git is
@@ -62,7 +71,7 @@ if (nodeSide.length) {
   // through a symlinked working directory where Node's cwd is the real path,
   // it prints forward slashes on Windows, and a file may itself be a symlink.
   const root = realpathSync(process.cwd());
-  const realPath = file => {
+  const realPath = (file: string) => {
     try {
       return realpathSync(file);
     } catch {

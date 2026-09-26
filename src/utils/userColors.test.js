@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { compile } from '@tailwindcss/node';
 import { argbFromHex, Hct } from '@material/material-color-utilities';
-import { USER_COLORS, generateUserColor } from '../../scripts/color-tokens.mjs';
+import { USER_COLORS, generateUserColor } from '../../scripts/color-tokens.mts';
 import { COLORS as BINDER_COLORS } from './BinderUtils';
 import { USER_COLOR_NAMES, userColorClasses } from './userColors';
 
