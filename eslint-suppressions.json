@@ -52,29 +52,6 @@
       "count": 1
     }
   },
-  "src/components/EventForm.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EventFormDetailsPanel.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EventFormRemindersPanel.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EventFormSetlistPanel.js": {
-    "no-unused-vars": {
-      "count": 1
-    },
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
   "src/components/ImportCadenceSongsChooseSongsStep.js": {
     "no-unused-vars": {
       "count": 1
@@ -88,16 +65,6 @@
   "src/components/ImportSourceCard.js": {
     "no-unused-vars": {
       "count": 1
-    }
-  },
-  "src/components/JoinLinkSection.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/JoinLinkUserSection.js": {
-    "no-unused-vars": {
-      "count": 12
     }
   },
   "src/components/KeyOptionsPopover.js": {
@@ -147,16 +114,6 @@
   },
   "src/components/PublicSetlistSection.js": {
     "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/RoleMemberRow.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/RoleMembersList.js": {
-    "react/no-unescaped-entities": {
       "count": 1
     }
   },
@@ -236,16 +193,6 @@
     }
   },
   "src/dialogs/SongsSelectedForImportModal.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/CreateCalendarEventPage.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/EditCalendarEventPage.js": {
     "no-unused-vars": {
       "count": 1
     }
