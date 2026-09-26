@@ -47,7 +47,15 @@ function SetPresenter() {
   const { isPerforming, isAnnotating } = usePerformanceMode();
   const defaultSessionId = useQuery().get('session_id');
   const setlist = useSelector(selectSetlistBeingPresented);
-  const [songs, setSongs] = useState<PresentedSong[]>([]);
+  const [songs, setSongs] = useState<PresentedSong[]>(() =>
+    presentedSongs(setlist, [])
+  );
+  // Start the songs over from the set whenever another one is stored.
+  const [previousSetlist, setPreviousSetlist] = useState(setlist);
+  if (setlist !== previousSetlist) {
+    setPreviousSetlist(setlist);
+    setSongs(currentSongs => presentedSongs(setlist, currentSongs));
+  }
   const [songBeingViewedIndex, setSongBeingViewedIndex] = useState(0);
   const { id } = useParams<{ id: string }>();
   const router = useHistory();
@@ -169,21 +177,6 @@ function SetPresenter() {
       );
     }
   }, [activeSessionDetails, currentSubscription]);
-
-  useEffect(() => {
-    if (setlist?.songs) {
-      setSongs(
-        setlist.songs.map(song => ({
-          ...song,
-          show_transposed: Boolean(song.transposed_key),
-          show_capo: Boolean(song.capo),
-          // Boolean(song.roadmap && ...): false without a roadmap, as before
-          // (`undefined > 0`).
-          show_roadmap: Boolean(song.roadmap && song.roadmap.length > 0),
-        }))
-      );
-    }
-  }, [setlist]);
 
   useEffect(() => {
     if (currentSubscription.isPro && defaultSessionId && setlist?.sessions) {
@@ -335,4 +328,24 @@ function SetPresenter() {
       </CenteredPage>
     );
   }
+}
+
+/**
+ * The set's songs, showing whichever keys, capo and roadmap each has. A set
+ * without songs (such as `{}` before one is stored) keeps `currentSongs`.
+ */
+function presentedSongs(
+  setlist: Partial<Setlist>,
+  currentSongs: PresentedSong[]
+): PresentedSong[] {
+  if (!setlist?.songs) return currentSongs;
+
+  return setlist.songs.map(song => ({
+    ...song,
+    show_transposed: Boolean(song.transposed_key),
+    show_capo: Boolean(song.capo),
+    // Boolean(song.roadmap && ...): false without a roadmap, as before
+    // (`undefined > 0`).
+    show_roadmap: Boolean(song.roadmap && song.roadmap.length > 0),
+  }));
 }

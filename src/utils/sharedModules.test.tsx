@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { renderWithProvider } from './test';
@@ -156,6 +156,50 @@ describe('hooks', () => {
       name: 'Binder',
       color: 'red',
     });
+  });
+
+  test('useUpdates follows the original only while nothing is edited', () => {
+    type Binder = { name: string; color: string };
+    function Probe({ binder }: { binder: Binder }) {
+      const { updatedValue, onChange, clearUpdates } = useUpdates(binder);
+      return (
+        <>
+          <output>{`${updatedValue.name} ${updatedValue.color}`}</output>
+          <button onClick={() => onChange('color', 'blue')}>Blue</button>
+          <button onClick={clearUpdates}>Clear</button>
+        </>
+      );
+    }
+    const shown = () => screen.getByRole('status').textContent;
+    const { rerender } = render(
+      <Probe binder={{ name: 'Binder', color: 'red' }} />
+    );
+
+    // A new object with the same JSON changes nothing.
+    rerender(<Probe binder={{ name: 'Binder', color: 'red' }} />);
+    expect(shown()).toBe('Binder red');
+    rerender(<Probe binder={{ name: 'Hymns', color: 'red' }} />);
+    expect(shown()).toBe('Hymns red');
+
+    fireEvent.click(screen.getByText('Blue'));
+    rerender(<Probe binder={{ name: 'Psalms', color: 'red' }} />);
+    expect(shown()).toBe('Hymns blue');
+
+    fireEvent.click(screen.getByText('Clear'));
+    expect(shown()).toBe('Psalms red');
+  });
+
+  test('useCopy keeps edits until the original changes', () => {
+    function Probe({ value }: { value: string }) {
+      const [copy, setCopy] = useCopy(value);
+      return <button onClick={() => setCopy('edited')}>{copy}</button>;
+    }
+    const { rerender } = render(<Probe value="first" />);
+    fireEvent.click(screen.getByText('first'));
+    rerender(<Probe value="first" />);
+    expect(screen.getByRole('button')).toHaveTextContent('edited');
+    rerender(<Probe value="second" />);
+    expect(screen.getByRole('button')).toHaveTextContent('second');
   });
 
   test('useCopy returns the value and a setter', () => {
