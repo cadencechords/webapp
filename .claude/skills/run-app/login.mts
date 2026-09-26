@@ -1,11 +1,17 @@
 // Signs in to the running dev server with TEST_USER_EMAIL / TEST_USER_PASSWORD,
 // picks a team, and screenshots the result.
-// Usage: node login.js <out-dir> [team name, default "Claude Team"] [path to open after login]
-const fs = require('fs');
-const crypto = require('crypto');
-const { execSync } = require('child_process');
+// Usage: node login.mts <out-dir> [team name, default "Claude Team"] [path to open after login]
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import { execSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+import type { BrowserType } from 'playwright';
 
-let chromium;
+// CommonJS require(), resolved from this file as before, so the global
+// Playwright can be loaded by path when the repo doesn't have it.
+const require = createRequire(import.meta.url);
+
+let chromium: BrowserType;
 try {
   ({ chromium } = require('playwright'));
 } catch {

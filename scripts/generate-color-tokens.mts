@@ -2,7 +2,7 @@
 // (Runs through vite-node: @material/material-color-utilities 0.4.0 has
 // extensionless ESM imports that plain Node rejects.)
 import { writeFileSync } from 'node:fs';
-import { renderCss } from './color-tokens.mjs';
+import { renderCss } from './color-tokens.mts';
 
 writeFileSync(
   new URL('../src/styles/color-tokens.css', import.meta.url),

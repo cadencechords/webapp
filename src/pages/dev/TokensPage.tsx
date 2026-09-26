@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 
-import { ROLES, SEED, generateScheme } from '../../../scripts/color-tokens.mjs';
-import { SCALE } from '../../../scripts/type-tokens.mjs';
+import { ROLES, SEED, generateScheme } from '../../../scripts/color-tokens.mts';
+import { SCALE } from '../../../scripts/type-tokens.mts';
 import { USER_COLOR_NAMES, userColorClasses } from '../../utils/userColors';
 
 // Class names below are built dynamically; index.css safelists them with @source inline().
