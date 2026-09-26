@@ -102,6 +102,8 @@ export interface Session {
   setlist_id: number;
   /** The host. */
   user_id: number;
+  /** The host. */
+  user: User;
 }
 
 /** One annotation stroke on a song. */

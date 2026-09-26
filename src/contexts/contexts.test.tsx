@@ -199,6 +199,13 @@ describe('EventFormProvider', () => {
   });
 });
 
+const session = {
+  id: 3,
+  setlist_id: 2,
+  user_id: 9,
+  user: { id: 9, email: 'host@example.com' },
+};
+
 test('SessionsProvider starts with no sessions and no active session', () => {
   const result = renderHookValue(
     () => useContext(SessionsContext),
@@ -215,12 +222,8 @@ test('SessionsProvider starts with no sessions and no active session', () => {
     socket: null,
   });
 
-  act(() =>
-    result.current?.setSessions([{ id: 3, setlist_id: 2, user_id: 9 }])
-  );
-  expect(result.current?.sessions).toEqual([
-    { id: 3, setlist_id: 2, user_id: 9 },
-  ]);
+  act(() => result.current?.setSessions([session]));
+  expect(result.current?.sessions).toEqual([session]);
 });
 
 // Every consumer destructures the context value, so outside its provider it
@@ -276,9 +279,101 @@ describe('consumers throw outside their provider', () => {
   });
 });
 
-// New in CAD-121.
-test('the context hooks return the provided value', () => {
-  expect(renderHookValue(useThemeContext, ThemeProvider).current?.isDark).toBe(
-    false
-  );
+// New in CAD-121: inside its provider, each hook returns the live value, and
+// its setters update the provider's state.
+describe('the context hooks return the provided value', () => {
+  test('useThemeContext', () => {
+    const result = renderHookValue(useThemeContext, ThemeProvider);
+    expect(result.current?.isDark).toBe(false);
+
+    act(() => result.current?.setIsDark(true));
+    expect(result.current?.isDark).toBe(true);
+    expect(localStorage.getItem('theme')).toBe('dark');
+  });
+
+  test('usePerformanceModeContext', () => {
+    const result = renderHookValue(
+      usePerformanceModeContext,
+      PerformanceModeProvider
+    );
+    expect(result.current?.mode).toBe('perform');
+
+    act(() => result.current?.setMode('annotate'));
+    expect(result.current?.mode).toBe('annotate');
+  });
+
+  test('useAnnotationsToolbarContext', () => {
+    const result = renderHookValue(
+      useAnnotationsToolbarContext,
+      ({ children }: { children?: ReactNode }) => (
+        <ThemeProvider>
+          <AnnotationsToolbarProvider>{children}</AnnotationsToolbarProvider>
+        </ThemeProvider>
+      )
+    );
+    expect(result.current?.strokeWidth).toBe(2);
+
+    const path = { path: 'M 1 2', color: 'rgba(0,0,0,1)', stroke_width: 2 };
+    act(() => {
+      result.current?.setStrokeWidth(16);
+      result.current?.setColor('rgba(0,0,0,0.5)');
+      result.current?.setUtensil('highlighter');
+      result.current?.setAnnotationChanges([path]);
+    });
+    expect(result.current?.strokeWidth).toBe(16);
+    expect(result.current?.color).toBe('rgba(0,0,0,0.5)');
+    expect(result.current?.utensil).toBe('highlighter');
+    expect(result.current?.annotationChanges).toEqual([path]);
+  });
+
+  test('useSongEditorContext', () => {
+    const result = renderHookValue(useSongEditorContext, SongEditorProvider);
+    expect(result.current?.song).toBeUndefined();
+
+    const song = { id: 1, name: 'Amazing Grace', format: {} };
+    act(() => {
+      result.current?.setLoading(true);
+      result.current?.setSaving(true);
+      result.current?.setSong(song);
+      result.current?.setEditedContent('[G]Amazing');
+      result.current?.setEditedFormat({ font_size: 14 });
+    });
+    expect(result.current?.loading).toBe(true);
+    expect(result.current?.saving).toBe(true);
+    expect(result.current?.song).toEqual(song);
+    expect(result.current?.editedContent).toBe('[G]Amazing');
+    expect(result.current?.editedFormat).toEqual({ font_size: 14 });
+  });
+
+  test('useEventFormContext', () => {
+    const result = renderHookValue(useEventFormContext, EventFormProvider);
+    expect(result.current?.form.title).toBe('');
+    expect(result.current?.isValid).toBe(false);
+
+    act(() =>
+      result.current?.setForm(form => ({
+        ...form,
+        title: 'Rehearsal',
+        startDate: '2024-05-01',
+      }))
+    );
+    expect(result.current?.form.title).toBe('Rehearsal');
+    expect(result.current?.isValid).toBe(true);
+
+    act(() => result.current?.populateForm({ id: 5, title: 'Service' }));
+    expect(result.current?.form).toMatchObject({ id: 5, title: 'Service' });
+  });
+
+  test('useSessionsContext', () => {
+    const result = renderHookValue(useSessionsContext, SessionsProvider, ui =>
+      renderWithProvider(ui, {
+        preloadedState: { auth: { currentUser: { id: 1 } } },
+      })
+    );
+    expect(result.current?.sessions).toEqual([]);
+    expect(result.current?.activeSessionDetails.isHost).toBe(false);
+
+    act(() => result.current?.setSessions([session]));
+    expect(result.current?.sessions).toEqual([session]);
+  });
 });
