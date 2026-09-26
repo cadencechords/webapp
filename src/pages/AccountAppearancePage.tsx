@@ -43,7 +43,9 @@ export default function AccountAppearancePage() {
           <SectionHeading heading="Song preferences" />
         </div>
         <SongPreferencesForm
-          songPreferences={currentUser.format_preferences}
+          // Non-null: the API sends every user's format preferences, and the
+          // form reads them straight away, as it did before.
+          songPreferences={currentUser.format_preferences!}
           onChange={handleSongPreferencesChange}
         />
       </div>
