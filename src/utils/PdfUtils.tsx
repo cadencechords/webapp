@@ -68,11 +68,12 @@ export function toPdf(song: Song, showChords: boolean) {
 }
 
 function registerFonts(format: SongFormat) {
-  const fontStyles = isAllowedFont(format.font)
-    ? constructFontStyles(format)
-    : constructFontStyles({ ...format, font: 'Liberation Sans' });
+  // The family the page asks for (getFontName in toPdf): a missing or
+  // unsupported font falls back to Liberation Sans.
+  const font = isAllowedFont(format.font) ? format.font : 'Liberation Sans';
+  const fontStyles = constructFontStyles({ ...format, font });
 
-  Font.register({ family: format.font, fonts: fontStyles });
+  Font.register({ family: font, fonts: fontStyles });
 }
 
 function isAllowedFont(font: string) {
