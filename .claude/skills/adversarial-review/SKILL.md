@@ -38,10 +38,11 @@ Collect the inputs:
 - the commit list (`git log <base>..HEAD`)
 - the intent, and the PR description you plan to write
 
-Then launch reviewer agents **in parallel**, one per lens, each with a
-fresh context (the `Agent` tool, `general-purpose`). **Don't** pass them your
-own reasoning or conclusions; they must judge from the code alone. Give each
-one the base, the branch, the intent, the draft PR description, and its lens:
+Then launch **two** reviewer agents **in parallel**, never more, each with a
+fresh context (the `Agent` tool, `general-purpose`). One covers Correctness +
+Integration, the other Tests & CI + Honesty. **Don't** pass them your own
+reasoning or conclusions; they must judge from the code alone. Give each one
+the base, the branch, the intent, the draft PR description, and its lenses:
 
 | Lens            | What it attacks                                                                                                                                                                                                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -49,9 +50,6 @@ one the base, the branch, the intent, the draft PR description, and its lens:
 | **Tests & CI**  | Would CI reject this? Do the tests actually exercise the claim, or pass vacuously? Were errors hidden rather than fixed: `@ts-ignore`, `@ts-expect-error`, `any`, new `oxlint-disable` comments or rules turned off, `test.skip`, loosened assertions? Is anything important untested? |
 | **Integration** | Build and deploy (Vite output, `build/` for Netlify, env vars), dependencies and lockfile, generated files out of sync, stored or user data, security (secrets, XSS, `dangerouslySetInnerHTML`, auth headers), and effects on other PRs in the stack.                                  |
 | **Honesty**     | Does the PR description match the diff? Look for unverified claims ("no visual change", "all tests pass"), silent scope changes, leftover debug code or TODOs, and mentions of work that wasn't done.                                                                                  |
-
-For a small diff (under ~100 changed lines), one agent may cover Correctness +
-Integration and another Tests + Honesty. Never use fewer than two.
 
 Instruct every reviewer:
 
@@ -64,10 +62,11 @@ Instruct every reviewer:
 
 ## 3. Verify: try to disprove every blocker and major
 
-For each blocker or major finding, launch a separate skeptic agent. Give it
-the finding and the branch, and ask it to **refute** it: read the code, run
-the relevant test or script, reproduce if possible. It returns `confirmed`
-(with evidence) or `refuted` (with the reason). Treat "can't tell" as
+Launch skeptic agents for the blocker and major findings, **at most two**:
+split the findings between them if there are several. Give each its
+findings and the branch, and ask it to **refute** each one: read the code,
+run the relevant test or script, reproduce if possible. It returns
+`confirmed` (with evidence) or `refuted` (with the reason) per finding. Treat "can't tell" as
 confirmed. Minors don't need verification.
 
 ## 4. Resolve
@@ -95,6 +94,7 @@ blocker or major finding must be `confirmed` or `refuted`; minors may be
 {
   "base": "<base branch>",
   "lenses": ["correctness", "tests", "integration", "honesty"],
+  "reviewers": 2,
   "rounds": 2,
   "findings": [
     {
@@ -126,8 +126,8 @@ in any of these cases:
 
 - tracked files have uncommitted changes
 - `HEAD` is detached, or isn't what's on the remote branch (it fetches first)
-- the summary has fewer than two lenses, no `findings` array, no `base`, or
-  sets a field `record.mts` owns
+- the summary has fewer than two lenses, `reviewers` other than 1 or 2, no
+  `findings` array, no `base`, or sets a field `record.mts` owns
 - a blocker or major finding is unverified, or confirmed and not `fixed`
 - any check fails
 
@@ -147,10 +147,24 @@ Then open the PR. The hook checks the record for the head commit. If you
 push again later, a PR that's already open isn't blocked, but review the new
 commits with the same process before asking for another review.
 
+## Bypassing the review
+
+Only when the user asks in chat to skip the review for this PR (a skipped
+review is never your own call, and a request for one PR doesn't carry over to
+the next). Commit and push, then record the user's reason:
+
+```bash
+node .claude/skills/adversarial-review/record.mts bypass "<the user's reason>"
+```
+
+It still refuses uncommitted changes and a `HEAD` that isn't pushed, but runs
+no review and no checks. It unlocks only that commit. Say in the PR
+description that the review was bypassed at the user's request, and why.
+
 ## What the gate guarantees, and what it doesn't
 
-The hook blocks opening a PR unless a `pass` record written by `record.mts`
-exists for the commit currently on the remote head branch. It fetches that
+The hook blocks opening a PR unless a `pass` or `bypass` record written by
+`record.mts` exists for the commit currently on the remote head branch. It fetches that
 branch first, so a stale local ref can't be used. It covers:
 
 - the GitHub MCP `create_pull_request` tool (owner and repo must match this
