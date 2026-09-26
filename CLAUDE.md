@@ -12,11 +12,13 @@ TypeScript"). Converting a file means renaming it to `.ts`/`.tsx` with
 
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
 `tsconfig.json` covers `src`, JavaScript included (`checkJs`), and isn't
-`strict` yet. `tsconfig.node.json` covers all other
+`strict`. `tsconfig.strict.json` checks the TypeScript files in `src` again
+with `strict` (the JavaScript gets it as it's converted), so new files must
+pass `strict`. `tsconfig.node.json` covers all other
 TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, `.github/`, config files) and is
 `strict`. Write ES modules there as `.mts` (package.json
 has no `"type": "module"`, so a `.ts` file counts as CommonJS). Node strips types without checking them, so
-`yarn typecheck` is what catches errors there. Neither project has a baseline:
+`yarn typecheck` is what catches errors there. No project has a baseline:
 any type error fails `yarn typecheck`.
 
 ESLint parses TypeScript with the TypeScript 6 API from
