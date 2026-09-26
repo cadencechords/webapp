@@ -3,10 +3,17 @@ import StyledPopover from './StyledPopover';
 import { RgbaStringColorPicker } from 'react-colorful';
 import Button from './Button';
 
+type ColorPickerProps = {
+  /** An `rgba(...)` color. */
+  color?: string;
+  /** Called with the confirmed color, or with `color` on cancel. */
+  onChange: (color: string) => void;
+};
+
 export default function ColorPicker({
   color = 'rgba(255, 255, 255, 1)',
   onChange,
-}) {
+}: ColorPickerProps) {
   const [stagedColor, setStagedColor] = useState(color);
 
   useEffect(() => {

@@ -1,11 +1,40 @@
 import { useCallback, useState } from 'react';
 
 import Draggable from 'react-draggable';
+import type {
+  ControlPosition,
+  DraggableData,
+  DraggableEvent,
+} from 'react-draggable';
 import NoteDialog from '../dialogs/NoteDialog';
+import type { NoteUpdates } from '../dialogs/NoteDialog';
 import NotesApi from '../api/notesApi';
 import _ from 'lodash';
 import { reportError } from '../utils/error';
 import Icon from './Icon';
+import type { SongNote } from '../types';
+
+/**
+ * Called as `(noteId, updates)` after a drag or a dialog edit, but the
+ * debounced content save calls it as `({ content })`, without the id. No
+ * caller passes `onUpdate` yet, so the mismatch is kept as it was.
+ */
+export type NoteUpdateHandler = (
+  ...args:
+    | [noteId: number, updates: Partial<Omit<SongNote, 'id'>>]
+    | [updates: { content: string }]
+) => void;
+
+type NoteProps = {
+  songId: number;
+  note: SongNote;
+  /** Called with the note's id; the note is deleted from the API too. */
+  onDelete: (noteId: number) => void;
+  isDragDisabled?: boolean;
+  onUpdate?: NoteUpdateHandler;
+  onDragEnd?: () => void;
+  onDragStart?: () => void;
+};
 
 export default function Note({
   songId,
@@ -15,27 +44,27 @@ export default function Note({
   onUpdate,
   onDragEnd,
   onDragStart,
-}) {
+}: NoteProps) {
   const [content, setContent] = useState(note.content || '');
   const [color, setColor] = useState(note.color || '');
   const [showDialog, setShowDialog] = useState(false);
 
   const numberOfLines = content?.split(/\r\n|\r|\n/).length;
 
-  function handleUpdatesFromDialog(updates) {
+  function handleUpdatesFromDialog(updates: NoteUpdates) {
     if (updates.color) setColor(updates.color);
     if (updates.content) setContent(updates.content);
     handleSaveUpdates(updates);
     onUpdate?.(note.id, updates);
   }
 
-  function handleDragStop(e, data) {
+  function handleDragStop(e: DraggableEvent, data: DraggableData) {
     onDragEnd?.();
     handleSaveUpdates({ x: data.x, y: data.y });
     onUpdate?.(note.id, { x: data.x, y: data.y });
   }
 
-  function handleSaveUpdates(updates) {
+  function handleSaveUpdates(updates: Partial<Omit<SongNote, 'id'>>) {
     try {
       NotesApi.update(songId, note.id, updates);
     } catch (error) {
@@ -54,21 +83,18 @@ export default function Note({
 
   // eslint-disable-next-line
   const debounce = useCallback(
-    _.debounce(
-      async content => {
-        try {
-          NotesApi.update(songId, note.id, { content });
-          onUpdate?.({ content });
-        } catch (error) {
-          reportError(error);
-        }
-      },
-      1200
-    ),
+    _.debounce(async (content: string) => {
+      try {
+        NotesApi.update(songId, note.id, { content });
+        onUpdate?.({ content });
+      } catch (error) {
+        reportError(error);
+      }
+    }, 1200),
     [songId, note.id]
   );
 
-  function handleContentChange(newContent) {
+  function handleContentChange(newContent: string) {
     setContent(newContent);
     debounce(newContent);
   }
@@ -78,7 +104,10 @@ export default function Note({
       <Draggable
         disabled={isDragDisabled}
         handle=".handle"
-        defaultPosition={{ x: note.x, y: note.y }}
+        // `as ControlPosition`: assumes the API sends every note's saved x/y
+        // (SongNote leaves them optional). A note without them passes
+        // undefined to react-draggable, as the JS did.
+        defaultPosition={{ x: note.x, y: note.y } as ControlPosition}
         bounds="parent"
         onStop={handleDragStop}
         onStart={onDragStart}
@@ -121,7 +150,10 @@ export default function Note({
   );
 }
 
-const NOTE_COLORS = {
+type NoteColorClasses = { main: string; side: string; icon: string };
+
+// Looked up by the note's color; one of these four in practice.
+const NOTE_COLORS: Record<string, NoteColorClasses> = {
   blue: {
     main: 'bg-blue-200 dark:bg-blue-300 placeholder-blue-700',
     side: 'bg-blue-300 dark:bg-blue-400',

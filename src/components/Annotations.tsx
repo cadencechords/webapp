@@ -3,8 +3,14 @@ import Annotation from './Annotation';
 import AnnotationCanvas from './AnnotationCanvas';
 import usePerformanceMode from '../hooks/usePerformanceMode';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
+import type { AnnotationPath } from '../types';
 
-export default function Annotations({ annotations = [] }) {
+type AnnotationsProps = {
+  /** The song's saved annotations. */
+  annotations?: AnnotationPath[];
+};
+
+export default function Annotations({ annotations = [] }: AnnotationsProps) {
   const { isAnnotating } = usePerformanceMode();
   const { setAnnotationChanges } = useAnnotationsToolbar();
 

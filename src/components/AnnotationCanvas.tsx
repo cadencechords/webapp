@@ -3,26 +3,41 @@ import React, { useRef, useState } from 'react';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
 import { getThemeAwareAnnotationColor } from '../utils/color.utils';
 import useTheme from '../hooks/useTheme';
+import type { AnnotationPath } from '../types';
+
+type AnnotationCanvasProps = {
+  /** The paths the canvas starts with. */
+  defaultAnnotations?: AnnotationPath[];
+  /** Called with the paths at the end of each stroke. */
+  onChange: (annotations: AnnotationPath[]) => void;
+};
+
+type Point = { x: number; y: number };
 
 export default function AnnotationCanvas({
   defaultAnnotations = [],
   onChange,
-}) {
+}: AnnotationCanvasProps) {
   const { isDark } = useTheme();
-  const ref = useRef(/** @type {SVGSVGElement | null} */ (null));
+  const ref = useRef<SVGSVGElement | null>(null);
   const { color, strokeWidth, utensil } = useAnnotationsToolbar();
-  const [eraserPosition, setEraserPosition] = useState(
-    /** @type {[number, number] | undefined} */ (undefined)
-  );
+  const [eraserPosition, setEraserPosition] = useState<
+    [number, number] | undefined
+  >(undefined);
   const [paths, setPaths] = useState(defaultAnnotations);
 
+  // The `as number`s below: useGesture binds these handlers to the svg
+  // through `ref`, so they only run while it's mounted and `ref.current` is
+  // set. The `?.` stays, as in the JavaScript.
   useGesture(
     {
       onDragStart: e => {
         if (utensil === 'scroll') return;
         else if (utensil === 'eraser') {
-          const left = e.xy[0] - ref.current?.getBoundingClientRect().x;
-          const top = e.xy[1] - ref.current?.getBoundingClientRect().y;
+          const left =
+            e.xy[0] - (ref.current?.getBoundingClientRect().x as number);
+          const top =
+            e.xy[1] - (ref.current?.getBoundingClientRect().y as number);
           setEraserPosition([left, top]);
 
           setPaths(previousPaths => {
@@ -33,7 +48,7 @@ export default function AnnotationCanvas({
                 return { x: parseFloat(parts[0]), y: parseFloat(parts[1]) };
               });
 
-              for (let point of points) {
+              for (const point of points) {
                 if (isInEraserCircle(point, { x: left, y: top })) return false;
               }
 
@@ -41,11 +56,13 @@ export default function AnnotationCanvas({
             });
           });
         } else {
-          const left = e.xy[0] - ref.current?.getBoundingClientRect().x;
-          const top = e.xy[1] - ref.current?.getBoundingClientRect().y;
+          const left =
+            e.xy[0] - (ref.current?.getBoundingClientRect().x as number);
+          const top =
+            e.xy[1] - (ref.current?.getBoundingClientRect().y as number);
 
           setPaths(previousPaths => {
-            let newPaths = [...previousPaths];
+            const newPaths = [...previousPaths];
             newPaths[previousPaths.length] = {
               path: `M ${left} ${top}`,
               color,
@@ -59,8 +76,10 @@ export default function AnnotationCanvas({
       onDrag: e => {
         if (utensil === 'scroll') return;
         else if (utensil === 'eraser') {
-          const left = e.xy[0] - ref.current?.getBoundingClientRect().x;
-          const top = e.xy[1] - ref.current?.getBoundingClientRect().y;
+          const left =
+            e.xy[0] - (ref.current?.getBoundingClientRect().x as number);
+          const top =
+            e.xy[1] - (ref.current?.getBoundingClientRect().y as number);
           setEraserPosition([left, top]);
 
           setPaths(previousPaths => {
@@ -71,7 +90,7 @@ export default function AnnotationCanvas({
                 return { x: parseFloat(parts[0]), y: parseFloat(parts[1]) };
               });
 
-              for (let point of points) {
+              for (const point of points) {
                 if (isInEraserCircle(point, { x: left, y: top })) return false;
               }
 
@@ -79,11 +98,13 @@ export default function AnnotationCanvas({
             });
           });
         } else {
-          const left = e.xy[0] - ref.current?.getBoundingClientRect().x;
-          const top = e.xy[1] - ref.current?.getBoundingClientRect().y;
+          const left =
+            e.xy[0] - (ref.current?.getBoundingClientRect().x as number);
+          const top =
+            e.xy[1] - (ref.current?.getBoundingClientRect().y as number);
           setPaths(previousPaths => {
             const index = previousPaths.length - 1;
-            let newPaths = [...previousPaths];
+            const newPaths = [...previousPaths];
             if (newPaths?.[index]?.path) {
               newPaths[index].path += ` L ${left} ${top}`;
               return newPaths;
@@ -131,7 +152,7 @@ export default function AnnotationCanvas({
   );
 }
 
-function isInEraserCircle(svgPoint, centerOfCircle) {
+function isInEraserCircle(svgPoint: Point, centerOfCircle: Point) {
   const distance = Math.sqrt(
     Math.pow(svgPoint.x - centerOfCircle.x, 2) +
       Math.pow(svgPoint.y - centerOfCircle.y, 2)

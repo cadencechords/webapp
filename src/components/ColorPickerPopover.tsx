@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import StyledPopover from './StyledPopover';
 import { RgbaStringColorPicker } from 'react-colorful';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
 import { useDebounce } from 'usehooks-ts';
 
-export default function ColorPickerPopover({ button }) {
+type ColorPickerPopoverProps = {
+  button: ReactNode;
+};
+
+export default function ColorPickerPopover({
+  button,
+}: ColorPickerPopoverProps) {
   const { color: defaultColor, setColor: setAnnotationColor } =
     useAnnotationsToolbar();
   const [color, setColor] = useState(defaultColor);

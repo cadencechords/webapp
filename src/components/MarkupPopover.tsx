@@ -6,7 +6,15 @@ import MobileMenuButton from './buttons/MobileMenuButton';
 import usePerformanceMode from '../hooks/usePerformanceMode';
 import Icon from './Icon';
 
-export default function MarkupPopover({ onAddNote, onShowMarkingsModal }) {
+type MarkupPopoverProps = {
+  onAddNote: () => void;
+  onShowMarkingsModal: () => void;
+};
+
+export default function MarkupPopover({
+  onAddNote,
+  onShowMarkingsModal,
+}: MarkupPopoverProps) {
   const { beginAnnotating } = usePerformanceMode();
 
   return (
