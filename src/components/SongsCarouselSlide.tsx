@@ -30,12 +30,16 @@ export default function SongsCarouselSlide({
   const [roadmap, setRoadmap] = useState(() => song.roadmap);
   const [notes, setNotes] = useState(() => song.notes);
 
+  // Each call passes the onSongUpdate of its own render. SetPresenterPage's
+  // updates the song being viewed when it runs, so the latest one would put
+  // an edit on another song if the viewed song changed during the wait.
   const debounce = useDebouncedCallback(
     <K extends 'roadmap' | 'notes'>(
+      update: typeof onSongUpdate,
       field: K,
       updatedValue: PresentedSong[K]
     ) => {
-      onSongUpdate(field, updatedValue);
+      update(field, updatedValue);
     },
     200,
     'flush'
@@ -43,14 +47,14 @@ export default function SongsCarouselSlide({
 
   function handleRoadmapUpdate(field: 'roadmap', updatedRoadmap: string[]) {
     setRoadmap(updatedRoadmap);
-    debounce('roadmap', updatedRoadmap);
+    debounce(onSongUpdate, 'roadmap', updatedRoadmap);
   }
 
   function onDeleteNote(noteId: number) {
     const updatedNotes = notes?.filter(note => note.id !== noteId);
 
     setNotes(updatedNotes);
-    debounce('notes', updatedNotes);
+    debounce(onSongUpdate, 'notes', updatedNotes);
   }
 
   function handleMarkingDeleted(deletedId: number) {
