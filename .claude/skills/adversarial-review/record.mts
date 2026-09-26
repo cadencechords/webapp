@@ -3,11 +3,15 @@
 // require-adversarial-review hook lets a PR for exactly this commit be opened.
 //
 //   node .claude/skills/adversarial-review/record.mts <pass|fail> <summary.json>
+//   node .claude/skills/adversarial-review/record.mts bypass "<reason>"
 //
 // It runs the repo's checks itself (the same ones as CI) rather than trusting
 // a reported result, and validates the review summary described in SKILL.md.
 // The summary's contents (what the reviewers found) are self-reported; the PR
 // description's "Adversarial review" section is where humans can check them.
+//
+// `bypass` is only for when the user asks in chat to skip the review for this
+// PR: it records their reason for the pushed commit and runs no review or checks.
 //
 // Records live in <git-common-dir>/adversarial-reviews/<sha>.json: local to
 // this clone, never committed, and tied to one commit.
@@ -45,8 +49,10 @@ const fail: (message: string) => never = message => {
 };
 
 const [verdict, summaryFile] = process.argv.slice(2);
-if (!['pass', 'fail'].includes(verdict) || !summaryFile) {
-  fail('usage: record.mts <pass|fail> <summary.json>');
+if (!['pass', 'fail', 'bypass'].includes(verdict) || !summaryFile?.trim()) {
+  fail(
+    'usage: record.mts <pass|fail> <summary.json>, or record.mts bypass "<reason>"'
+  );
 }
 
 // The review must cover exactly what the PR will contain. Untracked files
@@ -76,6 +82,31 @@ if (pushed !== sha) {
   );
 }
 
+const dir = path.resolve(
+  git('rev-parse', '--git-common-dir'),
+  'adversarial-reviews'
+);
+const file = path.join(dir, `${sha}.json`);
+const save = (record: Record<string, unknown>) => {
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(file, JSON.stringify(record, null, 2) + '\n');
+  console.log(
+    `Recorded "${verdict}" review for ${sha.slice(0, 7)} (${branch}) in ${file}`
+  );
+};
+
+// No review and no checks: only the user's reason, for this one commit.
+if (verdict === 'bypass') {
+  save({
+    sha,
+    branch,
+    verdict,
+    reason: summaryFile.trim(),
+    recordedAt: new Date().toISOString(),
+  });
+  process.exit(0);
+}
+
 // A review summary as SKILL.md describes it. Nothing about it is trusted:
 // each field is checked below.
 type Finding = {
@@ -103,6 +134,8 @@ const lenses = Array.isArray(summary.lenses)
   : [];
 if (lenses.length < 2)
   fail('summary.lenses must list at least two distinct review lenses');
+if (summary.reviewers !== 1 && summary.reviewers !== 2)
+  fail('summary.reviewers must say how many reviewer agents ran: 1 or 2');
 if (!Array.isArray(summary.findings))
   fail('summary.findings must be an array (empty if nothing was found)');
 const findings = summary.findings.map((f: Finding, i: number) => {
@@ -154,13 +187,7 @@ if (
   );
 }
 
-const dir = path.resolve(
-  git('rev-parse', '--git-common-dir'),
-  'adversarial-reviews'
-);
-mkdirSync(dir, { recursive: true });
-const file = path.join(dir, `${sha}.json`);
-const record = {
+save({
   ...summary,
   lenses,
   findings,
@@ -169,8 +196,4 @@ const record = {
   verdict,
   recordedAt: new Date().toISOString(),
   checks,
-};
-writeFileSync(file, JSON.stringify(record, null, 2) + '\n');
-console.log(
-  `Recorded "${verdict}" review for ${sha.slice(0, 7)} (${branch}) in ${file}`
-);
+});

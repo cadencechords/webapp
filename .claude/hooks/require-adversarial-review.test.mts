@@ -351,6 +351,11 @@ test('fails closed on bad records, bad input and crashes', t => {
   assert.match(mcp(fx, { head: 'feat' }).stderr, /passing checks/);
   fx.record(fx.feat, { checks: { lint: 'pass', build: 'fail' } });
   assert.match(mcp(fx, { head: 'feat' }).stderr, /passing checks/);
+  fx.record(fx.feat, { verdict: 'bypass', checks: undefined });
+  assert.match(mcp(fx, { head: 'feat' }).stderr, /bypass .* has no reason/);
+  fx.record(fx.feat, { verdict: 'bypass', reason: '  ' });
+  assert.match(mcp(fx, { head: 'feat' }).stderr, /bypass .* has no reason/);
+  fx.record(fx.feat, { checks: { lint: 'pass', build: 'fail' } });
   assert.equal(hook(fx, null, '{not json').code, 2);
   assert.match(
     bash(fx, `${CREATE} --title "unterminated`).stderr,
@@ -404,7 +409,12 @@ function record(fx: Fixture, verdict: string, summary: unknown) {
   });
   return { code: r.status, out: r.stdout + r.stderr };
 }
-const good = { base: 'main', lenses: ['correctness', 'tests'], findings: [] };
+const good = {
+  base: 'main',
+  lenses: ['correctness', 'tests'],
+  reviewers: 2,
+  findings: [],
+};
 
 test('record.mts runs the checks and records a review that unlocks the PR', t => {
   const fx = fixture(t);
@@ -439,6 +449,8 @@ test('record.mts refuses an incomplete, unresolved or self-graded review', t => 
   const fx = fixture(t);
   const cases: [Record<string, unknown>, RegExp][] = [
     [{ ...good, lenses: ['correctness'] }, /at least two/],
+    [{ ...good, reviewers: 3 }, /reviewers must/],
+    [{ ...good, reviewers: undefined }, /reviewers must/],
     [{ ...good, findings: 'none' }, /must be an array/],
     [{ ...good, base: '' }, /base/],
     [
@@ -473,4 +485,33 @@ test('record.mts refuses an incomplete, unresolved or self-graded review', t => 
     ],
   };
   assert.equal(record(fx, 'pass', fixed).code, 0);
+});
+
+test('record.mts bypass records a reason and unlocks only that commit, without checks', t => {
+  const fx = fixture(t);
+  const bypass = (reason: string) => {
+    const r = spawnSync('node', [recorder, 'bypass', reason], {
+      cwd: fx.work,
+      encoding: 'utf8',
+    });
+    return { code: r.status, out: r.stdout + r.stderr };
+  };
+  assert.match(bypass('  ').out, /usage/);
+  assert.equal(mcp(fx, { head: 'feat' }).code, 2);
+  // Failing checks don't matter: a bypass runs none.
+  fx.commit('break build', {
+    'package.json': JSON.stringify({ scripts: fx.scripts('build') }),
+  });
+  fx.git('push', '--quiet');
+  const r = bypass('user asked to skip the review');
+  assert.equal(r.code, 0, r.out);
+  assert.doesNotMatch(r.out, /check /);
+  assert.equal(mcp(fx, { head: 'feat' }).code, 0);
+  // A new commit isn't covered by the bypass.
+  fx.commit('more');
+  fx.git('push', '--quiet');
+  assert.match(
+    mcp(fx, { head: 'feat' }).stderr,
+    /no adversarial review recorded/
+  );
 });

@@ -9,7 +9,8 @@
 // error blocks too (run-hook.sh turns crashes into exit 2).
 //
 // This is a guardrail against opening a PR by mistake, not a security
-// boundary: the review's contents are self-reported (see SKILL.md).
+// boundary: the review's contents are self-reported (see SKILL.md). A
+// `bypass` record (the user asked to skip the review) also lets the PR open.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import path from 'node:path';
@@ -437,7 +438,12 @@ export function ownerRepo(url: unknown): string | null {
   return m ? `${m[1]}/${m[2]}`.toLowerCase() : null;
 }
 
-type Review = { sha?: unknown; verdict?: unknown; checks?: unknown };
+type Review = {
+  sha?: unknown;
+  verdict?: unknown;
+  checks?: unknown;
+  reason?: unknown;
+};
 
 function checkPr({
   cwd,
@@ -528,6 +534,12 @@ function checkPr({
     block(
       `the review record for ${sha.slice(0, 7)} wasn't written by record.mts for this commit`
     );
+  // The user asked to skip the review for this commit (record.mts bypass).
+  if (record.verdict === 'bypass') {
+    if (typeof record.reason !== 'string' || !record.reason.trim())
+      block(`the review bypass for ${sha.slice(0, 7)} has no reason`);
+    return;
+  }
   if (record.verdict !== 'pass')
     block(
       `the review for ${head} @ ${sha.slice(0, 7)} did not pass (verdict: ${record.verdict})`
