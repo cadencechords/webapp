@@ -3,23 +3,37 @@ import { Link } from 'react-router-dom';
 import NoDataMessage from './NoDataMessage';
 import SearchResult from './SearchResult';
 import { hasAnyKeysSet } from '../utils/SongUtils';
+import type { Binder, Setlist, Song } from '../types';
 
-export default function SearchResults({ results, onCloseDialog, searchQuery }) {
+type SearchResultsProps = {
+  /** Null until the first search. */
+  results?: { binders?: Binder[]; songs?: Song[]; setlists?: Setlist[] } | null;
+  onCloseDialog?: () => void;
+  searchQuery: string;
+};
+
+export default function SearchResults({
+  results,
+  onCloseDialog,
+  searchQuery,
+}: SearchResultsProps) {
   if (results) {
-    let binders = results.binders?.map(binder => (
-      <Link to={`/binders/${binder.id}`}>
+    const binders = results.binders?.map(binder => (
+      <Link to={`/binders/${binder.id}`} key={binder.name}>
         <SearchResult
-          key={binder.name}
           onClick={onCloseDialog}
           query={searchQuery}
           name={binder.name}
         />
       </Link>
     ));
-    let songs = results.songs?.map(song => (
-      <Link to={`/songs/${song.id}`} className="border-b last:border-0">
+    const songs = results.songs?.map(song => (
+      <Link
+        to={`/songs/${song.id}`}
+        className="border-b last:border-0"
+        key={song.id}
+      >
         <SearchResult
-          key={song.id}
           onClick={onCloseDialog}
           query={searchQuery}
           name={song.name}
@@ -30,10 +44,13 @@ export default function SearchResults({ results, onCloseDialog, searchQuery }) {
         </SearchResult>
       </Link>
     ));
-    let setlists = results.setlists?.map(setlist => (
-      <Link to={`/sets/${setlist.id}`} className="border-b last:border-0">
+    const setlists = results.setlists?.map(setlist => (
+      <Link
+        to={`/sets/${setlist.id}`}
+        className="border-b last:border-0"
+        key={setlist.id}
+      >
         <SearchResult
-          key={setlist.id}
           onClick={onCloseDialog}
           query={searchQuery}
           name={setlist.name}

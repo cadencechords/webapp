@@ -145,7 +145,6 @@
   "src/components/SearchBar.js",
   "src/components/SearchDialog.js",
   "src/components/SearchPage.js",
-  "src/components/SearchResults.js",
   "src/components/SecuredRoutes.js",
   "src/components/SegmentedControl.js",
   "src/components/SendInvitesDialog.js",
