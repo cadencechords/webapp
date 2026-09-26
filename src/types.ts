@@ -1,17 +1,35 @@
-// Models for the API data the app reads, for use from JSDoc in JavaScript
-// files, e.g. `useState(/** @type {import('../types').Song | undefined} */ (undefined))`.
+// Models for the API data the app reads. The `src/api` helpers return them
+// (`AxiosResponse<Song>` and so on). JavaScript files can use them from JSDoc,
+// e.g. `useState(/** @type {import('../types').Song | undefined} */ (undefined))`.
 //
-// Only the fields the typed code reads so far are listed. Add fields as more
-// code gets typed.
+// Only the fields the code reads are listed. Add fields as more code gets
+// typed.
+
+/** An id: a number from the API, or a string from a route param or input. */
+export type Id = number | string;
 
 export interface User {
   id: number;
   email: string;
   first_name?: string;
   last_name?: string;
+  phone_number?: string;
   image_url?: string | null;
+  /** The user's position on the current team (`UserApi.getMember`). */
   position?: string;
   created_at?: string;
+  /** An IANA time zone, saved from the browser on sign-in. */
+  timezone?: string | null;
+  /** Whether the user has connected Planning Center. */
+  pco_connected?: boolean;
+  format_preferences?: FormatPreferences;
+  /** The user's role on the current team, set by `setMembership`. */
+  role?: Role;
+}
+
+/** The current user's display preferences. */
+export interface FormatPreferences {
+  hide_chords?: boolean;
 }
 
 export interface Team {
@@ -20,12 +38,139 @@ export interface Team {
   image_url?: string | null;
   created_at?: string;
   users?: User[];
+  /** The code at the end of the team's join link, `/join/<code>`. */
+  join_link?: string;
+  join_link_enabled?: boolean;
+  default_format?: FormatPreset;
+}
+
+/** `TeamApi.getCurrentTeam`. */
+export interface CurrentTeamResponse {
+  team: Team;
+  subscription: Subscription;
+  /** The team's members, each with their `position` on the team. */
+  members: User[];
+}
+
+/** A user's membership of a team. */
+export interface Membership {
+  id: number;
+  user: User;
+  role: Role;
+  position?: string;
+}
+
+/** A permission a role can have, e.g. `'Edit songs'`. */
+export interface Permission {
+  id?: number;
+  name: string;
+  description?: string;
+}
+
+export interface Role {
+  id: number;
+  name: string;
+  description?: string;
+  is_admin?: boolean;
+  is_member?: boolean;
+  permissions?: Permission[];
+  memberships?: Membership[];
+}
+
+/** The team's subscription. */
+export interface Subscription {
+  plan_name?: string;
+  status?: string;
+  is_pro?: boolean;
+  /** Set from `is_pro` by the subscription slice. */
+  isPro?: boolean;
+  price?: number;
+  expires_at?: string | null;
+  /** Where it was bought, e.g. the App Store. */
+  store?: string;
+}
+
+export interface Invitation {
+  id: number;
+  email: string;
+  created_at?: string;
+}
+
+/** The response to signing up or claiming an invitation. */
+export interface InvitationClaim {
+  team_id: number;
+}
+
+/** A team another team can import songs from (`ImportsApi`). */
+export interface ImportableTeam {
+  id: number;
+  name: string;
+  image_url?: string | null;
+}
+
+/** A song on a Planning Center account. */
+export interface PcoSong {
+  id: number | string;
+  title?: string;
+  author?: string;
+}
+
+/** An OnSong backup, unzipped by the API for import. */
+export interface OnsongBackup {
+  id: number;
+  files: OnsongFile[];
+}
+
+export interface OnsongFile {
+  name: string;
+}
+
+export interface NotificationSetting {
+  id: number;
+  notification_type: string;
+  email_enabled?: boolean;
+  sms_enabled?: boolean;
+  push_enabled?: boolean;
 }
 
 export interface Binder {
   id: number;
   name: string;
+  description?: string;
   color?: string;
+  songs?: Song[];
+}
+
+/** A saved song format a team can make its default. */
+export interface FormatPreset {
+  id: number;
+  name?: string;
+}
+
+/** A file attached to a song. */
+export interface SongFile {
+  id: number;
+  name: string;
+  url: string;
+  /** In bytes. */
+  size: number;
+}
+
+/** A marking (a shape or a text label) placed on a song. */
+export interface Marking {
+  id: number;
+  marking_type: string;
+  content?: string;
+  x?: number;
+  y?: number;
+  scale?: number;
+  rotation?: number;
+}
+
+/** A capo saved on a song. */
+export interface Capo {
+  id: number;
+  capo_key: string;
 }
 
 /** A genre or theme. */
@@ -36,6 +181,12 @@ export interface Tag {
 
 export interface Track {
   id: number;
+  name?: string;
+  /** `'Apple Music'`, `'Spotify'` or `'YouTube'`. */
+  source?: string;
+  url?: string;
+  artwork_url?: string;
+  external_id?: string;
 }
 
 export interface SongFormat {
@@ -73,7 +224,8 @@ export interface Song {
   meter?: string;
   original_key?: string;
   transposed_key?: string;
-  capo?: { capo_key?: string } | null;
+  /** No `id` until a capo picked in the capo sheet is saved. */
+  capo?: Partial<Capo> | null;
   format: SongFormat;
   /** Client-side display flags, not persisted. */
   show_capo?: boolean;
@@ -82,6 +234,8 @@ export interface Song {
   themes?: Tag[];
   tracks?: Track[];
   notes?: SongNote[];
+  /** Section names in play order, e.g. `['Verse', 'Chorus']`. */
+  roadmap?: string[];
   binders?: Binder[];
   setlists?: Pick<Setlist, 'id' | 'scheduled_date'>[];
 }

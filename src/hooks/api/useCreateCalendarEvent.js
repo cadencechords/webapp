@@ -11,7 +11,9 @@ export default function useCreateCalendarEvent({ onSuccess }) {
     error,
     mutate: run,
   } = useMutation({
-    mutationFn: async event => {
+    mutationFn: async (
+      /** @type {import('../../api/eventsApi').EventRequest} */ event
+    ) => {
       const { data } = await EventsApi.create(event);
       return data;
     },

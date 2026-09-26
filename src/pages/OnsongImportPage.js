@@ -14,14 +14,20 @@ import { useState } from 'react';
 
 export default function OnsongImportPage() {
   const [backup, setBackup] = useState();
-  const [unzippedFiles, setUnzippedFiles] = useState();
+  const [unzippedFiles, setUnzippedFiles] = useState(
+    /** @type {import('../types').OnsongFile[] | null | undefined} */ (
+      undefined
+    )
+  );
   const [selectedSongs, setSelectedSongs] = useState([]);
   const [importing, setImporting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState();
   const [wizardStep, setWizardStep] = useState(0);
   const [binders, setBinders] = useState();
-  const [importId, setImportId] = useState();
+  const [importId, setImportId] = useState(
+    /** @type {number | null | undefined} */ (undefined)
+  );
   const [selectedBinder, setSelectedBinder] = useState(
     /** @type {import('../types').Binder | null | undefined} */ (undefined)
   );

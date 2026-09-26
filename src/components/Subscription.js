@@ -13,7 +13,7 @@ export default function Subscription({ subscription }) {
       let { data } = await billingApi.createCustomerPortalSession(
         window.location.href
       );
-      window.location = data.url;
+      window.location.href = data.url;
     } catch (error) {
       reportError(error);
       setLoading(false);

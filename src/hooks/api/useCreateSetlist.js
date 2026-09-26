@@ -11,7 +11,9 @@ export default function useCreateSetlist({ onSuccess }) {
     error,
     mutate: run,
   } = useMutation({
-    mutationFn: async setlist => {
+    mutationFn: async (
+      /** @type {import('../../api/SetlistApi').NewSetlist} */ setlist
+    ) => {
       const { data } = await SetlistApi.createOne(setlist);
       return data;
     },

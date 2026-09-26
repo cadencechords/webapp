@@ -11,7 +11,7 @@ export default function useDeleteRole({ onSuccess } = {}) {
     error,
     mutate: run,
   } = useMutation({
-    mutationFn: async id => {
+    mutationFn: async (/** @type {import('../../types').Id} */ id) => {
       return await RoleApi.deleteOne(id);
     },
     onSuccess: () => {

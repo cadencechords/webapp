@@ -11,7 +11,9 @@ export default function useCreateBinder({ onSuccess }) {
     error,
     mutate: run,
   } = useMutation({
-    mutationFn: async binder => {
+    mutationFn: async (
+      /** @type {import('../../api/BinderApi').NewBinder} */ binder
+    ) => {
       const { data } = await BinderApi.createOne(binder);
       return data;
     },

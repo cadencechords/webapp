@@ -11,7 +11,7 @@ export default function useDeleteBinder({ onSuccess } = {}) {
     error,
     mutate: run,
   } = useMutation({
-    mutationFn: id => {
+    mutationFn: (/** @type {import('../../types').Id} */ id) => {
       BinderApi.deleteOneById(id);
     },
     onSuccess: () => {

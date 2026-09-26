@@ -45,7 +45,13 @@ export default function CreateEventDialog({
   };
 
   const handleSave = async () => {
-    let createRequest = toCreateRequest();
+    // The request's inferred type is the form state's, where reminder_date is
+    // a number of hours. toCreateRequest replaces it with a dayjs date, which
+    // axios sends as the same ISO string a Date gives. (Nothing renders this
+    // dialog.)
+    let createRequest = /** @type {import('../api/eventsApi').EventRequest} */ (
+      /** @type {unknown} */ (toCreateRequest())
+    );
     try {
       setLoading(true);
       let { data } = await eventsApi.create(createRequest);
