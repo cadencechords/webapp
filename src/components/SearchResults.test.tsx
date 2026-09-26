@@ -47,3 +47,29 @@ test('SearchResults asks for a search before the first one', () => {
   render(<SearchResults results={null} searchQuery="" />);
   expect(screen.getByText(/try typing in the search bar/i)).toBeInTheDocument();
 });
+
+test('SearchResults keys binders by id, so same-named binders both render', () => {
+  const consoleError = vi.spyOn(console, 'error');
+  render(
+    <MemoryRouter>
+      <SearchResults
+        results={{
+          ...results,
+          binders: [
+            { id: 1, name: 'Worship' } as Binder,
+            { id: 4, name: 'Worship' } as Binder,
+          ],
+        }}
+        searchQuery="worship"
+        onCloseDialog={() => {}}
+      />
+    </MemoryRouter>
+  );
+
+  expect(screen.getAllByText('Worship')).toHaveLength(2);
+  const keyWarnings = consoleError.mock.calls.filter(args =>
+    String(args[0]).includes('same key')
+  );
+  expect(keyWarnings).toEqual([]);
+  consoleError.mockRestore();
+});

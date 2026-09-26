@@ -19,7 +19,7 @@ export default function SearchResults({
 }: SearchResultsProps) {
   if (results) {
     const binders = results.binders?.map(binder => (
-      <Link to={`/binders/${binder.id}`} key={binder.name}>
+      <Link to={`/binders/${binder.id}`} key={binder.id}>
         <SearchResult
           onClick={onCloseDialog}
           query={searchQuery}
