@@ -10,7 +10,7 @@ import Icon from './Icon';
 type TransposedKeyFieldProps = {
   transposedKey?: string;
   originalKey?: string;
-  onChange: (key: string) => void;
+  onChange: (key: string | null) => void;
   /** The song's content, previewed in the transposer. */
   content?: string;
   editable?: boolean;
@@ -25,7 +25,7 @@ export default function TransposedKeyField({
 }: TransposedKeyFieldProps) {
   const [showKeyTransposerDialog, setShowKeyTransposerDialog] = useState(false);
 
-  const handleKeyChange = (newKey: string) => {
+  const handleKeyChange = (newKey: string | null) => {
     onChange(newKey);
     setShowKeyTransposerDialog(false);
   };
