@@ -23,6 +23,7 @@ import {
 } from '../utils/event.utils';
 import { isEventValid } from '../validators/event';
 import { renderWithProvider } from '../utils/test';
+import Calendar from './calendar/Calendar';
 import CalendarBody from './calendar/CalendarBody';
 import CalendarEventEntry from './calendar/CalendarEventEntry';
 import CalendarHeader from './calendar/CalendarHeader';
@@ -455,6 +456,10 @@ describe('EventDetail', () => {
 });
 
 describe('calendar', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   test('CalendarEventEntry shows the time and title in the event color', () => {
     const onClick = vi.fn();
     render(<CalendarEventEntry event={event} onClick={onClick} />);
@@ -474,6 +479,61 @@ describe('calendar', () => {
       />
     );
     expect(screen.getByRole('button').className).toContain('text-black');
+  });
+
+  test('CalendarEventEntry follows its event color, including to none', () => {
+    const { rerender } = render(
+      <CalendarEventEntry event={event} onClick={vi.fn()} />
+    );
+    rerender(
+      <CalendarEventEntry
+        event={{ ...event, color: undefined }}
+        onClick={vi.fn()}
+      />
+    );
+    const button = screen.getByRole('button');
+    expect(button.className).toContain('text-black');
+    expect(button.className).not.toContain('bg-red-500');
+  });
+
+  test('Calendar shows the events of the month it moves to', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 8, 15));
+    const september = {
+      ...event,
+      id: 1,
+      title: 'Practice',
+      start_time: '2026-09-20T19:30:00',
+    };
+    const october = {
+      ...event,
+      id: 2,
+      title: 'Retreat',
+      start_time: '2026-10-03T09:00:00',
+    };
+    const calendar = (events: CalendarEvent[]) => (
+      <Calendar
+        events={events}
+        onEventDeleted={vi.fn()}
+        onEventUpdated={vi.fn()}
+      />
+    );
+    const { rerender } = render(calendar([september]));
+    expect(screen.getByText('September 2026')).toBeInTheDocument();
+    expect(screen.getByText(/Practice/)).toBeInTheDocument();
+
+    // The header's buttons are previous, then next.
+    fireEvent.click(screen.getAllByRole('button')[1]);
+    expect(screen.getByText('October 2026')).toBeInTheDocument();
+    expect(screen.queryByText(/Practice/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Retreat/)).not.toBeInTheDocument();
+
+    rerender(calendar([september, october]));
+    expect(screen.getByText(/Retreat/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByRole('button')[0]);
+    expect(screen.getByText('September 2026')).toBeInTheDocument();
+    expect(screen.getByText(/Practice/)).toBeInTheDocument();
   });
 
   test.each([
