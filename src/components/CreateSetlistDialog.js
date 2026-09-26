@@ -40,7 +40,7 @@ export default function CreateSetlistDialog({ open, onCloseDialog }) {
 
   const isDateValid = () => {
     let dateToValidate = new Date(scheduledDate);
-    return !isNaN(dateToValidate);
+    return !isNaN(dateToValidate.getTime());
   };
 
   const canCreate = name && isDateValid();

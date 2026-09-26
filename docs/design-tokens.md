@@ -61,7 +61,7 @@ has an `-emphasized` variant that is one weight heavier (400 → 500, 500 → 70
 | State layer   | `state-layer`                                                                                                                                                                                   | `currentColor` overlay at 8% hover, 10% focus, 10% pressed, 16% dragged (`data-dragging`). Uses `::before`, drawn behind the content |
 | Focus ring    | `focus-ring`                                                                                                                                                                                    | 3px `secondary` outline, 2px offset, on `:focus-visible`                                                                             |
 
-## Motion (`src/styles/motion.css`, `src/utils/spring.js`)
+## Motion (`src/styles/motion.css`, `src/utils/spring.ts`)
 
 M3 Expressive uses **spatial** springs for position, size and corners (these
 may overshoot) and **effects** springs for color and opacity (these don't).
@@ -84,7 +84,7 @@ Each comes in fast, default and slow.
   selected (`aria-pressed`, `aria-selected`, `data-selected`). Set
   `--shape-morph-to` to change the target radius.
 - **Springs, for interruptible or gesture motion:** use `createSpring` from
-  `src/utils/spring.js`. It's a small integrator with the androidx
+  `src/utils/spring.ts`. It's a small integrator with the androidx
   `ExpressiveMotionTokens` damping and stiffness values (`SPRINGS.fastSpatial`
   and so on), and has no dependencies. Retargeting mid-flight keeps the
   velocity, so a sheet can be flung and caught.

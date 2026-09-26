@@ -28,7 +28,7 @@ export default function ChangeSetlistDateDialog({
 
   const handleDateChange = newDate => {
     let dateToValidate = new Date(newDate);
-    setDateValid(!isNaN(dateToValidate));
+    setDateValid(!isNaN(dateToValidate.getTime()));
     setEditingScheduledDate(newDate);
   };
 

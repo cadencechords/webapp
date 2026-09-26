@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 
 export function toMonthYearDate(dateToConvert) {
   if (dateToConvert instanceof String || typeof dateToConvert === 'string') {
-    dateToConvert = new Date(dateToConvert);
+    // `String()` unwraps a `String` object, as `new Date` already did.
+    dateToConvert = new Date(String(dateToConvert));
     dateToConvert.setDate(dateToConvert.getDate() + 1);
   }
 

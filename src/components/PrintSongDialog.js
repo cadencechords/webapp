@@ -54,7 +54,9 @@ export default function PrintSongDialog({
   });
 
   useEffect(() => {
-    updateInstance(getSongWithKeyType(), showChords);
+    // `updateInstance` takes no arguments: it re-renders the document last
+    // passed to `usePDF` above, which is built from the same values.
+    updateInstance();
   }, [song, showChords, updateInstance, getSongWithKeyType]);
 
   const handleCloseDialog = () => {
