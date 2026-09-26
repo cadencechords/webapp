@@ -131,7 +131,8 @@ export default function AutoscrollSheet({
   async function handleSaveChanges() {
     try {
       setLoading(true);
-      await SongApi.updateOneById(song.id, updates);
+      // Only the save button calls this, and it renders only with updates.
+      await SongApi.updateOneById(song.id, updates!);
     } catch (error) {
       reportError(error);
     } finally {

@@ -45,6 +45,7 @@ function SetPresenter() {
   const setlist = useSelector(selectSetlistBeingPresented);
   const [songs, setSongs] = useState([]);
   const [songBeingViewedIndex, setSongBeingViewedIndex] = useState(0);
+  /** @type {{ id: string }} */
   const { id } = useParams();
   const router = useHistory();
   const dispatch = useDispatch();

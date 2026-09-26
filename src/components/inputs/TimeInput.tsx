@@ -31,7 +31,7 @@ export default function TimeInput({
   const [minute, setMinute] = useState(() =>
     defaultValue ? parseMinutes(defaultValue) : ''
   );
-  const [period, setPeriod] = useState(() =>
+  const [period, setPeriod] = useState<string>(() =>
     defaultValue ? parsePeriod(defaultValue) : 'PM'
   );
   const hourInput = createRef<HTMLInputElement>();
@@ -53,7 +53,8 @@ export default function TimeInput({
         isSingleDigitHour(potentialHour) ||
         doubleDigitsProvided(potentialHour)
       ) {
-        minuteInput.current.focus();
+        // Both inputs are mounted while one of them handles a change.
+        minuteInput.current!.focus();
       }
     }
 

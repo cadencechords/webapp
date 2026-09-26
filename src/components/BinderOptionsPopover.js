@@ -16,7 +16,8 @@ export default function BinderOptionsPopover({ onChangeColorClick }) {
   const currentMember = useSelector(selectCurrentMember);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useHistory();
-  const id = useParams().id;
+  // The route's path declares :id, which useParams can't see.
+  const id = /** @type {{ id: string }} */ (useParams()).id;
 
   let button = (
     <Button variant="icon" color="gray" size="md">

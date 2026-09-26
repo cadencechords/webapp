@@ -66,7 +66,9 @@ export default function RoadmapDragDropContext({
           <div
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            ref={provided.ref}
+            // No ref, as before: this passed provided.ref, which
+            // DraggableProvided doesn't have (it's always undefined).
+            // react-beautiful-dnd documents provided.innerRef for clones.
             style={getItemStyle(
               snapshot.isDragging,
               provided.draggableProps.style

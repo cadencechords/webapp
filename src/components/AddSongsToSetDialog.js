@@ -25,7 +25,8 @@ export default function AddSongsToSetDialog({
   const [filteredSongs, setFilteredSongs] = useState([]);
   const [savingAdds, setSavingAdds] = useState(false);
 
-  const id = useParams().id;
+  // The route's path declares :id, which useParams can't see.
+  const id = /** @type {{ id: string }} */ (useParams()).id;
 
   useEffect(() => {
     async function fetchSongs() {

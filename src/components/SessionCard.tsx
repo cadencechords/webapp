@@ -41,7 +41,9 @@ export default function SessionCard({
     try {
       setEnding(true);
       await SessionsApi.endSession(session.setlist_id, session.id);
-      onSessionEnded(session);
+      // Kept as before: when it's missing (SessionsSheet), this throws and the
+      // catch below reports it. See the prop.
+      onSessionEnded!(session);
     } catch (error) {
       reportError(error);
       setEnding(false);
@@ -69,7 +71,8 @@ export default function SessionCard({
           color="red"
           size="xs"
           loading={ending}
-          onClick={() => onLeave(session)}
+          // Passed wherever isActive is (SessionsSheet).
+          onClick={() => onLeave!(session)}
           full={true}
         >
           Leave session

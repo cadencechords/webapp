@@ -20,10 +20,12 @@ export default function useRemoveSongFromBinder({
     onSuccess: (_, variables) => {
       const { binderId, songId } = variables;
       const binderKey = ['binders', `${binderId}`];
-      const binder = queryClient.getQueryData<Binder>(binderKey);
+      // Songs are removed from the binder's page, which has loaded the binder
+      // and its songs into this query.
+      const binder = queryClient.getQueryData<Binder>(binderKey)!;
       const updatedBinder = {
         ...binder,
-        songs: binder.songs.filter(song => song.id !== songId),
+        songs: binder.songs!.filter(song => song.id !== songId),
       };
       queryClient.setQueryData<Binder>(binderKey, updatedBinder);
 

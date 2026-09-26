@@ -50,7 +50,7 @@ export default class SetlistApi {
         name?: string;
         scheduled_date?: Date | string;
         should_add_to_calendar?: boolean;
-        team_id?: Id;
+        team_id?: Id | null;
       } = {};
 
       if (newSetlist.name) allowedParams.name = newSetlist.name;
@@ -95,7 +95,7 @@ export default class SetlistApi {
     songId: Id,
     setlistId: Id
   ) {
-    const allowedParams: { position?: number; team_id?: Id } = {};
+    const allowedParams: { position?: number; team_id?: Id | null } = {};
 
     if (updates.position !== undefined && updates.position !== null)
       allowedParams.position = updates.position;
@@ -126,7 +126,7 @@ export default class SetlistApi {
         name?: string;
         scheduled_date?: Date | string;
         public_link_enabled?: boolean;
-        team_id?: Id;
+        team_id?: Id | null;
       } = {};
 
       if (updates.name) allowedParams.name = updates.name;

@@ -9,7 +9,7 @@ import {
   useUpdateCapo,
 } from '../hooks/api/capo.hooks';
 import Icon from './Icon';
-import type { Capo, Song } from '../types';
+import type { Song } from '../types';
 
 type CapoKeySheetProps = {
   onChangeSheet: (sheet: string) => void;
@@ -26,7 +26,7 @@ export default function CapoKeySheet({
   className,
 }: CapoKeySheetProps) {
   /** The picked capo, until it's saved. */
-  const [updatedKey, setUpdatedKey] = useState<Partial<Capo> | null>();
+  const [updatedKey, setUpdatedKey] = useState<Song['capo']>();
   const { isLoading: isDeleting, run: deleteCapo } = useDeleteCapo({
     onSuccess: () => {
       setUpdatedKey(null);
@@ -60,7 +60,8 @@ export default function CapoKeySheet({
   }
 
   function handleSave() {
-    const { id, capo_key } = updatedKey;
+    // Only the save button calls this, and it renders only with updatedKey.
+    const { id, capo_key } = updatedKey!;
 
     // no capo previously, nothing to delete
     if (!id && !capo_key) {
@@ -74,8 +75,8 @@ export default function CapoKeySheet({
     else if (id && capo_key) {
       updateCapo({ songId: song.id, capoId: id, capo_key });
     }
-    // creating new capo
-    else {
+    // creating new capo (capo_key is always set here)
+    else if (capo_key) {
       createCapo({ songId: song.id, capo_key });
     }
   }

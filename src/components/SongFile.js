@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 import { useState } from 'react';
 
 export default function SongFile({ file, onDelete, onUpdate }) {
+  /** @type {{ id: string }} */
   const { id: songId } = useParams();
   const [showEditDialog, setShowEditDialog] = useState(false);
 

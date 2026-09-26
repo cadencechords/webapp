@@ -18,6 +18,7 @@ export default function ChangeSetlistDateDialog({
     useState(scheduledDate);
   const [dateValid, setDateValid] = useState(false);
   const [updating, setUpdating] = useState(false);
+  /** @type {{ id: string }} */
   const { id } = useParams();
 
   useEffect(() => {

@@ -22,6 +22,7 @@ import Icon from '../components/Icon';
 export default function EditCalendarEventPage() {
   const { form, setForm, clearForm, isValid } = useEventForm();
   const [originalValue, setOriginalValue] = useState(form);
+  /** @type {{ id: string }} */
   const { id } = useParams();
   const router = useHistory();
 
