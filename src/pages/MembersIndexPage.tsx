@@ -85,7 +85,9 @@ export default function MembersIndexPage() {
 
   const handlePositionChanged = (userId: number, newPosition: string) => {
     const membersCopy = members.slice();
-    const memberToUpdateIndex = members.findIndex(member => member.id === userId);
+    const memberToUpdateIndex = members.findIndex(
+      member => member.id === userId
+    );
     const updatedMember = membersCopy[memberToUpdateIndex];
     updatedMember.position = newPosition;
     membersCopy.splice(memberToUpdateIndex, 1, updatedMember);
