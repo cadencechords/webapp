@@ -5,8 +5,9 @@ and `docs/icons.md`.
 
 ## TypeScript only
 
-Write files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`: `src` has no
-JavaScript and `tsconfig.json` has `allowJs` off. Only `public/` (served as-is)
+Write files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`. `src` has no
+JavaScript. `tsconfig.json` has `allowJs` off, so tsc skips a stray `.js` file
+there and Vitest doesn't run `.js` tests: keep it that way by hand. Only `public/` (served as-is)
 is exempt, and Cypress (`cypress.config.js`, `cypress/`): Cypress 10 compiles
 TypeScript through the `typescript` package, which has no compiler API in
 TypeScript 7, so a `.ts` config or spec wouldn't load.
