@@ -2,19 +2,28 @@ import Button from '../components/Button';
 import FileInput from './FileInput';
 import Icon from './Icon';
 
+type OnsongChooseBackupFileProps = {
+  onBackupFileChosen: (backup: File) => void;
+  onReset: () => void;
+  backup?: File | null;
+  onChooseSongs: () => void;
+  onCancel: () => void;
+};
+
 export default function OnsongChooseBackupFile({
   onBackupFileChosen,
   onReset,
   backup,
   onChooseSongs,
   onCancel,
-}) {
+}: OnsongChooseBackupFileProps) {
   return (
     <>
       <div className="mb-10">
         <p className="text-lg mb-10">
-          To import songs from Onsong, you'll need to export your library in the
-          Onsong app first. You can learn more about exporting from Onsong{' '}
+          To import songs from Onsong, you&apos;ll need to export your library
+          in the Onsong app first. You can learn more about exporting from
+          Onsong{' '}
           <a
             href="https://onsongapp.com/docs/interface/menubar/share-menu/export/"
             rel="noreferrer"
@@ -24,7 +33,7 @@ export default function OnsongChooseBackupFile({
             here
           </a>
           . Choose the OnSong Backup option. This will save your library to a
-          single file that you'll be able to import by clicking the button
+          single file that you&apos;ll be able to import by clicking the button
           below.
         </p>
 

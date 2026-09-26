@@ -3,12 +3,18 @@ import FilesInput from '../components/FilesInput';
 import PageTitle from '../components/PageTitle';
 import { pluralize } from '../utils/StringUtils';
 
+type ImportFilesSelectionProps = {
+  filesToImport: File[];
+  onFilesChange: (files: File[]) => void;
+  onImport: () => void;
+};
+
 export default function ImportFilesSelection({
   filesToImport,
   onFilesChange,
   onImport,
-}) {
-  function handleRemove(fileToRemove) {
+}: ImportFilesSelectionProps) {
+  function handleRemove(fileToRemove: File) {
     onFilesChange(filesToImport.filter(file => file !== fileToRemove));
   }
 

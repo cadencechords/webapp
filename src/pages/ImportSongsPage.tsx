@@ -27,7 +27,7 @@ export default function ImportSongsPage() {
             }
             to="/import/planning-center"
           >
-            Import songs from your church's Planning Center account.
+            Import songs from your church&apos;s Planning Center account.
           </ImportSourceCard>
           <ImportSourceCard
             title="OnSong"
@@ -36,7 +36,7 @@ export default function ImportSongsPage() {
             }
             to="/import/onsong"
           >
-            Upload your OnSong library and choose which songs you'd like to
+            Upload your OnSong library and choose which songs you&apos;d like to
             import.
           </ImportSourceCard>
           <ImportSourceCard
@@ -52,7 +52,7 @@ export default function ImportSongsPage() {
               />
             }
           >
-            Import songs from other teams you're on in Mezzo
+            Import songs from other teams you&apos;re on in Mezzo
           </ImportSourceCard>
           <ImportSourceCard
             title="File"

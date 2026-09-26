@@ -3,9 +3,20 @@ import Button from './Button';
 import Checkbox from './Checkbox';
 import PageLoading from './PageLoading';
 import { reportError } from '../utils/error';
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useState } from 'react';
 import Icon from './Icon';
+import type { Binder } from '../types';
+
+type OnsongChooseBinderForSongsProps = {
+  /** Undefined until loaded, which this does when it mounts. */
+  binders?: Binder[];
+  onBindersLoaded: (binders: Binder[]) => void;
+  onSelectBinder: (binder: Binder) => void;
+  selectedBinder?: Binder | null;
+  onBackClick: () => void;
+  onNextClick: () => void;
+};
 
 export default function OnsongChooseBinderForSongs({
   binders,
@@ -14,13 +25,13 @@ export default function OnsongChooseBinderForSongs({
   selectedBinder,
   onBackClick,
   onNextClick,
-}) {
+}: OnsongChooseBinderForSongsProps) {
   const [loadingBinders, setLoadingBinders] = useState(false);
   useEffect(() => {
     async function fetchBinders() {
       try {
         setLoadingBinders(true);
-        let { data } = await BinderApi.getAll();
+        const { data } = await BinderApi.getAll();
         onBindersLoaded(data);
       } catch (error) {
         reportError(error);
@@ -34,7 +45,7 @@ export default function OnsongChooseBinderForSongs({
     }
   }, [binders, onBindersLoaded]);
 
-  let content = null;
+  let content: ReactNode = null;
 
   if (loadingBinders) {
     content = <PageLoading>Hang on while we pull up your binders</PageLoading>;
@@ -63,8 +74,8 @@ export default function OnsongChooseBinderForSongs({
   return (
     <>
       <p className="text-lg">
-        Choose a binder you'd like to add these songs to, or continue to the
-        next page to import the songs without adding them to a binder.
+        Choose a binder you&apos;d like to add these songs to, or continue to
+        the next page to import the songs without adding them to a binder.
       </p>
       {content}
       <div className="flex-between">

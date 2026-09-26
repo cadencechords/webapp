@@ -52,21 +52,6 @@
       "count": 1
     }
   },
-  "src/components/ImportCadenceSongsChooseSongsStep.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/ImportCadenceSongsChooseTeamStep.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/ImportSourceCard.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/KeyOptionsPopover.js": {
     "no-unused-vars": {
       "count": 1
@@ -90,26 +75,6 @@
   "src/components/MarkupPopover.js": {
     "no-unused-vars": {
       "count": 1
-    }
-  },
-  "src/components/OnsongChooseBackupFile.js": {
-    "react/no-unescaped-entities": {
-      "count": 2
-    }
-  },
-  "src/components/OnsongChooseBinderForSongs.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/components/OnsongImportStatus.js": {
-    "react/no-unescaped-entities": {
-      "count": 2
-    }
-  },
-  "src/components/OnsongReviewImport.js": {
-    "react/no-unescaped-entities": {
-      "count": 2
     }
   },
   "src/components/PublicSetlistSection.js": {
@@ -190,21 +155,6 @@
   "src/dialogs/AddTracksDialog.js": {
     "no-unused-vars": {
       "count": 1
-    }
-  },
-  "src/dialogs/SongsSelectedForImportModal.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/ImportCadenceSongsPage.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/ImportSongsPage.js": {
-    "react/no-unescaped-entities": {
-      "count": 3
     }
   }
 }

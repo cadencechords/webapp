@@ -2,6 +2,20 @@ import Button from '../components/Button';
 import OnsongsSongsList from '../components/OnsongSongsList';
 import PageLoading from './PageLoading';
 import Icon from './Icon';
+import type { OnsongFile } from '../types';
+
+type OnsongChooseSongsFromBackupProps = {
+  uploading: boolean;
+  /** The backup's songs, once it's unzipped. */
+  unzippedFiles?: OnsongFile[] | null;
+  selectedSongs: OnsongFile[];
+  onSongToggled: (selected: boolean, song: OnsongFile) => void;
+  onSelectAll: () => void;
+  onUnselectAll: () => void;
+  importing: boolean;
+  onBackClick: () => void;
+  onConfirmSongSelection: () => void;
+};
 
 export default function OnsongChooseSongsFromBackup({
   uploading,
@@ -13,7 +27,7 @@ export default function OnsongChooseSongsFromBackup({
   importing,
   onBackClick,
   onConfirmSongSelection,
-}) {
+}: OnsongChooseSongsFromBackupProps) {
   if (uploading) {
     return <PageLoading>We are pulling up your files now</PageLoading>;
   } else {

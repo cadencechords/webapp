@@ -11,7 +11,8 @@ export default function PcoRedirectPage() {
   useEffect(() => {
     async function authorize() {
       try {
-        await PlanningCenterApi.authorize(code);
+        // Non-null: authorize is only called when there's a code.
+        await PlanningCenterApi.authorize(code!);
         router.push('/import/planning-center');
       } catch (error) {
         reportError(error);

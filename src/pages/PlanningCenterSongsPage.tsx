@@ -7,7 +7,7 @@ import usePlanningCenterSongs from '../hooks/api/usePlanningCenterSongs';
 import Alert from '../components/Alert';
 import PageLoading from '../components/PageLoading';
 import WellInput from '../components/inputs/WellInput';
-import { Fragment, useState } from 'react';
+import { Fragment, useState, type ReactNode } from 'react';
 import MobileMenuButton from '../components/buttons/MobileMenuButton';
 import { PulseLoader } from 'react-spinners';
 import Checkbox from '../components/Checkbox';
@@ -19,6 +19,7 @@ import useDialog from '../hooks/useDialog';
 import SongsSelectedForImportModal from '../dialogs/SongsSelectedForImportModal';
 import useImportPlanningCenterSongs from '../hooks/api/useImportPlanningCenterSongs';
 import { toast } from 'react-toastify';
+import type { PcoSong } from '../types';
 
 export default function PlanningCenterSongsPage() {
   const [query, setQuery] = useState('');
@@ -41,12 +42,12 @@ export default function PlanningCenterSongsPage() {
         setSelectedSongs([]);
       },
     });
-  const [selectedSongs, setSelectedSongs] = useState([]);
+  const [selectedSongs, setSelectedSongs] = useState<PcoSong[]>([]);
   const [isSelectedSongsModalVisible, showSelectedSongs, hideSelectedSongs] =
     useDialog();
   const isEmpty = songPages?.length === 0 || songPages?.[0]?.length === 0;
 
-  function handleToggleSong(isChecked, song) {
+  function handleToggleSong(isChecked: boolean, song: PcoSong) {
     if (isChecked) {
       setSelectedSongs([...selectedSongs, song]);
     } else {
@@ -153,7 +154,13 @@ export default function PlanningCenterSongsPage() {
   );
 }
 
-function SaveButton({ children, loading, onClick }) {
+type SaveButtonProps = {
+  children?: ReactNode;
+  loading: boolean;
+  onClick: () => void;
+};
+
+function SaveButton({ children, loading, onClick }: SaveButtonProps) {
   return (
     <>
       <Button

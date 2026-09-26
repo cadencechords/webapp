@@ -6,13 +6,14 @@ import { Link } from 'react-router-dom';
 import ImportCadenceSongsChooseTeamStep from '../components/ImportCadenceSongsChooseTeamStep';
 import ImportCadenceSongsChooseSongsStep from '../components/ImportCadenceSongsChooseSongsStep';
 import Icon from '../components/Icon';
+import type { ImportableTeam, Song } from '../types';
 
 export default function ImportCadenceSongsPage() {
-  const [selectedTeam, setSelectedTeam] = useState();
-  const [selectedSongs, setSelectedSongs] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState<ImportableTeam | null>();
+  const [selectedSongs, setSelectedSongs] = useState<Song[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
 
-  function handleToggleSong(isChecked, song) {
+  function handleToggleSong(isChecked: boolean, song: Song) {
     if (isChecked) {
       setSelectedSongs([...selectedSongs, song]);
     } else {
@@ -26,7 +27,7 @@ export default function ImportCadenceSongsPage() {
     setCurrentStep(0);
   }
 
-  function handleChooseTeam(team) {
+  function handleChooseTeam(team: ImportableTeam) {
     setSelectedTeam(team);
     setSelectedSongs([]);
   }
@@ -51,7 +52,12 @@ export default function ImportCadenceSongsPage() {
   );
 }
 
-function ResultStep({ currentStep, onStartOver }) {
+type ResultStepProps = {
+  currentStep: number;
+  onStartOver: () => void;
+};
+
+function ResultStep({ currentStep, onStartOver }: ResultStepProps) {
   if (currentStep !== 2) {
     return null;
   }

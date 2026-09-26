@@ -2,7 +2,18 @@ import Button from './Button';
 import { Link } from 'react-router-dom';
 import PageLoading from './PageLoading';
 
-export default function OnsongImportStatus({ importing, errors, onReset }) {
+type OnsongImportStatusProps = {
+  importing: boolean;
+  /** The names of the songs that failed to import. */
+  errors?: string[];
+  onReset: () => void;
+};
+
+export default function OnsongImportStatus({
+  importing,
+  errors,
+  onReset,
+}: OnsongImportStatusProps) {
   if (importing) {
     return (
       <PageLoading>
@@ -15,8 +26,8 @@ export default function OnsongImportStatus({ importing, errors, onReset }) {
     return (
       <div>
         <h4 className="text-xl font-semibold">
-          Uh oh, looks like we couldn't import some songs. This is most likely
-          due to an error in the file's encoding.
+          Uh oh, looks like we couldn&apos;t import some songs. This is most
+          likely due to an error in the file&apos;s encoding.
         </h4>
         <div className="mb-4">
           {errors?.map((songName, index) => (

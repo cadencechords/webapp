@@ -2,13 +2,21 @@ import React from 'react';
 import Modal from '../components/Modal';
 import Checkbox from '../components/Checkbox';
 import { pluralize } from '../utils/StringUtils';
+import type { PcoSong } from '../types';
+
+type SongsSelectedForImportModalProps = {
+  open: boolean;
+  onClose: () => void;
+  selectedSongs: PcoSong[];
+  onRemoveSong: (song: PcoSong) => void;
+};
 
 export default function SongsSelectedForImportModal({
   open,
   onClose,
   selectedSongs,
   onRemoveSong,
-}) {
+}: SongsSelectedForImportModalProps) {
   return (
     <Modal
       open={open}

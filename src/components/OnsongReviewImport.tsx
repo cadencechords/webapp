@@ -1,12 +1,20 @@
 import Button from './Button';
 import Icon from './Icon';
+import type { Binder, OnsongFile } from '../types';
+
+type OnsongReviewImportProps = {
+  selectedBinder?: Binder | null;
+  selectedSongs: OnsongFile[];
+  onBackClick: () => void;
+  onConfirm: () => void;
+};
 
 export default function OnsongReviewImport({
   selectedBinder,
   selectedSongs,
   onBackClick,
   onConfirm,
-}) {
+}: OnsongReviewImportProps) {
   return (
     <>
       <div>
@@ -25,7 +33,7 @@ export default function OnsongReviewImport({
         </div>
         {selectedBinder && (
           <h2 className="mb-4 text-2xl font-semibold">
-            Into the "{selectedBinder.name}" binder
+            Into the &quot;{selectedBinder.name}&quot; binder
           </h2>
         )}
       </div>

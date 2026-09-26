@@ -11,39 +11,40 @@ import { selectCurrentMember } from '../store/authSlice';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import type { Binder, OnsongFile } from '../types';
 
 export default function OnsongImportPage() {
-  const [backup, setBackup] = useState();
-  const [unzippedFiles, setUnzippedFiles] = useState(
-    /** @type {import('../types').OnsongFile[] | null | undefined} */ (
-      undefined
-    )
-  );
-  const [selectedSongs, setSelectedSongs] = useState([]);
+  const [backup, setBackup] = useState<File | null>();
+  const [unzippedFiles, setUnzippedFiles] = useState<
+    OnsongFile[] | null | undefined
+  >(undefined);
+  const [selectedSongs, setSelectedSongs] = useState<OnsongFile[]>([]);
   const [importing, setImporting] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [errors, setErrors] = useState();
+  const [errors, setErrors] = useState<string[]>();
   const [wizardStep, setWizardStep] = useState(0);
-  const [binders, setBinders] = useState();
-  const [importId, setImportId] = useState(
-    /** @type {number | null | undefined} */ (undefined)
+  const [binders, setBinders] = useState<Binder[]>();
+  const [importId, setImportId] = useState<number | null | undefined>(
+    undefined
   );
-  const [selectedBinder, setSelectedBinder] = useState(
-    /** @type {import('../types').Binder | null | undefined} */ (undefined)
-  );
+  const [selectedBinder, setSelectedBinder] = useState<
+    Binder | null | undefined
+  >(undefined);
   const router = useHistory();
   const currentMember = useSelector(selectCurrentMember);
 
-  if (!currentMember.can(ADD_SONGS)) {
+  // Non-null: kept as before, this throws if the page renders before the
+  // membership loads.
+  if (!currentMember!.can(ADD_SONGS)) {
     router.push('/songs');
   }
 
-  const handleBackupFileChosen = async backup => {
+  const handleBackupFileChosen = async (backup: File) => {
     setBackup(backup);
     try {
       setUploading(true);
       handleNextStep();
-      let { data } = await OnsongApi.unzip(backup);
+      const { data } = await OnsongApi.unzip(backup);
       setUnzippedFiles(data.files);
       setImportId(data.id);
     } catch (error) {
@@ -62,7 +63,7 @@ export default function OnsongImportPage() {
     setImportId(null);
   };
 
-  const handleSongToggled = (selected, toggledSong) => {
+  const handleSongToggled = (selected: boolean, toggledSong: OnsongFile) => {
     if (selected) {
       setSelectedSongs(currentSelection => [...currentSelection, toggledSong]);
     } else {
@@ -78,10 +79,18 @@ export default function OnsongImportPage() {
     try {
       handleNextStep();
       setImporting(true);
-      await OnsongApi.import(selectedSongs, selectedBinder?.id, importId);
+      // Non-null: songs can only be chosen once the backup is unzipped, which
+      // sets importId, so it's set by the time the import is confirmed.
+      await OnsongApi.import(selectedSongs, selectedBinder?.id, importId!);
     } catch (error) {
       reportError(error);
-      setErrors(error.response.data?.errors);
+      // OnsongApi.import rejects with an axios error, and the API lists the
+      // songs it couldn't import in `errors`. As before, this throws if there
+      // was no response.
+      setErrors(
+        (error as { response: { data?: { errors?: string[] } } }).response.data
+          ?.errors
+      );
     } finally {
       setImporting(false);
     }
@@ -98,7 +107,7 @@ export default function OnsongImportPage() {
     setWizardStep(current => current - 1);
   };
 
-  const handleSelectBinder = binder => {
+  const handleSelectBinder = (binder: Binder) => {
     if (selectedBinder === binder) {
       setSelectedBinder(null);
     } else {
@@ -122,7 +131,9 @@ export default function OnsongImportPage() {
         return (
           <OnsongChooseSongsFromBackup
             uploading={uploading}
-            onSelectAll={() => setSelectedSongs(unzippedFiles)}
+            // Non-null: "Check all" only shows once the list of unzipped
+            // files does.
+            onSelectAll={() => setSelectedSongs(unzippedFiles!)}
             onUnselectAll={() => setSelectedSongs([])}
             onSongToggled={handleSongToggled}
             importing={importing}

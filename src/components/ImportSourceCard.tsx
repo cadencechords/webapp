@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import Card from './Card';
 import Button from './Button';
 import { Link } from 'react-router-dom';
 
-export default function ImportSourceCard({ title, children, image, to }) {
+type ImportSourceCardProps = {
+  title: string;
+  children?: ReactNode;
+  image: ReactNode;
+  to: string;
+};
+
+export default function ImportSourceCard({
+  title,
+  children,
+  image,
+  to,
+}: ImportSourceCardProps) {
   return (
     <Card className="flex flex-col justify-between dark:bg-dark-gray-800">
       <div>

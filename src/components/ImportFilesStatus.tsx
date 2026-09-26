@@ -2,7 +2,18 @@ import Button from './Button';
 import { Link } from 'react-router-dom';
 import PageLoading from './PageLoading';
 
-export default function ImportFilesStatus({ errors, loading, onReset }) {
+type ImportFilesStatusProps = {
+  /** The import's error messages, one per file that failed. */
+  errors: string[];
+  loading: boolean;
+  onReset: () => void;
+};
+
+export default function ImportFilesStatus({
+  errors,
+  loading,
+  onReset,
+}: ImportFilesStatusProps) {
   function buildErrors() {
     return (
       <div>
