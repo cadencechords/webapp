@@ -1,6 +1,15 @@
 import MobileMenuButton from './buttons/MobileMenuButton';
 import Range from './Range';
 import Icon from './Icon';
+import type { Song } from '../types';
+
+type SongAdjustmentsDrawerAutoscrollSheetProps = {
+  onShowMainSheet: () => void;
+  song: Song;
+  onSongChange: (field: 'scroll_speed', value: number) => void;
+  autoScrolling?: boolean;
+  onToggleAutoScrolling?: () => void;
+};
 
 export default function SongAdjustmentsDrawerAutoscrollSheet({
   onShowMainSheet,
@@ -8,7 +17,7 @@ export default function SongAdjustmentsDrawerAutoscrollSheet({
   onSongChange,
   autoScrolling,
   onToggleAutoScrolling,
-}) {
+}: SongAdjustmentsDrawerAutoscrollSheetProps) {
   const iconClasses = 'w-5 h-5 mr-3 text-blue-600';
   return (
     <div>

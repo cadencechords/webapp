@@ -4,13 +4,22 @@ import AliceCarousel from 'react-alice-carousel';
 import SongsCarouselSlide from './SongsCarouselSlide';
 import { useState } from 'react';
 import usePerformanceMode from '../hooks/usePerformanceMode';
+import type { ComponentProps } from 'react';
+import type { PresentedSong } from '../store/presenterSlice';
+
+type SongsCarouselProps = {
+  songs: PresentedSong[];
+  index: number;
+  onIndexChange: (index: number) => void;
+  onSongUpdate: ComponentProps<typeof SongsCarouselSlide>['onSongUpdate'];
+};
 
 export default function SongsCarousel({
   songs,
   index,
   onIndexChange,
   onSongUpdate,
-}) {
+}: SongsCarouselProps) {
   const { isPerforming } = usePerformanceMode();
   const [isSwipeEnabled, setIsSwipeEnabled] = useState(true);
 

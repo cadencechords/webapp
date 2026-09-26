@@ -1,6 +1,20 @@
 import AutoscrollSheet from './AutoscrollSheet';
 import BottomSheet from './BottomSheet';
 import SessionsSheet from './SessionsSheet';
+import type { Song } from '../types';
+
+/** The bottom sheets the set presenter shows. */
+export type SetPresenterSheet = 'autoscroll' | 'sessions';
+
+type SetPresenterBottomSheetProps = {
+  /** Undefined until the setlist's songs load. */
+  song: Song | undefined;
+  /** '' until one is picked; then both sheets are hidden. */
+  sheet: SetPresenterSheet | '';
+  open: boolean;
+  onClose: () => void;
+  onSongUpdate: (field: 'scroll_speed', value: number) => void;
+};
 
 export default function SetPresenterBottomSheet({
   song,
@@ -8,8 +22,8 @@ export default function SetPresenterBottomSheet({
   open,
   onClose,
   onSongUpdate,
-}) {
-  function isHidden(sheetInQuestion) {
+}: SetPresenterBottomSheetProps) {
+  function isHidden(sheetInQuestion: SetPresenterSheet) {
     return sheet === sheetInQuestion ? '' : 'hidden';
   }
 

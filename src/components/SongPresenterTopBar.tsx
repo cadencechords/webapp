@@ -15,6 +15,18 @@ import {
   useDeleteBulkAnnotations,
 } from '../hooks/api/annotations.hooks';
 import Icon from './Icon';
+import type { ReactNode } from 'react';
+import type { PresentedSong } from '../store/presenterSlice';
+import type { AnnotationPath } from '../types';
+
+type SongPresenterTopBarProps = {
+  song: PresentedSong;
+  onShowOptionsDrawer: () => void;
+  /** KeyOptionsPopover passes the song's changed fields. */
+  onUpdateSong: (updates: Partial<PresentedSong>) => void;
+  onAddNote: () => void;
+  onShowMarkingsModal: () => void;
+};
 
 export default function SongPresenterTopBar({
   song,
@@ -22,7 +34,7 @@ export default function SongPresenterTopBar({
   onUpdateSong,
   onAddNote,
   onShowMarkingsModal,
-}) {
+}: SongPresenterTopBarProps) {
   const { isAnnotating } = usePerformanceMode();
   if (!song)
     return (
@@ -54,10 +66,11 @@ function DefaultTopBar({
   onAddNote,
   onShowMarkingsModal,
   onShowOptionsDrawer,
-}) {
-  /** @type {{ id: string }} */
-  const { id } = useParams();
-  const currentSubscription = useSelector(selectCurrentSubscription);
+}: SongPresenterTopBarProps) {
+  const { id } = useParams<{ id: string }>();
+  // Non-null: kept as before. SecuredRoutes renders pages once the team is
+  // set, and the subscription is dispatched right after it.
+  const currentSubscription = useSelector(selectCurrentSubscription)!;
   return (
     <>
       <Link to={`/songs/${id}`}>
@@ -107,7 +120,9 @@ function AnnotationsTopBar() {
     const { newAnnotations, deletedAnnotations } =
       determineChangesInAnnotations({
         updatedAnnotations: annotationChanges,
-        previousAnnotations: song.annotations,
+        // Non-null: kept as before, this throws for a song without
+        // annotations.
+        previousAnnotations: song.annotations!,
       });
 
     let finalAnnotations = song.annotations || [];
@@ -116,20 +131,25 @@ function AnnotationsTopBar() {
       if (newAnnotations.length > 0) {
         finalAnnotations = await createBulkAnnotations({
           annotations: newAnnotations,
-          songId: song.id,
+          // Non-null (here and below): this top bar renders only once
+          // SongPresenterPage has a whole song on screen.
+          songId: song.id!,
         });
       }
 
       if (deletedAnnotations.length > 0) {
-        const annotationIds = deletedAnnotations.map(a => a.id);
+        // Non-null: these came from the song, and saved annotations have ids.
+        const annotationIds = deletedAnnotations.map(a => a.id!);
 
         await deleteBulkAnnotations({
           annotationIds,
-          songId: song.id,
+          songId: song.id!,
         });
 
         finalAnnotations = finalAnnotations.filter(
-          annotation => !annotationIds.includes(annotation.id)
+          // Non-null: the song's annotations and the ones the API just
+          // created are all saved, so they have ids.
+          annotation => !annotationIds.includes(annotation.id!)
         );
       }
 
@@ -139,7 +159,7 @@ function AnnotationsTopBar() {
     }
   }
 
-  function handleSuccess(finalAnnotations) {
+  function handleSuccess(finalAnnotations: AnnotationPath[]) {
     updateSongOnScreen('annotations', finalAnnotations);
     setAnnotationChanges([]);
     beginPerforming();
@@ -162,7 +182,7 @@ function AnnotationsTopBar() {
   );
 }
 
-function HeaderTitle({ children }) {
+function HeaderTitle({ children }: { children: ReactNode }) {
   return (
     <h1 className="w-1/3 overflow-hidden font-semibold text-center text-ellipsis whitespace-nowrap">
       {children}
@@ -173,6 +193,9 @@ function HeaderTitle({ children }) {
 function determineChangesInAnnotations({
   updatedAnnotations,
   previousAnnotations,
+}: {
+  updatedAnnotations: AnnotationPath[];
+  previousAnnotations: AnnotationPath[];
 }) {
   const newAnnotations = updatedAnnotations.filter(
     annotation => !annotation.id

@@ -13,6 +13,22 @@ import { useSessionsContext } from '../contexts/SessionsProvider';
 import NumberBadge from './NumberBadge';
 import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
 import Icon from './Icon';
+import type { SetPresenterSheet } from './SetPresenterBottomSheet';
+import type { Setlist, Song, SongFormat } from '../types';
+
+type SetlistAdjustmentsDrawerProps = {
+  song: Song;
+  onSongUpdate: <K extends 'format' | 'show_roadmap'>(
+    field: K,
+    value: Song[K]
+  ) => void;
+  open: boolean;
+  onClose: () => void;
+  onShowBottomSheet: (sheet: SetPresenterSheet) => void;
+  setlist: Setlist;
+  currentSongIndex: number;
+  onAddNote: () => void;
+};
 
 export default function SetlistAdjustmentsDrawer({
   song,
@@ -23,9 +39,12 @@ export default function SetlistAdjustmentsDrawer({
   setlist,
   currentSongIndex,
   onAddNote,
-}) {
-  const currentMember = useSelector(selectCurrentMember);
-  const currentSubscription = useSelector(selectCurrentSubscription);
+}: SetlistAdjustmentsDrawerProps) {
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
+  // Non-null: kept as before. SecuredRoutes renders pages once the team is
+  // set, and the subscription is dispatched right after it.
+  const currentSubscription = useSelector(selectCurrentSubscription)!;
   const iconClasses = 'w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue';
   const {
     sessions,
@@ -35,8 +54,8 @@ export default function SetlistAdjustmentsDrawer({
     activeSessionDetails: { isHost, activeSession },
   } = useSessionsContext();
 
-  function handleFormatUpdate(field, value) {
-    let updatedFormat = { ...song.format, [field]: value };
+  function handleFormatUpdate(field: keyof SongFormat, value: boolean) {
+    const updatedFormat = { ...song.format, [field]: value };
     onSongUpdate('format', updatedFormat);
   }
 
@@ -142,10 +161,16 @@ export default function SetlistAdjustmentsDrawer({
           <MobileMenuButton
             full
             className="flex items-center"
-            disabled={activeSession && isHost}
+            // Boolean(): without an active session this was null, which both
+            // components treat like false (it skips MobileMenuButton's
+            // default, and a null `disabled` renders no attribute).
+            disabled={Boolean(activeSession && isHost)}
             onClick={() => onShowBottomSheet('sessions')}
           >
-            <NumberBadge className="mr-2" disabled={activeSession && isHost}>
+            <NumberBadge
+              className="mr-2"
+              disabled={Boolean(activeSession && isHost)}
+            >
               {sessions.length}
             </NumberBadge>
             <div>View sessions</div>

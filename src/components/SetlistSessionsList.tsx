@@ -1,22 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import SessionsApi from '../api/sessionsApi';
 import { reportError } from '../utils/error';
 import NoDataMessage from './NoDataMessage';
 import SessionCard from './SessionCard';
+import type { Session, Setlist } from '../types';
+
+type SetlistSessionsListProps = {
+  setlist: Setlist;
+  onSessionsChange: (sessions: Session[]) => void;
+  sessions: Session[];
+  onJoinSession: (session: Session) => void;
+};
 
 export default function SetlistSessionsList({
   setlist,
   onSessionsChange,
   sessions,
   onJoinSession,
-}) {
+}: SetlistSessionsListProps) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        let { data } = await SessionsApi.getActiveSessions(setlist.id);
+        const { data } = await SessionsApi.getActiveSessions(setlist.id);
         onSessionsChange(data);
       } catch (error) {
         reportError(error);
@@ -30,8 +38,8 @@ export default function SetlistSessionsList({
     }
   }, [setlist.id, onSessionsChange]);
 
-  function handleSessionEnded(endedSession) {
-    let updatedSessions = sessions.filter(s => s.id !== endedSession.id);
+  function handleSessionEnded(endedSession: Session) {
+    const updatedSessions = sessions.filter(s => s.id !== endedSession.id);
     onSessionsChange(updatedSessions);
   }
 

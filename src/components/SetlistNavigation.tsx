@@ -1,7 +1,18 @@
 import MobileMenuButton from './buttons/MobileMenuButton';
 import Icon from './Icon';
+import type { Song } from '../types';
 
-export default function SetlistNavigation({ songs, onIndexChange, index }) {
+type SetlistNavigationProps = {
+  songs: Song[];
+  onIndexChange: (index: number) => void;
+  index: number;
+};
+
+export default function SetlistNavigation({
+  songs,
+  onIndexChange,
+  index,
+}: SetlistNavigationProps) {
   return (
     <>
       <div className="fixed bottom-0 w-full flex border-t dark:border-dark-gray-600 bg-white dark:bg-dark-gray-900">

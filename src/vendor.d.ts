@@ -54,3 +54,30 @@ declare module 'react-textfit' {
   export const Textfit: ComponentType<TextfitProps>;
   export default Textfit;
 }
+
+declare module 'lodash' {
+  /**
+   * `func`, called once calls stop for `wait` milliseconds. F is `func`'s
+   * type: `object` rather than a function type, so that the unannotated
+   * parameters of JavaScript callers stay untyped. lodash converts `wait` to
+   * a number, so Note's `[1200]` waits 1200 ms.
+   */
+  export function debounce<F extends object>(
+    func: F,
+    wait?: number | [number]
+  ): F & { cancel(): void; flush(): void };
+
+  /** True for `{}`, `[]`, `''`, null and undefined, among others. */
+  export function isEmpty(value?: unknown): boolean;
+
+  /** Deep equality. */
+  export function isEqual(value: unknown, other: unknown): boolean;
+
+  /** The default export also holds the functions. */
+  const _: {
+    debounce: typeof debounce;
+    isEmpty: typeof isEmpty;
+    isEqual: typeof isEqual;
+  };
+  export default _;
+}
