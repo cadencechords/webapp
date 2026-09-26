@@ -1,5 +1,5 @@
 // Tests for the adversarial review gate: the PreToolUse hook (through its
-// fail-closed wrapper) and record.mjs. Each test gets its own throwaway repo and
+// fail-closed wrapper) and record.mts. Each test gets its own throwaway repo and
 // remote, so the real repo and its review records are never touched.
 // Run: yarn test:hooks
 import assert from 'node:assert/strict';
@@ -14,11 +14,12 @@ import {
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
+import type { TestContext } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const wrapper = path.join(here, 'run-hook.sh');
-const recorder = path.resolve(here, '../skills/adversarial-review/record.mjs');
+const recorder = path.resolve(here, '../skills/adversarial-review/record.mts');
 const GH = 'gh';
 const CREATE = [GH, 'pr', 'create'].join(' '); // spelled out so this file's own tooling never trips the hook
 const CHECK_SCRIPTS = [
@@ -31,13 +32,13 @@ const CHECK_SCRIPTS = [
 ];
 
 // A repo cloned from a bare "acme/app" remote, with main and feat pushed. Its
-// package.json defines record.mjs's checks as scripts that succeed.
-function fixture(t) {
+// package.json defines record.mts's checks as scripts that succeed.
+function fixture(t: TestContext) {
   const root = mkdtempSync(path.join(os.tmpdir(), 'review-gate-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const origin = path.join(root, 'acme', 'app.git');
   const work = path.join(root, 'work');
-  const git = (cwd, ...args) =>
+  const git = (cwd: string, ...args: string[]) =>
     execFileSync(
       'git',
       [
@@ -58,14 +59,17 @@ function fixture(t) {
   mkdirSync(origin, { recursive: true });
   git(origin, 'init', '--bare', '--quiet');
   git(root, 'clone', '--quiet', origin, work);
-  const commit = (message, files = { 'file.txt': message }) => {
+  const commit = (
+    message: string,
+    files: Record<string, string> = { 'file.txt': message }
+  ) => {
     for (const [name, content] of Object.entries(files))
       writeFileSync(path.join(work, name), content);
     git(work, 'add', ...Object.keys(files));
     git(work, 'commit', '--quiet', '-m', message);
     return git(work, 'rev-parse', 'HEAD');
   };
-  const scripts = failing =>
+  const scripts = (failing?: string) =>
     Object.fromEntries(
       CHECK_SCRIPTS.map(name => [name, name === failing ? 'false' : 'true'])
     );
@@ -81,7 +85,7 @@ function fixture(t) {
   const feat = commit('feature');
   git(work, 'push', '--quiet', '-u', 'origin', 'feat');
   const records = path.join(work, '.git', 'adversarial-reviews');
-  const record = (sha, body) => {
+  const record = (sha: string, body?: string | Record<string, unknown>) => {
     mkdirSync(records, { recursive: true });
     const content =
       typeof body === 'string'
@@ -97,7 +101,7 @@ function fixture(t) {
   return {
     root,
     work,
-    git: (...a) => git(work, ...a),
+    git: (...a: string[]) => git(work, ...a),
     commit,
     feat,
     record,
@@ -105,7 +109,13 @@ function fixture(t) {
   };
 }
 
-function hook(fx, payload, raw) {
+type Fixture = ReturnType<typeof fixture>;
+
+function hook(
+  fx: Fixture,
+  payload: Record<string, unknown> | null,
+  raw?: string
+) {
   const input = raw ?? JSON.stringify({ cwd: fx.work, ...payload });
   const r = spawnSync('sh', [wrapper], {
     cwd: fx.work,
@@ -114,9 +124,13 @@ function hook(fx, payload, raw) {
   });
   return { code: r.status, stderr: r.stderr };
 }
-const bash = (fx, command) =>
+const bash = (fx: Fixture, command: string) =>
   hook(fx, { tool_name: 'Bash', tool_input: { command } });
-const mcp = (fx, input, tool = 'mcp__github__create_pull_request') =>
+const mcp = (
+  fx: Fixture,
+  input: Record<string, unknown>,
+  tool = 'mcp__github__create_pull_request'
+) =>
   hook(fx, {
     tool_name: tool,
     tool_input: {
@@ -127,7 +141,7 @@ const mcp = (fx, input, tool = 'mcp__github__create_pull_request') =>
       ...input,
     },
   });
-const body = text => `"$(cat <<'EOF'\n${text}\nEOF\n)"`;
+const body = (text: string) => `"$(cat <<'EOF'\n${text}\nEOF\n)"`;
 
 test('lets through tools and commands that do not open a PR', t => {
   const fx = fixture(t);
@@ -331,7 +345,7 @@ test('fails closed on bad records, bad input and crashes', t => {
   ); // no sha
   assert.match(
     mcp(fx, { head: 'feat' }).stderr,
-    /wasn't written by record\.mjs/
+    /wasn't written by record\.mts/
   );
   fx.record(fx.feat, { checks: {} });
   assert.match(mcp(fx, { head: 'feat' }).stderr, /passing checks/);
@@ -364,9 +378,9 @@ test('fails closed on bad records, bad input and crashes', t => {
   assert.match(noNode.stderr, /is node on PATH/);
 });
 
-// ---------------------------------------------------------------- record.mjs
+// ---------------------------------------------------------------- record.mts
 
-function record(fx, verdict, summary) {
+function record(fx: Fixture, verdict: string, summary: unknown) {
   const file = path.join(fx.root, 'summary.json');
   writeFileSync(file, JSON.stringify(summary));
   const r = spawnSync('node', [recorder, verdict, file], {
@@ -377,7 +391,7 @@ function record(fx, verdict, summary) {
 }
 const good = { base: 'main', lenses: ['correctness', 'tests'], findings: [] };
 
-test('record.mjs runs the checks and records a review that unlocks the PR', t => {
+test('record.mts runs the checks and records a review that unlocks the PR', t => {
   const fx = fixture(t);
   writeFileSync(path.join(fx.work, 'untracked.txt'), 'x'); // not part of the PR: fine
   const r = record(fx, 'pass', good);
@@ -387,7 +401,7 @@ test('record.mjs runs the checks and records a review that unlocks the PR', t =>
   assert.equal(mcp(fx, { head: 'feat' }).code, 0);
 });
 
-test('record.mjs refuses a review that does not cover the pushed commit', t => {
+test('record.mts refuses a review that does not cover the pushed commit', t => {
   const fx = fixture(t);
   writeFileSync(path.join(fx.work, 'file.txt'), 'dirty');
   assert.match(record(fx, 'pass', good).out, /uncommitted changes/);
@@ -396,7 +410,7 @@ test('record.mjs refuses a review that does not cover the pushed commit', t => {
   assert.match(record(fx, 'pass', good).out, /push first/);
 });
 
-test('record.mjs refuses a failing check', t => {
+test('record.mts refuses a failing check', t => {
   const fx = fixture(t);
   fx.commit('break build', {
     'package.json': JSON.stringify({ scripts: fx.scripts('build') }),
@@ -406,9 +420,9 @@ test('record.mjs refuses a failing check', t => {
   assert.equal(mcp(fx, { head: 'feat' }).code, 2);
 });
 
-test('record.mjs refuses an incomplete, unresolved or self-graded review', t => {
+test('record.mts refuses an incomplete, unresolved or self-graded review', t => {
   const fx = fixture(t);
-  const cases = [
+  const cases: [Record<string, unknown>, RegExp][] = [
     [{ ...good, lenses: ['correctness'] }, /at least two/],
     [{ ...good, findings: 'none' }, /must be an array/],
     [{ ...good, base: '' }, /base/],

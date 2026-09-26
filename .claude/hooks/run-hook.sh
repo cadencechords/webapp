@@ -1,5 +1,5 @@
 #!/bin/sh
-# Runs require-adversarial-review.mjs and fails closed: Claude Code only blocks
+# Runs require-adversarial-review.mts and fails closed: Claude Code only blocks
 # a tool call on exit 2, so a crash, a missing `node` or any other exit code
 # would otherwise let the PR through.
 input=$(cat)
@@ -11,7 +11,7 @@ case "$input" in
   ;;
 esac
 
-printf '%s' "$input" | node "$(dirname "$0")/require-adversarial-review.mjs"
+printf '%s' "$input" | node "$(dirname "$0")/require-adversarial-review.mts"
 status=$?
 if [ "$status" -eq 0 ] || [ "$status" -eq 2 ]; then
   exit "$status"
