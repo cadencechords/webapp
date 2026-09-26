@@ -108,7 +108,7 @@ test('loads again, over the previous results, when the query changes', async () 
   });
 });
 
-test('going back to the settled query shows its results without loading', async () => {
+test('going back to the settled query shows its results, then refreshes them', async () => {
   const { search, calls } = controlledSearch();
   const { result, rerender } = renderSearch('Holy', search);
   act(() => {
@@ -120,6 +120,18 @@ test('going back to the settled query shows its results without loading', async 
   rerender({ query: 'Holy' });
   expect(result.current).toEqual({
     results: ['Holy, Holy, Holy'],
+    loading: false,
+  });
+
+  act(() => {
+    vi.advanceTimersByTime(800);
+  });
+  expect(search).toHaveBeenCalledTimes(2);
+  expect(search).toHaveBeenLastCalledWith('Holy');
+  expect(result.current.loading).toBe(false);
+  await act(async () => calls[1].resolve(['Holy Is the Lord']));
+  expect(result.current).toEqual({
+    results: ['Holy Is the Lord'],
     loading: false,
   });
 });
