@@ -1,9 +1,4 @@
 {
-  "src/components/AddThemeDialog.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
   "src/components/Annotation.js": {
     "no-unused-vars": {
       "count": 1
@@ -47,27 +42,12 @@
       "count": 1
     }
   },
-  "src/components/BoldItalicButtonGroup.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/ColorPicker.js": {
     "no-unused-vars": {
       "count": 1
     }
   },
   "src/components/ColorPickerPopover.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EditorFormatOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/EditorNavbar.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -95,56 +75,6 @@
       "count": 1
     }
   },
-  "src/components/FormatBottomSheet.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatBottomSheetChordOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatBottomSheetGeneralOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatOption.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatOptionLabel.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPanel.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPanelChordOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPanelGeneralOptions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPresets.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/FormatPreview.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/JoinLinkSection.js": {
     "no-unused-vars": {
       "count": 1
@@ -161,11 +91,6 @@
     }
   },
   "src/components/KeyOptionsSheet.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/LastScheduledField.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -225,11 +150,6 @@
       "count": 1
     }
   },
-  "src/components/SongPreferencesForm.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/SongRow.js": {
     "no-unused-vars": {
       "count": 1
@@ -285,11 +205,6 @@
       "count": 1
     }
   },
-  "src/components/pdf/HighlightedText.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/dialogs/AddTracksDialog.js": {
     "no-unused-vars": {
       "count": 1
@@ -315,31 +230,8 @@
       "count": 1
     }
   },
-  "src/pages/CreateNewTeamPage.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
   "src/pages/EditCalendarEventPage.js": {
     "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/ForgotPasswordPage.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/pages/InvitationSignUpPage.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/pages/JoinLinkPage.js": {
-    "no-unused-vars": {
-      "count": 1
-    },
-    "react/no-unescaped-entities": {
       "count": 1
     }
   }
