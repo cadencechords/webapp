@@ -9,14 +9,23 @@ import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import Icon from './Icon';
+import type { Invitation } from '../types';
+
+type PendingInvitationsListProps = {
+  invitations: Invitation[];
+  loading: boolean;
+  onInvitationDeleted: (invitationId: number) => void;
+};
 
 export default function PendingInvitationsList({
   invitations,
   loading,
   onInvitationDeleted,
-}) {
-  const currentMember = useSelector(selectCurrentMember);
-  const handleDeleteInvitation = async invitationId => {
+}: PendingInvitationsListProps) {
+  // Non-null: MembersIndexPage renders inside Content, which renders nothing
+  // until the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
+  const handleDeleteInvitation = async (invitationId: number) => {
     try {
       await InvitationApi.deleteOne(invitationId);
       onInvitationDeleted(invitationId);
@@ -25,7 +34,7 @@ export default function PendingInvitationsList({
     }
   };
 
-  const handleResendInvitation = async invitationId => {
+  const handleResendInvitation = async (invitationId: number) => {
     try {
       await InvitationApi.resendOne(invitationId);
     } catch (error) {
@@ -43,7 +52,7 @@ export default function PendingInvitationsList({
           <TableHead columns={['EMAIL', 'SENT', '']} />
           <tbody>
             {invitations?.map(invitation => {
-              let actions = currentMember.can(ADD_MEMBERS) && (
+              const actions = currentMember.can(ADD_MEMBERS) && (
                 <div className="flex items-center">
                   <span className="mr-2">
                     <Button

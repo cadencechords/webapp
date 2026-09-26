@@ -18,6 +18,7 @@ import { reportError } from '../utils/error';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import Badge from '../components/Badge';
 import FormatPresets from '../components/FormatPresets';
+import type { ChangeEvent } from 'react';
 
 export default function TeamDetailPage() {
   const currentTeam = useSelector(selectCurrentTeam);
@@ -26,26 +27,32 @@ export default function TeamDetailPage() {
     document.title = currentTeam ? currentTeam.name : 'Team Details';
   });
 
-  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [showImageDialog, setShowImageDialog] = useState(false);
   const dispatch = useDispatch();
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: read only once the current team loads, and Content renders the
+  // page only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   const handleOpenFileDialog = () => {
-    inputRef.current.click();
+    // Non-null: the image menu that calls this renders with the file input.
+    inputRef.current!.click();
   };
 
-  const handleImageSelected = async e => {
-    let tempImageUrl = URL.createObjectURL(e.target.files[0]);
-    dispatch(setCurrentTeam({ ...currentTeam, image_url: tempImageUrl }));
+  const handleImageSelected = async (e: ChangeEvent<HTMLInputElement>) => {
+    // Non-null (files, here and below): a file input's `files` is never null.
+    // Non-null (currentTeam, here and in the other handlers): they're called
+    // from the controls rendered once the current team is loaded.
+    const tempImageUrl = URL.createObjectURL(e.target.files![0]);
+    dispatch(setCurrentTeam({ ...currentTeam!, image_url: tempImageUrl }));
 
     try {
       setShowImageDialog(false);
       try {
-        await FileApi.addImageToTeam(e.target.files[0]);
+        await FileApi.addImageToTeam(e.target.files![0]);
       } catch (error) {
         reportError(error);
-        dispatch(setCurrentTeam({ ...currentTeam, image_url: null }));
+        dispatch(setCurrentTeam({ ...currentTeam!, image_url: null }));
       } finally {
         URL.revokeObjectURL(tempImageUrl);
       }
@@ -62,21 +69,21 @@ export default function TeamDetailPage() {
 
   const handleDeleteImage = async () => {
     try {
-      dispatch(setCurrentTeam({ ...currentTeam, image_url: null }));
+      dispatch(setCurrentTeam({ ...currentTeam!, image_url: null }));
       await FileApi.deleteTeamImage();
     } catch (error) {
       reportError(error);
     }
   };
 
-  const handleNameChange = newName => {
-    dispatch(setCurrentTeam({ ...currentTeam, name: newName }));
+  const handleNameChange = (newName: string) => {
+    dispatch(setCurrentTeam({ ...currentTeam!, name: newName }));
     debounce(newName);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
-    _.debounce(newName => {
+    _.debounce((newName: string) => {
       try {
         TeamApi.update({ name: newName });
       } catch (error) {

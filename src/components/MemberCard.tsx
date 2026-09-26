@@ -10,23 +10,34 @@ import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { REMOVE_MEMBERS } from '../utils/constants';
 import Icon from './Icon';
+import type { User } from '../types';
+
+type MemberCardProps = {
+  /** A team member, with their `position` on the team. */
+  member: User;
+  isCurrentUser: boolean;
+  onPositionChanged: (newPosition: string) => void;
+  onShowMemberMenu: () => void;
+};
 
 export default function MemberCard({
   member,
   isCurrentUser,
   onPositionChanged,
   onShowMemberMenu,
-}) {
-  const currentMember = useSelector(selectCurrentMember);
+}: MemberCardProps) {
+  // Non-null: MembersIndexPage renders inside Content, which renders nothing
+  // until the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
 
-  const handlePositionChange = newPosition => {
+  const handlePositionChange = (newPosition: string) => {
     onPositionChanged(newPosition);
     debounce(newPosition);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
-    _.debounce(newPosition => {
+    _.debounce((newPosition: string) => {
       try {
         UserApi.updateMembership(member.id, { position: newPosition });
       } catch (error) {

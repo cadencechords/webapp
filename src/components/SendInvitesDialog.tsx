@@ -4,13 +4,22 @@ import OutlinedInput from './inputs/OutlinedInput';
 import StyledDialog from './StyledDialog';
 import { reportError } from '../utils/error';
 import { useState } from 'react';
+import type { Invitation, User } from '../types';
+
+type SendInvitesDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  /** The team's members, whose emails can't be invited again. */
+  currentMembers: User[];
+  onInviteSent: (invitation: Invitation) => void;
+};
 
 export default function SendInvitesDialog({
   open,
   onCloseDialog,
   currentMembers,
   onInviteSent,
-}) {
+}: SendInvitesDialogProps) {
   const [newMemberEmail, setNewMemberEmail] = useState('');
   const [sendingInvitation, setSendingInvitation] = useState(false);
 
@@ -26,7 +35,11 @@ export default function SendInvitesDialog({
     setSendingInvitation(true);
 
     try {
-      let { data } = await InvitationApi.createOne({ email: newMemberEmail });
+      // Non-null: createOne returns undefined only when it's given no
+      // invitation, and it's always given one here.
+      const { data } = (await InvitationApi.createOne({
+        email: newMemberEmail,
+      }))!;
       onInviteSent(data);
       handleCloseDialog();
     } catch (error) {

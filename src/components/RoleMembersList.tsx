@@ -7,15 +7,27 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import List from './List';
 import RoleMemberRow from './RoleMemberRow';
+import type { Membership, Role } from '../types';
 
-export default function RoleMembersList({ role, members }) {
-  const currentMember = useSelector(selectCurrentMember);
+type RoleMembersListProps = {
+  /** RoleDetailPage's copy of the role, `{}` until it loads. */
+  role: Partial<Role>;
+  members?: Membership[];
+};
+
+export default function RoleMembersList({
+  role,
+  members,
+}: RoleMembersListProps) {
+  // Non-null: RoleDetailPage renders inside Content, which renders nothing
+  // until the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
   const [showAddMembersDialog, setShowAddMembersDialog] = useState(false);
 
   return (
     <div className="mb-4">
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        <div>Who's in this group </div>
+        <div>Who&apos;s in this group </div>
         {currentMember.can(ASSIGN_ROLES) && (
           <Button variant="open" onClick={() => setShowAddMembersDialog(true)}>
             Add members

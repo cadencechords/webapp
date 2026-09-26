@@ -90,16 +90,6 @@
       "count": 1
     }
   },
-  "src/components/JoinLinkSection.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/JoinLinkUserSection.js": {
-    "no-unused-vars": {
-      "count": 12
-    }
-  },
   "src/components/KeyOptionsPopover.js": {
     "no-unused-vars": {
       "count": 1
@@ -147,16 +137,6 @@
   },
   "src/components/PublicSetlistSection.js": {
     "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/RoleMemberRow.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/RoleMembersList.js": {
-    "react/no-unescaped-entities": {
       "count": 1
     }
   },

@@ -100,7 +100,7 @@ export interface Subscription {
 export interface Invitation {
   id: number;
   email: string;
-  created_at?: string;
+  created_at: string;
 }
 
 /** The response to signing up or claiming an invitation. */

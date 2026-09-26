@@ -1,14 +1,23 @@
 import classNames from 'classnames';
 import Checkbox from './Checkbox';
 
+type PermissionProps = {
+  name: string;
+  description: string;
+  /** Whether the current member can toggle it; `onChange` fires only then. */
+  checkable?: boolean;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+};
+
 export default function Permission({
   name,
   description,
   checkable,
   checked,
   onChange,
-}) {
-  function handleChange(checkedValue) {
+}: PermissionProps) {
+  function handleChange(checkedValue: boolean) {
     if (checkable) {
       onChange(checkedValue);
     }
