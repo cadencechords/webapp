@@ -137,6 +137,28 @@ describe('Note', () => {
     expect(onUpdate.mock.calls[0]).toHaveLength(1);
   });
 
+  test('saves content still waiting when the note unmounts', () => {
+    vi.useFakeTimers();
+    const { unmount } = render(
+      <Note
+        songId={3}
+        note={note}
+        onDelete={vi.fn<ComponentProps<typeof Note>['onDelete']>()}
+      />
+    );
+    fireEvent.change(screen.getByPlaceholderText('Type here'), {
+      target: { value: 'Speed up' },
+    });
+
+    unmount();
+    expect(NotesApi.update).toHaveBeenCalledWith(3, 7, { content: 'Speed up' });
+
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+    expect(NotesApi.update).toHaveBeenCalledTimes(1);
+  });
+
   test('NoteColorOption passes its color to onClick', () => {
     const onClick = vi.fn<ComponentProps<typeof NoteColorOption>['onClick']>();
     render(<NoteColorOption color="bg-pink-200" selected onClick={onClick} />);

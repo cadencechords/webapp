@@ -10,7 +10,7 @@ import PageLoading from '../components/PageLoading';
 import PageTitle from '../components/PageTitle';
 import SetlistApi from '../api/SetlistApi';
 import SetlistSongsList from '../components/SetlistSongsList';
-import _ from 'lodash';
+import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { setSetlistBeingPresented } from '../store/presenterSlice';
@@ -76,7 +76,7 @@ export default function SetlistDetailPage() {
 
   const handleNameChange = (newName: string) => {
     setSetlist({ ...setlist!, name: newName });
-    debounce(newName);
+    debounce(id, newName);
   };
 
   const handleOpenInPresenter = () => {
@@ -84,16 +84,17 @@ export default function SetlistDetailPage() {
     router.push(`/sets/${id}/present`);
   };
 
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce((newName: string) => {
+  // The id is passed in, so a waiting save goes to the set it was typed for.
+  const debounce = useDebouncedCallback(
+    (setlistId: string, newName: string) => {
       try {
-        SetlistApi.updateOne({ name: newName }, id);
+        SetlistApi.updateOne({ name: newName }, setlistId);
       } catch (error) {
         reportError(error);
       }
-    }, 1000),
-    []
+    },
+    1000,
+    'flush'
   );
 
   const handleClickDateDialog = () => {

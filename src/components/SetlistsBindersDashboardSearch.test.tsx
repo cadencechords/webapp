@@ -1,4 +1,10 @@
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import type { AxiosResponse } from 'axios';
 import type { ComponentProps } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
@@ -371,6 +377,29 @@ test('SearchDialog searches binders, songs and sets once typing pauses', async (
   expect(binderSearch.mock.calls).toEqual([['grace']]);
   expect(songSearch.mock.calls).toEqual([['grace']]);
   expect(setlistSearch.mock.calls).toEqual([['grace']]);
+});
+
+test('SearchDialog drops a search still waiting when it closes', async () => {
+  const binderSearch = vi.spyOn(BinderApi, 'search');
+  const onCloseDialog =
+    vi.fn<ComponentProps<typeof SearchDialog>['onCloseDialog']>();
+  renderWithProvider(
+    <MemoryRouter>
+      <SearchDialog open onCloseDialog={onCloseDialog} />
+    </MemoryRouter>
+  );
+  fireEvent.change(
+    screen.getByPlaceholderText('Search for binders, songs or sets'),
+    { target: { value: 'grace' } }
+  );
+  fireEvent.keyDown(document.activeElement ?? document.body, {
+    key: 'Escape',
+  });
+  expect(onCloseDialog).toHaveBeenCalled();
+
+  // Past the 300ms wait.
+  await act(() => new Promise(resolve => setTimeout(resolve, 400)));
+  expect(binderSearch).not.toHaveBeenCalled();
 });
 
 test('SetlistsIndexPage splits sets into upcoming (soonest first) and past (latest first)', async () => {

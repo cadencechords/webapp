@@ -125,6 +125,37 @@ test('AutoscrollSheet has no stray classes', () => {
   expect(shortcut?.className).toBe('fixed flex-center flex-col z-10 ');
 });
 
+test('AutoscrollSheet stops scrolling when another song is shown', () => {
+  const requestFrame = vi
+    .spyOn(window, 'requestAnimationFrame')
+    .mockReturnValue(42);
+  const cancelFrame = vi
+    .spyOn(window, 'cancelAnimationFrame')
+    .mockImplementation(() => {});
+  const { container, rerender } = renderWithProvider(
+    <AutoscrollSheet song={song} onSongChange={() => {}} />,
+    { preloadedState: member }
+  );
+  const toggle = () => container.querySelector('button') as HTMLElement;
+
+  userEvent.click(toggle());
+  expect(requestFrame).toHaveBeenCalledTimes(1);
+  expect(cancelFrame).not.toHaveBeenCalledWith(42);
+
+  rerender(
+    <AutoscrollSheet
+      song={{ ...song, id: song.id + 1 }}
+      onSongChange={() => {}}
+    />
+  );
+  expect(cancelFrame).toHaveBeenCalledWith(42);
+
+  // No longer scrolling, so the toggle starts again rather than stopping.
+  userEvent.click(toggle());
+  expect(requestFrame).toHaveBeenCalledTimes(2);
+  vi.restoreAllMocks();
+});
+
 test('MetronomeSheet has no stray class', () => {
   const { container } = renderWithProvider(
     <MetronomeSheet song={song} onSongChange={() => {}} />,

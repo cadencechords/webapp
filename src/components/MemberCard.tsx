@@ -3,9 +3,8 @@ import EditableData from './inputs/EditableData';
 import { Link } from 'react-router-dom';
 import ProfilePicture from './ProfilePicture';
 import UserApi from '../api/UserApi';
-import _ from 'lodash';
+import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { reportError } from '../utils/error';
-import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentMember } from '../store/authSlice';
 import { REMOVE_MEMBERS } from '../utils/constants';
@@ -30,22 +29,23 @@ export default function MemberCard({
   // until the membership loads.
   const currentMember = useSelector(selectCurrentMember)!;
 
-  const handlePositionChange = (newPosition: string) => {
-    onPositionChanged(newPosition);
-    debounce(newPosition);
-  };
-
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce((newPosition: string) => {
+  // The id is passed in, so a waiting save goes to the member it was typed for.
+  const debounce = useDebouncedCallback(
+    (memberId: User['id'], newPosition: string) => {
       try {
-        UserApi.updateMembership(member.id, { position: newPosition });
+        UserApi.updateMembership(memberId, { position: newPosition });
       } catch (error) {
         reportError(error);
       }
-    }, 1000),
-    []
+    },
+    1000,
+    'flush'
   );
+
+  const handlePositionChange = (newPosition: string) => {
+    onPositionChanged(newPosition);
+    debounce(member.id, newPosition);
+  };
 
   if (member) {
     let currentUserBubble;

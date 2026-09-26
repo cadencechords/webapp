@@ -7,9 +7,8 @@ import SearchResults from './SearchResults';
 import SetlistApi from '../api/SetlistApi';
 import SongApi from '../api/SongApi';
 import WellInput from './inputs/WellInput';
-import _ from 'lodash';
+import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { reportError } from '../utils/error';
-import { useCallback } from 'react';
 import type { Binder, Setlist, Song } from '../types';
 
 type SearchResultsData = {
@@ -29,9 +28,8 @@ export default function SearchPage() {
     document.title = 'Search';
   }, []);
 
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce(async (nameToSearchFor: string) => {
+  const debounce = useDebouncedCallback(
+    async (nameToSearchFor: string) => {
       if (nameToSearchFor && nameToSearchFor !== '') {
         const results: SearchResultsData = {
           binders: [],
@@ -56,8 +54,9 @@ export default function SearchPage() {
           setSearching(false);
         }
       }
-    }, 300),
-    []
+    },
+    300,
+    'cancel'
   );
 
   const handleSearchQueryChange = (newQuery: string) => {
