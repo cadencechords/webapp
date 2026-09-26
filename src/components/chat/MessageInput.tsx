@@ -4,6 +4,10 @@ import clsx from 'clsx';
 import { usePopper } from 'react-popper';
 import { useDropzone } from 'react-dropzone';
 import { nanoid } from 'nanoid';
+import type { Event as StreamEvent } from 'stream-chat';
+// stream-chat-react's generics, which its contexts' channel and messages use.
+// Its index doesn't export them.
+import type { DefaultStreamChatGenerics } from 'stream-chat-react/dist/types/types';
 
 import {
   EmojiPicker,
@@ -29,7 +33,9 @@ export const MessageInput = () => {
   const { channel } = useChatContext('MessageInputFlat');
 
   useEffect(() => {
-    const handleQuotedMessageUpdate = e => {
+    const handleQuotedMessageUpdate = (
+      e: StreamEvent<DefaultStreamChatGenerics>
+    ) => {
       if (e.message?.id !== quotedMessage?.id) return;
       if (e.type === 'message.deleted') {
         setQuotedMessage(undefined);
@@ -79,8 +85,11 @@ const MessageInputV2 = () => {
     SendButton = DefaultSendButton,
   } = useComponentContext('MessageInputV2');
 
-  const [referenceElement, setReferenceElement] = useState(null);
-  const [popperElement, setPopperElement] = useState(null);
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
+    null
+  );
   const { attributes, styles } = usePopper(referenceElement, popperElement, {
     placement: 'top-end',
   });
@@ -89,10 +98,13 @@ const MessageInputV2 = () => {
 
   const accept = useMemo(
     () =>
-      acceptedFiles.reduce((mediaTypeMap, mediaType) => {
-        mediaTypeMap[mediaType] ??= [];
-        return mediaTypeMap;
-      }, {}),
+      acceptedFiles.reduce<Record<string, string[]>>(
+        (mediaTypeMap, mediaType) => {
+          mediaTypeMap[mediaType] ??= [];
+          return mediaTypeMap;
+        },
+        {}
+      ),
     [acceptedFiles]
   );
 

@@ -1,3 +1,15 @@
+import type { ReactNode } from 'react';
+
+type TeamPlanOptionProps = {
+  selected: boolean;
+  onClick: (name: string) => void;
+  name: string;
+  // Required: an omitted one would add the class "undefined".
+  className: string;
+  trialMessage: ReactNode;
+  pricing: ReactNode;
+};
+
 export default function TeamPlanOption({
   selected,
   onClick,
@@ -5,7 +17,7 @@ export default function TeamPlanOption({
   className,
   trialMessage,
   pricing,
-}) {
+}: TeamPlanOptionProps) {
   return (
     <div
       className={

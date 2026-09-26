@@ -4,8 +4,24 @@ import { reportError } from '../utils/error';
 import settingsApi from '../api/settingsApi';
 import { useState } from 'react';
 import Icon from './Icon';
+import type { ReactNode } from 'react';
+import type { NotificationSetting as NotificationSettingModel } from '../types';
 
-export default function NotificationSetting({ onChange, setting, icon }) {
+type NotificationSettingProps = {
+  onChange: (setting: NotificationSettingModel) => void;
+  /**
+   * Undefined when the API returned no setting of this type. The toggles still
+   * render (off); toggling one throws, as it always has.
+   */
+  setting: NotificationSettingModel | undefined;
+  icon?: ReactNode;
+};
+
+export default function NotificationSetting({
+  onChange,
+  setting,
+  icon,
+}: NotificationSettingProps) {
   const [open, setOpen] = useState(false);
 
   function handleToggleOpen() {
@@ -13,26 +29,36 @@ export default function NotificationSetting({ onChange, setting, icon }) {
   }
 
   function handleToggleSms() {
-    let newValue = !setting.sms_enabled;
-    onChange({ ...setting, sms_enabled: newValue });
+    // Non-null (both): as before, reading the setting throws when there's
+    // none (see the props), so onChange is never called without one.
+    const newValue = !setting!.sms_enabled;
+    onChange({ ...setting!, sms_enabled: newValue });
     sendUpdateRequest({ sms_enabled: newValue });
   }
 
   function handleToggleEmail() {
-    let newValue = !setting.email_enabled;
-    onChange({ ...setting, email_enabled: newValue });
+    // Non-null (both): as before, reading the setting throws when there's
+    // none (see the props), so onChange is never called without one.
+    const newValue = !setting!.email_enabled;
+    onChange({ ...setting!, email_enabled: newValue });
     sendUpdateRequest({ email_enabled: newValue });
   }
 
   function handleTogglePush() {
-    let newValue = !setting.push_enabled;
-    onChange({ ...setting, push_enabled: newValue });
+    // Non-null (both): as before, reading the setting throws when there's
+    // none (see the props), so onChange is never called without one.
+    const newValue = !setting!.push_enabled;
+    onChange({ ...setting!, push_enabled: newValue });
     sendUpdateRequest({ push_enabled: newValue });
   }
 
-  async function sendUpdateRequest(updates) {
+  async function sendUpdateRequest(
+    updates: Partial<Omit<NotificationSettingModel, 'id'>>
+  ) {
     try {
-      await settingsApi.updateNotificationSetting(setting.id, updates);
+      // Non-null: only the toggle handlers call this, after reading the
+      // setting (which throws when there's none).
+      await settingsApi.updateNotificationSetting(setting!.id, updates);
     } catch (error) {
       reportError(error);
     }

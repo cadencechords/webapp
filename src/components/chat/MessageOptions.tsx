@@ -6,11 +6,12 @@ import {
   ActionsIcon as DefaultActionsIcon,
   ReactionIcon as DefaultReactionIcon,
   useMessageContext,
+  type MessageOptionsProps,
 } from 'stream-chat-react';
 import { MessageActions } from './MessageActions';
 import { isPoll } from '../../utils/chat';
 
-const UnMemoizedMessageOptions = props => {
+const UnMemoizedMessageOptions = (props: MessageOptionsProps) => {
   const {
     ActionsIcon = DefaultActionsIcon,
     messageWrapperRef,

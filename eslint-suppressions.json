@@ -152,32 +152,7 @@
       "count": 1
     }
   },
-  "src/components/chat/MessageActions.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/chat/MessageInput.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/dialogs/AddTracksDialog.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/AccountAppearancePage.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/pages/AccountGeneralSettingsPage.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/pages/BillingPage.js": {
     "no-unused-vars": {
       "count": 1
     }

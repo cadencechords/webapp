@@ -10,10 +10,13 @@ import { useState } from 'react';
 export default function FeedbackPopover() {
   const [feedback, setFeedback] = useState('');
   const [loading, setLoading] = useState(false);
-  const teamId = useSelector(selectTeamId);
-  const currentUser = useSelector(selectCurrentUser);
+  // Non-null (both): the Navbar renders under SecuredRoutes, which renders
+  // only once the current user and team load, and a team loads only when
+  // there's a team id.
+  const teamId = useSelector(selectTeamId)!;
+  const currentUser = useSelector(selectCurrentUser)!;
 
-  let button = (
+  const button = (
     <AnnouncementIcon className="mr-8 text-gray-600 transform w-7 h-7 -rotate-3 dark:text-dark-gray-200" />
   );
 
