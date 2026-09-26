@@ -93,6 +93,37 @@ test('keeps loading, not stale results, until the newest query settles', async (
   });
 });
 
+test('loads again, over the previous results, when the query changes', async () => {
+  const { search, calls } = controlledSearch();
+  const { result, rerender } = renderSearch('Holy', search);
+  act(() => {
+    vi.advanceTimersByTime(800);
+  });
+  await act(async () => calls[0].resolve(['Holy, Holy, Holy']));
+
+  rerender({ query: 'Holy Spirit' });
+  expect(result.current).toEqual({
+    results: ['Holy, Holy, Holy'],
+    loading: true,
+  });
+});
+
+test('going back to the settled query shows its results without loading', async () => {
+  const { search, calls } = controlledSearch();
+  const { result, rerender } = renderSearch('Holy', search);
+  act(() => {
+    vi.advanceTimersByTime(800);
+  });
+  await act(async () => calls[0].resolve(['Holy, Holy, Holy']));
+
+  rerender({ query: 'Holy S' });
+  rerender({ query: 'Holy' });
+  expect(result.current).toEqual({
+    results: ['Holy, Holy, Holy'],
+    loading: false,
+  });
+});
+
 test('searches only once typing pauses', () => {
   const { search } = controlledSearch();
   const { rerender } = renderSearch('H', search);

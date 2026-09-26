@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { reportError } from '../utils/error';
 
 /**
- * Searches for `query` 800ms after it stops changing. `loading` is true from
- * the moment the query changes until that query's search settles (an empty
- * query isn't searched, so it stays loading). A search that settles after the
- * query has changed again is ignored.
+ * Searches for `query` 800ms after it stops changing. `loading` is true while
+ * the results belong to another query: from the moment the query changes
+ * until that query's search settles. Going back to the query the results
+ * belong to shows them at once (and searches it again). An empty query isn't
+ * searched, so it stays loading. A search that settles after the query has
+ * changed again is ignored.
  *
  * `search` must keep its identity between renders (define it outside the
  * component), or every render starts a new search.
