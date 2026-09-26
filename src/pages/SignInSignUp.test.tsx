@@ -367,7 +367,9 @@ test('JoinLinkPage shows the API message when the link fails', async () => {
   });
   renderAt('/join/abc', '/join/:code', <JoinLinkPage />);
 
-  await screen.findByText(/unable to find a team with this link/i);
+  expect(
+    await screen.findByText(/unable to find a team with this link/i)
+  ).toBeInTheDocument();
 });
 
 test('TeamLoginPage lists the teams to log in to', async () => {

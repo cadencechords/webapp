@@ -11,21 +11,25 @@ test('it should display join details if join link is valid', async () => {
   mockSuccessfulAxiosResponse();
   renderWithRouter(<JoinLinkPage />, { auth: { currentUser } });
 
-  await screen.findByText(/pro plan/i);
+  expect(await screen.findByText(/pro plan/i)).toBeInTheDocument();
 });
 
 test('it should ask a logged-out user to log in first', async () => {
   mockSuccessfulAxiosResponse();
   renderWithRouter(<JoinLinkPage />);
 
-  await screen.findByText(/you need to be logged in first/i);
+  expect(
+    await screen.findByText(/you need to be logged in first/i)
+  ).toBeInTheDocument();
 });
 
 test('it should display an alert if the join link is invalid', async () => {
   mockFailedAxiosResponse();
   renderWithRouter(<JoinLinkPage />);
 
-  await screen.findByText(/we were unable to find a team with this link/i);
+  expect(
+    await screen.findByText(/we were unable to find a team with this link/i)
+  ).toBeInTheDocument();
 });
 
 function renderWithRouter(component: ReactElement, preloadedState?: object) {

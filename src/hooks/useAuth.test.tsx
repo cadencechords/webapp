@@ -29,9 +29,9 @@ test('it should return populated credentials when stored in local storage', asyn
     preloadedState,
   });
 
-  await screen.findByText('ACCESS_TOKEN');
-  await screen.findByText('CLIENT');
-  await screen.findByText('UID');
+  expect(await screen.findByText('ACCESS_TOKEN')).toBeInTheDocument();
+  expect(await screen.findByText('CLIENT')).toBeInTheDocument();
+  expect(await screen.findByText('UID')).toBeInTheDocument();
 });
 
 const preloadedState = {

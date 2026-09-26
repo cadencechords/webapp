@@ -68,11 +68,7 @@
       },
       "rules": {
         // Vitest's expect() takes a failure message as its second argument.
-        "vitest/valid-expect": ["error", { "maxArgs": 2 }],
-        // ESLint never ran these, and the tests have 167 violations to fix first.
-        "vitest/expect-expect": "off",
-        "vitest/no-conditional-expect": "off",
-        "vitest/require-to-throw-message": "off"
+        "vitest/valid-expect": ["error", { "maxArgs": 2 }]
       }
     },
     {
