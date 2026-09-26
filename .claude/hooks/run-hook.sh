@@ -16,5 +16,5 @@ status=$?
 if [ "$status" -eq 0 ] || [ "$status" -eq 2 ]; then
   exit "$status"
 fi
-echo "Blocked: the adversarial review hook failed (exit $status; is node on PATH?), so the PR is blocked to be safe." >&2
+echo "Blocked: the adversarial review hook failed (exit $status; is node >= 22.18 on PATH?), so the PR is blocked to be safe." >&2
 exit 2

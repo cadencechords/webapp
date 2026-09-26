@@ -375,7 +375,22 @@ test('fails closed on bad records, bad input and crashes', t => {
     encoding: 'utf8',
   });
   assert.equal(noNode.status, 2);
-  assert.match(noNode.stderr, /is node on PATH/);
+  assert.match(noNode.stderr, /is node >= 22\.18 on PATH/);
+  // Run through a symlinked directory, as when $CLAUDE_PROJECT_DIR is a
+  // symlink: the hook must still run, not exit 0 without checking.
+  const linked = path.join(fx.root, 'linked-hooks');
+  symlinkSync(path.dirname(wrapper), linked);
+  const viaLink = spawnSync('sh', [path.join(linked, path.basename(wrapper))], {
+    cwd: fx.work,
+    input: JSON.stringify({
+      cwd: fx.work,
+      tool_name: 'Bash',
+      tool_input: { command: CREATE },
+    }),
+    encoding: 'utf8',
+  });
+  assert.equal(viaLink.status, 2);
+  assert.match(viaLink.stderr, /Blocked: the review record/);
 });
 
 // ---------------------------------------------------------------- record.mts

@@ -11,7 +11,7 @@
 // This is a guardrail against opening a PR by mistake, not a security
 // boundary: the review's contents are self-reported (see SKILL.md).
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -577,7 +577,13 @@ export function main(input: HookInput): void {
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+// Real paths on both sides: run through a symlinked directory, argv[1] keeps
+// the symlink while import.meta.url is resolved, and a plain comparison would
+// skip main() and exit 0, letting the PR through.
+if (
+  process.argv[1] &&
+  realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))
+) {
   try {
     main(JSON.parse(readFileSync(0, 'utf8')));
     process.exit(0);
