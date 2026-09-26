@@ -6,16 +6,18 @@ and `docs/icons.md`.
 ## TypeScript only
 
 Write files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`. `src` has no
-JavaScript. `tsconfig.json` has `allowJs` off, so tsc skips a stray `.js` file
-there and Vitest doesn't run `.js` tests: keep it that way by hand. Only `public/` (served as-is)
+JavaScript. `tsconfig.json` has `allowJs` off, so importing a `.js` file from
+TypeScript fails `yarn typecheck`, but nothing catches a `.js` file that isn't
+imported (Vitest doesn't run `.js` tests): keep it that way by hand. Only `public/` (served as-is)
 is exempt, and Cypress (`cypress.config.js`, `cypress/`): Cypress 10 compiles
 TypeScript through the `typescript` package, which has no compiler API in
 TypeScript 7, so a `.ts` config or spec wouldn't load.
 
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
-`tsconfig.json` covers `src` and is `strict`. `tsconfig.node.json` covers all other
+`tsconfig.json` covers `src` and is `strict`. `tsconfig.node.json` covers the other
 TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, `.github/`, config files) and is
-`strict`. Write ES modules there as `.mts` (package.json
+`strict`. Its `**` globs skip dot-directories, so TypeScript in a new one isn't
+checked until it's added to that file's `include`. Write ES modules there as `.mts` (package.json
 has no `"type": "module"`, so a `.ts` file counts as CommonJS). Node strips types without checking them, so
 `yarn typecheck` is what catches errors there. No project has a baseline:
 any type error fails `yarn typecheck`.
