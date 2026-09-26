@@ -20,21 +20,21 @@ import SetlistSessionsList from '../components/SetlistSessionsList';
 import PublicSetlistSection from '../components/PublicSetlistSection';
 import SetlistOptionsPopover from '../components/SetlistOptionsPopover';
 import Icon from '../components/Icon';
+import type { Session, Setlist, Song } from '../types';
 
 export default function SetlistDetailPage() {
-  const [setlist, setSetlist] = useState(
-    /** @type {import('../types').Setlist | undefined} */ (undefined)
-  );
+  const [setlist, setSetlist] = useState<Setlist | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [showChangeDateDialog, setShowChangeDateDialog] = useState(false);
   const router = useHistory();
   // The route's path declares :id, which useParams can't see.
-  const id = /** @type {{ id: string }} */ (useParams()).id;
-  const currentMember = useSelector(selectCurrentMember);
-  const currentSubscription = useSelector(selectCurrentSubscription);
+  const id = useParams<{ id: string }>().id;
+  // Non-null (both): kept as before, these throw if the team hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
+  const currentSubscription = useSelector(selectCurrentSubscription)!;
   const dispatch = useDispatch();
   const [errored, setErrored] = useState(false);
-  const [sessions, setSessions] = useState([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     document.title = setlist ? setlist.name + ' | Sets' : 'Set';
@@ -43,7 +43,7 @@ export default function SetlistDetailPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        let result = await SetlistApi.getOne(id);
+        const result = await SetlistApi.getOne(id);
         setSetlist(result.data);
       } catch (error) {
         reportError(error);
@@ -56,23 +56,26 @@ export default function SetlistDetailPage() {
     fetchData();
   }, [id, currentMember]);
 
-  const handleSongsAdded = songsAdded => {
-    setSetlist({ ...setlist, songs: [...setlist.songs, ...songsAdded] });
+  // Non-null (setlist! and setlist!.songs! below): kept as before. The
+  // handlers run only from the page rendered once fetchData has set the
+  // setlist, and a set loaded by id comes with its songs.
+  const handleSongsAdded = (songsAdded: Song[]) => {
+    setSetlist({ ...setlist!, songs: [...setlist!.songs!, ...songsAdded] });
   };
 
-  const handleSongsReordered = reorderedSongs => {
-    setSetlist({ ...setlist, songs: reorderedSongs });
+  const handleSongsReordered = (reorderedSongs: Song[]) => {
+    setSetlist({ ...setlist!, songs: reorderedSongs });
   };
 
-  const handleSongRemoved = songIdToRemove => {
-    let filteredSongs = setlist.songs?.filter(
+  const handleSongRemoved = (songIdToRemove: number) => {
+    const filteredSongs = setlist!.songs?.filter(
       song => song.id !== songIdToRemove
     );
-    setSetlist({ ...setlist, songs: filteredSongs });
+    setSetlist({ ...setlist!, songs: filteredSongs });
   };
 
-  const handleNameChange = newName => {
-    setSetlist({ ...setlist, name: newName });
+  const handleNameChange = (newName: string) => {
+    setSetlist({ ...setlist!, name: newName });
     debounce(newName);
   };
 
@@ -83,7 +86,7 @@ export default function SetlistDetailPage() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
-    _.debounce(newName => {
+    _.debounce((newName: string) => {
       try {
         SetlistApi.updateOne({ name: newName }, id);
       } catch (error) {
@@ -99,17 +102,17 @@ export default function SetlistDetailPage() {
     }
   };
 
-  const handleSessionsChanged = useCallback(updatedSessions => {
+  const handleSessionsChanged = useCallback((updatedSessions: Session[]) => {
     setSessions(updatedSessions);
   }, []);
 
-  const handleJoinSession = session => {
+  const handleJoinSession = (session: Session) => {
     dispatch(setSetlistBeingPresented({ ...setlist, sessions }));
-    router.push(`/sets/${setlist.id}/present?session_id=${session.id}`);
+    router.push(`/sets/${setlist!.id}/present?session_id=${session.id}`);
   };
 
-  const handlePublicLinkToggled = newToggleValue => {
-    setSetlist({ ...setlist, public_link_enabled: newToggleValue });
+  const handlePublicLinkToggled = (newToggleValue: boolean) => {
+    setSetlist({ ...setlist!, public_link_enabled: newToggleValue });
   };
 
   if (loading) {
@@ -117,6 +120,8 @@ export default function SetlistDetailPage() {
   } else if (errored) {
     return <Alert color="red">Looks like an error occured</Alert>;
   } else {
+    // Non-null (setlist! below): not loading and no error, so fetchData has
+    // set the setlist.
     return (
       <div className="mt-4">
         <div className="flex-between">
@@ -126,7 +131,7 @@ export default function SetlistDetailPage() {
             onChange={handleNameChange}
           />
           <SetlistOptionsPopover
-            setlist={setlist}
+            setlist={setlist!}
             onPerform={handleOpenInPresenter}
           />
         </div>
@@ -140,7 +145,7 @@ export default function SetlistDetailPage() {
           </span>
         </div>
         <div className="flex w-full">
-          {setlist?.songs?.length > 0 && (
+          {setlist?.songs && setlist.songs.length > 0 && (
             <>
               <Button
                 variant="accent"
@@ -173,14 +178,16 @@ export default function SetlistDetailPage() {
         />
         {currentSubscription.isPro && (
           <SetlistSessionsList
-            setlist={setlist}
+            // Non-null: kept as before; SetlistSessionsList reads the
+            // setlist's id straight away.
+            setlist={setlist!}
             sessions={sessions}
             onSessionsChange={handleSessionsChanged}
             onJoinSession={handleJoinSession}
           />
         )}
         <PublicSetlistSection
-          setlist={setlist}
+          setlist={setlist!}
           onChange={handlePublicLinkToggled}
         />
         <ChangeSetlistDateDialog
@@ -188,7 +195,7 @@ export default function SetlistDetailPage() {
           onCloseDialog={() => setShowChangeDateDialog(false)}
           scheduledDate={setlist?.scheduled_date}
           onDateChanged={newScheduledDate =>
-            setSetlist({ ...setlist, scheduled_date: newScheduledDate })
+            setSetlist({ ...setlist!, scheduled_date: newScheduledDate })
           }
         />
       </div>

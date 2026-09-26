@@ -8,18 +8,24 @@ import { reportError } from '../utils/error';
 import { useParams } from 'react-router';
 import { format } from '../utils/DateUtils';
 
+type ChangeSetlistDateDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  scheduledDate?: string;
+  onDateChanged: (scheduledDate: string | undefined) => void;
+};
+
 export default function ChangeSetlistDateDialog({
   open,
   onCloseDialog,
   scheduledDate,
   onDateChanged,
-}) {
+}: ChangeSetlistDateDialogProps) {
   const [editingScheduledDate, setEditingScheduledDate] =
     useState(scheduledDate);
   const [dateValid, setDateValid] = useState(false);
   const [updating, setUpdating] = useState(false);
-  /** @type {{ id: string }} */
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     if (open) {
@@ -27,8 +33,8 @@ export default function ChangeSetlistDateDialog({
     }
   }, [scheduledDate, open]);
 
-  const handleDateChange = newDate => {
-    let dateToValidate = new Date(newDate);
+  const handleDateChange = (newDate: string) => {
+    const dateToValidate = new Date(newDate);
     setDateValid(!isNaN(dateToValidate.getTime()));
     setEditingScheduledDate(newDate);
   };

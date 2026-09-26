@@ -11,10 +11,20 @@ import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { selectCurrentMember } from '../store/authSlice';
 import { ADD_EVENTS } from '../utils/constants';
 import dayjs from 'dayjs';
+import type { NewSetlist } from '../api/SetlistApi';
 
-export default function CreateSetlistDialog({ open, onCloseDialog }) {
-  const currentSubscription = useSelector(selectCurrentSubscription);
-  const currentMember = useSelector(selectCurrentMember);
+type CreateSetlistDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+};
+
+export default function CreateSetlistDialog({
+  open,
+  onCloseDialog,
+}: CreateSetlistDialogProps) {
+  // Non-null (both): kept as before, these throw if the team hasn't loaded.
+  const currentSubscription = useSelector(selectCurrentSubscription)!;
+  const currentMember = useSelector(selectCurrentMember)!;
   const [name, setName] = useState('');
   const [scheduledDate, setScheduledDate] = useState('');
   const [shouldAddToCalendar, setShouldAddToCalendar] = useState(true);
@@ -28,7 +38,7 @@ export default function CreateSetlistDialog({ open, onCloseDialog }) {
     },
   });
 
-  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setTimeout(() => {
@@ -39,14 +49,14 @@ export default function CreateSetlistDialog({ open, onCloseDialog }) {
   }, [open]);
 
   const isDateValid = () => {
-    let dateToValidate = new Date(scheduledDate);
+    const dateToValidate = new Date(scheduledDate);
     return !isNaN(dateToValidate.getTime());
   };
 
   const canCreate = name && isDateValid();
 
   function handleCreateSetlist() {
-    const setlist = {
+    const setlist: NewSetlist = {
       name,
       scheduledDate: dayjs(scheduledDate).startOf('day').toDate(),
     };

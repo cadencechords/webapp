@@ -12,29 +12,40 @@ import { hasAnyKeysSet } from '../utils/SongUtils';
 import { noop } from '../utils/constants';
 import { reportError } from '../utils/error';
 import { useParams } from 'react-router';
+import type { Song } from '../types';
+
+type AddSongsToSetDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  onAdded: (addedSongs: Song[]) => void;
+  /** The set's songs, left out of the list. */
+  boundSongs?: Song[];
+};
 
 export default function AddSongsToSetDialog({
   open,
   onCloseDialog,
   onAdded,
   boundSongs,
-}) {
-  const [songs, setSongs] = useState([]);
-  const [songsToAdd, setSongsToAdd] = useState([]);
+}: AddSongsToSetDialogProps) {
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [songsToAdd, setSongsToAdd] = useState<Song[]>([]);
   const [query, setQuery] = useState('');
-  const [filteredSongs, setFilteredSongs] = useState([]);
+  const [filteredSongs, setFilteredSongs] = useState<Song[]>([]);
   const [savingAdds, setSavingAdds] = useState(false);
 
   // The route's path declares :id, which useParams can't see.
-  const id = /** @type {{ id: string }} */ (useParams()).id;
+  const id = useParams<{ id: string }>().id;
 
   useEffect(() => {
     async function fetchSongs() {
       if (open) {
         try {
-          let { data } = await SongApi.getAll();
-          let boundSongIds = boundSongs.map(boundSong => boundSong.id);
-          let unboundSongs = data.filter(
+          const { data } = await SongApi.getAll();
+          // Non-null: kept as before; the set's songs have loaded by the time
+          // the dialog opens, and a missing list throws into reportError.
+          const boundSongIds = boundSongs!.map(boundSong => boundSong.id);
+          const unboundSongs = data.filter(
             song => !boundSongIds.includes(song.id)
           );
           setSongs(unboundSongs);
@@ -55,8 +66,8 @@ export default function AddSongsToSetDialog({
     );
   }, [query, songs]);
 
-  const handleChecked = (shouldAdd, song) => {
-    let songsSet = new Set(songsToAdd);
+  const handleChecked = (shouldAdd: boolean, song: Song) => {
+    const songsSet = new Set(songsToAdd);
     if (shouldAdd) {
       songsSet.add(song);
     } else {
@@ -100,8 +111,10 @@ export default function AddSongsToSetDialog({
   const handleSaveAdds = async () => {
     setSavingAdds(true);
     try {
-      let songIdsToAdd = songsToAdd.map(song => song.id);
-      let { data } = await SetlistApi.addSongs(id, songIdsToAdd);
+      const songIdsToAdd = songsToAdd.map(song => song.id);
+      // Non-null: addSongs returns undefined only for no songs, and Add is
+      // disabled until one is picked.
+      const { data } = (await SetlistApi.addSongs(id, songIdsToAdd))!;
       onAdded(data);
       handleCloseDialog();
     } catch (error) {

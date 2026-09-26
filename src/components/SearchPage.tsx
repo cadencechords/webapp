@@ -10,11 +10,20 @@ import WellInput from './inputs/WellInput';
 import _ from 'lodash';
 import { reportError } from '../utils/error';
 import { useCallback } from 'react';
+import type { Binder, Setlist, Song } from '../types';
+
+type SearchResultsData = {
+  binders: Binder[];
+  songs: Song[];
+  setlists: Setlist[];
+};
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searching, setSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState(null);
+  const [searchResults, setSearchResults] = useState<SearchResultsData | null>(
+    null
+  );
 
   useEffect(() => {
     document.title = 'Search';
@@ -22,18 +31,22 @@ export default function SearchPage() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
-    _.debounce(async nameToSearchFor => {
+    _.debounce(async (nameToSearchFor: string) => {
       if (nameToSearchFor && nameToSearchFor !== '') {
-        let results = { binders: [], songs: [], setlists: [] };
+        const results: SearchResultsData = {
+          binders: [],
+          songs: [],
+          setlists: [],
+        };
         try {
           setSearching(true);
-          let bindersResponse = await BinderApi.search(nameToSearchFor);
+          const bindersResponse = await BinderApi.search(nameToSearchFor);
           results.binders = bindersResponse.data;
 
-          let songsResponse = await SongApi.search(nameToSearchFor);
+          const songsResponse = await SongApi.search(nameToSearchFor);
           results.songs = songsResponse.data;
 
-          let setlistsResponse = await SetlistApi.search(nameToSearchFor);
+          const setlistsResponse = await SetlistApi.search(nameToSearchFor);
           results.setlists = setlistsResponse.data;
 
           setSearchResults(results);
@@ -47,7 +60,7 @@ export default function SearchPage() {
     []
   );
 
-  const handleSearchQueryChange = newQuery => {
+  const handleSearchQueryChange = (newQuery: string) => {
     setSearchQuery(newQuery);
     debounce(newQuery);
   };

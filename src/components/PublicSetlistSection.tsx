@@ -4,11 +4,21 @@ import SetlistApi from '../api/SetlistApi';
 import { selectCurrentMember } from '../store/authSlice';
 import { PUBLISH_SETLISTS } from '../utils/constants';
 import { reportError } from '../utils/error';
+import type { Setlist } from '../types';
 
 const PUBLIC_URL = import.meta.env.REACT_APP_PUBLIC_URL;
 
-export default function PublicSetlistSection({ setlist, onChange }) {
-  const currentMember = useSelector(selectCurrentMember);
+type PublicSetlistSectionProps = {
+  setlist: Setlist;
+  onChange: (publicLinkEnabled: boolean) => void;
+};
+
+export default function PublicSetlistSection({
+  setlist,
+  onChange,
+}: PublicSetlistSectionProps) {
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
   const [copyButtonText, setCopyButtonText] = useState('Copy');
   const publicLink = `${PUBLIC_URL}/setlists/${setlist.public_link}`;
 

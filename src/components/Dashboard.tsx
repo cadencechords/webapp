@@ -1,6 +1,7 @@
 import DashboardTodaysSetlists from './DashboardTodaysSetlists';
+import type { DashboardData } from '../api/dashboardApi';
 
-export default function Dashboard({ data }) {
+export default function Dashboard({ data }: { data?: DashboardData }) {
   if (!data) return null;
 
   return (

@@ -11,10 +11,20 @@ import { useState } from 'react';
 import { useMemo } from 'react';
 import { useCallback } from 'react';
 import WellInput from './inputs/WellInput';
+import type { Binder } from '../types';
 
-export default function BinderSongsList({ binder }) {
+type BinderSongsListProps = {
+  /**
+   * Partial for the render before BinderDetailPage's useUpdates copies the
+   * loaded binder, when it's still `{}`.
+   */
+  binder: Partial<Binder>;
+};
+
+export default function BinderSongsList({ binder }: BinderSongsListProps) {
   const [isSearchOpen, showSearch, hideSearch] = useDialog();
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
   const [query, setQuery] = useState('');
 
   const searchSongs = useCallback(() => {
@@ -51,14 +61,21 @@ export default function BinderSongsList({ binder }) {
         ListEmpty={<NoDataMessage>No songs to show</NoDataMessage>}
         data={queriedSongs}
         renderItem={song => (
-          <BinderSongRow song={song} key={song.id} binderId={binder.id} />
+          <BinderSongRow
+            song={song}
+            key={song.id}
+            // Non-null: rows come from binder.songs, which loads with the
+            // binder's id.
+            binderId={binder.id!}
+          />
         )}
       />
 
       <SearchSongsDialog
         open={isSearchOpen}
         onCloseDialog={hideSearch}
-        binder={binder}
+        // The dialog opens only from Add Songs, once the binder has loaded.
+        binder={binder as Binder}
       />
     </>
   );

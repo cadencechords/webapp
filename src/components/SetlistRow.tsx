@@ -2,8 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { pluralize } from '../utils/StringUtils';
 import { format } from '../utils/DateUtils';
+import type { Setlist } from '../types';
 
-export default function SetlistRow({ setlist }) {
+export default function SetlistRow({ setlist }: { setlist: Setlist }) {
+  // Non-null (setlist.songs! below): kept as before; the sets index comes with
+  // each set's songs.
   return (
     <Link
       to={{ pathname: `/sets/${setlist.id}`, state: setlist }}
@@ -11,7 +14,7 @@ export default function SetlistRow({ setlist }) {
     >
       <div>{setlist.name}</div>
       <div className="mt-0.5 text-xs text-gray-600 dark:text-dark-gray-200">
-        {setlist.songs.length} {pluralize('song', setlist.songs?.length)}
+        {setlist.songs!.length} {pluralize('song', setlist.songs?.length)}
         <span className="px-2">·</span>
         {format('ddd MMM D, YYYY', setlist.scheduled_date)}
       </div>

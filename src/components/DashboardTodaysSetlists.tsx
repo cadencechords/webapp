@@ -4,8 +4,13 @@ import NoDataMessage from './NoDataMessage';
 import SectionTitle from './SectionTitle';
 import { format } from '../utils/DateUtils';
 import Icon from './Icon';
+import type { Setlist } from '../types';
 
-export default function DashboardTodaysSetlists({ setlists }) {
+export default function DashboardTodaysSetlists({
+  setlists,
+}: {
+  setlists?: Setlist[];
+}) {
   function buildSetlists() {
     return setlists?.map(setlist => (
       <div
@@ -26,7 +31,7 @@ export default function DashboardTodaysSetlists({ setlists }) {
           </div>
         </div>
         <div className="gap-4 flex-center">
-          {setlist.scheduled_songs?.length > 0 && (
+          {setlist.scheduled_songs && setlist.scheduled_songs.length > 0 && (
             <Link to={`/sets/${setlist.id}/present`}>
               <Button
                 className="flex-center"
@@ -52,7 +57,7 @@ export default function DashboardTodaysSetlists({ setlists }) {
     <div>
       <SectionTitle title="Today's sets" />
 
-      {setlists?.length > 0 ? (
+      {setlists && setlists.length > 0 ? (
         buildSetlists()
       ) : (
         <NoDataMessage>No sets are scheduled for today</NoDataMessage>

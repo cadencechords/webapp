@@ -2,10 +2,20 @@ import { Tab } from '@headlessui/react';
 import classNames from 'classnames';
 import React from 'react';
 
-export default function SetlistsTabs({ selectedTab, onChange }) {
+export type SetlistsTab = 'upcoming' | 'past';
+
+type SetlistsTabsProps = {
+  selectedTab: SetlistsTab;
+  onChange?: (tab: SetlistsTab) => void;
+};
+
+export default function SetlistsTabs({
+  selectedTab,
+  onChange,
+}: SetlistsTabsProps) {
   const selectedIndex = selectedTab === 'upcoming' ? 0 : 1;
 
-  function handleChange(newIndex) {
+  function handleChange(newIndex: number) {
     return onChange?.(newIndex === 0 ? 'upcoming' : 'past');
   }
   return (

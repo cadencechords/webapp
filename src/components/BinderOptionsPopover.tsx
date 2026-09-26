@@ -12,14 +12,21 @@ import { selectCurrentMember } from '../store/authSlice';
 import { DELETE_BINDERS } from '../utils/constants';
 import Icon from './Icon';
 
-export default function BinderOptionsPopover({ onChangeColorClick }) {
-  const currentMember = useSelector(selectCurrentMember);
+type BinderOptionsPopoverProps = {
+  onChangeColorClick: () => void;
+};
+
+export default function BinderOptionsPopover({
+  onChangeColorClick,
+}: BinderOptionsPopoverProps) {
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useHistory();
   // The route's path declares :id, which useParams can't see.
-  const id = /** @type {{ id: string }} */ (useParams()).id;
+  const id = useParams<{ id: string }>().id;
 
-  let button = (
+  const button = (
     <Button variant="icon" color="gray" size="md">
       <Icon name="more_vert" className="w-5 h-5" />
     </Button>

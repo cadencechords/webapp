@@ -22,7 +22,8 @@ export default function BindersIndexPage() {
 
   const [isOpen, showDialog, hideDialog] = useDialog();
   const [query, setQuery] = useState('');
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: kept as before, this throws if the membership hasn't loaded.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   const { data: binders, isLoading, isError, isSuccess } = useBinders();
 

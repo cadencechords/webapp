@@ -1,7 +1,7 @@
 import { constructAuthHeaders, getTeamId } from '../utils/AuthUtils';
 import axios from 'axios';
 import { combineParamValues } from '../utils/ObjectUtils';
-import type { Id, Setlist } from '../types';
+import type { Id, Setlist, Song } from '../types';
 
 const SETLISTS_URL = import.meta.env.REACT_APP_API_URL + '/setlists';
 
@@ -67,9 +67,10 @@ export default class SetlistApi {
     }
   }
 
+  /** Responds with the songs added (SetlistDetailPage appends them). */
   static addSongs(setlistId: Id, songIds: Id[]) {
     if (songIds.length > 0) {
-      return axios.post<unknown>(
+      return axios.post<Song[]>(
         SETLISTS_URL + `/${setlistId}/songs`,
         { song_ids: songIds, team_id: getTeamId() },
         { headers: constructAuthHeaders() }
