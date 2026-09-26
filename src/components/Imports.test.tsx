@@ -216,8 +216,9 @@ describe('OnsongImportPage', () => {
   });
 
   test('lists the songs the API could not import', async () => {
+    const noBinders: Response<typeof BinderApi.getAll>['data'] = [];
     vi.mocked(BinderApi.getAll).mockResolvedValueOnce({
-      data: [],
+      data: noBinders,
     } as Response<typeof BinderApi.getAll>);
     vi.mocked(OnsongApi.import).mockRejectedValueOnce({
       response: { data: { errors: ['Song B'] } },
