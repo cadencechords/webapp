@@ -54,8 +54,3 @@ declare module 'react-textfit' {
   export const Textfit: ComponentType<TextfitProps>;
   export default Textfit;
 }
-
-declare module 'lodash/isEqual' {
-  /** A deep comparison; Sets are equal when they hold equal values. */
-  export default function isEqual(value: unknown, other: unknown): boolean;
-}
