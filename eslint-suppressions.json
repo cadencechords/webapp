@@ -4,29 +4,6 @@
       "count": 1
     }
   },
-  "src/components/Annotation.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/AnnotationCanvas.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/Annotations.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/AnnotationsToolbar.js": {
-    "no-empty": {
-      "count": 2
-    },
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/AppleMusicSearchResults.js": {
     "no-unused-vars": {
       "count": 1
@@ -48,16 +25,6 @@
     }
   },
   "src/components/BoldItalicButtonGroup.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/ColorPicker.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/ColorPickerPopover.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -185,21 +152,6 @@
       "count": 1
     }
   },
-  "src/components/Marking.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/MarkingTabs.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/MarkupPopover.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/OnsongChooseBackupFile.js": {
     "react/no-unescaped-entities": {
       "count": 2
@@ -276,11 +228,6 @@
     }
   },
   "src/components/SpotifyTrackResult.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/StrokeWidthPopover.js": {
     "no-unused-vars": {
       "count": 1
     }
