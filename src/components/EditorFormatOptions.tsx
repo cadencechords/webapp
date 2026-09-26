@@ -8,20 +8,18 @@ export default function EditorFormatOptions({ show, onClose }) {
     y: 100,
   });
 
-  return (
-    show && (
-      <>
-        <div className="hidden md:block">
-          <FormatPanel
-            onClose={onClose}
-            defaultCoordinates={formatPanelCoordinates}
-            onCoordinatesChange={setFormatPanelCoordinates}
-          />
-        </div>
-        <div className="md:hidden">
-          <FormatBottomSheet show={show} onClose={onClose} />
-        </div>
-      </>
-    )
-  );
+  return show ? (
+    <>
+      <div className="hidden md:block">
+        <FormatPanel
+          onClose={onClose}
+          defaultCoordinates={formatPanelCoordinates}
+          onCoordinatesChange={setFormatPanelCoordinates}
+        />
+      </div>
+      <div className="md:hidden">
+        <FormatBottomSheet show={show} onClose={onClose} />
+      </div>
+    </>
+  ) : null;
 }
