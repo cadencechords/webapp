@@ -1,6 +1,10 @@
 import React from 'react';
 
-export default function BoldIcon({ className = '' }) {
+type BoldIconProps = {
+  className?: string;
+};
+
+export default function BoldIcon({ className = '' }: BoldIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24">
       <path

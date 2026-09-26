@@ -1,8 +1,17 @@
+import type { ReactNode } from 'react';
+
+type ButtonSwitchProps = {
+  activeButtonLabel: string;
+  buttonLabels: string[];
+  /** Called with the clicked label; the active one isn't clickable. */
+  onClick: (label: string) => void;
+};
+
 export default function ButtonSwitch({
   activeButtonLabel,
   buttonLabels,
   onClick,
-}) {
+}: ButtonSwitchProps) {
   return (
     <div className="flex shrink-0 p-1 bg-gray-100 border border-gray-100 rounded-full dark:bg-dark-gray-800 dark:border-dark-gray-600">
       {buttonLabels.map((label, index) => (
@@ -18,8 +27,18 @@ export default function ButtonSwitch({
   );
 }
 
-export function ButtonSwitchOption({ children, active, onClick }) {
-  let baseButtonClasses =
+type ButtonSwitchOptionProps = {
+  children: ReactNode;
+  active: boolean;
+  onClick: () => void;
+};
+
+export function ButtonSwitchOption({
+  children,
+  active,
+  onClick,
+}: ButtonSwitchOptionProps) {
+  const baseButtonClasses =
     'outline-hidden focus:outline-hidden flex-1 text-xs text-gray-600 dark:text-dark-gray-100 font-semibold ';
   if (active) {
     return (

@@ -1,4 +1,8 @@
-export default function DashboardIcon({ className }) {
+type DashboardIconProps = {
+  className?: string;
+};
+
+export default function DashboardIcon({ className }: DashboardIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -1,23 +1,46 @@
 import React from 'react';
+import type { ReactNode } from 'react';
 
-export default function ButtonGroup({ options = [], selected = [], onChange }) {
-  function isNotLastOption(index) {
+export type ButtonGroupOption<Value> = {
+  value: Value;
+  display: ReactNode;
+};
+
+/** A click on an option: `selected` is whether it becomes selected. */
+export type ButtonGroupChange<Value> = {
+  selected: boolean;
+  option: ButtonGroupOption<Value>;
+};
+
+type ButtonGroupProps<Value> = {
+  options?: ButtonGroupOption<Value>[];
+  /** The values of the selected options. */
+  selected?: Value[];
+  onChange?: (change: ButtonGroupChange<Value>) => void;
+};
+
+export default function ButtonGroup<Value>({
+  options = [],
+  selected = [],
+  onChange,
+}: ButtonGroupProps<Value>) {
+  function isNotLastOption(index: number) {
     return index !== options.length - 1;
   }
 
-  function isSelected(option) {
+  function isSelected(option: ButtonGroupOption<Value>) {
     return selected.includes(option.value);
   }
 
-  function handleClick(option) {
+  function handleClick(option: ButtonGroupOption<Value>) {
     onChange?.({ selected: !isSelected(option), option });
   }
 
-  function isFirst(index) {
+  function isFirst(index: number) {
     return index === 0;
   }
 
-  function isLast(index) {
+  function isLast(index: number) {
     return index === options.length - 1;
   }
   return (

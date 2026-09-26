@@ -47,7 +47,7 @@ export default function SecuredRoutes() {
     } else {
       async function fetchCurrentUser() {
         try {
-          let { data } = await UserApi.getCurrentUser();
+          const { data } = await UserApi.getCurrentUser();
           Sentry.setUser({ email: data.email });
           dispatch(setCurrentUser(data));
 
@@ -69,11 +69,11 @@ export default function SecuredRoutes() {
 
     async function fetchCurrentTeam() {
       try {
-        let { data } = await TeamApi.getCurrentTeam();
+        const { data } = await TeamApi.getCurrentTeam();
         dispatch(setCurrentTeam(data.team));
         dispatch(setSubscription(data.subscription));
 
-        let membershipResponse = await UserApi.getTeamMembership();
+        const membershipResponse = await UserApi.getTeamMembership();
         dispatch(
           setMembership({
             role: membershipResponse.data.role,
@@ -87,7 +87,7 @@ export default function SecuredRoutes() {
   }, [hasCredentials, router, teamId, dispatch]);
 
   async function saveTimeZone() {
-    let currentTimeZone = Intl?.DateTimeFormat().resolvedOptions().timeZone;
+    const currentTimeZone = Intl?.DateTimeFormat().resolvedOptions().timeZone;
     if (currentTimeZone) {
       await UserApi.updateCurrentUser({ timezone: currentTimeZone });
     }

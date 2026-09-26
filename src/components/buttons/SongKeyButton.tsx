@@ -1,4 +1,15 @@
-export default function SongKeyButton({ songKey, onClick, selected }) {
+type SongKeyButtonProps = {
+  /** A note name; '' is a disabled blank cell. */
+  songKey: string;
+  onClick: () => void;
+  selected: boolean;
+};
+
+export default function SongKeyButton({
+  songKey,
+  onClick,
+  selected,
+}: SongKeyButtonProps) {
   return (
     <button
       className={

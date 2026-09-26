@@ -124,3 +124,14 @@ export const ICONS = {
   tune: Tune,
   'unfold_more-fill': UnfoldMoreFilled,
 };
+
+/** A registered icon, e.g. 'delete' or 'check_circle-fill'. */
+export type IconName = keyof typeof ICONS;
+
+type FilledBase<Name> = Name extends `${infer Base}-fill` ? Base : never;
+
+/** A name for `<Icon name>` without `filled`: an outlined icon. */
+export type OutlinedIconName = Exclude<IconName, `${string}-fill`>;
+
+/** A name for `<Icon name filled>`: its '<name>-fill' variant is registered. */
+export type FilledIconName = FilledBase<IconName>;

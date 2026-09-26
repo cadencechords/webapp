@@ -1,4 +1,18 @@
-export default function Badge({ children, className, color = 'blue' }) {
+import type { ReactNode } from 'react';
+
+export type BadgeColor = keyof typeof COLORS;
+
+type BadgeProps = {
+  children: ReactNode;
+  className: string;
+  color?: BadgeColor;
+};
+
+export default function Badge({
+  children,
+  className,
+  color = 'blue',
+}: BadgeProps) {
   return (
     <span
       className={`rounded-md px-1 py-0.5 text-xs ${COLORS[color]} ${className}`}

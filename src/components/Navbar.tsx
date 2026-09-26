@@ -12,7 +12,8 @@ export default function Navbar() {
   const { data: subscription } = useSubscription();
   const { isLoading: isCreatingSession, run: createCustomerPortalSession } =
     useCreateCustomerPortalSession();
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: Content renders the Navbar only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
   const showUpgradeButton =
     currentMember.can(MANAGE_BILLING) && subscription?.plan_name === 'Starter';
 

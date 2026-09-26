@@ -11,10 +11,17 @@ import DashboardIcon from '../../icons/DashboardIcon';
 import PlaylistIcon from '../../icons/PlaylistIcon';
 import Icon from '../Icon';
 
-export default function AppMenu({ onCloseDialog, open }) {
+type AppMenuProps = {
+  onCloseDialog: () => void;
+  open: boolean;
+};
+
+export default function AppMenu({ onCloseDialog, open }: AppMenuProps) {
   const currentSubscription = useSelector(selectCurrentSubscription);
   const currentMember = useSelector(selectCurrentMember);
-  const currentTeam = useSelector(selectCurrentTeam);
+  // Non-null: SecuredRoutes renders Content, and so this menu, only once the
+  // current team loads.
+  const currentTeam = useSelector(selectCurrentTeam)!;
 
   const iconClasses = 'mr-5 w-5 h-5';
 

@@ -13,7 +13,7 @@ export default function AccountOptionsPopover() {
   const router = useHistory();
   const currentUser = useSelector(selectCurrentUser);
 
-  let button = <ProfilePicture url={currentUser?.image_url} size="xs" />;
+  const button = <ProfilePicture url={currentUser?.image_url} size="xs" />;
 
   const handleLogOut = () => {
     dispatch(logOut());

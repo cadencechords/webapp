@@ -1,4 +1,8 @@
-export default function BinderIcon({ className }) {
+type BinderIconProps = {
+  className?: string;
+};
+
+export default function BinderIcon({ className }: BinderIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24">
       <path

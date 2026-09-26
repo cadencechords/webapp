@@ -36,3 +36,18 @@ declare module 'chordsheetjs' {
   };
   export default ChordSheetJS;
 }
+
+declare module 'react-textfit' {
+  import type { CSSProperties, ComponentType, ReactNode } from 'react';
+
+  export interface TextfitProps {
+    /** 'single' fits one line to the width, 'multi' wraps. */
+    mode?: 'single' | 'multi';
+    style?: CSSProperties;
+    children?: ReactNode;
+  }
+
+  /** Scales its text to fit its box. */
+  export const Textfit: ComponentType<TextfitProps>;
+  export default Textfit;
+}

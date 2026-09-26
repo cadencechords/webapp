@@ -1,12 +1,23 @@
 import React from 'react';
 
+type SegmentedControlProps = {
+  options: string[];
+  onChange: (option: string) => void;
+  selected: string;
+  /** The radio group's name, unique on the page. */
+  name?: string;
+  size?: SegmentedControlSize;
+};
+
+export type SegmentedControlSize = keyof typeof SIZES;
+
 export default function SegmentedControl({
   options,
   onChange,
   selected,
   name = 'segmented-control',
   size = 'md',
-}) {
+}: SegmentedControlProps) {
   return (
     <fieldset
       id={name}

@@ -1,8 +1,11 @@
 import IconButton from './buttons/IconButton';
-import PropTypes from 'prop-types';
 import Icon from './Icon';
 
-export default function QuickAdd({ onAdd }) {
+type QuickAddProps = {
+  onAdd: () => void;
+};
+
+export default function QuickAdd({ onAdd }: QuickAddProps) {
   return (
     <div className="fixed md:right-8 right-5 bottom-20 md:bottom-10">
       <IconButton color="blue" onClick={onAdd}>
@@ -11,7 +14,3 @@ export default function QuickAdd({ onAdd }) {
     </div>
   );
 }
-
-QuickAdd.propTypes = {
-  onAdd: PropTypes.func.isRequired,
-};

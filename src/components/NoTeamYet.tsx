@@ -7,7 +7,7 @@ export default function NoTeamYet() {
   return (
     <>
       <div className="text-xl font-semibold mb-4">
-        Looks like you aren't a part of any teams yet
+        Looks like you aren&apos;t a part of any teams yet
       </div>
       <Button
         variant="outlined"

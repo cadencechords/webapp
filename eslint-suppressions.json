@@ -27,11 +27,6 @@
       "count": 1
     }
   },
-  "src/components/AppFallback.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
   "src/components/AppleMusicSearchResults.js": {
     "no-unused-vars": {
       "count": 1
@@ -53,11 +48,6 @@
     }
   },
   "src/components/BoldItalicButtonGroup.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/ButtonGroup.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -210,16 +200,6 @@
       "count": 1
     }
   },
-  "src/components/NoTeamYet.js": {
-    "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/components/NumberBadge.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/OnsongChooseBackupFile.js": {
     "react/no-unescaped-entities": {
       "count": 2
@@ -252,11 +232,6 @@
   },
   "src/components/RoleMembersList.js": {
     "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/components/SegmentedControl.js": {
-    "no-unused-vars": {
       "count": 1
     }
   },
@@ -356,21 +331,6 @@
     }
   },
   "src/dialogs/SongsSelectedForImportModal.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/icons/AnnotationIcons.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/icons/BoldIcon.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/icons/ItalicIcon.js": {
     "no-unused-vars": {
       "count": 1
     }

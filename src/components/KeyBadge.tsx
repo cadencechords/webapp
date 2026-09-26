@@ -1,4 +1,9 @@
-export default function KeyBadge({ songKey }) {
+type KeyBadgeProps = {
+  /** Nothing renders without a key. */
+  songKey?: string;
+};
+
+export default function KeyBadge({ songKey }: KeyBadgeProps) {
   if (songKey) {
     return (
       <span className="text-xs font-bold text-gray-700 dark:text-dark-gray-200 bg-gray-200 dark:bg-dark-gray-400 dark:border-dark-gray-200 py-0.5 px-1 rounded-md grow-0 ml-2">

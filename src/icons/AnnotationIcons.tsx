@@ -1,6 +1,10 @@
 import React from 'react';
 
-export function HighlighterIcon({ className }) {
+type AnnotationIconProps = {
+  className?: string;
+};
+
+export function HighlighterIcon({ className }: AnnotationIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +18,7 @@ export function HighlighterIcon({ className }) {
   );
 }
 
-export function PencilIcon({ className }) {
+export function PencilIcon({ className }: AnnotationIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +32,7 @@ export function PencilIcon({ className }) {
   );
 }
 
-export function ScrollIcon({ className }) {
+export function ScrollIcon({ className }: AnnotationIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +46,7 @@ export function ScrollIcon({ className }) {
   );
 }
 
-export function EraserIcon({ className }) {
+export function EraserIcon({ className }: AnnotationIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

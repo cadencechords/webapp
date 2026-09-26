@@ -1,4 +1,12 @@
-export default function Drawer({ open, onClose, children }) {
+import type { ReactNode } from 'react';
+
+type DrawerProps = {
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+};
+
+export default function Drawer({ open, onClose, children }: DrawerProps) {
   return (
     <>
       <div

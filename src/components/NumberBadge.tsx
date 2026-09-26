@@ -1,6 +1,18 @@
 import React from 'react';
 
-export default function NumberBadge({ children, className, disabled }) {
+import type { ReactNode } from 'react';
+
+type NumberBadgeProps = {
+  children: ReactNode;
+  className: string;
+  disabled?: boolean;
+};
+
+export default function NumberBadge({
+  children,
+  className,
+  disabled,
+}: NumberBadgeProps) {
   const colorStyles = disabled
     ? 'bg-gray-100 dark:bg-dark-gray-700 text-gray-800 dark:text-dark-gray-200'
     : 'text-blue-700 bg-blue-100';

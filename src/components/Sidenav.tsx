@@ -11,10 +11,11 @@ import { useSelector } from 'react-redux';
 import Icon from './Icon';
 
 export default function Sidenav() {
-  let iconClasses = 'h-5 w-5';
+  const iconClasses = 'h-5 w-5';
 
   const currentTeam = useSelector(selectCurrentTeam);
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: Content renders the Sidenav only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
   const currentSubscription = useSelector(selectCurrentSubscription);
 
   let currentTeamCard = null;

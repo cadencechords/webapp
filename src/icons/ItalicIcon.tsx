@@ -1,6 +1,10 @@
 import React from 'react';
 
-export default function ItalicIcon({ className = '' }) {
+type ItalicIconProps = {
+  className?: string;
+};
+
+export default function ItalicIcon({ className = '' }: ItalicIconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24">
       <path

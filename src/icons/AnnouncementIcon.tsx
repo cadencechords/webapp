@@ -1,4 +1,8 @@
-export default function AnnouncementIcon({ className }) {
+type AnnouncementIconProps = {
+  className?: string;
+};
+
+export default function AnnouncementIcon({ className }: AnnouncementIconProps) {
   return (
     <svg fill="none" viewBox="0 0 24 24" className={className}>
       <path

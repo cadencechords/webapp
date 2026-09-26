@@ -2,12 +2,20 @@ import MobileMenuButton from '../buttons/MobileMenuButton';
 import StyledDialog from '../StyledDialog';
 import Icon from '../Icon';
 
+type MobileProfilePictureMenuProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  onOpenFileDialog: () => void;
+  /** Called before the menu closes. */
+  onDeleteImage: () => void;
+};
+
 export default function MobileProfilePictureMenu({
   open,
   onCloseDialog,
   onOpenFileDialog,
   onDeleteImage,
-}) {
+}: MobileProfilePictureMenuProps) {
   const handleDeleteImage = () => {
     onDeleteImage();
     onCloseDialog();
