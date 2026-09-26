@@ -128,6 +128,8 @@ export interface OnsongBackup {
 }
 
 export interface OnsongFile {
+  /** Keys the file in the lists of songs to import. */
+  id?: number;
   name: string;
 }
 

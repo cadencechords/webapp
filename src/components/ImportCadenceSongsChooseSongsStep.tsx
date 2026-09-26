@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, type ReactNode } from 'react';
 import Checkbox from './Checkbox';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import KeyBadge from './KeyBadge';
@@ -12,6 +12,15 @@ import useImportSongsFromTeam from '../hooks/api/useImportSongsFromTeam';
 import useImportableCadenceSongs from '../hooks/api/useImportableCadenceSongs';
 import NoDataMessage from './NoDataMessage';
 import Icon from './Icon';
+import type { Id, ImportableTeam, Song } from '../types';
+
+type ImportCadenceSongsChooseSongsStepProps = {
+  selectedTeam?: ImportableTeam | null;
+  selectedSongs: Song[];
+  currentStep: number;
+  onToggleSong: (isChecked: boolean, song: Song) => void;
+  onGoToStep: (step: number) => void;
+};
 
 export default function ImportCadenceSongsChooseSongsStep({
   selectedTeam,
@@ -19,13 +28,15 @@ export default function ImportCadenceSongsChooseSongsStep({
   currentStep,
   onToggleSong,
   onGoToStep,
-}) {
+}: ImportCadenceSongsChooseSongsStepProps) {
   const { isLoading: isImporting, run: importSongs } = useImportSongsFromTeam({
     onSuccess: () => onGoToStep(2),
   });
   const [query, setQuery] = useState('');
   const { isLoading: isLoadingSongs, data: songs } = useImportableCadenceSongs(
-    selectedTeam?.id,
+    // The query is disabled until a team is chosen, so it only fetches with a
+    // team's id.
+    selectedTeam?.id as Id,
     { enabled: !!selectedTeam }
   );
 
@@ -42,7 +53,9 @@ export default function ImportCadenceSongsChooseSongsStep({
 
   function handleImport() {
     importSongs({
-      exportTeamId: selectedTeam.id,
+      // Non-null: songs can only be picked on this step, which is reached
+      // with "Choose songs", disabled until a team is chosen.
+      exportTeamId: selectedTeam!.id,
       songIds: selectedSongs.map(song => song.id),
     });
   }
@@ -105,7 +118,13 @@ export default function ImportCadenceSongsChooseSongsStep({
   );
 }
 
-function SongOption({ song, selected, onToggleSong }) {
+type SongOptionProps = {
+  song: Song;
+  selected: boolean;
+  onToggleSong: (isChecked: boolean, song: Song) => void;
+};
+
+function SongOption({ song, selected, onToggleSong }: SongOptionProps) {
   return (
     <label
       key={song.id}
@@ -126,7 +145,14 @@ function SongOption({ song, selected, onToggleSong }) {
   );
 }
 
-function SaveButton({ onClick, children, loading, disabled }) {
+type SaveButtonProps = {
+  onClick: () => void;
+  children?: ReactNode;
+  loading: boolean;
+  disabled: boolean;
+};
+
+function SaveButton({ onClick, children, loading, disabled }: SaveButtonProps) {
   return (
     <>
       <Button

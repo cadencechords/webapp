@@ -8,13 +8,21 @@ import classNames from 'classnames';
 import ProfilePicture from './ProfilePicture';
 import NoDataMessage from './NoDataMessage';
 import Icon from './Icon';
+import type { ImportableTeam } from '../types';
+
+type ImportCadenceSongsChooseTeamStepProps = {
+  selectedTeam?: ImportableTeam | null;
+  setSelectedTeam: (team: ImportableTeam) => void;
+  currentStep: number;
+  onGoToStep: (step: number) => void;
+};
 
 export default function ImportCadenceSongsChooseTeamStep({
   selectedTeam,
   setSelectedTeam,
   currentStep,
   onGoToStep,
-}) {
+}: ImportCadenceSongsChooseTeamStepProps) {
   const { isLoading: isLoadingTeams, data: teams } =
     useImportableCadenceTeams();
 
@@ -60,10 +68,17 @@ export default function ImportCadenceSongsChooseTeamStep({
   );
 }
 
-function TeamOption({ team, selected, onChange }) {
+type TeamOptionProps = {
+  team: ImportableTeam;
+  selected: boolean;
+  onChange: (team: ImportableTeam) => void;
+};
+
+function TeamOption({ team, selected, onChange }: TeamOptionProps) {
   return (
     <label
-      id={team.id}
+      // React sets the attribute to the id as a string either way.
+      id={String(team.id)}
       className={classNames(
         'interactive-card flex items-center relative h-20 ring-offset-0 gap-4 p-2 cursor-pointer rounded-xl',
         selected && 'ring-2 ring-blue-500 dark:ring-dark-blue'

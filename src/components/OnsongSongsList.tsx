@@ -1,5 +1,15 @@
 import Button from './Button';
 import Checkbox from './Checkbox';
+import type { OnsongFile } from '../types';
+
+type OnsongsSongsListProps = {
+  /** Nothing renders until the backup's songs are loaded. */
+  songs?: OnsongFile[] | null;
+  selectedSongs: OnsongFile[];
+  onToggleSong: (selected: boolean, song: OnsongFile) => void;
+  onSelectAll: () => void;
+  onUnselectAll: () => void;
+};
 
 export default function OnsongsSongsList({
   songs,
@@ -7,8 +17,8 @@ export default function OnsongsSongsList({
   onToggleSong,
   onSelectAll,
   onUnselectAll,
-}) {
-  const isSelected = songInQuestion => {
+}: OnsongsSongsListProps) {
+  const isSelected = (songInQuestion: OnsongFile) => {
     return selectedSongs.includes(songInQuestion);
   };
 
