@@ -145,6 +145,6 @@ export default function MembersIndexPage() {
       </>
     );
   } else {
-    return 'Loading ...';
+    return <>Loading ...</>;
   }
 }

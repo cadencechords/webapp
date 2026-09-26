@@ -17,7 +17,7 @@ export default function AccountDetailPage() {
     document.title = 'Account Details';
   }, []);
 
-  if (!currentUser) return 'Loading...';
+  if (!currentUser) return <>Loading...</>;
 
   return (
     <>

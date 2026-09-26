@@ -147,6 +147,6 @@ export default function TeamDetailPage() {
       </div>
     );
   } else {
-    return 'Loading...';
+    return <>Loading...</>;
   }
 }
