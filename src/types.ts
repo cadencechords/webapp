@@ -47,7 +47,8 @@ export interface Team {
   /** The code at the end of the team's join link, `/join/<code>`. */
   join_link?: string;
   join_link_enabled?: boolean;
-  default_format?: FormatPreset;
+  /** Null once the default is unset (FormatPresets). */
+  default_format?: FormatPreset | null;
 }
 
 /** `TeamApi.getCurrentTeam`. */
@@ -148,7 +149,7 @@ export interface Binder {
 }
 
 /** A saved song format a team can make its default. */
-export interface FormatPreset {
+export interface FormatPreset extends SongFormat {
   id: number;
   name?: string;
 }
