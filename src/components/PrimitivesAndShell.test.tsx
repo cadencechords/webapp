@@ -148,6 +148,17 @@ test('TextAutosize sets the font size in px unless autosizing', () => {
   expect(screen.getByText('Lyrics')).toHaveStyle({ fontSize: '18px' });
 });
 
+test('TextAutosize fits the text to its container when autosizing', () => {
+  render(
+    <TextAutosize autosize fontSize={18}>
+      Chorus
+    </TextAutosize>
+  );
+  const text = screen.getByText('Chorus');
+  expect(text).not.toHaveStyle({ fontSize: '18px' });
+  expect(text.closest('div[style*="height: 100%"]')).not.toBeNull();
+});
+
 test('Drawer closes from its backdrop and slides in when open', () => {
   const onClose = vi.fn();
   const { container } = render(
@@ -267,6 +278,19 @@ test('MemberMenu falls back to the email, and hides removal without the permissi
     { preloadedState: memberState([]) }
   );
   expect(screen.getByText('ann@example.com')).toBeInTheDocument();
+  expect(screen.queryByText('Remove from team')).not.toBeInTheDocument();
+});
+
+test('MemberMenu hides removal without a member', () => {
+  renderWithProvider(
+    <MemberMenu
+      open
+      onCloseDialog={() => {}}
+      member={null}
+      onRemoved={() => {}}
+    />,
+    { preloadedState: memberState([REMOVE_MEMBERS]) }
+  );
   expect(screen.queryByText('Remove from team')).not.toBeInTheDocument();
 });
 
