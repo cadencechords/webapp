@@ -1,4 +1,16 @@
-export default function NoteColorOption({ color, selected, onClick }) {
+type NoteColorOptionProps = {
+  /** The option's Tailwind background classes. */
+  color: string;
+  selected: boolean;
+  /** Called with `color`. */
+  onClick: (color: string) => void;
+};
+
+export default function NoteColorOption({
+  color,
+  selected,
+  onClick,
+}: NoteColorOptionProps) {
   return (
     <button
       className={

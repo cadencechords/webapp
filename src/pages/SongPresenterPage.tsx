@@ -172,17 +172,12 @@ export default function SongPresenterPage() {
                 <Marking
                   marking={marking}
                   key={marking.id}
-                  song={song}
+                  song={song as PresentedSong}
                   onDeleted={handleMarkingDeleted}
                 />
               ))}
             {currentSubscription?.isPro && song.annotations && (
-              <Annotations
-                // `as`: Annotations is still JavaScript, and TypeScript
-                // infers never[] from its `= []` default. It takes the song's
-                // annotation paths.
-                annotations={song.annotations as never[]}
-              />
+              <Annotations annotations={song.annotations} />
             )}
             <div id="song" className="relative mr-0">
               {html(song as PresentedSong)}
@@ -214,7 +209,7 @@ export default function SongPresenterPage() {
             open={isAddMarkingsVisible}
             onClose={() => setIsAddMarkingsVisible(false)}
             onMarkingAdded={handleMarkingAdded}
-            song={song}
+            song={song as PresentedSong}
           />
         )}
       </div>

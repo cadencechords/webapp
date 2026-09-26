@@ -94,12 +94,7 @@ export default function SongsCarouselSlide({
             />
           ))}
         {currentSubscription?.isPro && (
-          <Annotations
-            // `as`: Annotations is still JavaScript, and TypeScript infers
-            // never[] from its `= []` default. It takes the song's
-            // annotation paths.
-            annotations={song.annotations as never[] | undefined}
-          />
+          <Annotations annotations={song.annotations} />
         )}
         <div id="song" className="pb-24 mr-0">
           {html(song)}

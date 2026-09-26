@@ -20,8 +20,10 @@
     "skipLibCheck": true,
     // react-toastify 9 ships types, but its package.json "exports" has no
     // "types" condition, so bundler resolution can't find them.
+    // react-colorful 5 is the same.
     "paths": {
-      "react-toastify": ["./node_modules/react-toastify/dist/index.d.ts"]
+      "react-toastify": ["./node_modules/react-toastify/dist/index.d.ts"],
+      "react-colorful": ["./node_modules/react-colorful/dist/index.d.ts"]
     },
     "strict": false
   },

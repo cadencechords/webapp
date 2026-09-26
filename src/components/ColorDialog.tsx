@@ -4,12 +4,21 @@ import { COLORS } from '../utils/BinderUtils';
 import StyledDialog from './StyledDialog';
 import { useState } from 'react';
 
+type ColorDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  /** The binder's color, a key of `COLORS` (or unset). */
+  binderColor?: string;
+  /** Called on confirm with the picked color (`binderColor` if none was picked). */
+  onChange: (color: string | undefined) => void;
+};
+
 export default function ColorDialog({
   open,
   onCloseDialog,
   binderColor,
   onChange,
-}) {
+}: ColorDialogProps) {
   const [currentColor, setCurrentColor] = useState(binderColor);
 
   const handleUpdate = () => {

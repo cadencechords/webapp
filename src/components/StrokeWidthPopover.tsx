@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import StyledPopover from './StyledPopover';
 import { RgbaStringColorPicker } from 'react-colorful';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
 import { useDebounce } from 'usehooks-ts';
 import classNames from 'classnames';
 
-export default function StrokeWidthPopover({ button }) {
+type StrokeWidthPopoverProps = {
+  button: ReactNode;
+};
+
+export default function StrokeWidthPopover({
+  button,
+}: StrokeWidthPopoverProps) {
   const {
     color: defaultColor,
     setColor: setAnnotationColor,
@@ -45,7 +52,18 @@ export default function StrokeWidthPopover({ button }) {
 
 const WIDTHS = [2, 4, 8, 16, 24];
 
-function StrokeWidthButton({ strokeWidth, selected, onClick }) {
+type StrokeWidthButtonProps = {
+  strokeWidth: number;
+  selected: boolean;
+  /** Called with `strokeWidth`. */
+  onClick: (strokeWidth: number) => void;
+};
+
+function StrokeWidthButton({
+  strokeWidth,
+  selected,
+  onClick,
+}: StrokeWidthButtonProps) {
   return (
     <button
       onClick={() => onClick(strokeWidth)}

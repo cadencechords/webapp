@@ -3,9 +3,15 @@ import { COLORS } from '../utils/BinderUtils';
 import StyledListBox from './StyledListBox';
 import { useState } from 'react';
 
-export default function ColorsList({ color, onChange }) {
+type ColorsListProps = {
+  /** A key of `COLORS`, or `'none'`. */
+  color: string;
+  onChange: (color: string) => void;
+};
+
+export default function ColorsList({ color, onChange }: ColorsListProps) {
   const [options] = useState(() => {
-    let colorOptions = COLORS.map(color => ({
+    const colorOptions = COLORS.map(color => ({
       value: color,
       template: (
         <div className="flex items-center">
@@ -17,7 +23,7 @@ export default function ColorsList({ color, onChange }) {
     return colorOptions;
   });
 
-  let selectedColor = {
+  const selectedColor = {
     value: color,
     template: (
       <div className="flex items-center">

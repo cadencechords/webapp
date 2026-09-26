@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentType } from 'react';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
 import usePerformanceMode from '../hooks/usePerformanceMode';
 import {
@@ -11,6 +12,7 @@ import classNames from 'classnames';
 import StrokeWidthPopover from './StrokeWidthPopover';
 import * as colorUtils from '../utils/color.utils';
 import ColorPickerPopover from './ColorPickerPopover';
+import type { AnnotationUtensil } from '../contexts/AnnotationsToolbarProvider';
 
 export default function AnnotationsToolbar() {
   const { isAnnotating } = usePerformanceMode();
@@ -19,6 +21,7 @@ export default function AnnotationsToolbar() {
 
   function handleHighlighterClick() {
     if (utensil === 'highlighter') {
+      // Already the highlighter: nothing to change.
     } else {
       setColor(colorUtils.setAlpha(color, 0.5));
       setStrokeWidth(16);
@@ -28,6 +31,7 @@ export default function AnnotationsToolbar() {
 
   function handlePenClick() {
     if (utensil === 'pen') {
+      // Already the pen: nothing to change.
     } else {
       setColor(colorUtils.setAlpha(color, 1));
       setStrokeWidth(2);
@@ -97,7 +101,20 @@ export default function AnnotationsToolbar() {
   );
 }
 
-function UtensilButton({ Icon, onClick, selectedUtensil, name }) {
+type UtensilButtonProps = {
+  Icon: ComponentType<{ className?: string }>;
+  /** Called with `name`. */
+  onClick: (utensil: AnnotationUtensil) => void;
+  selectedUtensil: AnnotationUtensil;
+  name: AnnotationUtensil;
+};
+
+function UtensilButton({
+  Icon,
+  onClick,
+  selectedUtensil,
+  name,
+}: UtensilButtonProps) {
   return (
     <button
       onClick={() => onClick(name)}
@@ -112,7 +129,12 @@ function UtensilButton({ Icon, onClick, selectedUtensil, name }) {
   );
 }
 
-function ColorButton({ color }) {
+type ColorButtonProps = {
+  /** An `rgba(...)` color. */
+  color: string;
+};
+
+function ColorButton({ color }: ColorButtonProps) {
   return (
     <button
       className="w-8 h-8 border rounded-full dark:border-dark-gray-600"

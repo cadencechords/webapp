@@ -1,11 +1,12 @@
 import Note from './Note';
-import type { Song, SongNote } from '../types';
+import type { NoteUpdateHandler } from './Note';
+import type { Song } from '../types';
 
 type NotesListProps = {
   song: Song;
   onDelete: (noteId: number) => void;
   rearrangeable?: boolean;
-  onUpdate?: (noteId: number, updates: Partial<SongNote>) => void;
+  onUpdate?: NoteUpdateHandler;
   onDragStart?: () => void;
   onDragEnd?: () => void;
 };

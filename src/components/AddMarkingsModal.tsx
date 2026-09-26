@@ -6,13 +6,29 @@ import classNames from 'classnames';
 import { shapeOptions } from '../utils/constants';
 import { useCreateMarking } from '../hooks/api/markings.hooks';
 import { PulseLoader } from 'react-spinners';
+import type { Marking, Song } from '../types';
+
+type AddMarkingsModalProps = {
+  open: boolean;
+  onClose: () => void;
+  /** Called with the marking once it's saved. */
+  onMarkingAdded: (marking: Marking) => void;
+  song: Pick<Song, 'id'>;
+};
+
+/** A marking option the user picked. */
+type MarkingChoice = { content: string; markingType: string };
+
+type OptionsPanelProps = {
+  onAddMarking: (choice: MarkingChoice) => void;
+};
 
 export default function AddMarkingsModal({
   open,
   onClose,
   onMarkingAdded,
   song,
-}) {
+}: AddMarkingsModalProps) {
   const [selectedTab, setSelectedTab] = React.useState(0);
   const { isLoading: isCreatingMarking, run: createMarking } = useCreateMarking(
     {
@@ -23,7 +39,7 @@ export default function AddMarkingsModal({
     }
   );
 
-  function handleAddMarking({ content, markingType }) {
+  function handleAddMarking({ content, markingType }: MarkingChoice) {
     createMarking({
       marking: { content, marking_type: markingType },
       songId: song.id,
@@ -51,7 +67,7 @@ export default function AddMarkingsModal({
   );
 }
 
-function DynamicOptionsPanel({ onAddMarking }) {
+function DynamicOptionsPanel({ onAddMarking }: OptionsPanelProps) {
   return (
     <Tab.Panel className="grid grid-cols-3 sm:grid-cols-4">
       {dynamicOptions.map(option => (
@@ -84,7 +100,7 @@ function DynamicOptionsPanel({ onAddMarking }) {
   );
 }
 
-function RoadmapOptionsPanel({ onAddMarking }) {
+function RoadmapOptionsPanel({ onAddMarking }: OptionsPanelProps) {
   return (
     <Tab.Panel className="grid grid-cols-3 sm:grid-cols-4">
       {roadmapOptions.map(option => (
@@ -102,7 +118,7 @@ function RoadmapOptionsPanel({ onAddMarking }) {
   );
 }
 
-function SingerOptionsPanel({ onAddMarking }) {
+function SingerOptionsPanel({ onAddMarking }: OptionsPanelProps) {
   return (
     <Tab.Panel className="grid grid-cols-3 sm:grid-cols-4">
       {singerOptions.map(option => (
@@ -120,7 +136,7 @@ function SingerOptionsPanel({ onAddMarking }) {
   );
 }
 
-function ShapeOptionsPanel({ onAddMarking }) {
+function ShapeOptionsPanel({ onAddMarking }: OptionsPanelProps) {
   return (
     <Tab.Panel className="grid grid-cols-3 sm:grid-cols-4">
       {Object.entries(shapeOptions).map(([name, ShapeSvg]) => (

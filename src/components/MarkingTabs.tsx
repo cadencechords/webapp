@@ -3,7 +3,12 @@ import classNames from 'classnames';
 import React from 'react';
 import { markingTabs } from '../utils/constants';
 
-export default function MarkingTabs({ selectedIndex }) {
+type MarkingTabsProps = {
+  /** The index of the selected tab in `markingTabs`. */
+  selectedIndex: number;
+};
+
+export default function MarkingTabs({ selectedIndex }: MarkingTabsProps) {
   return (
     <Tab.List className="flex gap-3 mb-4 text-sm font-semibold text-gray-700 dark:text-dark-gray-200">
       {markingTabs.map((tab, index) => (

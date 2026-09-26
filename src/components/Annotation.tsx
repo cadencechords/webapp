@@ -1,8 +1,13 @@
 import React from 'react';
 import useTheme from '../hooks/useTheme';
 import { getThemeAwareAnnotationColor } from '../utils/color.utils';
+import type { AnnotationPath } from '../types';
 
-export default function Annotation({ annotation }) {
+type AnnotationProps = {
+  annotation: AnnotationPath;
+};
+
+export default function Annotation({ annotation }: AnnotationProps) {
   const { isDark } = useTheme();
 
   return (

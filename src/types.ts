@@ -170,10 +170,14 @@ export interface Marking {
   id: number;
   marking_type: string;
   content?: string;
-  x?: number;
-  y?: number;
-  scale?: number;
-  rotation?: number;
+  /**
+   * Position, scale and rotation. Marking.tsx reads them with parseFloat, so
+   * the API may send them as decimal strings; updates send numbers.
+   */
+  x?: number | string;
+  y?: number | string;
+  scale?: number | string;
+  rotation?: number | string;
 }
 
 /** A capo saved on a song. */
