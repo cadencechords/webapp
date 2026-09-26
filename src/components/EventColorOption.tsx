@@ -16,8 +16,9 @@ export default function EventColorOption({
 }: EventColorOptionProps) {
   return (
     <button
-      // Without a color this gets the class "undefined", as before.
-      className={`focus:outline-hidden outline-hidden h-5 w-5 rounded-full transition-colors ${color && BACKGROUND_COLORS[color]} ${className}`}
+      // Without a color (undefined, null or "") this gets the class "undefined",
+      // as before.
+      className={`focus:outline-hidden outline-hidden h-5 w-5 rounded-full transition-colors ${color ? BACKGROUND_COLORS[color] : undefined} ${className}`}
       disabled={disabled}
       onClick={() => onClick?.(color)}
     ></button>

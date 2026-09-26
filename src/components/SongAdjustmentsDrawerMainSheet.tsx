@@ -59,8 +59,9 @@ export default function SongAdjustmentsDrawerMainSheet({
         <Toggle enabled={song.show_roadmap} onChange={noop} spacing="between" />
       </MobileMenuButton>
 
-      {/* Opened from a song page, which SecuredRoutes renders only after it
-          has loaded the team and its subscription. */}
+      {/* SecuredRoutes renders pages once the team is set, and the
+          subscription is dispatched right after it, before this drawer can
+          be opened by a user action. */}
       {currentSubscription!.isPro && (
         <MobileMenuButton
           className="hidden sm:flex sm:items-center"
