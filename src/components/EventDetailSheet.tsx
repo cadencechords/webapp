@@ -1,0 +1,157 @@
+import { DELETE_EVENTS, EDIT_EVENTS } from '../utils/constants';
+
+import Button from '../components/Button';
+import eventsApi from '../api/eventsApi';
+import { format } from '../utils/date';
+import { hasName } from '../utils/model';
+import { selectCurrentMember } from '../store/authSlice';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import useEventForm from '../hooks/forms/useEventForm';
+import PlaylistIcon from '../icons/PlaylistIcon';
+import useSetlist from '../hooks/api/useSetlist';
+import { pluralize } from '../utils/StringUtils';
+import Icon from './Icon';
+import type { CalendarEvent, Id } from '../types';
+
+type EventDetailSheetProps = {
+  event?: CalendarEvent | null;
+  onDeleted: (eventId: number) => void;
+  onCloseDialog: () => void;
+};
+
+export default function EventDetailSheet({
+  event,
+  onDeleted,
+  onCloseDialog,
+}: EventDetailSheetProps) {
+  // `as`: without a setlist_id the query is disabled, so the missing id is
+  // only part of its key, never fetched.
+  const { data: setlist } = useSetlist(event?.setlist_id as Id, {
+    enabled: !!event?.setlist_id,
+  });
+
+  const currentMember = useSelector(selectCurrentMember);
+  const { setForm } = useEventForm();
+
+  function handleDelete() {
+    // Non-null: the delete button only renders when there's an event.
+    eventsApi.delete(event!.id);
+    onDeleted(event!.id);
+    onCloseDialog();
+  }
+
+  function handleEdit() {
+    // Non-null: the edit link only renders when there's an event.
+    setForm(event!);
+  }
+
+  if (event)
+    return (
+      <>
+        <div className="grid grid-cols-10 gap-6">
+          <div className="flex items-start justify-end col-span-1">
+            <Icon
+              name="group"
+              filled
+              className="shrink-0 w-5 h-5 my-1 text-gray-600 dark:text-dark-gray-200"
+            />
+          </div>
+          <div className="flex flex-col items-start justify-start col-span-9">
+            {event?.memberships?.length ? (
+              event.memberships.map(member => (
+                <div key={member.id} className="my-1">
+                  {hasName(member.user)
+                    ? `${member.user.first_name} ${member.user.last_name}`
+                    : member.user.email}
+                </div>
+              ))
+            ) : (
+              <div className="text-gray-600 dark:text-dark-gray-200">
+                No members
+              </div>
+            )}
+          </div>
+          <div className="flex items-start justify-end col-span-1">
+            <Icon
+              name="notifications"
+              filled
+              className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200"
+            />
+          </div>
+          <div className="flex items-start justify-start col-span-9">
+            {event.reminders_enabled ? (
+              `Reminders will be sent ${format(
+                event.reminder_date,
+                'MMMM D, YYYY h:mma'
+              )}`
+            ) : (
+              <div className="text-gray-600 dark:text-dark-gray-200">
+                Reminders are not enabled for this event
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-start justify-end col-span-1">
+            <Icon
+              name="notes"
+              filled
+              className="shrink-0 w-5 h-5 text-gray-600 dark:text-dark-gray-200"
+            />
+          </div>
+          <div className="flex items-start justify-start col-span-9">
+            {event.description ? (
+              event.description
+            ) : (
+              <div className="text-gray-600 dark:text-dark-gray-200">
+                No description provided for this event
+              </div>
+            )}
+          </div>
+
+          {event.setlist && (
+            <>
+              <div className="flex items-start justify-end col-span-1">
+                <PlaylistIcon className="shrink-0 w-6 h-6 text-gray-600 dark:text-dark-gray-200" />
+              </div>
+              <Link
+                className="flex flex-col items-start justify-start col-span-9"
+                to={`/sets/${event.setlist.id}`}
+              >
+                <span className="hover:underline">{event.setlist.name}</span>
+                <span className="text-sm subtext">
+                  {setlist.songs && (
+                    <>
+                      {setlist.songs?.length}{' '}
+                      {pluralize('song', setlist.songs.length)}
+                    </>
+                  )}
+                </span>
+              </Link>
+            </>
+          )}
+        </div>
+        <div className="flex justify-end mt-4">
+          {currentMember?.can(EDIT_EVENTS) && (
+            <Link to={`/calendar/${event.id}/edit`} onClick={handleEdit}>
+              <Button variant="icon" color="gray" size="md" className="mr-4">
+                <Icon name="edit" className="w-6 h-6" />
+              </Button>
+            </Link>
+          )}
+          {currentMember?.can(DELETE_EVENTS) && (
+            <Button
+              variant="icon"
+              color="gray"
+              size="md"
+              onClick={handleDelete}
+            >
+              <Icon name="delete" className="w-6 h-6" />
+            </Button>
+          )}
+        </div>
+      </>
+    );
+
+  return null;
+}

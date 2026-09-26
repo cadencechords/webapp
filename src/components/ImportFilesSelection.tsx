@@ -1,0 +1,43 @@
+import Button from '../components/Button';
+import FilesInput from '../components/FilesInput';
+import PageTitle from '../components/PageTitle';
+import { pluralize } from '../utils/StringUtils';
+
+type ImportFilesSelectionProps = {
+  filesToImport: File[];
+  onFilesChange: (files: File[]) => void;
+  onImport: () => void;
+};
+
+export default function ImportFilesSelection({
+  filesToImport,
+  onFilesChange,
+  onImport,
+}: ImportFilesSelectionProps) {
+  function handleRemove(fileToRemove: File) {
+    onFilesChange(filesToImport.filter(file => file !== fileToRemove));
+  }
+
+  return (
+    <>
+      <PageTitle title="Import songs" />
+      <p className="mb-8 text-sm leading-relaxed">
+        You can import song files from your device and add it to your library in
+        Mezzo. Click the button below to browse and select files on your device.
+        You can import Word documents, PDF files or regular text files.
+      </p>
+      <FilesInput
+        onChange={onFilesChange}
+        accept=".docx,.pdf,.txt,.chordpro"
+        buttonText="Choose songs on device"
+        onRemove={handleRemove}
+      />
+      {filesToImport?.length > 0 && (
+        <Button full onClick={onImport}>
+          Import {filesToImport.length}{' '}
+          {pluralize('song', filesToImport.length)}
+        </Button>
+      )}
+    </>
+  );
+}

@@ -15,8 +15,8 @@ type TimeInputProps = {
   /** Called with a time such as `'7:30 PM'`, or null when it's cleared. */
   onChange?: (time: string | null) => void;
   className?: string;
-  /** A time such as `'7:30 PM'`. */
-  defaultValue?: string;
+  /** A time such as `'7:30 PM'`, or null (the event form's cleared time). */
+  defaultValue?: string | null;
 };
 
 export default function TimeInput({
