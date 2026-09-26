@@ -15,7 +15,9 @@ export default function CalendarPage() {
   const router = useHistory();
   const [events, setEvents] = useState([]);
 
-  useEffect(() => (document.title = 'Calendar'), []);
+  useEffect(() => {
+    document.title = 'Calendar';
+  }, []);
 
   useEffect(() => {
     if (

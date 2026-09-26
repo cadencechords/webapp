@@ -18,7 +18,9 @@ export default function TransposeKeySheet({
   onUpdateSong,
   className,
 }) {
-  const [updatedKey, setUpdatedKey] = useState();
+  const [updatedKey, setUpdatedKey] = useState(
+    /** @type {string | undefined} */ (undefined)
+  );
   const { isLoading: isSaving, run: saveSongUpdates } = useUpdateSong({
     onSuccess: () => setUpdatedKey(null),
   });

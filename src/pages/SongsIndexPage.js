@@ -18,7 +18,9 @@ import useDialog from '../hooks/useDialog';
 import FadeIn from '../components/FadeIn';
 
 export default function SongsIndexPage() {
-  useEffect(() => (document.title = 'Songs'));
+  useEffect(() => {
+    document.title = 'Songs';
+  });
 
   const { data: songs, isLoading, isError, isSuccess } = useSongs();
   const [query, setQuery] = useState('');

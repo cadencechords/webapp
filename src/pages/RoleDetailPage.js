@@ -42,7 +42,9 @@ export default function RoleDetailPage() {
     onSuccess: () => router.replace('/permissions'),
   });
 
-  useEffect(() => (document.title = 'Permissions'), []);
+  useEffect(() => {
+    document.title = 'Permissions';
+  }, []);
 
   const [role, setRole] = useCopy(originalRole);
 

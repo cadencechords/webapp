@@ -14,6 +14,8 @@ import type { CalendarEvent } from '../../types';
 type CalendarProps = {
   events?: CalendarEvent[];
   canCreateEvents?: boolean;
+  /** Not read. */
+  onEventCreated?: (createdEvent: CalendarEvent) => void;
   onEventDeleted: (eventId: number) => void;
   onEventUpdated: (updatedEvent: CalendarEvent) => void;
 };

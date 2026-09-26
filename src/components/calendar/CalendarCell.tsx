@@ -2,7 +2,7 @@ import CalendarDateButton from '../buttons/CalendarDateButton';
 import CalendarEventEntry from './CalendarEventEntry';
 
 /** A day in the calendar grid, from `utils/date`. */
-type CalendarDay = {
+export type CalendarDay = {
   fullDate: Date;
   dateNumber: number;
   isToday: boolean;

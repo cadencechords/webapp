@@ -11,11 +11,13 @@ TypeScript"). Converting a file means renaming it to `.ts`/`.tsx` with
 `git mv` and typing it. Only `public/` (served as-is) is exempt.
 
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
-`tsconfig.json` covers `src`. `tsconfig.node.json` covers all other
-TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, `.github/`, config files), is
-`strict`, and has no baseline. Write ES modules there as `.mts` (package.json
+`tsconfig.json` covers `src`, JavaScript included (`checkJs`), and isn't
+`strict` yet. `tsconfig.node.json` covers all other
+TypeScript (`scripts/`, `e2e/`, `cypress/`, `.claude/`, `.github/`, config files) and is
+`strict`. Write ES modules there as `.mts` (package.json
 has no `"type": "module"`, so a `.ts` file counts as CommonJS). Node strips types without checking them, so
-`yarn typecheck` is what catches errors there.
+`yarn typecheck` is what catches errors there. Neither project has a baseline:
+any type error fails `yarn typecheck`.
 
 ESLint parses TypeScript with the TypeScript 6 API from
 `@typescript/typescript6`, because TypeScript 7 has no JavaScript API (see
@@ -27,7 +29,7 @@ don't need type information), such as `no-explicit-any`.
 ## Checks (same as CI)
 
 ```bash
-yarn typecheck      # TypeScript over src (fails only on errors beyond typecheck-baseline.json) and Node-side TS
+yarn typecheck      # TypeScript over src and the Node-side TS; any error fails
 yarn lint           # ESLint; existing violations are in eslint-suppressions.json
 yarn format:check   # Prettier
 yarn test:unit      # unit tests (Vitest)
@@ -35,8 +37,9 @@ yarn test:hooks     # tests for the PR review gate (.claude/hooks)
 yarn build
 ```
 
-Don't hide new problems with `yarn typecheck --update` or new ESLint
-suppressions. Those are only for recording fixes (the counts going down).
+Fix type errors instead of hiding them with `@ts-ignore`, `@ts-expect-error`
+or `any`. Don't add ESLint suppressions either: `eslint-suppressions.json` is
+only for recording fixes (the counts going down, with `yarn lint:prune`).
 
 ## Pull requests
 

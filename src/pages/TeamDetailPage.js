@@ -22,9 +22,9 @@ import FormatPresets from '../components/FormatPresets';
 export default function TeamDetailPage() {
   const currentTeam = useSelector(selectCurrentTeam);
   const currentSubscription = useSelector(selectCurrentSubscription);
-  useEffect(
-    () => (document.title = currentTeam ? currentTeam.name : 'Team Details')
-  );
+  useEffect(() => {
+    document.title = currentTeam ? currentTeam.name : 'Team Details';
+  });
 
   const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
   const [showImageDialog, setShowImageDialog] = useState(false);

@@ -28,7 +28,9 @@ export default function ChatPage() {
   const heightOfVerticalNavs = isMd ? 80 : 60;
   const { isDark } = useTheme();
 
-  useEffect(() => (document.title = 'Chat'));
+  useEffect(() => {
+    document.title = 'Chat';
+  });
 
   useEffect(() => {
     if (chat_token && !channel && id && teamId) {

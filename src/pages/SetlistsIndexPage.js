@@ -19,7 +19,9 @@ import FadeIn from '../components/FadeIn';
 import SetlistsTabs from '../components/SetlistsTabs';
 
 export default function SetlistsIndexPage() {
-  useEffect(() => (document.title = 'Sets'));
+  useEffect(() => {
+    document.title = 'Sets';
+  });
   const { data: setlists, isLoading, isError, isSuccess } = useSetlists();
   const [selectedTab, setSelectedTab] = useState('upcoming');
 

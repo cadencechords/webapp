@@ -21,6 +21,8 @@ export const MessageActions = props => {
 
   const {
     handleDelete: contextHandleDelete,
+    handleFlag,
+    handleMute,
     handlePin: contextHandlePin,
     isMyMessage,
     message: contextMessage,
@@ -84,8 +86,12 @@ export const MessageActions = props => {
         getMessageActions={getMessageActions}
         handleDelete={handleDelete}
         handleEdit={setEditingState}
+        // getMessageActions never offers flag or mute, so the box never calls
+        // handleFlag, handleMute or isUserMuted. They're passed for its types.
+        handleFlag={handleFlag}
+        handleMute={handleMute}
         handlePin={handlePin}
-        isUserMuted={() => {}}
+        isUserMuted={() => false}
         mine={mine ? mine() : isMyMessage()}
         open={actionsBoxOpen}
       />

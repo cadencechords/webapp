@@ -210,11 +210,6 @@
       "count": 1
     }
   },
-  "src/components/Modal.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/NoTeamYet.js": {
     "react/no-unescaped-entities": {
       "count": 1
@@ -245,11 +240,6 @@
       "count": 2
     }
   },
-  "src/components/PageHeader.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/PublicSetlistSection.js": {
     "no-unused-vars": {
       "count": 1
@@ -265,22 +255,7 @@
       "count": 1
     }
   },
-  "src/components/SearchResults.js": {
-    "react/jsx-key": {
-      "count": 3
-    }
-  },
-  "src/components/SectionHeading.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/SegmentedControl.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/SessionCard.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -310,11 +285,6 @@
       "count": 1
     }
   },
-  "src/components/ShapeMarking.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/SongPreferencesForm.js": {
     "no-unused-vars": {
       "count": 1
@@ -340,25 +310,12 @@
       "count": 1
     }
   },
-  "src/components/SupportButton.js": {
-    "no-unused-vars": {
-      "count": 1
-    },
-    "react/no-unknown-property": {
-      "count": 1
-    }
-  },
   "src/components/Track.js": {
     "no-unused-vars": {
       "count": 1
     }
   },
   "src/components/TrackOptionsPopover.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/TrackSourceButton.js": {
     "no-unused-vars": {
       "count": 1
     }
@@ -421,19 +378,6 @@
   "src/icons/ItalicIcon.js": {
     "no-unused-vars": {
       "count": 1
-    }
-  },
-  "src/icons/SupportIcon.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/icons/markings.js": {
-    "no-unused-vars": {
-      "count": 1
-    },
-    "react/no-unknown-property": {
-      "count": 3
     }
   },
   "src/pages/AccountAppearancePage.js": {

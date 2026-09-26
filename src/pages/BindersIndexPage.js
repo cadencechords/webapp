@@ -16,7 +16,9 @@ import useDialog from '../hooks/useDialog';
 import FadeIn from '../components/FadeIn';
 
 export default function BindersIndexPage() {
-  useEffect(() => (document.title = 'Binders'));
+  useEffect(() => {
+    document.title = 'Binders';
+  });
 
   const [isOpen, showDialog, hideDialog] = useDialog();
   const [query, setQuery] = useState('');
