@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ChangeEvent } from 'react';
 
 import BarLoader from 'react-spinners/BarLoader';
 import Button from './Button';
@@ -6,18 +6,25 @@ import FilesApi from '../api/filesApi';
 import { reportError } from '../utils/error';
 import { useParams } from 'react-router';
 import Icon from './Icon';
+import type { SongFile } from '../types';
 
-export default function SongFileUpload({ onFilesUploaded }) {
-  const [filesBeingUploaded, setFilesBeingUploaded] = useState([]);
-  const inputRef = useRef(/** @type {HTMLInputElement | null} */ (null));
-  /** @type {{ id: string }} */
-  const { id } = useParams();
+type SongFileUploadProps = {
+  onFilesUploaded?: (files: SongFile[]) => void;
+};
 
-  async function handleFilesSelected(e) {
-    let files = Object.values(e.target.files);
+export default function SongFileUpload({
+  onFilesUploaded,
+}: SongFileUploadProps) {
+  const [filesBeingUploaded, setFilesBeingUploaded] = useState<File[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { id } = useParams<{ id: string }>();
+
+  async function handleFilesSelected(e: ChangeEvent<HTMLInputElement>) {
+    // Non-null: a file input's change event always has its files.
+    const files = Object.values(e.target.files!);
     setFilesBeingUploaded(files);
     try {
-      let { data } = await FilesApi.addFilesToSong(id, files);
+      const { data } = await FilesApi.addFilesToSong(id, files);
       setFilesBeingUploaded([]);
       onFilesUploaded?.(data);
     } catch (error) {
@@ -32,7 +39,8 @@ export default function SongFileUpload({ onFilesUploaded }) {
           variant="open"
           color="black"
           className="flex-center"
-          onClick={() => inputRef.current.click()}
+          // Non-null: the input is always rendered.
+          onClick={() => inputRef.current!.click()}
         >
           <Icon
             name="note_add"

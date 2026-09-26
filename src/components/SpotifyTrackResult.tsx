@@ -1,7 +1,19 @@
 import React from 'react';
 import Checkbox from './Checkbox';
+import type { SpotifyTrack } from '../api/tracksApi';
+import type { NewTrack } from '../types';
 
-export default function SpotifyTrackResult({ track, selected, onClick }) {
+type SpotifyTrackResultProps = {
+  track: SpotifyTrack;
+  selected: boolean;
+  onClick: (track: NewTrack, selected: boolean) => void;
+};
+
+export default function SpotifyTrackResult({
+  track,
+  selected,
+  onClick,
+}: SpotifyTrackResultProps) {
   function getArtworkUrl() {
     return track?.album?.images?.[0]?.url;
   }
@@ -10,7 +22,7 @@ export default function SpotifyTrackResult({ track, selected, onClick }) {
     return track?.artists?.map(artist => artist.name)?.join(', ');
   }
 
-  function handleClick(newToggleValue) {
+  function handleClick(newToggleValue: boolean) {
     onClick(
       {
         source: 'Spotify',

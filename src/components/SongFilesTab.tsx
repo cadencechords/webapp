@@ -9,18 +9,29 @@ import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';
+import type { SongFile as SongFileModel } from '../types';
 
-export default function SongFilesTab({ onFilesChange, files }) {
+type SongFilesTabProps = {
+  /** Called with the song's files once they load, and after each change. */
+  onFilesChange: (files: SongFileModel[] | undefined) => void;
+  /** Undefined until they load. */
+  files?: SongFileModel[];
+};
+
+export default function SongFilesTab({
+  onFilesChange,
+  files,
+}: SongFilesTabProps) {
   const [loading, setLoading] = useState(false);
-  /** @type {{ id: string }} */
-  const { id: songId } = useParams();
-  const currentMember = useSelector(selectCurrentMember);
+  const { id: songId } = useParams<{ id: string }>();
+  // Non-null: Content renders the pages only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        let { data } = await FilesApi.getFilesForSong(songId);
+        const { data } = await FilesApi.getFilesForSong(songId);
         onFilesChange(data);
       } catch (error) {
         reportError(error);
@@ -34,13 +45,14 @@ export default function SongFilesTab({ onFilesChange, files }) {
     }
   }, [files, songId, onFilesChange]);
 
-  function handleDelete(fileIdToDelete) {
+  function handleDelete(fileIdToDelete: number) {
     onFilesChange(files?.filter(file => file.id !== fileIdToDelete));
   }
 
-  function handleUpdate(updatedFile) {
+  function handleUpdate(updatedFile: SongFileModel) {
     onFilesChange(
-      files.map(file => (file.id === updatedFile.id ? updatedFile : file))
+      // Non-null: only the SongFiles rendered from files call this.
+      files!.map(file => (file.id === updatedFile.id ? updatedFile : file))
     );
   }
 

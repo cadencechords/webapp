@@ -3,8 +3,20 @@ import MobileMenuButton from './buttons/MobileMenuButton';
 import classNames from 'classnames';
 import { determineCapoNumber } from '../utils/capo';
 import Icon from './Icon';
+import type { Song } from '../types';
 
-export default function KeyOptionsSheet({ onChangeSheet, className, song }) {
+type KeyOptionsSheetProps = {
+  onChangeSheet: (sheet: string) => void;
+  /** `false` when the sheet is shown. */
+  className?: string | false;
+  song: Song;
+};
+
+export default function KeyOptionsSheet({
+  onChangeSheet,
+  className,
+  song,
+}: KeyOptionsSheetProps) {
   const iconClasses = 'h-5 w-5 text-green-500 dark:text-dark-green ml-2';
   const currentNonCapoKey =
     (song.show_transposed && song.transposed_key) || song.original_key;
@@ -37,7 +49,12 @@ export default function KeyOptionsSheet({ onChangeSheet, className, song }) {
           Capo
           {song.capo?.capo_key && (
             <span className="ml-1 flex-center">
-              {determineCapoNumber(currentNonCapoKey, song.capo.capo_key)}
+              {determineCapoNumber(
+                // As: kept as before, a song with only a capo passes its
+                // unset key through (determineCapoNumber throws on it).
+                currentNonCapoKey as string,
+                song.capo.capo_key
+              )}
               <span className="ml-2 text-xs">({song.capo.capo_key})</span>
             </span>
           )}

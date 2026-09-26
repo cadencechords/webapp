@@ -15,7 +15,7 @@ import MeterField from '../components/MeterField';
 import PageTitle from '../components/PageTitle';
 import PrintSongDialog from '../components/PrintSongDialog';
 import PulseLoader from 'react-spinners/PulseLoader';
-import SongApi from '../api/SongApi';
+import SongApi, { type SongUpdates } from '../api/SongApi';
 import SongKeyField from '../components/SongKeyField';
 import SongOptionsPopover from '../components/SongOptionsPopover';
 import SongPreview from '../components/SongPreview';
@@ -34,21 +34,19 @@ import { hasAnyKeysSet } from '../utils/SongUtils';
 import FormatOptionLabel from '../components/FormatOptionLabel';
 import { determineCapoNumber } from '../utils/capo';
 import Icon from '../components/Icon';
+import type { Song, Tag, Track, User } from '../types';
 
 export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
-  const [song, setSong] = useState(
-    /** @type {import('../types').Song | undefined} */ (undefined)
-  );
-  const [pendingUpdates, setPendingUpdates] = useState({});
+  const [song, setSong] = useState<Song | undefined>(undefined);
+  const [pendingUpdates, setPendingUpdates] = useState<SongUpdates>({});
   const [saving, setSaving] = useState(false);
   const [showAddThemeDialog, setShowAddThemeDialog] = useState(false);
   const [showAddGenreDialog, setShowGenreDialog] = useState(false);
-  const [keyType, setKeyType] = useState(
-    /** @type {string | undefined} */ (undefined)
-  );
+  const [keyType, setKeyType] = useState<string | undefined>(undefined);
   const dispatch = useDispatch();
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: Content renders the pages only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
   const { data: currentUser } = useCurrentUser({
     onSuccess: mergeUserPreferencesWithSongFormat,
     refetchOnWindowFocus: false,
@@ -59,30 +57,33 @@ export default function SongDetailPage() {
   }, [song]);
 
   const router = useHistory();
-  /** @type {{ id: string }} */
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
+  // Non-null (song, throughout): only the render below the loading guard
+  // calls this.
   function getKeyTypeOptions() {
-    const options = [];
+    const options: { value: string; display: string }[] = [];
 
-    if (song.original_key)
+    if (song!.original_key)
       options.push({
         value: 'original',
-        display: `Original (${song.original_key})`,
+        display: `Original (${song!.original_key})`,
       });
-    if (song.transposed_key)
+    if (song!.transposed_key)
       options.push({
         value: 'transposed',
-        display: `Transposed (${song.transposed_key})`,
+        display: `Transposed (${song!.transposed_key})`,
       });
-    if (song.capo?.capo_key) {
-      const currentKey = song.transposed_key || song.original_key;
+    if (song!.capo?.capo_key) {
+      const currentKey = song!.transposed_key || song!.original_key;
       options.push({
         value: 'capo',
         display: `Capo ${determineCapoNumber(
-          currentKey,
-          song.capo.capo_key
-        )} (${song.capo.capo_key})`,
+          // As: kept as before, a song with only a capo passes its unset key
+          // through (determineCapoNumber throws on it).
+          currentKey as string,
+          song!.capo.capo_key
+        )} (${song!.capo.capo_key})`,
       });
     }
 
@@ -95,11 +96,13 @@ export default function SongDetailPage() {
   useEffect(() => {
     async function fetchSong() {
       try {
-        let { data } = await SongApi.getOneById(id);
+        const { data } = await SongApi.getOneById(id);
 
         if (currentUser) {
+          // Non-null: the API sends the current user with their format
+          // preferences; like before, this throws otherwise.
           data.format.chords_hidden =
-            currentUser.format_preferences.hide_chords;
+            currentUser.format_preferences!.hide_chords;
         }
 
         let keyType;
@@ -137,37 +140,44 @@ export default function SongDetailPage() {
     );
   }
 
-  /** @param {import('../types').User} currentUser */
-  function mergeUserPreferencesWithSongFormat({ format_preferences }) {
+  // Non-null (format_preferences): see fetchSong.
+  function mergeUserPreferencesWithSongFormat({ format_preferences }: User) {
     if (song) {
+      // Non-null (previousSong): the song is set (checked above) and never
+      // unset.
       setSong(previousSong => ({
-        ...previousSong,
+        ...previousSong!,
         format: {
-          ...previousSong.format,
-          chords_hidden: format_preferences.hide_chords,
+          ...previousSong!.format,
+          chords_hidden: format_preferences!.hide_chords,
         },
       }));
 
-      if (format_preferences.hide_chords) {
+      if (format_preferences!.hide_chords) {
         setKeyType('none');
       }
     }
   }
 
-  const handleUpdate = (field, value) => {
-    let updates = { ...pendingUpdates };
+  const handleUpdate = <K extends keyof SongUpdates>(
+    field: K,
+    value: SongUpdates[K]
+  ) => {
+    const updates = { ...pendingUpdates };
     updates[field] = value;
     setPendingUpdates(updates);
 
-    let updatedSong = { ...song };
+    const updatedSong: SongUpdates = { ...song };
     updatedSong[field] = value;
-    setSong(updatedSong);
+    // As: kept as before, the song shows each edit as its field gave it (a
+    // bpm can be a string, a cleared transposed key null) until it's saved.
+    setSong(updatedSong as Song);
   };
 
   const handleSaveChanges = async () => {
     setSaving(true);
     try {
-      let result = await SongApi.updateOneById(id, pendingUpdates);
+      const result = await SongApi.updateOneById(id, pendingUpdates);
       setSong(currentSong => ({ ...currentSong, ...result.data }));
       setPendingUpdates({});
     } catch (error) {
@@ -188,34 +198,39 @@ export default function SongDetailPage() {
     router.push(`/songs/${id}/present`);
   };
 
-  const handleThemesAdded = newThemes => {
-    setSong({ ...song, themes: song.themes.concat(newThemes) });
+  const handleThemesAdded = (newThemes: Tag[]) => {
+    // Non-null: the API sends a song with its themes and genres.
+    setSong({ ...song, themes: song.themes!.concat(newThemes) });
   };
 
-  const handleGenresAdded = newGenres => {
-    setSong({ ...song, genres: song.genres.concat(newGenres) });
+  const handleGenresAdded = (newGenres: Tag[]) => {
+    // Non-null: as in handleThemesAdded.
+    setSong({ ...song, genres: song.genres!.concat(newGenres) });
   };
 
-  const handleTrackDeleted = trackIdToRemove => {
+  const handleTrackDeleted = (trackIdToRemove: number) => {
+    // Non-null: the song is loaded before the tabs render, and never unset.
     setSong(currentSong => {
-      let updatedTracks = currentSong.tracks?.filter(
+      const updatedTracks = currentSong!.tracks?.filter(
         track => track.id !== trackIdToRemove
       );
-      return { ...currentSong, tracks: updatedTracks };
+      return { ...currentSong!, tracks: updatedTracks };
     });
   };
 
-  const handleTracksAdded = addedTracks => {
+  const handleTracksAdded = (addedTracks: Track[]) => {
+    // Non-null: as in handleTrackDeleted.
     setSong(currentSong => {
-      let updatedTracks = currentSong.tracks?.concat(addedTracks);
-      return { ...currentSong, tracks: updatedTracks };
+      const updatedTracks = currentSong!.tracks?.concat(addedTracks);
+      return { ...currentSong!, tracks: updatedTracks };
     });
   };
 
-  const handleRemoveTheme = async themeIdToRemove => {
+  const handleRemoveTheme = async (themeIdToRemove: number) => {
     try {
       await SongApi.removeThemes(song.id, [themeIdToRemove]);
-      let newThemesList = song.themes.filter(
+      // Non-null: as in handleThemesAdded.
+      const newThemesList = song.themes!.filter(
         themeInList => themeInList.id !== themeIdToRemove
       );
       setSong({ ...song, themes: newThemesList });
@@ -224,10 +239,11 @@ export default function SongDetailPage() {
     }
   };
 
-  const handleRemoveGenre = async genreIdToRemove => {
+  const handleRemoveGenre = async (genreIdToRemove: number) => {
     try {
       await SongApi.removeGenres(song.id, [genreIdToRemove]);
-      let newGenresList = song.genres.filter(
+      // Non-null: as in handleThemesAdded.
+      const newGenresList = song.genres!.filter(
         genreInList => genreInList.id !== genreIdToRemove
       );
       setSong({ ...song, genres: newGenresList });
@@ -249,16 +265,18 @@ export default function SongDetailPage() {
   }));
 
   function findLatestSetlistDate() {
-    let pastSetlists = song?.setlists?.filter(setlist =>
+    const pastSetlists = song?.setlists?.filter(setlist =>
       isPast(setlist.scheduled_date)
     );
 
-    let sortedSetlists = pastSetlists.sort((setlistA, setlistB) =>
+    // Non-null: the API sends a song with its setlists; like before, this
+    // throws otherwise.
+    const sortedSetlists = pastSetlists!.sort((setlistA, setlistB) =>
       sortDates(setlistB.scheduled_date, setlistA.scheduled_date)
     );
 
     if (sortedSetlists[0]) {
-      let latestDate = dayjs(
+      const latestDate = dayjs(
         sortedSetlists[0].scheduled_date,
         'YYYY-MM-DD'
       ).format('MMM D, YYYY');
@@ -266,9 +284,9 @@ export default function SongDetailPage() {
     }
   }
 
-  const handleKeyTypeChange = keyType => {
+  const handleKeyTypeChange = (keyType: string) => {
     setKeyType(keyType);
-    let songWithKeyType = { ...song };
+    const songWithKeyType = { ...song };
 
     delete songWithKeyType.format.chords_hidden;
     delete songWithKeyType.show_capo;
@@ -383,29 +401,37 @@ export default function SongDetailPage() {
         <div className="py-6 mt-1 border-b dark:border-dark-gray-700">
           <SongKeyField
             songKey={song.original_key}
-            onChange={editedKey => handleUpdate('original_key', editedKey)}
+            onChange={(editedKey: string) =>
+              handleUpdate('original_key', editedKey)
+            }
             editable={currentMember.can(EDIT_SONGS)}
           />
           <TransposedKeyField
             transposedKey={song.transposed_key}
             originalKey={song.original_key}
-            onChange={editedKey => handleUpdate('transposed_key', editedKey)}
+            onChange={(editedKey: string | null) =>
+              handleUpdate('transposed_key', editedKey)
+            }
             content={song.content}
             editable={currentMember.can(EDIT_SONGS)}
           />
           <ArtistField
             artist={song.artist}
-            onChange={editedArtist => handleUpdate('artist', editedArtist)}
+            onChange={(editedArtist: string) =>
+              handleUpdate('artist', editedArtist)
+            }
             editable={currentMember.can(EDIT_SONGS)}
           />
           <BpmField
             bpm={song.bpm}
-            onChange={editedBpm => handleUpdate('bpm', editedBpm)}
+            onChange={(editedBpm: string) => handleUpdate('bpm', editedBpm)}
             editable={currentMember.can(EDIT_SONGS)}
           />
           <MeterField
             meter={song.meter}
-            onChange={editedMeter => handleUpdate('meter', editedMeter)}
+            onChange={(editedMeter: string) =>
+              handleUpdate('meter', editedMeter)
+            }
             editable={currentMember.can(EDIT_SONGS)}
           />
           <LastScheduledField latestSetlist={findLatestSetlistDate()} />
@@ -452,7 +478,12 @@ export default function SongDetailPage() {
   );
 }
 
-function SaveButton({ isSaving, onSave }) {
+type SaveButtonProps = {
+  isSaving: boolean;
+  onSave: () => void;
+};
+
+function SaveButton({ isSaving, onSave }: SaveButtonProps) {
   return (
     <>
       <Button

@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { reportError } from '../utils/error';
 import PageLoading from './PageLoading';
-import TracksApi from '../api/tracksApi';
-import AppleMusicTrackResult from './AppleMusicTrackResult';
+import TracksApi, { type SpotifyTrack } from '../api/tracksApi';
+import SpotifyTrackResult from './SpotifyTrackResult';
+import type { NewTrack } from '../types';
 
-export default function AppleMusicSearchResults({
+type SpotifySearchResultsProps = {
+  query: string;
+  onTrackClick: (track: NewTrack, selected: boolean) => void;
+  selectedTracks: NewTrack[];
+};
+
+export default function SpotifySearchResults({
   query,
   onTrackClick,
   selectedTracks,
-}) {
-  const [results, setResults] = useState([]);
+}: SpotifySearchResultsProps) {
+  const [results, setResults] = useState<SpotifyTrack[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -17,8 +24,8 @@ export default function AppleMusicSearchResults({
     const id = setTimeout(() => {
       async function search() {
         try {
-          let { data } = await TracksApi.searchAppleMusic(query);
-          setResults(data?.results?.songs?.data || []);
+          const { data } = await TracksApi.searchSpotify(query);
+          setResults(data?.tracks?.items || []);
         } catch (error) {
           reportError(error);
         } finally {
@@ -33,11 +40,11 @@ export default function AppleMusicSearchResults({
     return () => clearTimeout(id);
   }, [query]);
 
-  function isSelected(resultInQuestion) {
+  function isSelected(resultInQuestion: SpotifyTrack) {
     return !!selectedTracks.find(
       selectedTrack =>
         selectedTrack.external_id === resultInQuestion.id &&
-        selectedTrack.source === 'Apple Music'
+        selectedTrack.source === 'Spotify'
     );
   }
 
@@ -47,7 +54,7 @@ export default function AppleMusicSearchResults({
         <PageLoading />
       ) : (
         results.map(result => (
-          <AppleMusicTrackResult
+          <SpotifyTrackResult
             track={result}
             key={result.id}
             onClick={onTrackClick}

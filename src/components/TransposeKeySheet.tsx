@@ -11,15 +11,25 @@ import {
 import classNames from 'classnames';
 import useUpdateSong from '../hooks/api/songs.hooks';
 import Icon from './Icon';
+import type { Song } from '../types';
+
+type TransposeKeySheetProps = {
+  onChangeSheet: (sheet: string) => void;
+  song: Song;
+  onUpdateSong: (updates: Partial<Song>) => void;
+  /** `false` when the sheet is shown. */
+  className?: string | false;
+};
 
 export default function TransposeKeySheet({
   onChangeSheet,
   song,
   onUpdateSong,
   className,
-}) {
-  const [updatedKey, setUpdatedKey] = useState(
-    /** @type {string | undefined} */ (undefined)
+}: TransposeKeySheetProps) {
+  /** The picked key, until it's saved; null once saved. */
+  const [updatedKey, setUpdatedKey] = useState<string | null | undefined>(
+    undefined
   );
   const { isLoading: isSaving, run: saveSongUpdates } = useUpdateSong({
     onSuccess: () => setUpdatedKey(null),
@@ -28,7 +38,7 @@ export default function TransposeKeySheet({
     ? MINOR_KEYS
     : MAJOR_KEYS;
 
-  function handleKeyChange(newKey) {
+  function handleKeyChange(newKey: string) {
     onUpdateSong({ transposed_key: newKey });
     setUpdatedKey(newKey);
   }
@@ -38,8 +48,10 @@ export default function TransposeKeySheet({
   }
 
   function handleTransposeUpHalfStep() {
-    let halfStepHigher = getHalfStepHigher(
-      song.transposed_key || song.original_key
+    const halfStepHigher = getHalfStepHigher(
+      // As: kept as before, a song with no key passes undefined, which
+      // getHalfStepHigher returns unchanged.
+      (song.transposed_key || song.original_key) as string
     );
 
     onUpdateSong({ transposed_key: halfStepHigher });
@@ -47,8 +59,9 @@ export default function TransposeKeySheet({
   }
 
   function handleTransposeDownHalfStep() {
-    let halfStepLower = getHalfStepLower(
-      song.transposed_key || song.original_key
+    const halfStepLower = getHalfStepLower(
+      // As: as in handleTransposeUpHalfStep.
+      (song.transposed_key || song.original_key) as string
     );
 
     onUpdateSong({ transposed_key: halfStepLower });

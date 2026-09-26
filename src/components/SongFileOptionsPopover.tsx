@@ -6,9 +6,21 @@ import StyledPopover from './StyledPopover';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import Icon from './Icon';
+import type { SongFile } from '../types';
 
-export default function SongFileOptionsPopover({ onDelete, onEdit, file }) {
-  const currentMember = useSelector(selectCurrentMember);
+type SongFileOptionsPopoverProps = {
+  onDelete: () => void;
+  onEdit: () => void;
+  file: SongFile;
+};
+
+export default function SongFileOptionsPopover({
+  onDelete,
+  onEdit,
+  file,
+}: SongFileOptionsPopoverProps) {
+  // Non-null: Content renders the pages only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   const button = (
     <Button variant="icon" color="gray">

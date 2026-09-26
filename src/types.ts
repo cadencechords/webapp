@@ -333,3 +333,6 @@ export interface EventForm {
   endTime?: string | null;
   setlist?: Setlist | null;
 }
+
+/** A track picked from a search in AddTracksDialog, before it's saved. */
+export type NewTrack = Omit<Track, 'id'>;

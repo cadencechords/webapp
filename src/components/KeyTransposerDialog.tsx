@@ -6,6 +6,17 @@ import SongKeyButton from './buttons/SongKeyButton';
 import StyledDialog from './StyledDialog';
 import Icon from './Icon';
 
+type KeyTransposerDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  originalKey?: string;
+  transposedKey?: string;
+  /** Called with the picked key, or null when the transposed key is cleared. */
+  onChange: (key: string | null) => void;
+  /** Unused. */
+  content?: string;
+};
+
 export default function KeyTransposerDialog({
   open,
   onCloseDialog,
@@ -13,8 +24,10 @@ export default function KeyTransposerDialog({
   transposedKey,
   onChange,
   content,
-}) {
-  const [workingTransposedKey, setWorkingTransposedKey] = useState(() => {
+}: KeyTransposerDialogProps) {
+  const [workingTransposedKey, setWorkingTransposedKey] = useState<
+    string | null
+  >(() => {
     if (transposedKey) {
       return transposedKey;
     } else if (originalKey) {
@@ -36,7 +49,7 @@ export default function KeyTransposerDialog({
     }
   }, [open, originalKey, transposedKey]);
 
-  const handleKeyChange = newKey => {
+  const handleKeyChange = (newKey: string | null) => {
     setWorkingTransposedKey(newKey);
   };
 
@@ -44,13 +57,13 @@ export default function KeyTransposerDialog({
 
   const calculateTonesTransposed = () => {
     if (originalKey && workingTransposedKey) {
-      let originalNote = parseNote(originalKey);
-      let transposedNote = parseNote(workingTransposedKey);
+      const originalNote = parseNote(originalKey);
+      const transposedNote = parseNote(workingTransposedKey);
 
-      let originalSemitone = TONES[originalNote];
-      let transposedSemitone = TONES[transposedNote];
+      const originalSemitone = TONES[originalNote];
+      const transposedSemitone = TONES[transposedNote];
 
-      let numSemitonesTransposed = transposedSemitone - originalSemitone;
+      const numSemitonesTransposed = transposedSemitone - originalSemitone;
 
       if (numSemitonesTransposed > 0) {
         return '+' + numSemitonesTransposed;
@@ -175,7 +188,7 @@ const MINOR_KEYS = [
   'G#m',
 ];
 
-const TONES = {
+const TONES: Record<string, number> = {
   A: -3,
   'A#': -2,
   Bb: -2,

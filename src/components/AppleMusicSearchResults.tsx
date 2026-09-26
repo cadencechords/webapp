@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { reportError } from '../utils/error';
 import PageLoading from './PageLoading';
-import TracksApi from '../api/tracksApi';
-import SpotifyTrackResult from './SpotifyTrackResult';
+import TracksApi, { type AppleMusicSong } from '../api/tracksApi';
+import AppleMusicTrackResult from './AppleMusicTrackResult';
+import type { NewTrack } from '../types';
 
-export default function SpotifySearchResults({
+type AppleMusicSearchResultsProps = {
+  query: string;
+  onTrackClick: (track: NewTrack, selected: boolean) => void;
+  selectedTracks: NewTrack[];
+};
+
+export default function AppleMusicSearchResults({
   query,
   onTrackClick,
   selectedTracks,
-}) {
-  const [results, setResults] = useState([]);
+}: AppleMusicSearchResultsProps) {
+  const [results, setResults] = useState<AppleMusicSong[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -17,8 +24,8 @@ export default function SpotifySearchResults({
     const id = setTimeout(() => {
       async function search() {
         try {
-          let { data } = await TracksApi.searchSpotify(query);
-          setResults(data?.tracks?.items || []);
+          const { data } = await TracksApi.searchAppleMusic(query);
+          setResults(data?.results?.songs?.data || []);
         } catch (error) {
           reportError(error);
         } finally {
@@ -33,11 +40,11 @@ export default function SpotifySearchResults({
     return () => clearTimeout(id);
   }, [query]);
 
-  function isSelected(resultInQuestion) {
+  function isSelected(resultInQuestion: AppleMusicSong) {
     return !!selectedTracks.find(
       selectedTrack =>
         selectedTrack.external_id === resultInQuestion.id &&
-        selectedTrack.source === 'Spotify'
+        selectedTrack.source === 'Apple Music'
     );
   }
 
@@ -47,7 +54,7 @@ export default function SpotifySearchResults({
         <PageLoading />
       ) : (
         results.map(result => (
-          <SpotifyTrackResult
+          <AppleMusicTrackResult
             track={result}
             key={result.id}
             onClick={onTrackClick}

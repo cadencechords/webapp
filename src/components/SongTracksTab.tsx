@@ -4,8 +4,19 @@ import AddTracksDialog from '../dialogs/AddTracksDialog';
 import { useState } from 'react';
 import NoDataMessage from './NoDataMessage';
 import Icon from './Icon';
+import type { Song, Track as TrackModel } from '../types';
 
-export default function SongTracksTab({ song, onDeleted, onTracksAdded }) {
+type SongTracksTabProps = {
+  song: Song;
+  onDeleted: (trackId: number) => void;
+  onTracksAdded: (tracks: TrackModel[]) => void;
+};
+
+export default function SongTracksTab({
+  song,
+  onDeleted,
+  onTracksAdded,
+}: SongTracksTabProps) {
   const [showAddTracks, setShowAddTracks] = useState(false);
 
   return (

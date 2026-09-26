@@ -11,18 +11,25 @@ import { useState } from 'react';
 import useDeleteSong from '../hooks/api/useDeleteSong';
 import Icon from './Icon';
 
-export default function SongOptionsPopover({ onPrintClick }) {
+type SongOptionsPopoverProps = {
+  onPrintClick: () => void;
+};
+
+export default function SongOptionsPopover({
+  onPrintClick,
+}: SongOptionsPopoverProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useHistory();
   // The route's path declares :id, which useParams can't see.
-  const id = parseInt(/** @type {{ id: string }} */ (useParams()).id);
-  const currentMember = useSelector(selectCurrentMember);
+  const id = parseInt(useParams<{ id: string }>().id);
+  // Non-null: Content renders the pages only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   const { run: deleteSong } = useDeleteSong({
     onSuccess: () => router.goBack(),
   });
 
-  let button = (
+  const button = (
     <Button variant="icon" color="gray" size="md">
       <Icon name="more_vert" className="w-5 h-5" />
     </Button>

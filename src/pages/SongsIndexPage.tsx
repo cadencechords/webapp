@@ -38,7 +38,8 @@ export default function SongsIndexPage() {
   const queriedSongs = useMemo(() => searchSongs(), [searchSongs]);
 
   const [isCreateOpen, showCreateDialog, closeCreateDialog] = useDialog();
-  const currentMember = useSelector(selectCurrentMember);
+  // Non-null: Content renders the pages only once the membership loads.
+  const currentMember = useSelector(selectCurrentMember)!;
 
   return (
     <div className="mb-10">

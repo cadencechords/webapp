@@ -7,20 +7,27 @@ import StyledDialog from '../components/StyledDialog';
 import { reportError } from '../utils/error';
 import { useParams } from 'react-router';
 import { useState } from 'react';
+import type { SongFile } from '../types';
+
+type EditSongFileDialogProps = {
+  open: boolean;
+  onCloseDialog: () => void;
+  file: SongFile;
+  onUpdated: (file: SongFile) => void;
+};
 
 export default function EditSongFileDialog({
   open,
   onCloseDialog,
   file,
   onUpdated,
-}) {
+}: EditSongFileDialogProps) {
   const [name, setName] = useState(basename(file.name));
   const [loading, setLoading] = useState(false);
   const [dirty, setDirty] = useState(false);
-  /** @type {{ id: string }} */
-  const { id: songId } = useParams();
+  const { id: songId } = useParams<{ id: string }>();
 
-  function handleNameChange(updatedName) {
+  function handleNameChange(updatedName: string) {
     setDirty(true);
     setName(updatedName);
   }
