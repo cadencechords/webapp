@@ -50,7 +50,8 @@ export const MANAGE_BILLING = 'Manage billing';
 
 export function noop() {}
 
-export const SPEEDS = {
+/** Autoscroll steps by scroll speed (1 to 10): pixels per step, ms between steps. */
+export const SPEEDS: Record<number, { px: number; interval: number }> = {
   1: { px: 1, interval: 15 },
   2: { px: 1, interval: 13 },
   3: { px: 1, interval: 11 },
@@ -63,8 +64,15 @@ export const SPEEDS = {
   10: { px: 3, interval: 3 },
 };
 
-export const markingTabs = ['Dynamics', 'Roadmap', 'Singers', 'Shapes'];
-export const shapeOptions = {
+export const markingTabs = [
+  'Dynamics',
+  'Roadmap',
+  'Singers',
+  'Shapes',
+] as const;
+
+/** The shape marking icons, by a shape marking's `content`. */
+export const shapeOptions: Record<string, typeof BlockArrow> = {
   'block-arrow': BlockArrow,
   'bold-arrow': BoldArrow,
   'short-arrow': ShortArrow,
@@ -77,4 +85,4 @@ export const shapeOptions = {
 export const performanceModes = {
   PERFORM: 'perform',
   ANNOTATE: 'annotate',
-};
+} as const;

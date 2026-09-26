@@ -1,6 +1,7 @@
 // /dev/tokens: a fixture page for the M3 design tokens. Not linked from the
 // nav; used to review colors, type, shape, elevation and state layers.
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 
 import { ROLES, SEED, generateScheme } from '../../../scripts/color-tokens.mjs';
 import { SCALE } from '../../../scripts/type-tokens.mjs';
@@ -20,7 +21,7 @@ const SHAPES = [
 ];
 const SCHEMES = { light: generateScheme(false), dark: generateScheme(true) };
 
-function Section({ title, children }) {
+function Section({ title, children }: { title: string; children?: ReactNode }) {
   return (
     <section className="mb-12">
       <h2 className="mb-4 text-headline-small font-plain text-on-surface">
@@ -33,7 +34,7 @@ function Section({ title, children }) {
 
 // Swatches use the generated values directly, so light and dark show side by
 // side whatever the current theme is.
-function ColorScheme({ name }) {
+function ColorScheme({ name }: { name: keyof typeof SCHEMES }) {
   const scheme = SCHEMES[name];
   return (
     <div>

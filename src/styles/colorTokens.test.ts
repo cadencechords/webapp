@@ -20,8 +20,8 @@ const PAIRS = [
 ];
 
 // WCAG 2 contrast ratio between two #rrggbb colors.
-function contrast(a, b) {
-  const lum = hex => {
+function contrast(a: string, b: string) {
+  const lum = (hex: string) => {
     const [r, g, b] = [1, 3, 5]
       .map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
       .map(c => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));

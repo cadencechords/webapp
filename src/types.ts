@@ -27,6 +27,10 @@ export interface User {
   format_preferences?: FormatPreferences;
   /** The user's role on the current team, set by `setMembership`. */
   role?: Role;
+  /** Signs the user in to Stream Chat (ChatPage). */
+  chat_token?: string;
+  /** devise_token_auth's id for the user; OneSignal's external user id. */
+  uid?: string;
 }
 
 /** The current user's display preferences. */

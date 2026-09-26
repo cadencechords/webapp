@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { compile } from '@tailwindcss/node';
 
-let css;
+let css: string;
 
 beforeAll(async () => {
   const base = path.resolve('src');

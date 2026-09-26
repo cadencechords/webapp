@@ -1,10 +1,13 @@
 import { SPRINGS, createSpring, isSettled, stepSpring } from './spring';
+import type { SpringSpec, SpringState } from './spring';
+
+type SpringName = keyof typeof SPRINGS;
 
 // Runs a spring from 0 to 1 and returns its peak value and settle time (s).
-function simulate(spec, seconds = 3) {
-  let state = { value: 0, velocity: 0 };
+function simulate(spec: SpringSpec, seconds = 3) {
+  let state: SpringState = { value: 0, velocity: 0 };
   let peak = 0;
-  let settledAt = null;
+  let settledAt: number | null = null;
   for (let t = 0; t < seconds; t += 1 / 60) {
     state = stepSpring(state, 1, spec, 1 / 60);
     peak = Math.max(peak, state.value);
@@ -13,48 +16,60 @@ function simulate(spec, seconds = 3) {
   return { peak, settledAt, final: state.value };
 }
 
-test.each(Object.keys(SPRINGS))('%s settles on the target', name => {
-  const { final, settledAt } = simulate(SPRINGS[name]);
-  expect(final).toBeCloseTo(1, 3);
-  expect(settledAt).not.toBeNull();
-});
+// `as`: SPRINGS is an object literal, so its keys are exactly SpringName.
+test.each(Object.keys(SPRINGS) as SpringName[])(
+  '%s settles on the target',
+  name => {
+    const { final, settledAt } = simulate(SPRINGS[name]);
+    expect(final).toBeCloseTo(1, 3);
+    expect(settledAt).not.toBeNull();
+  }
+);
 
 test('spatial springs overshoot and effects springs do not', () => {
   expect(simulate(SPRINGS.fastSpatial).peak).toBeGreaterThan(1.05);
   expect(simulate(SPRINGS.defaultSpatial).peak).toBeGreaterThan(1);
-  for (const name of ['fastEffects', 'defaultEffects', 'slowEffects']) {
+  for (const name of [
+    'fastEffects',
+    'defaultEffects',
+    'slowEffects',
+  ] as const) {
     expect(simulate(SPRINGS[name]).peak).toBeLessThanOrEqual(1.0001);
   }
 });
 
 test('faster springs settle sooner', () => {
-  const t = name => simulate(SPRINGS[name]).settledAt;
+  // Non-null: every spring settles within the simulation (the test above).
+  const t = (name: SpringName) => simulate(SPRINGS[name]).settledAt!;
   expect(t('fastSpatial')).toBeLessThan(t('slowSpatial'));
   expect(t('fastEffects')).toBeLessThan(t('defaultEffects'));
   expect(t('defaultEffects')).toBeLessThan(t('slowEffects'));
 });
 
 describe('createSpring', () => {
-  let frames;
-  let now;
+  let frames: FrameRequestCallback[];
+  let now: number;
   const flush = (count = 1) => {
     for (let i = 0; i < count && frames.length; i++) {
       now += 1000 / 60;
-      frames.shift()(now);
+      // Non-null: the loop runs only while there are frames.
+      frames.shift()!(now);
     }
   };
 
   beforeEach(() => {
     frames = [];
     now = 0;
-    vi.stubGlobal('requestAnimationFrame', cb => frames.push(cb));
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) =>
+      frames.push(cb)
+    );
     vi.stubGlobal('cancelAnimationFrame', () => frames.splice(0));
     vi.stubGlobal('matchMedia', () => ({ matches: false }));
   });
   afterEach(() => vi.unstubAllGlobals());
 
   test('animates to the target and calls onRest once', () => {
-    const updates = [];
+    const updates: number[] = [];
     const onRest = vi.fn();
     const spring = createSpring(0, {
       spec: SPRINGS.defaultEffects,

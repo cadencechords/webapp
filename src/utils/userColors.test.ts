@@ -15,7 +15,7 @@ const CHROMATIC = [
   'pink',
   'purple',
   'indigo',
-];
+] as const;
 const EVENT_COLORS = [
   'red',
   'blue',
@@ -29,10 +29,11 @@ const EVENT_COLORS = [
 ]; // EventColorOptions.js
 const NOTE_COLORS = ['blue', 'green', 'yellow', 'pink']; // Note.js
 
-const hue = hex => Hct.fromInt(argbFromHex(hex)).hue;
-const hueDistance = (a, b) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
-function contrast(a, b) {
-  const lum = hex => {
+const hue = (hex: string) => Hct.fromInt(argbFromHex(hex)).hue;
+const hueDistance = (a: number, b: number) =>
+  Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
+function contrast(a: string, b: string) {
+  const lum = (hex: string) => {
     const [r, g, b] = [1, 3, 5]
       .map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
       .map(c => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));

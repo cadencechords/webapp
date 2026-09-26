@@ -6,19 +6,28 @@ import {
 } from './music';
 import { isMinor, parseNote } from './SongUtils';
 
-export function determineCapos(currentKey) {
-  let keys = isMinor(currentKey) ? MINOR_KEYS : MAJOR_KEYS;
+/** A key to play in with a capo, and the fret the capo goes on. */
+export interface CapoOption {
+  capoKey: string;
+  capoNumber: number;
+}
 
-  let capoedKeys = keys.map(key => ({
+export function determineCapos(currentKey: string | undefined) {
+  const keys = isMinor(currentKey) ? MINOR_KEYS : MAJOR_KEYS;
+
+  const capoedKeys = keys.map(key => ({
     capoKey: key,
-    capoNumber: determineCapoNumber(currentKey, key),
+    // `as`: CapoKeySheet passes the song's key, which is undefined for a song
+    // with only a capo set. buildChromaticScale then throws, as it always
+    // has; the type doesn't hide a new case.
+    capoNumber: determineCapoNumber(currentKey as string, key),
   }));
 
   return splitByCommonKeys(capoedKeys);
 }
 
-export function determineCapoNumber(currentKey, capoKey) {
-  let chromaticScale = buildChromaticScale(parseNote(currentKey));
+export function determineCapoNumber(currentKey: string, capoKey: string) {
+  const chromaticScale = buildChromaticScale(parseNote(currentKey));
   return (
     (12 -
       semitonesAway(
@@ -30,14 +39,16 @@ export function determineCapoNumber(currentKey, capoKey) {
   );
 }
 
-function splitByCommonKeys(capoOptions) {
-  let commonKeys = [];
-  let uncommonKeys = [];
+function splitByCommonKeys(capoOptions: CapoOption[]) {
+  let commonKeys: CapoOption[] = [];
+  const uncommonKeys: CapoOption[] = [];
 
   capoOptions.forEach(capoOption => {
-    isCommonCapoedKey(capoOption.capoKey)
-      ? commonKeys.push(capoOption)
-      : uncommonKeys.push(capoOption);
+    if (isCommonCapoedKey(capoOption.capoKey)) {
+      commonKeys.push(capoOption);
+    } else {
+      uncommonKeys.push(capoOption);
+    }
   });
 
   uncommonKeys.sort((a, b) => a.capoNumber - b.capoNumber);
@@ -47,12 +58,13 @@ function splitByCommonKeys(capoOptions) {
   return { commonKeys, uncommonKeys };
 }
 
-function isCommonCapoedKey(key) {
+function isCommonCapoedKey(key: string) {
   return COMMON_CAPOED_KEYS[key];
 }
 
-function sortCommonKeys(capoOptions) {
-  let sorted = [];
+function sortCommonKeys(capoOptions: CapoOption[]) {
+  // Sparse until filtered: a slot stays empty when its key isn't an option.
+  const sorted: CapoOption[] = [];
 
   capoOptions.forEach(capoOption => {
     if (capoOption.capoKey === 'G' || capoOption.capoKey === 'Em') {
@@ -69,7 +81,7 @@ function sortCommonKeys(capoOptions) {
   return sorted.filter(key => key !== null);
 }
 
-const COMMON_CAPOED_KEYS = {
+const COMMON_CAPOED_KEYS: Record<string, string> = {
   G: 'G',
   Em: 'Em',
   D: 'D',
@@ -80,6 +92,6 @@ const COMMON_CAPOED_KEYS = {
   'F#m': 'F#m',
 };
 
-export function determineFret(regularKey, capoKey) {
+export function determineFret(regularKey: string, capoKey: string) {
   return semitonesAway(parseNote(regularKey), parseNote(capoKey));
 }

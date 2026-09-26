@@ -3,7 +3,19 @@
 // from scripts/color-tokens.mjs (USER_COLORS). Class names are spelled out so
 // Tailwind can find them.
 
-const CLASSES = {
+/** Tailwind classes for one stored color. */
+export interface UserColorClassNames {
+  /** Background of a filled swatch or badge. */
+  color: string;
+  /** Text on `color`. */
+  onColor: string;
+  /** Background of a tinted surface. */
+  container: string;
+  /** Text on `container`. */
+  onContainer: string;
+}
+
+const CLASSES: Record<string, UserColorClassNames> = {
   red: {
     color: 'bg-user-red',
     onColor: 'text-on-user-red',
@@ -77,9 +89,14 @@ export const USER_COLOR_NAMES = [
   'indigo',
   'gray',
   'black',
-];
+] as const;
+
+/** A color users can pick and the API stores. */
+export type UserColorName = (typeof USER_COLOR_NAMES)[number];
 
 // { color, onColor, container, onContainer } Tailwind classes for a stored color.
-export function userColorClasses(name) {
-  return CLASSES[name] ?? CLASSES.none;
+export function userColorClasses(name: string | null | undefined) {
+  // `as`: a missing name is looked up as the key "undefined" (or "null"),
+  // which isn't a color, so it falls back to none like any unknown name.
+  return CLASSES[name as string] ?? CLASSES.none;
 }

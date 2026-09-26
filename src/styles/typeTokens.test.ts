@@ -23,7 +23,7 @@ test.each([
 });
 
 describe('Tailwind utilities', () => {
-  let css;
+  let css: string;
   beforeAll(async () => {
     const compiler = await compile(readFileSync('src/index.css', 'utf8'), {
       base: path.resolve('src'),
@@ -36,7 +36,7 @@ describe('Tailwind utilities', () => {
     ]);
   });
 
-  const rule = cls =>
+  const rule = (cls: string) =>
     css.match(new RegExp(`\\.${cls}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
 
   test('text-headline-large sets size, line height, tracking and weight', () => {

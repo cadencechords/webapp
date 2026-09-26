@@ -360,11 +360,6 @@
       "count": 1
     }
   },
-  "src/hooks/useSegmentedControl.js": {
-    "no-unused-vars": {
-      "count": 2
-    }
-  },
   "src/icons/AnnotationIcons.js": {
     "no-unused-vars": {
       "count": 1
@@ -435,16 +430,6 @@
       "count": 1
     },
     "react/no-unescaped-entities": {
-      "count": 1
-    }
-  },
-  "src/utils/SongUtils.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/utils/test.js": {
-    "no-unused-vars": {
       "count": 1
     }
   }

@@ -25,9 +25,10 @@ test('filled uses the filled variant', () => {
 });
 
 test('size sets width and height', () => {
+  // Non-null: Icon renders an <svg> for a registered name.
   const svg = render(<Icon name="close" size={18} />).container.querySelector(
     'svg'
-  );
+  )!;
   expect(svg.style.width).toBe('18px');
   expect(svg.style.height).toBe('18px');
 });
@@ -40,6 +41,9 @@ test('unknown icons render nothing and warn', () => {
 });
 
 test('every icon the app uses is registered, and no Heroicons remain', () => {
+  // Any name, to check whether it's registered.
+  const icons: Record<string, unknown> = ICONS;
+  // Test files are skipped: this one uses unregistered names on purpose.
   const files = execSync(
     'grep -rhoE --exclude=*.test.* \'<Icon name="[a-z_0-9]+"( filled)?\' src || true'
   )
@@ -47,8 +51,9 @@ test('every icon the app uses is registered, and no Heroicons remain', () => {
     .trim()
     .split('\n');
   for (const use of files) {
-    const [, name, filled] = use.match(/name="([a-z_0-9]+)"( filled)?/);
-    expect(ICONS[filled ? `${name}-fill` : name], use).toBeDefined();
+    // Non-null: grep printed only the matches of this pattern.
+    const [, name, filled] = use.match(/name="([a-z_0-9]+)"( filled)?/)!;
+    expect(icons[filled ? `${name}-fill` : name], use).toBeDefined();
   }
   expect(
     execSync('grep -rl --exclude=*.test.* "@heroicons" src || true').toString()

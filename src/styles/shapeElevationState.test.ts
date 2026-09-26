@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { compile } from '@tailwindcss/node';
 
-let css;
+let css: string;
 beforeAll(async () => {
   const compiler = await compile(readFileSync('src/index.css', 'utf8'), {
     base: path.resolve('src'),
@@ -23,7 +23,7 @@ beforeAll(async () => {
 });
 
 // The body of the first rule for a class (not counting nested rules).
-const rule = cls =>
+const rule = (cls: string) =>
   css.match(new RegExp(`\\.${cls}\\s*\\{([^{}]*)`))?.[1] ?? '';
 
 test.each([
