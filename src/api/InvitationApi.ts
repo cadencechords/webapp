@@ -15,7 +15,7 @@ export interface InvitationSignUpDetails {
 export default class InvitationApi {
   static createOne(newInvite: { email?: string }) {
     if (newInvite) {
-      const allowedParams: { email?: string; team_id?: Id } = {};
+      const allowedParams: { email?: string; team_id?: Id | null } = {};
 
       if (newInvite.email) allowedParams.email = newInvite.email;
 

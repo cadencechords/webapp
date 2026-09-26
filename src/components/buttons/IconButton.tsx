@@ -4,8 +4,8 @@ import type { ButtonColor } from '../Button';
 
 type IconButtonProps = {
   children?: ReactNode;
-  color?: ButtonColor;
-  onClick: () => void;
+  color: ButtonColor;
+  onClick?: () => void;
   className?: string;
 };
 

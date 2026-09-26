@@ -23,6 +23,14 @@ type Style = ReactPDF.Styles[string];
 
 type SongWithContent = Song & { content: string };
 
+/** The files of one font family. */
+type FontFiles = {
+  regular: string;
+  boldItalic: string;
+  bold: string;
+  italic: string;
+};
+
 /** A font file for Font.register. */
 type FontStyle = {
   src: string;
@@ -40,7 +48,7 @@ export function toPdf(song: Song, showChords: boolean) {
     pdfLines = <Text></Text>;
   }
 
-  function getFontName(font: string) {
+  function getFontName(font: string | undefined) {
     return isAllowedFont(font) ? font : 'Liberation Sans';
   }
 
@@ -76,11 +84,11 @@ function registerFonts(format: SongFormat) {
   Font.register({ family: font, fonts: fontStyles });
 }
 
-function isAllowedFont(font: string) {
-  return ALLOWED_FONTS.includes(font);
+function isAllowedFont(font: string | undefined): font is string {
+  return font !== undefined && ALLOWED_FONTS.includes(font);
 }
 
-function constructFontStyles(format: SongFormat) {
+function constructFontStyles(format: SongFormat & { font: string }) {
   const fontStyles: FontStyle[] = [];
   fontStyles.push(constructNormalFontStyle(format.font));
 
@@ -137,6 +145,9 @@ function constructPdfLines(song: SongWithContent, showChords: boolean) {
   const chordStyles = constructChordStyles(song.format);
   const content = build({
     ...song,
+    // chord-kit only reads capo_key, and skips a missing or null one, but
+    // its type wants a string there.
+    capo: song.capo?.capo_key ? { capo_key: song.capo.capo_key } : undefined,
     format: { ...song.format, chords_hidden: !showChords },
   });
 
@@ -204,7 +215,7 @@ function buildHighlightedLine(
 
 const ALLOWED_FONTS = ['Roboto Mono', 'Open Sans', 'Liberation Sans'];
 
-const FONT_IMPORTS = {
+const FONT_IMPORTS: Record<string, FontFiles> = {
   'Roboto Mono': {
     regular: RobotoRegular,
     boldItalic: RobotoBoldItalic,

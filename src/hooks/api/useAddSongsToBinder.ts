@@ -15,16 +15,20 @@ export default function useAddSongsToBinder({
     mutate: run,
   } = useMutation<Song[], Error, { binderId: Id; songIds: Id[] }>({
     mutationFn: async ({ binderId, songIds }) => {
-      const { data } = await BinderApi.addSongs(binderId, songIds);
+      // addSongs returns undefined only for no songIds, and SearchSongsDialog
+      // disables saving until a song is picked.
+      const { data } = (await BinderApi.addSongs(binderId, songIds))!;
       return data;
     },
     onSuccess: (data, variables) => {
       const { binderId } = variables;
       const binderKey = ['binders', `${binderId}`];
-      const binder = queryClient.getQueryData<Binder>(binderKey);
+      // Songs are added from the binder's page, which has loaded the binder
+      // and its songs into this query.
+      const binder = queryClient.getQueryData<Binder>(binderKey)!;
       const updatedBinder = {
         ...binder,
-        songs: binder.songs.concat(data),
+        songs: binder.songs!.concat(data),
       };
       queryClient.setQueryData<Binder>(binderKey, updatedBinder);
 

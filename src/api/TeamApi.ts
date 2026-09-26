@@ -47,7 +47,8 @@ export default class TeamApi {
     });
   }
 
-  static setDefaultFormat(formatPresetId: Id) {
+  /** Without an id (no preset selected), JSON drops format_preset_id. */
+  static setDefaultFormat(formatPresetId: Id | undefined) {
     return axios.post<unknown>(
       `${TEAMS_URL}/${getTeamId()}/default_format`,
       { format_preset_id: formatPresetId },

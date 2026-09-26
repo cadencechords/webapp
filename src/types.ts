@@ -228,8 +228,11 @@ export interface Song {
   meter?: string;
   original_key?: string;
   transposed_key?: string;
-  /** No `id` until a capo picked in the capo sheet is saved. */
-  capo?: (Omit<Capo, 'id'> & { id?: number }) | null;
+  /**
+   * No `id` until a capo picked in the capo sheet is saved, and a null
+   * `capo_key` when "no capo" is picked there.
+   */
+  capo?: { id?: number; capo_key: string | null } | null;
   format: SongFormat;
   /** Client-side display flags, not persisted. */
   show_capo?: boolean;

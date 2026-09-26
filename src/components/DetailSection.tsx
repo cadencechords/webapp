@@ -32,7 +32,7 @@ export default function DetailSection({
           </Button>
         )}
       </div>
-      {items?.length > 0 ? (
+      {items && items.length > 0 ? (
         <div className="flex flex-wrap">
           {items?.map((item, index) => (
             <span className="mb-2 mr-2" key={index}>

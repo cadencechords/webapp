@@ -18,7 +18,9 @@ export default function FileInput({
   const [file, setFile] = useState<File | null>();
 
   const handleFileChosen = (e: ChangeEvent<HTMLInputElement>) => {
-    const uploadedFile = e.target.files[0];
+    // An <input type="file"> always has a FileList; files is null only for
+    // other input types.
+    const uploadedFile = e.target.files![0];
     onChange(uploadedFile);
     setFile(uploadedFile);
   };
