@@ -10,7 +10,7 @@ import Icon from '../components/Icon';
 export default function AccountProfilePage() {
   const currentUser = useSelector(selectCurrentUser);
 
-  if (!currentUser) return 'Loading...';
+  if (!currentUser) return <>Loading...</>;
 
   return (
     <div className="max-w-4xl mx-auto">

@@ -91,7 +91,6 @@
   "src/components/FormatPanelGeneralOptions.js",
   "src/components/FormatPresets.js",
   "src/components/FormatPreview.js",
-  "src/components/FormattedSong.js",
   "src/components/FullscreenDialog.js",
   "src/components/GenreOption.js",
   "src/components/GenreOptions.js",
