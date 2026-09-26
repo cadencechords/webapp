@@ -28,12 +28,18 @@ the React hooks rules. oxlint is a native binary with its own parser, so it
 doesn't depend on the `typescript` package. `yarn lint` also fails on
 warnings and on disable comments that no longer suppress anything.
 
+Formatting is oxfmt (`.oxfmtrc.json`, carried over from the old Prettier
+config). It formats every file type in the repo that Prettier did (TS/JS, JSON,
+CSS, Markdown, YAML, HTML), plus TOML, so Prettier is gone entirely. Files it
+shouldn't touch go in `ignorePatterns` in `.oxfmtrc.json`; it also skips
+anything in `.gitignore`. `yarn format` rewrites files in place.
+
 ## Checks (same as CI)
 
 ```bash
 yarn typecheck      # TypeScript over src and the Node-side TS; any error fails
 yarn lint           # oxlint
-yarn format:check   # Prettier
+yarn format:check   # oxfmt
 yarn test:unit      # unit tests (Vitest)
 yarn test:hooks     # tests for the PR review gate (.claude/hooks)
 yarn build
