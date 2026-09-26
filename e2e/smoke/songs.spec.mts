@@ -1,11 +1,11 @@
 // Create, edit and delete a song through the UI.
-const { test, expect } = require('@playwright/test');
-const {
+import { test, expect } from '@playwright/test';
+import {
   uniqueName,
   cleanup,
   quickAddButton,
   optionsMenuButton,
-} = require('./helpers');
+} from './helpers.mts';
 
 test.afterEach(async ({ page }) => cleanup(page));
 

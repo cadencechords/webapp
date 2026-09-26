@@ -1,7 +1,7 @@
-// Unit tests for the route list. Run with: node --test e2e/
-const test = require('node:test');
-const assert = require('node:assert');
-const { AUTHED_ROUTES, PUBLIC_ROUTES, resolveRoutes } = require('./routes');
+// Unit tests for the route list. Run with: yarn e2e:unit
+import test from 'node:test';
+import assert from 'node:assert';
+import { AUTHED_ROUTES, PUBLIC_ROUTES, resolveRoutes } from './routes.mts';
 
 test('fills params from ids', () => {
   const [route] = resolveRoutes([{ name: 'x', path: '/songs/:song/edit' }], {

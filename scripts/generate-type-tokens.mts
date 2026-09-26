@@ -1,6 +1,6 @@
 // Writes src/styles/type-tokens.css. Run with `yarn tokens:type`.
 import { writeFileSync } from 'node:fs';
-import { renderCss } from './type-tokens.mjs';
+import { renderCss } from './type-tokens.mts';
 
 writeFileSync(
   new URL('../src/styles/type-tokens.css', import.meta.url),
