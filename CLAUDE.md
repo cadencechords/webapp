@@ -8,7 +8,10 @@ and `docs/icons.md`.
 Write new files as `.ts`/`.tsx`, never `.js`/`.jsx`/`.mjs`/`.cjs`. The
 JavaScript that's left is being converted (Linear project "Web app: convert to
 TypeScript"). Converting a file means renaming it to `.ts`/`.tsx` with
-`git mv` and typing it. Only `public/` (served as-is) is exempt.
+`git mv` and typing it. Only `public/` (served as-is) is exempt, and Cypress
+(`cypress.config.js`, `cypress/`): Cypress 10 compiles TypeScript through
+the `typescript` package, which has no compiler API in TypeScript 7, so a
+`.ts` config or spec wouldn't load.
 
 Type checking uses TypeScript 7 (`typescript`, the native Go compiler).
 `tsconfig.json` covers `src`, JavaScript included (`checkJs`), and isn't
@@ -23,7 +26,7 @@ any type error fails `yarn typecheck`.
 
 ESLint parses TypeScript with the TypeScript 6 API from
 `@typescript/typescript6`, because TypeScript 7 has no JavaScript API (see
-`eslint.config.mjs`). So `yarn install` warns that typescript-eslint wants
+`eslint.config.mts`). So `yarn install` warns that typescript-eslint wants
 `typescript@<6.1.0`. That's expected: don't downgrade `typescript` to silence
 it. TypeScript files get typescript-eslint's recommended rules (the ones that
 don't need type information), such as `no-explicit-any`.
