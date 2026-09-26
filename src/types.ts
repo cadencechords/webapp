@@ -313,7 +313,11 @@ export interface EventForm {
   id?: number;
   title: string;
   description: string;
-  color: string;
+  /**
+   * One of the colors EventColorOptions offers. Optional because
+   * EventColorOption hands its color on as optional.
+   */
+  color?: ButtonColor;
   /** Who gets reminded. */
   memberships: EventMembership[];
   reminders_enabled?: boolean;
@@ -321,9 +325,9 @@ export interface EventForm {
   remind_number_of_hours_before: number;
   /** `YYYY-MM-DD`. */
   startDate?: string;
-  /** `h:mm A`, or empty for an all-day event. */
-  startTime?: string;
-  /** `h:mm A`, or empty. */
-  endTime?: string;
+  /** `h:mm A`, or empty for an all-day event; null once TimeInput is cleared. */
+  startTime?: string | null;
+  /** `h:mm A`, or empty; null once TimeInput is cleared. */
+  endTime?: string | null;
   setlist?: Setlist | null;
 }

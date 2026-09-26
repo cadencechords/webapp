@@ -1,10 +1,19 @@
 import StyledListBox from './components/StyledListBox';
 import { useState } from 'react';
 
-export default function ReminderTimesListBox({ selectedTime, onChange }) {
+type ReminderTimesListBoxProps = {
+  /** Hours before the event; the first option (1 hour) when unset. */
+  selectedTime?: number;
+  onChange: (hoursBefore: number) => void;
+};
+
+export default function ReminderTimesListBox({
+  selectedTime,
+  onChange,
+}: ReminderTimesListBoxProps) {
   const [reminderOptions] = useState(buildReminderOptions);
 
-  function findTemplateByValue(value) {
+  function findTemplateByValue(value: number | undefined) {
     return reminderOptions.find(option => option.value === value)?.template;
   }
 

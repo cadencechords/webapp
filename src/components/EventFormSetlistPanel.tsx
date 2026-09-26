@@ -5,6 +5,7 @@ import { sortDates } from '../utils/date';
 import WellInput from './inputs/WellInput';
 import Checkbox from './Checkbox';
 import useEventForm from '../hooks/forms/useEventForm';
+import type { Setlist } from '../types';
 
 export default function EventFormSetlistPanel() {
   const { isLoading, data: setlists } = useSetlists();
@@ -28,7 +29,7 @@ export default function EventFormSetlistPanel() {
     );
   }, [query, sortedSetlists]);
 
-  function handleToggle(checked, setlist) {
+  function handleToggle(checked: boolean, setlist: Setlist) {
     if (checked) onChange('setlist', setlist);
     else {
       onChange('setlist', null);
@@ -38,7 +39,7 @@ export default function EventFormSetlistPanel() {
   if (isLoading) return <PageLoading />;
   return (
     <div>
-      <div className="mb-4 font-semibold">Your team's sets</div>
+      <div className="mb-4 font-semibold">Your team&apos;s sets</div>
       <WellInput onChange={setQuery} value={query} className="mb-4" />
 
       {queriedSetlists.map(setlist => (

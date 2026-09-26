@@ -2,12 +2,21 @@ import Button from '../Button';
 import { Link } from 'react-router-dom';
 import Icon from '../Icon';
 
+type CalendarHeaderProps = {
+  /** The month and year shown, e.g. `'May 2024'`. */
+  title: string;
+  onNextMonth: () => void;
+  onPreviousMonth: () => void;
+  /** Shows the "New event" button. */
+  canCreate?: boolean;
+};
+
 export default function CalendarHeader({
   title,
   onNextMonth,
   onPreviousMonth,
   canCreate,
-}) {
+}: CalendarHeaderProps) {
   return (
     <>
       <div className="mb-4 flex-between">

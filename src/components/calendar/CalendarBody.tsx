@@ -1,6 +1,20 @@
 import CalendarRow from './CalendarRow';
+import type { CalendarDate } from '../../utils/date';
+import type { CalendarEvent } from '../../types';
 
-export default function CalendarBody({ weeks, events, onEventClick }) {
+type CalendarBodyProps = {
+  /** Six weeks from `getCalendarDates`; unset until they're worked out. */
+  weeks?: (CalendarDate | null)[][];
+  /** The month's events. */
+  events?: CalendarEvent[];
+  onEventClick: (event: CalendarEvent) => void;
+};
+
+export default function CalendarBody({
+  weeks,
+  events,
+  onEventClick,
+}: CalendarBodyProps) {
   if (weeks) {
     return (
       <div className="border dark:border-dark-gray-600 rounded-md text-center">

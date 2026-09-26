@@ -6,8 +6,15 @@ import PageLoading from '../components/PageLoading';
 import WellInput from '../components/inputs/WellInput';
 import { hasName } from '../utils/model';
 import useTeamMembers from '../hooks/api/useTeamMembers';
+import type { EventMembership, Membership } from '../types';
 
-export default function EventMembers({ members, onChange }) {
+type EventMembersProps = {
+  /** The members checked so far. */
+  members: EventMembership[];
+  onChange: (members: EventMembership[]) => void;
+};
+
+export default function EventMembers({ members, onChange }: EventMembersProps) {
   const { data: teamMembers, isLoading } = useTeamMembers();
   const [query, setQuery] = useState('');
 
@@ -17,8 +24,11 @@ export default function EventMembers({ members, onChange }) {
     return teamMembers?.filter(teamMember => {
       if (hasName(teamMember.user)) {
         if (
-          teamMember.user.first_name.toLowerCase().includes(query) ||
-          teamMember.user.last_name.toLowerCase().includes(query)
+          // Non-null: hasName checked first_name.
+          teamMember.user.first_name!.toLowerCase().includes(query) ||
+          // Non-null: assumed, as before, for a user with a first name. One
+          // without a last name throws here.
+          teamMember.user.last_name!.toLowerCase().includes(query)
         ) {
           return true;
         }
@@ -32,13 +42,13 @@ export default function EventMembers({ members, onChange }) {
   }, [query, teamMembers]);
   const queriedMembers = useMemo(() => filterMembers(), [filterMembers]);
 
-  function isMemberChecked(member) {
+  function isMemberChecked(member: EventMembership) {
     return !!members?.find(
       alreadyCheckedMember => alreadyCheckedMember.id === member.id
     );
   }
 
-  function handleToggleMember(checked, member) {
+  function handleToggleMember(checked: boolean, member: Membership) {
     if (checked) {
       onChange(members.concat(member));
     } else {

@@ -8,12 +8,13 @@ import { selectCurrentMember } from '../store/authSlice';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { CalendarEvent } from '../types';
 
 export default function CalendarPage() {
   const currentSubscription = useSelector(selectCurrentSubscription);
   const currentMember = useSelector(selectCurrentMember);
   const router = useHistory();
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   useEffect(() => {
     document.title = 'Calendar';
@@ -32,24 +33,24 @@ export default function CalendarPage() {
 
   async function fetchData() {
     try {
-      let { data } = await eventsApi.getAll();
+      const { data } = await eventsApi.getAll();
       setEvents(data);
     } catch (error) {
       reportError(error);
     }
   }
 
-  function handleEventCreated(createdEvent) {
+  function handleEventCreated(createdEvent: CalendarEvent) {
     setEvents(currentEvents => [...currentEvents, createdEvent]);
   }
 
-  function handleEventDeleted(eventId) {
+  function handleEventDeleted(eventId: number) {
     setEvents(currentEvents =>
       currentEvents.filter(event => event.id !== eventId)
     );
   }
 
-  function handleEventUpdated(updatedEvent) {
+  function handleEventUpdated(updatedEvent: CalendarEvent) {
     setEvents(currentEvents =>
       currentEvents.map(eventInList =>
         eventInList.id === updatedEvent.id ? updatedEvent : eventInList
