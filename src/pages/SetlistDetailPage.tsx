@@ -84,7 +84,7 @@ export default function SetlistDetailPage() {
     router.push(`/sets/${id}/present`);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
     _.debounce((newName: string) => {
       try {

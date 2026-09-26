@@ -1,0 +1,101 @@
+// oxlint: every correctness rule as an error, plus the rules the old ESLint
+// config enforced (eslint and typescript-eslint recommended, react
+// recommended, react-hooks) that oxlint files under other categories.
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "react"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true
+  },
+  "ignorePatterns": [
+    "build/",
+    "node_modules/",
+    "e2e/.results/",
+    "e2e/screenshots/",
+    "cypress/",
+    "public/",
+    ".claude/worktrees/"
+  ],
+  "rules": {
+    "no-array-constructor": "error",
+    "no-case-declarations": "error",
+    "no-empty": "error",
+    "no-fallthrough": "error",
+    "no-prototype-builtins": "error",
+    "no-redeclare": "error",
+    "no-regex-spaces": "error",
+    "no-unexpected-multiline": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "none",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-rest-params": "error",
+    "prefer-spread": "error",
+    "react/jsx-no-comment-textnodes": "error",
+    "react/jsx-no-target-blank": "error",
+    "react/no-unescaped-entities": "error",
+    "react/no-unknown-property": "error",
+    "react/rules-of-hooks": "error",
+    "typescript/ban-ts-comment": "error",
+    "typescript/no-empty-object-type": "error",
+    "typescript/no-explicit-any": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-require-imports": "error",
+    "typescript/no-unnecessary-type-constraint": "error",
+    "typescript/no-unsafe-function-type": "error",
+
+    // eslint-plugin-react-hooks' recommended preset. The rest of its rules
+    // (immutability, purity, refs, set-state-in-effect and so on) are
+    // correctness rules; config and gating only check React Compiler settings.
+    "react/unsupported-syntax": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.{js,ts,tsx}", "src/setupTests.ts"],
+      "plugins": ["vitest"],
+      "env": {
+        "node": true,
+        "vitest": true
+      },
+      "rules": {
+        // Vitest's expect() takes a failure message as its second argument.
+        "vitest/valid-expect": ["error", { "maxArgs": 2 }],
+        // ESLint never ran these, and the tests have 167 violations to fix first.
+        "vitest/expect-expect": "off",
+        "vitest/no-conditional-expect": "off",
+        "vitest/require-mock-type-parameters": "off",
+        "vitest/require-to-throw-message": "off"
+      }
+    },
+    {
+      "files": [
+        "scripts/**",
+        "e2e/**",
+        ".claude/**",
+        "*.config.{js,mjs,ts,mts}"
+      ],
+      "env": {
+        "node": true
+      }
+    },
+    {
+      // CommonJS, so require() is how it imports (see the comment inside).
+      "files": ["cypress.config.js"],
+      "globals": {
+        "Cypress": "readonly"
+      },
+      "rules": {
+        "typescript/no-require-imports": "off"
+      }
+    }
+  ]
+}

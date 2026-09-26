@@ -40,7 +40,7 @@ export default function AutoscrollSheet({
     setUpdates(null);
     cancelFrame(animationFrameId);
     setAnimationFrameId(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [song.id]);
 
   useEffect(() => {

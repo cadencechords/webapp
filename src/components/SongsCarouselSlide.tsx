@@ -30,7 +30,7 @@ export default function SongsCarouselSlide({
   const [roadmap, setRoadmap] = useState(() => song.roadmap);
   const [notes, setNotes] = useState(() => song.notes);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const debounce = useCallback(
     _.debounce(
       <K extends 'roadmap' | 'notes'>(

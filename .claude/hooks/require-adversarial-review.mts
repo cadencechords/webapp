@@ -251,7 +251,7 @@ export function parseShell(text: string): {
 }
 
 // gh flags that take a value (gh pr create's, plus the global -R/--repo).
-const VALUE_SHORT = new Set([...'aBbFHlmprRTt']);
+const VALUE_SHORT = new Set('aBbFHlmprRTt');
 const VALUE_LONG = new Set([
   'title',
   'body',

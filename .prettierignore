@@ -6,5 +6,4 @@ public/
 coverage/
 yarn.lock
 src/styles/*-tokens.css
-eslint-suppressions.json
 .claude/worktrees/

@@ -22,18 +22,17 @@ has no `"type": "module"`, so a `.ts` file counts as CommonJS). Node strips type
 `yarn typecheck` is what catches errors there. No project has a baseline:
 any type error fails `yarn typecheck`.
 
-ESLint parses TypeScript with the TypeScript 6 API from
-`@typescript/typescript6`, because TypeScript 7 has no JavaScript API (see
-`eslint.config.mts`). So `yarn install` warns that typescript-eslint wants
-`typescript@<6.1.0`. That's expected: don't downgrade `typescript` to silence
-it. TypeScript files get typescript-eslint's recommended rules (the ones that
-don't need type information), such as `no-explicit-any`.
+Linting is oxlint (`.oxlintrc.json`): every `correctness` rule as an error,
+plus the rules the old ESLint config enforced, such as `no-explicit-any` and
+the React hooks rules. oxlint is a native binary with its own parser, so it
+doesn't depend on the `typescript` package. `yarn lint` also fails on
+warnings and on disable comments that no longer suppress anything.
 
 ## Checks (same as CI)
 
 ```bash
 yarn typecheck      # TypeScript over src and the Node-side TS; any error fails
-yarn lint           # ESLint; existing violations are in eslint-suppressions.json
+yarn lint           # oxlint
 yarn format:check   # Prettier
 yarn test:unit      # unit tests (Vitest)
 yarn test:hooks     # tests for the PR review gate (.claude/hooks)
@@ -41,8 +40,8 @@ yarn build
 ```
 
 Fix type errors instead of hiding them with `@ts-ignore`, `@ts-expect-error`
-or `any`. Don't add ESLint suppressions either: `eslint-suppressions.json` is
-only for recording fixes (the counts going down, with `yarn lint:prune`).
+or `any`. Fix lint errors too, instead of adding `oxlint-disable` comments or
+turning rules off in `.oxlintrc.json`.
 
 ## Pull requests
 
