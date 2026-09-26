@@ -63,7 +63,7 @@ export default function Note({
           reportError(error);
         }
       },
-      [1200]
+      1200
     ),
     [songId, note.id]
   );
