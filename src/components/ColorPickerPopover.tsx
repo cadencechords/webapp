@@ -15,16 +15,19 @@ export default function ColorPickerPopover({
   const { color: defaultColor, setColor: setAnnotationColor } =
     useAnnotationsToolbar();
   const [color, setColor] = useState(defaultColor);
+  // Follow the toolbar's color whenever it changes.
+  const [previousDefaultColor, setPreviousDefaultColor] =
+    useState(defaultColor);
+  if (defaultColor !== previousDefaultColor) {
+    setPreviousDefaultColor(defaultColor);
+    setColor(defaultColor);
+  }
 
   const debounced = useDebounce(color, 300);
 
   useEffect(() => {
     setAnnotationColor(debounced);
   }, [debounced, setAnnotationColor]);
-
-  useEffect(() => {
-    setColor(defaultColor);
-  }, [defaultColor]);
 
   return (
     <StyledPopover button={button} position="top">

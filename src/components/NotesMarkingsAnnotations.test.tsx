@@ -5,6 +5,8 @@ import Annotations from './Annotations';
 import AnnotationsToolbar from './AnnotationsToolbar';
 import ColorDialog from './ColorDialog';
 import ColorPicker from './ColorPicker';
+import ColorPickerPopover from './ColorPickerPopover';
+import StrokeWidthPopover from './StrokeWidthPopover';
 import Marking from './Marking';
 import MarkupPopover from './MarkupPopover';
 import Note from './Note';
@@ -311,6 +313,53 @@ describe('colour pickers', () => {
     fireEvent.click(makeTransparent);
     fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
     expect(onChange).toHaveBeenLastCalledWith('rgba(255, 255, 255, 0)');
+  });
+
+  test('ColorPicker drops the staged color when its color changes', () => {
+    const onChange = vi.fn();
+    const { rerender } = render(
+      <ColorPicker color="rgba(1, 2, 3, 1)" onChange={onChange} />
+    );
+    fireEvent.click(screen.getAllByRole('button')[0]);
+    const makeTransparent = screen
+      .getAllByRole('button')
+      .find(button => button.className.includes('w-8 h-8'));
+    if (!makeTransparent) throw new Error('No make-transparent button');
+    fireEvent.click(makeTransparent);
+
+    rerender(<ColorPicker color="rgba(4, 5, 6, 1)" onChange={onChange} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+    expect(onChange).toHaveBeenLastCalledWith('rgba(4, 5, 6, 1)');
+  });
+
+  test.each([
+    ['ColorPickerPopover', ColorPickerPopover],
+    ['StrokeWidthPopover', StrokeWidthPopover],
+  ])('%s follows the toolbar color when it changes', (_, Popover) => {
+    function SetBlue() {
+      const { setColor } = useAnnotationsToolbar();
+      return (
+        <button onClick={() => setColor('rgba(0, 0, 255, 1)')}>Blue</button>
+      );
+    }
+    render(
+      <Providers>
+        <Popover button={<span>Pick</span>} />
+        <SetBlue />
+      </Providers>
+    );
+    fireEvent.click(screen.getByText('Pick'));
+    // Black, the light theme's default, has hue 0.
+    expect(screen.getByRole('slider', { name: 'Hue' })).toHaveAttribute(
+      'aria-valuetext',
+      '0'
+    );
+
+    fireEvent.click(screen.getByText('Blue'));
+    expect(screen.getByRole('slider', { name: 'Hue' })).toHaveAttribute(
+      'aria-valuetext',
+      '240'
+    );
   });
 
   test('ColorDialog confirms the binder color unless another is picked', () => {
