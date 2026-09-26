@@ -235,22 +235,12 @@
       "count": 1
     }
   },
-  "src/components/SessionsSheet.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/SetlistOptionsPopover.js": {
     "no-unused-vars": {
       "count": 1
     }
   },
   "src/components/SetlistRow.js": {
-    "no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/components/SetlistSessionsList.js": {
     "no-unused-vars": {
       "count": 1
     }
