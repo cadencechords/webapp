@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import BinderApi from '../api/BinderApi';
 import Button from './Button';
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuDivider, MenuItem, MenuList } from './Menu';
 import StyledPopover from './StyledPopover';
 import { reportError } from '../utils/error';
 import { useState } from 'react';
@@ -53,27 +53,23 @@ export default function BinderOptionsPopover({
         is irreversible.
       </ConfirmDeleteDialog>
       <StyledPopover button={button} position="bottom-start">
-        <div className="overflow-hidden rounded-lg w-60">
-          <MobileMenuButton
-            full
-            color="black"
-            className="flex items-center border-b last:border-0 dark:border-dark-gray-400"
-            onClick={onChangeColorClick}
-          >
+        <MenuList className="w-60">
+          <MenuItem onClick={onChangeColorClick} icon={<Icon name="palette" />}>
             Change color
-          </MobileMenuButton>
+          </MenuItem>
           {currentMember.can(DELETE_BINDERS) && (
-            <MobileMenuButton
-              full
-              color="red"
-              className="border-b last:border-0 flex-between dark:border-dark-gray-400"
-              onClick={() => setShowDeleteDialog(true)}
-            >
-              Delete
-              <Icon name="delete" className="w-5 h-5" />
-            </MobileMenuButton>
+            <>
+              <MenuDivider />
+              <MenuItem
+                destructive
+                onClick={() => setShowDeleteDialog(true)}
+                icon={<Icon name="delete" />}
+              >
+                Delete
+              </MenuItem>
+            </>
           )}
-        </div>
+        </MenuList>
       </StyledPopover>
     </>
   );

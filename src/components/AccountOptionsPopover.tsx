@@ -1,7 +1,7 @@
 import { logOut, selectCurrentUser } from '../store/authSlice';
 
-import { Link } from 'react-router-dom';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import Icon from './Icon';
+import { MenuDivider, MenuItem, MenuList } from './Menu';
 import ProfilePicture from './ProfilePicture';
 import StyledPopover from './StyledPopover';
 import { useDispatch } from 'react-redux';
@@ -23,28 +23,19 @@ export default function AccountOptionsPopover() {
   return (
     <div className="mr-5">
       <StyledPopover button={button} position="bottom-start">
-        <div className="w-60">
-          <Link to="/account">
-            <MobileMenuButton
-              color="black"
-              full
-              size="sm"
-              className="rounded-t-md"
-            >
-              Account
-            </MobileMenuButton>
-          </Link>
-          <hr className="dark:border-dark-gray-400" />
-          <MobileMenuButton
-            full
-            color="red"
+        <MenuList className="w-60">
+          <MenuItem to="/account" icon={<Icon name="account_circle" />}>
+            Account
+          </MenuItem>
+          <MenuDivider />
+          <MenuItem
+            destructive
             onClick={handleLogOut}
-            className="rounded-b-md"
-            size="sm"
+            icon={<Icon name="logout" />}
           >
             Log out
-          </MobileMenuButton>
-        </div>
+          </MenuItem>
+        </MenuList>
       </StyledPopover>
     </div>
   );

@@ -160,3 +160,30 @@
   transition-duration: var(--md-sys-motion-duration-default-spatial);
   transition-timing-function: var(--md-sys-motion-easing-default-effects);
 }
+
+/* Menus entering and leaving (CAD-88): like dialogs, on the fast curves.
+   Scale on the fast-spatial spring and opacity on fast-effects, the fade
+   stretched to end with the scale (Headless UI's Transition ends a phase on
+   the first transitionend); leaving has no overshoot. */
+@utility transition-menu-enter {
+  transition:
+    scale var(--md-sys-motion-duration-fast-spatial)
+      var(--md-sys-motion-easing-fast-spatial),
+    opacity
+      max(
+        var(--md-sys-motion-duration-fast-spatial),
+        var(--md-sys-motion-duration-fast-effects)
+      )
+      var(--md-sys-motion-easing-fast-effects);
+}
+@utility transition-menu-exit {
+  transition:
+    scale
+      min(
+        var(--md-sys-motion-duration-fast-spatial),
+        var(--md-sys-motion-duration-fast-effects)
+      )
+      var(--md-sys-motion-easing-fast-effects),
+    opacity var(--md-sys-motion-duration-fast-effects)
+      var(--md-sys-motion-easing-fast-effects);
+}

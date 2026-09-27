@@ -1,10 +1,11 @@
-import { Popover } from '@headlessui/react';
+import { Popover, Transition } from '@headlessui/react';
 import { usePopper } from 'react-popper';
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { noop } from '../utils/constants';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuItem, MenuList } from './Menu';
+import { MENU_SURFACE, transformOrigin } from './StyledPopover';
 import Icon from './Icon';
 
 type MarkingOptionsPopoverProps = {
@@ -31,10 +32,14 @@ export default function MarkingOptionsPopover({
   );
   const popperRef = useRef<HTMLDivElement | null>(null);
 
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: 'bottom-start',
-    strategy: 'fixed',
-  });
+  const { styles, attributes, state } = usePopper(
+    referenceElement,
+    popperElement,
+    {
+      placement: 'bottom-start',
+      strategy: 'fixed',
+    }
+  );
 
   useOnClickOutside(popperRef, onClose || noop);
 
@@ -49,30 +54,42 @@ export default function MarkingOptionsPopover({
         </Popover.Button>
       )}
 
-      {isOpen && (
+      <Transition
+        show={isOpen}
+        appear
+        as={Fragment}
+        enter="transition-menu-enter"
+        enterFrom="opacity-0 scale-90"
+        enterTo="opacity-100 scale-100"
+        leave="transition-menu-exit pointer-events-none"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-95"
+      >
         <Popover.Panel
           static={true}
-          className={`bg-white dark:bg-dark-gray-700 rounded-lg shadow-2xl z-50 absolute`}
+          className={`${MENU_SURFACE} z-50 absolute`}
           ref={(element: HTMLDivElement | null) => {
             popperRef.current = element;
             setPopperElement(element);
           }}
-          style={{ ...styles.popper, ...style }}
+          style={{
+            ...styles.popper,
+            transformOrigin: transformOrigin(state?.placement),
+            ...style,
+          }}
           {...attributes.popper}
         >
-          <div className="overflow-hidden rounded-lg w-60">
-            <MobileMenuButton
-              full
-              className="border-b dark:border-dark-gray-400 last:border-0 flex-between"
-              color="red"
+          <MenuList className="w-60">
+            <MenuItem
+              destructive
               onClick={onDelete}
+              icon={<Icon name="delete" />}
             >
               Delete
-              <Icon name="delete" className="w-4 h-4" />
-            </MobileMenuButton>
-          </div>
+            </MenuItem>
+          </MenuList>
         </Popover.Panel>
-      )}
+      </Transition>
     </Popover>
   );
 }

@@ -35,6 +35,7 @@ import Info from '@material-symbols/svg-400/rounded/info.svg?react';
 import KeyboardArrowDown from '@material-symbols/svg-400/rounded/keyboard_arrow_down.svg?react';
 import KeyboardArrowDownFilled from '@material-symbols/svg-400/rounded/keyboard_arrow_down-fill.svg?react';
 import LockFilled from '@material-symbols/svg-400/rounded/lock-fill.svg?react';
+import Logout from '@material-symbols/svg-400/rounded/logout.svg?react';
 import Mail from '@material-symbols/svg-400/rounded/mail.svg?react';
 import MenuFilled from '@material-symbols/svg-400/rounded/menu-fill.svg?react';
 import Mobile from '@material-symbols/svg-400/rounded/mobile.svg?react';
@@ -47,9 +48,11 @@ import Notes from '@material-symbols/svg-400/rounded/notes.svg?react';
 import NotesFilled from '@material-symbols/svg-400/rounded/notes-fill.svg?react';
 import Notifications from '@material-symbols/svg-400/rounded/notifications.svg?react';
 import NotificationsFilled from '@material-symbols/svg-400/rounded/notifications-fill.svg?react';
+import Palette from '@material-symbols/svg-400/rounded/palette.svg?react';
 import PauseCircleFilled from '@material-symbols/svg-400/rounded/pause_circle-fill.svg?react';
 import PersonFilled from '@material-symbols/svg-400/rounded/person-fill.svg?react';
 import PersonRemove from '@material-symbols/svg-400/rounded/person_remove.svg?react';
+import PlayArrow from '@material-symbols/svg-400/rounded/play_arrow.svg?react';
 import PlayCircleFilled from '@material-symbols/svg-400/rounded/play_circle-fill.svg?react';
 import Print from '@material-symbols/svg-400/rounded/print.svg?react';
 import Remove from '@material-symbols/svg-400/rounded/remove.svg?react';
@@ -97,6 +100,7 @@ export const ICONS = {
   keyboard_arrow_down: KeyboardArrowDown,
   'keyboard_arrow_down-fill': KeyboardArrowDownFilled,
   'lock-fill': LockFilled,
+  logout: Logout,
   mail: Mail,
   'menu-fill': MenuFilled,
   mobile: Mobile,
@@ -109,9 +113,11 @@ export const ICONS = {
   'notes-fill': NotesFilled,
   notifications: Notifications,
   'notifications-fill': NotificationsFilled,
+  palette: Palette,
   'pause_circle-fill': PauseCircleFilled,
   'person-fill': PersonFilled,
   person_remove: PersonRemove,
+  play_arrow: PlayArrow,
   'play_circle-fill': PlayCircleFilled,
   print: Print,
   remove: Remove,

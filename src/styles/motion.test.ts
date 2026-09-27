@@ -17,6 +17,8 @@ beforeAll(async () => {
     'shape-morph',
     'transition-dialog-enter',
     'transition-dialog-exit',
+    'transition-menu-enter',
+    'transition-menu-exit',
   ]);
 });
 
@@ -69,6 +71,15 @@ test('dialog scales run on spatial durations, so reduced motion turns them off',
     /scale var\(--md-sys-motion-duration-default-spatial\)/
   );
   expect(rule('transition-dialog-exit')).toMatch(
+    /scale min\(\s*var\(--md-sys-motion-duration-fast-spatial\)/
+  );
+});
+
+test('menu scales run on the fast-spatial duration, so reduced motion turns them off', () => {
+  expect(rule('transition-menu-enter')).toMatch(
+    /scale var\(--md-sys-motion-duration-fast-spatial\) var\(--md-sys-motion-easing-fast-spatial\)/
+  );
+  expect(rule('transition-menu-exit')).toMatch(
     /scale min\(\s*var\(--md-sys-motion-duration-fast-spatial\)/
   );
 });

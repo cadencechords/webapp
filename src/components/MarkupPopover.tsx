@@ -2,7 +2,7 @@ import React from 'react';
 import StyledPopover from './StyledPopover';
 import Button from './Button';
 import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuItem, MenuList } from './Menu';
 import usePerformanceMode from '../hooks/usePerformanceMode';
 import Icon from './Icon';
 
@@ -26,43 +26,27 @@ export default function MarkupPopover({
         </Button>
       }
     >
-      <div className="overflow-hidden rounded-lg w-60">
-        <MobileMenuButton
-          full
-          className="border-b h-11 flex-between dark:border-dark-gray-400"
-          color="black"
-          style={{ paddingTop: 0, paddingBottom: 0 }}
-          onClick={onAddNote}
-        >
+      <MenuList className="w-60">
+        <MenuItem onClick={onAddNote} icon={<AddStickyNoteIcon />}>
           Sticky note
-          <AddStickyNoteIcon className="w-5 h-5" />
-        </MobileMenuButton>
-        <MobileMenuButton
+        </MenuItem>
+        <MenuItem
           onClick={onShowMarkingsModal}
-          full
-          className="border-b dark:border-dark-gray-400 h-11 flex-between"
-          color="black"
-          style={{ paddingTop: 0, paddingBottom: 0 }}
+          icon={
+            <span
+              style={{ fontFamily: 'Times New Roman' }}
+              className="text-2xl italic font-bold leading-none"
+            >
+              f
+            </span>
+          }
         >
           Marking
-          <span
-            style={{ fontFamily: 'Times New Roman' }}
-            className="w-5 text-xl italic font-bold text-center"
-          >
-            f
-          </span>
-        </MobileMenuButton>
-        <MobileMenuButton
-          onClick={beginAnnotating}
-          full
-          className="h-11 flex-between"
-          color="black"
-          style={{ paddingTop: 0, paddingBottom: 0 }}
-        >
+        </MenuItem>
+        <MenuItem onClick={beginAnnotating} icon={<Icon name="edit" filled />}>
           Annotate
-          <Icon name="edit" filled className="w-5 h-5" />
-        </MobileMenuButton>
-      </div>
+        </MenuItem>
+      </MenuList>
     </StyledPopover>
   );
 }

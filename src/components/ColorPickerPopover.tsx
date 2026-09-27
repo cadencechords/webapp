@@ -31,7 +31,7 @@ export default function ColorPickerPopover({
 
   return (
     <StyledPopover button={button} position="top">
-      <div className="px-3 py-2 overflow-hidden rounded-lg color-picker sm:w-72 w-80">
+      <div className="p-3 color-picker sm:w-72 w-80">
         <RgbaStringColorPicker color={color} onChange={setColor} />
       </div>
     </StyledPopover>

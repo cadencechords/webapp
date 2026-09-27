@@ -1,7 +1,7 @@
 import React from 'react';
 import StyledPopover from './StyledPopover';
 import Button from './Button';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuDivider, MenuItem, MenuList } from './Menu';
 import useDialog from '../hooks/useDialog';
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog';
 import useDeleteSetlist from '../hooks/api/useDeleteSetlist';
@@ -33,6 +33,9 @@ export default function SetlistOptionsPopover({
   if (!currentMember.can(DELETE_SETLISTS) && !setlist.songs!.length)
     return null;
 
+  const canPerform = !!setlist.songs && setlist.songs.length > 0;
+  const canDelete = currentMember.can(DELETE_SETLISTS);
+
   return (
     <>
       <StyledPopover
@@ -43,29 +46,23 @@ export default function SetlistOptionsPopover({
           </Button>
         }
       >
-        <div className="overflow-hidden rounded-lg w-60">
-          {setlist.songs && setlist.songs.length > 0 && (
-            <MobileMenuButton
-              full
-              color="gray"
-              className="flex items-center border-b last:border-0 dark:border-dark-gray-400"
-              onClick={onPerform}
-            >
+        <MenuList className="w-60">
+          {canPerform && (
+            <MenuItem onClick={onPerform} icon={<Icon name="play_arrow" />}>
               Perform
-            </MobileMenuButton>
+            </MenuItem>
           )}
-          {currentMember.can(DELETE_SETLISTS) && (
-            <MobileMenuButton
-              full
-              color="red"
-              className="border-b flex-between last:border-0 dark:border-dark-gray-400"
+          {canPerform && canDelete && <MenuDivider />}
+          {canDelete && (
+            <MenuItem
+              destructive
               onClick={showConfirmation}
+              icon={<Icon name="delete" />}
             >
               Delete
-              <Icon name="delete" className="w-5 h-5" />
-            </MobileMenuButton>
+            </MenuItem>
           )}
-        </div>
+        </MenuList>
       </StyledPopover>
       <ConfirmDeleteDialog
         show={isConfirmationOpen}

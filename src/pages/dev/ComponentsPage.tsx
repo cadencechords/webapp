@@ -35,6 +35,8 @@ import StyledDialog from '../../components/StyledDialog';
 import ConfirmDeleteDialog from '../../dialogs/ConfirmDeleteDialog';
 import Drawer from '../../components/Drawer';
 import BottomSheet from '../../components/BottomSheet';
+import StyledPopover from '../../components/StyledPopover';
+import { MenuDivider, MenuItem, MenuList } from '../../components/Menu';
 
 const VARIANTS: [ButtonVariant, string][] = [
   ['filled', 'Filled'],
@@ -99,7 +101,7 @@ export default function ComponentsPage() {
   const [color, setColor] = useState('rgba(31, 111, 235, 1)');
   const [listOption, setListOption] = useState(LIST_OPTIONS[0]);
   const [dialog, setDialog] = useState<
-    'basic' | 'fullscreen' | 'delete' | 'drawer' | 'sheet' | null
+    'basic' | 'fullscreen' | 'delete' | 'drawer' | 'sheet' | 'menu' | null
   >(null);
   // ConfirmDeleteDialog stays loading after a confirm, as it does in the
   // app (callers close it for good), so reopening it here shows that state.
@@ -343,6 +345,9 @@ export default function ComponentsPage() {
           <Button variant="accent" onClick={() => setDialog('sheet')}>
             Bottom sheet
           </Button>
+          <Button variant="accent" onClick={() => setDialog('menu')}>
+            Menu in a dialog
+          </Button>
         </div>
         <StyledDialog
           open={dialog === 'basic' || dialog === 'fullscreen'}
@@ -373,6 +378,58 @@ export default function ComponentsPage() {
         <BottomSheet open={dialog === 'sheet'} onClose={closeDialog}>
           <div className="p-6 pt-16 text-body-large">A bottom sheet</div>
         </BottomSheet>
+        <StyledDialog
+          open={dialog === 'menu'}
+          onCloseDialog={closeDialog}
+          title="Profile Picture"
+          fullscreen={false}
+        >
+          <MenuList className="-mx-3 *:rounded-medium">
+            <MenuItem
+              onClick={closeDialog}
+              icon={<Icon name="desktop_windows" />}
+            >
+              Upload from device
+            </MenuItem>
+            <MenuItem
+              destructive
+              onClick={closeDialog}
+              icon={<Icon name="delete" />}
+            >
+              Remove photo
+            </MenuItem>
+          </MenuList>
+        </StyledDialog>
+      </Section>
+
+      <Section title="Menus">
+        <div className="flex flex-wrap items-start gap-6">
+          {(['bottom-start', 'bottom-end', 'top'] as const).map(position => (
+            <div key={position}>
+              <StyledPopover
+                position={position}
+                button={<Button variant="accent">{position}</Button>}
+              >
+                <MenuList className="w-60">
+                  <MenuItem icon={<Icon name="print" />}>Print</MenuItem>
+                  <MenuItem
+                    icon={<Icon name="edit" />}
+                    trailing={<Icon name="check" className="w-5 h-5" />}
+                  >
+                    Edit
+                  </MenuItem>
+                  <MenuItem icon={<Icon name="download" />} disabled>
+                    Download (disabled)
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem destructive icon={<Icon name="delete" />}>
+                    Delete
+                  </MenuItem>
+                </MenuList>
+              </StyledPopover>
+            </div>
+          ))}
+        </div>
       </Section>
     </div>
   );

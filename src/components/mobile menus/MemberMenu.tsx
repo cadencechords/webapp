@@ -1,4 +1,4 @@
-import MobileMenuButton from '../buttons/MobileMenuButton';
+import { MenuItem, MenuList } from '../Menu';
 import { REMOVE_MEMBERS } from '../../utils/constants';
 import StyledDialog from '../StyledDialog';
 import UserApi from '../../api/UserApi';
@@ -38,12 +38,13 @@ export default function MemberMenu({
   };
 
   const removeFromTeamButton = currentMember.can(REMOVE_MEMBERS) && (
-    <MobileMenuButton full color="red" onClick={handleRemoveFromTeam}>
-      <div className="flex items-center">
-        <Icon name="person_remove" className="mr-4 h-5" />
-        Remove from team
-      </div>
-    </MobileMenuButton>
+    <MenuItem
+      destructive
+      onClick={handleRemoveFromTeam}
+      icon={<Icon name="person_remove" />}
+    >
+      Remove from team
+    </MenuItem>
   );
 
   const hasName = () => {
@@ -60,7 +61,11 @@ export default function MemberMenu({
       }
       fullscreen={false}
     >
-      {member && removeFromTeamButton}
+      {member && removeFromTeamButton && (
+        <MenuList className="-mx-3 *:rounded-medium">
+          {removeFromTeamButton}
+        </MenuList>
+      )}
     </StyledDialog>
   );
 }

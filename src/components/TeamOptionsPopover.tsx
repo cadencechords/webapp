@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuItem, MenuList } from './Menu';
 import ProfilePicture from './ProfilePicture';
 import StyledPopover from './StyledPopover';
 import Icon from './Icon';
@@ -22,26 +21,14 @@ export default function TeamOptionsPopover({ team }: TeamOptionsPopoverProps) {
   );
   return (
     <StyledPopover button={button} position="bottom-start">
-      <div className="overflow-hidden rounded-lg w-60">
-        <Link
-          className="block border-b dark:border-dark-gray-400 last:border-0"
-          to="/team"
-        >
-          <MobileMenuButton full className="flex-between">
-            View details
-            <Icon name="info" className="w-4 h-4" />
-          </MobileMenuButton>
-        </Link>
-        <Link
-          className="block border-b dark:border-dark-gray-400 last:border-0"
-          to="/login/teams"
-        >
-          <MobileMenuButton full className="flex-between">
-            Switch teams
-            <Icon name="swap_horiz" className="w-4 h-4" />
-          </MobileMenuButton>
-        </Link>
-      </div>
+      <MenuList className="w-60">
+        <MenuItem to="/team" icon={<Icon name="info" />}>
+          View details
+        </MenuItem>
+        <MenuItem to="/login/teams" icon={<Icon name="swap_horiz" />}>
+          Switch teams
+        </MenuItem>
+      </MenuList>
     </StyledPopover>
   );
 }

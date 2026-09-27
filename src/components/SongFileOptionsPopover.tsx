@@ -1,7 +1,7 @@
 import { DELETE_FILES, EDIT_FILES } from '../utils/constants';
 
 import Button from './Button';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuDivider, MenuItem, MenuList } from './Menu';
 import StyledPopover from './StyledPopover';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
@@ -29,41 +29,28 @@ export default function SongFileOptionsPopover({
   );
   return (
     <StyledPopover button={button}>
-      <div className="overflow-hidden rounded-lg w-60">
-        <a
-          href={file.url}
-          target="_blank"
-          rel="noreferrer"
-          className="block border-b dark:border-dark-gray-400 last:border-0"
-        >
-          <MobileMenuButton full className="flex-between" color="black">
-            Download
-            <Icon name="download" className="w-4 h-4" />
-          </MobileMenuButton>
-        </a>
+      <MenuList className="w-60">
+        <MenuItem href={file.url} icon={<Icon name="download" />}>
+          Download
+        </MenuItem>
         {currentMember.can(EDIT_FILES) && (
-          <MobileMenuButton
-            full
-            className="border-b dark:border-dark-gray-400 last:border-0 flex-between"
-            color="black"
-            onClick={onEdit}
-          >
+          <MenuItem onClick={onEdit} icon={<Icon name="edit" />}>
             Edit
-            <Icon name="edit" className="w-4 h-4" />
-          </MobileMenuButton>
+          </MenuItem>
         )}
         {currentMember.can(DELETE_FILES) && (
-          <MobileMenuButton
-            full
-            className="border-b dark:border-dark-gray-400 last:border-0 flex-between"
-            color="red"
-            onClick={onDelete}
-          >
-            Delete
-            <Icon name="delete" className="w-4 h-4" />
-          </MobileMenuButton>
+          <>
+            <MenuDivider />
+            <MenuItem
+              destructive
+              onClick={onDelete}
+              icon={<Icon name="delete" />}
+            >
+              Delete
+            </MenuItem>
+          </>
         )}
-      </div>
+      </MenuList>
     </StyledPopover>
   );
 }

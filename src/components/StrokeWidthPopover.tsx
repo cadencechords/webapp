@@ -36,7 +36,7 @@ export default function StrokeWidthPopover({
 
   return (
     <StyledPopover button={button} position="top">
-      <div className="px-3 py-2 overflow-hidden rounded-lg stroke-width">
+      <div className="p-3 stroke-width">
         <div className="flex gap-4 mb-3">
           {WIDTHS.map(width => (
             <StrokeWidthButton
@@ -71,15 +71,14 @@ function StrokeWidthButton({
     <button
       onClick={() => onClick(strokeWidth)}
       className={classNames(
-        'w-12 h-12 p-2 flex-center rounded-xl',
-        selected && 'bg-gray-100 dark:bg-dark-gray-400'
+        'w-12 h-12 p-2 flex-center rounded-medium state-layer-flat focus-ring',
+        selected
+          ? 'bg-secondary-container text-on-secondary-container'
+          : 'text-on-surface'
       )}
     >
       <div
-        className={classNames(
-          'w-full transform rotate-45 bg-black',
-          selected ? 'dark:bg-white' : 'dark:bg-dark-gray-100'
-        )}
+        className="w-full transform rotate-45 bg-current"
         style={{ height: strokeWidth }}
       ></div>
     </button>

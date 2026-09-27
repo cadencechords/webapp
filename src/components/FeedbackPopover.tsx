@@ -45,12 +45,12 @@ export default function FeedbackPopover() {
     <>
       <StyledPopover position="bottom-start" button={button}>
         <textarea
-          className="p-3 outline-hidden resize-y focus:outline-hidden w-72 dark:bg-dark-gray-700 rounded-t-md"
+          className="block p-4 w-72 min-h-24 bg-transparent resize-y outline-hidden focus:outline-hidden font-plain text-body-large text-on-surface placeholder:text-on-surface-variant caret-primary"
           placeholder="Submit feedback"
           value={feedback}
           onChange={e => setFeedback(e.target.value)}
         />
-        <div className="border-t dark:border-dark-gray-400 text-right py-1.5 px-2 bg-gray-50 dark:bg-dark-gray-600 rounded-b-md">
+        <div className="px-2 py-2 text-right border-t border-outline-variant">
           <Button
             onClick={handleSubmit}
             color="blue"

@@ -1,7 +1,6 @@
 import { selectCurrentMember, selectCurrentTeam } from '../../store/authSlice';
 
-import { Link } from 'react-router-dom';
-import MobileMenuButton from '../buttons/MobileMenuButton';
+import { MenuDivider, MenuItem, MenuList } from '../Menu';
 import StyledDialog from '../StyledDialog';
 import { MANAGE_BILLING, VIEW_EVENTS, VIEW_ROLES } from '../../utils/constants';
 import { selectCurrentSubscription } from '../../store/subscriptionSlice';
@@ -23,8 +22,6 @@ export default function AppMenu({ onCloseDialog, open }: AppMenuProps) {
   // current team loads.
   const currentTeam = useSelector(selectCurrentTeam)!;
 
-  const iconClasses = 'mr-5 w-5 h-5';
-
   const shouldShowDividers =
     currentMember?.can(VIEW_ROLES) || currentMember?.can(MANAGE_BILLING);
 
@@ -35,96 +32,75 @@ export default function AppMenu({ onCloseDialog, open }: AppMenuProps) {
       title={currentTeam.name}
       fullscreen={true}
     >
-      <Link to="/">
-        <MobileMenuButton full onClick={onCloseDialog} size="none">
-          <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <DashboardIcon className={iconClasses} />
-            Dashboard
-          </div>
-        </MobileMenuButton>
-      </Link>
+      {/* Items reach into the dialog's padding, so labels line up with the
+          title. */}
+      <MenuList className="-mx-3 *:rounded-medium">
+        <MenuItem to="/" onClick={onCloseDialog} icon={<DashboardIcon />}>
+          Dashboard
+        </MenuItem>
 
-      <Link to="/binders">
-        <MobileMenuButton full onClick={onCloseDialog} size="none">
-          <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <BinderIcon className={iconClasses} />
-            Binders
-          </div>
-        </MobileMenuButton>
-      </Link>
+        <MenuItem to="/binders" onClick={onCloseDialog} icon={<BinderIcon />}>
+          Binders
+        </MenuItem>
 
-      <Link to="/songs">
-        <MobileMenuButton full onClick={onCloseDialog} size="none">
-          <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <Icon name="music_note" filled className={iconClasses} />
-            Songs
-          </div>
-        </MobileMenuButton>
-      </Link>
+        <MenuItem
+          to="/songs"
+          onClick={onCloseDialog}
+          icon={<Icon name="music_note" filled />}
+        >
+          Songs
+        </MenuItem>
 
-      <Link to="/sets">
-        <MobileMenuButton full onClick={onCloseDialog} size="none">
-          <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <PlaylistIcon className={iconClasses} />
-            Sets
-          </div>
-        </MobileMenuButton>
-      </Link>
+        <MenuItem to="/sets" onClick={onCloseDialog} icon={<PlaylistIcon />}>
+          Sets
+        </MenuItem>
 
-      <Link to="/members">
-        <MobileMenuButton full onClick={onCloseDialog} size="none">
-          <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <Icon name="person" filled className={iconClasses} />
-            Team members
-          </div>
-        </MobileMenuButton>
-      </Link>
+        <MenuItem
+          to="/members"
+          onClick={onCloseDialog}
+          icon={<Icon name="person" filled />}
+        >
+          Team members
+        </MenuItem>
 
-      {currentSubscription?.isPro && currentMember?.can(VIEW_EVENTS) && (
-        <Link to="/calendar">
-          <MobileMenuButton full onClick={onCloseDialog} size="none">
-            <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-              <Icon name="calendar_month" filled className={iconClasses} />
-              Calendar
-            </div>
-          </MobileMenuButton>
-        </Link>
-      )}
+        {currentSubscription?.isPro && currentMember?.can(VIEW_EVENTS) && (
+          <MenuItem
+            to="/calendar"
+            onClick={onCloseDialog}
+            icon={<Icon name="calendar_month" filled />}
+          >
+            Calendar
+          </MenuItem>
+        )}
 
-      {shouldShowDividers && (
-        <div className="h-px pt-4 mb-4 border-b dark:border-dark-gray-400" />
-      )}
-      {currentMember?.can(VIEW_ROLES) && (
-        <Link to="/permissions">
-          <MobileMenuButton full onClick={onCloseDialog} size="none">
-            <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-              <Icon name="lock" filled className={iconClasses} />
-              Permissions
-            </div>
-          </MobileMenuButton>
-        </Link>
-      )}
-      {currentMember?.can(MANAGE_BILLING) && (
-        <Link to="/billing">
-          <MobileMenuButton full onClick={onCloseDialog} size="none">
-            <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-              <Icon name="credit_card" filled className={iconClasses} />
-              Billing
-            </div>
-          </MobileMenuButton>
-        </Link>
-      )}
-      {shouldShowDividers && (
-        <div className="h-px pt-4 mb-4 border-b dark:border-dark-gray-400" />
-      )}
-      <Link to="/login/teams">
-        <MobileMenuButton full onClick={onCloseDialog} size="none">
-          <div className="flex items-center text-gray-700 dark:text-dark-gray-200">
-            <Icon name="swap_horiz" filled className={iconClasses} />
-            Switch teams
-          </div>
-        </MobileMenuButton>
-      </Link>
+        {shouldShowDividers && <MenuDivider />}
+        {currentMember?.can(VIEW_ROLES) && (
+          <MenuItem
+            to="/permissions"
+            onClick={onCloseDialog}
+            icon={<Icon name="lock" filled />}
+          >
+            Permissions
+          </MenuItem>
+        )}
+        {currentMember?.can(MANAGE_BILLING) && (
+          <MenuItem
+            to="/billing"
+            onClick={onCloseDialog}
+            icon={<Icon name="credit_card" filled />}
+          >
+            Billing
+          </MenuItem>
+        )}
+        {shouldShowDividers && <MenuDivider />}
+        <MenuItem
+          to="/login/teams"
+          onClick={onCloseDialog}
+          icon={<Icon name="swap_horiz" filled />}
+        >
+          Switch teams
+        </MenuItem>
+      </MenuList>
     </StyledDialog>
   );
 }
