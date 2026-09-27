@@ -18,7 +18,7 @@ export default function BottomSheet({
   return (
     <div
       className={
-        `z-30 fixed w-full transition-default-spatial ` +
+        `z-30 fixed w-full transition-sheet ` +
         `${open ? 'bottom-0' : '-bottom-full'}`
       }
     >

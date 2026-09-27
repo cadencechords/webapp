@@ -101,6 +101,9 @@ export default function ComponentsPage() {
   const [dialog, setDialog] = useState<
     'basic' | 'fullscreen' | 'delete' | 'drawer' | 'sheet' | null
   >(null);
+  // ConfirmDeleteDialog stays loading after a confirm, so each opening gets
+  // a fresh one.
+  const [deleteKey, setDeleteKey] = useState(0);
   const closeDialog = () => setDialog(null);
 
   return (
@@ -332,7 +335,13 @@ export default function ComponentsPage() {
           <Button variant="accent" onClick={() => setDialog('fullscreen')}>
             Full-screen dialog
           </Button>
-          <Button variant="accent" onClick={() => setDialog('delete')}>
+          <Button
+            variant="accent"
+            onClick={() => {
+              setDeleteKey(key => key + 1);
+              setDialog('delete');
+            }}
+          >
             Confirm delete
           </Button>
           <Button variant="accent" onClick={() => setDialog('drawer')}>
@@ -360,6 +369,7 @@ export default function ComponentsPage() {
           </div>
         </StyledDialog>
         <ConfirmDeleteDialog
+          key={deleteKey}
           show={dialog === 'delete'}
           onCloseDialog={closeDialog}
           onCancel={closeDialog}

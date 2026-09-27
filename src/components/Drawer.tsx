@@ -19,7 +19,7 @@ export default function Drawer({ open, onClose, children }: DrawerProps) {
         // M3 modal side sheet
         className={`z-30 fixed top-0 bottom-0 right-0 h-full w-52 bg-surface-container-low text-on-surface rounded-l-large shadow-(--md-sys-elevation-level1) ${
           open ? 'translate-x-0' : 'translate-x-56'
-        } transition-default-spatial`}
+        } transition-sheet`}
       >
         {children}
       </aside>

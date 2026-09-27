@@ -107,7 +107,9 @@ export default function StyledDialog({
               >
                 <div
                   className={classNames(
-                    'px-4 py-6 text-headline-small text-on-surface whitespace-pre sm:px-6',
+                    // pre-wrap: keeps the title's line breaks, but wraps inside the
+                    // padding instead of running under the close button
+                    'px-4 py-6 text-headline-small text-on-surface whitespace-pre-wrap break-words sm:px-6',
                     // Room for the close button
                     showClose && 'pr-16 sm:pr-16'
                   )}

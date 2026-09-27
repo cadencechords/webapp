@@ -122,24 +122,35 @@
   }
 }
 
-/* Dialogs and sheets entering and leaving (CAD-87): size and position on the
-   default-spatial spring and opacity on default-effects; leaving is quicker,
-   on the fast curves. */
+/* Dialogs entering and leaving (CAD-87): scale on the default-spatial
+   spring and opacity on the default-effects curve; leaving is quicker, on
+   fast-effects with no overshoot. Headless UI's Transition ends a phase on the
+   element's first transitionend, whatever the property, so the opacity runs
+   as long as the scale (its curve still does most of the fade early); with
+   reduced motion the scale is instant and the fade keeps its own duration. */
 @utility transition-dialog-enter {
   transition:
     scale var(--md-sys-motion-duration-default-spatial)
       var(--md-sys-motion-easing-default-spatial),
-    translate var(--md-sys-motion-duration-default-spatial)
-      var(--md-sys-motion-easing-default-spatial),
-    opacity var(--md-sys-motion-duration-default-effects)
+    opacity
+      max(
+        var(--md-sys-motion-duration-default-spatial),
+        var(--md-sys-motion-duration-default-effects)
+      )
       var(--md-sys-motion-easing-default-effects);
 }
 @utility transition-dialog-exit {
   transition:
-    scale var(--md-sys-motion-duration-fast-spatial)
-      var(--md-sys-motion-easing-fast-effects),
-    translate var(--md-sys-motion-duration-fast-spatial)
+    scale var(--md-sys-motion-duration-fast-effects)
       var(--md-sys-motion-easing-fast-effects),
     opacity var(--md-sys-motion-duration-fast-effects)
       var(--md-sys-motion-easing-fast-effects);
+}
+
+/* Sheets pinned to a screen edge slide on the spatial duration with an
+   effects curve, which doesn't overshoot, so they never pull off the edge. */
+@utility transition-sheet {
+  transition-property: transform, translate, inset, bottom, right;
+  transition-duration: var(--md-sys-motion-duration-default-spatial);
+  transition-timing-function: var(--md-sys-motion-easing-default-effects);
 }

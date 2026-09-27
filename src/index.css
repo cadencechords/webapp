@@ -146,6 +146,8 @@
 [data-rsbs-header]:before {
   width: 32px !important;
   height: 4px !important;
+  /* The library squashes it to 75% on 2x screens; keep it 4px. */
+  transform: translateX(-50%) !important;
 }
 
 /* v2 defaults that v4 changed. */

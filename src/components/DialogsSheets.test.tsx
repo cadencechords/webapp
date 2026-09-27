@@ -36,7 +36,11 @@ test('StyledDialog is an M3 basic dialog that still closes on escape and its clo
   );
   const dialog = screen.getByRole('dialog');
   const heading = screen.getByRole('heading', { name: 'Rename' });
-  expect(heading.firstElementChild).toHaveClass('text-headline-small', 'pr-16');
+  expect(heading.firstElementChild).toHaveClass(
+    'text-headline-small',
+    'pr-16',
+    'whitespace-pre-wrap'
+  );
   const panel = heading.parentElement!;
   expect(panel).toHaveClass(
     'bg-surface-container-high',
@@ -123,4 +127,39 @@ test('BottomSheet slides by its open prop and closes from its button', () => {
   expect(onClose).toHaveBeenCalledTimes(1);
   rerender(<BottomSheet open={false}>sheet</BottomSheet>);
   expect(container.firstElementChild).toHaveClass('-bottom-full');
+});
+
+test('StyledDialog still closes when its backdrop is clicked', () => {
+  const onClose = vi.fn<() => void>();
+  const { baseElement } = render(
+    <StyledDialog open onCloseDialog={onClose} title="Rename">
+      body
+    </StyledDialog>
+  );
+  userEvent.click(baseElement.querySelector('.bg-scrim\\/32')!);
+  expect(onClose).toHaveBeenCalledTimes(1);
+});
+
+test('ConfirmDeleteDialog disables "Yes, delete" while it deletes', () => {
+  const onConfirm = vi.fn<() => void>();
+  render(
+    <ConfirmDeleteDialog
+      show
+      onCloseDialog={() => {}}
+      onCancel={() => {}}
+      onConfirm={onConfirm}
+    />
+  );
+  const confirm = screen.getByRole('button', { name: 'Yes, delete' });
+  userEvent.click(confirm);
+  expect(onConfirm).toHaveBeenCalledTimes(1);
+  // Loading: the label is replaced by a spinner and the button is disabled,
+  // keeping the error color
+  const loading = screen
+    .getAllByRole('button')
+    .find(b => b.classList.contains('bg-error'))!;
+  expect(loading).toBeDisabled();
+  expect(loading).not.toHaveTextContent('Yes, delete');
+  userEvent.click(loading);
+  expect(onConfirm).toHaveBeenCalledTimes(1);
 });
