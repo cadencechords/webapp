@@ -9,7 +9,6 @@ import PageLoading from '../components/PageLoading';
 import WellInput from '../components/inputs/WellInput';
 import { Fragment, useState, type ReactNode } from 'react';
 import MobileMenuButton from '../components/buttons/MobileMenuButton';
-import { PulseLoader } from 'react-spinners';
 import Checkbox from '../components/Checkbox';
 import Button from '../components/Button';
 import NoDataMessage from '../components/NoDataMessage';
@@ -21,6 +20,7 @@ import useImportPlanningCenterSongs from '../hooks/api/useImportPlanningCenterSo
 import { toast } from 'react-toastify';
 import type { PcoSong } from '../types';
 import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from '../components/lists/listItem';
+import LoadingIndicator from '../components/feedback/LoadingIndicator';
 
 export default function PlanningCenterSongsPage() {
   const [query, setQuery] = useState('');
@@ -124,7 +124,7 @@ export default function PlanningCenterSongsPage() {
                   disabled={isFetchingNextPage}
                 >
                   {isFetchingNextPage ? (
-                    <PulseLoader size="7px" color="#1f6feb" />
+                    <LoadingIndicator size={24} />
                   ) : (
                     'Load more'
                   )}

@@ -6,10 +6,10 @@ import Alert from '../components/Alert';
 import Button from '../components/Button';
 import CenteredPage from '../components/CenteredPage';
 import InvitationApi from '../api/InvitationApi';
-import PulseLoader from 'react-spinners/PulseLoader';
 import { reportError } from '../utils/error';
 import { useDispatch } from 'react-redux';
 import type { AxiosResponse } from 'axios';
+import LoadingIndicator from '../components/feedback/LoadingIndicator';
 
 /** A failed claim, as axios rejects it. A 404 says why in `message`. */
 type ClaimError = { response: AxiosResponse<{ message: string }> };
@@ -72,8 +72,8 @@ export default function ClaimInvitationPage() {
     return (
       <CenteredPage>
         <div className="text-center">
-          <div className="mb-4 font-semibold">Claiming your invitation</div>
-          <PulseLoader color="#1f6feb" />
+          <div className="mb-4 text-title-medium">Claiming your invitation</div>
+          <LoadingIndicator className="mx-auto" />
         </div>
       </CenteredPage>
     );

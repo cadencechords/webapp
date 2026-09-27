@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import PulseLoader from 'react-spinners/PulseLoader';
 import {
   forwardRef,
   useState,
@@ -11,6 +10,7 @@ import {
   type MouseEventHandler,
   type ReactNode,
 } from 'react';
+import LoadingIndicator from '../feedback/LoadingIndicator';
 
 type OutlinedInputProps = {
   placeholder?: string;
@@ -184,7 +184,7 @@ const OutlinedInput = forwardRef<HTMLInputElement, OutlinedInputProps>(
               onClick={!buttonLoading ? onButtonClick : undefined}
             >
               {buttonLoading ? (
-                <PulseLoader size={4} color="currentColor" />
+                <LoadingIndicator size={24} color="inherit" />
               ) : (
                 button
               )}

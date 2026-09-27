@@ -35,7 +35,6 @@
     "react-popper": "^2.2.5",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "react-spinners": "^0.10.6",
     "react-spring-bottom-sheet": "^3.4.1",
     "react-textfit": "^1.1.1",
     "react-toastify": "^9.0.1",

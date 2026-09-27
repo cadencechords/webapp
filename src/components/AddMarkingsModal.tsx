@@ -5,8 +5,8 @@ import { Tab } from '@headlessui/react';
 import classNames from 'classnames';
 import { shapeOptions } from '../utils/constants';
 import { useCreateMarking } from '../hooks/api/markings.hooks';
-import { PulseLoader } from 'react-spinners';
 import type { Marking, Song } from '../types';
+import LoadingIndicator from './feedback/LoadingIndicator';
 
 type AddMarkingsModalProps = {
   open: boolean;
@@ -50,9 +50,7 @@ export default function AddMarkingsModal({
     <Modal
       open={open}
       onClose={onClose}
-      headerRight={
-        isCreatingMarking && <PulseLoader color="#1f6feb" size={8} />
-      }
+      headerRight={isCreatingMarking && <LoadingIndicator size={32} />}
     >
       <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
         <MarkingTabs />

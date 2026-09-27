@@ -47,6 +47,13 @@ import NumberBadge from '../../components/NumberBadge';
 import ProfilePicture from '../../components/ProfilePicture';
 import TableHead from '../../components/TableHead';
 import TableRow from '../../components/TableRow';
+import { toast } from 'react-toastify';
+import Alert from '../../components/Alert';
+import LoadingIndicator from '../../components/feedback/LoadingIndicator';
+import LinearProgress from '../../components/feedback/LinearProgress';
+import NoDataMessage from '../../components/NoDataMessage';
+import SectionTitle from '../../components/SectionTitle';
+import OrDivider from '../../components/OrDivider';
 import {
   LIST_ITEM,
   LIST_ITEM_INTERACTIVE,
@@ -536,6 +543,79 @@ export default function ComponentsPage() {
             <Tab.Panel>Set panel</Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
+      </Section>
+
+      <Section title="Feedback">
+        <Row label="Loading indicators">
+          <div className="flex items-center gap-4">
+            <LoadingIndicator />
+            <LoadingIndicator contained />
+            <Button loading>Save</Button>
+          </div>
+        </Row>
+        <Row label="Linear progress">
+          <div className="flex flex-col gap-4 w-full max-w-md">
+            <LinearProgress />
+            <LinearProgress wavy />
+          </div>
+        </Row>
+        <Row label="Alerts">
+          <div className="flex flex-col gap-3 w-full max-w-md">
+            <Alert color="red" dismissable onDismiss={() => {}}>
+              Invalid login credentials.
+            </Alert>
+            <Alert color="yellow">This invitation link has expired.</Alert>
+            <Alert color="green">Your changes were saved.</Alert>
+            <Alert>Check your email to confirm your account.</Alert>
+            <Alert color="gray">Passwords need at least 8 characters.</Alert>
+          </div>
+        </Row>
+        <Row label="Snackbars">
+          <div className="flex flex-wrap gap-3">
+            <Button
+              variant="outlined"
+              onClick={() => toast('Host ended session')}
+            >
+              Show
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => toast.success('Your song has been saved')}
+            >
+              Success
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                const id = toast.loading('Uploading...');
+                setTimeout(
+                  () =>
+                    toast.update(id, {
+                      render: 'Uploaded',
+                      type: 'success',
+                      isLoading: false,
+                      autoClose: 3000,
+                    }),
+                  2000
+                );
+              }}
+            >
+              Loading
+            </Button>
+          </div>
+        </Row>
+        <Row label="Empty state">
+          <div className="w-full max-w-md">
+            <NoDataMessage type="songs" />
+          </div>
+        </Row>
+        <Row label="Titles">
+          <div className="w-full max-w-md">
+            <SectionTitle title="Pending invitations" underline />
+            <p className="text-body-medium subtext">Secondary text</p>
+            <OrDivider />
+          </div>
+        </Row>
       </Section>
     </div>
   );

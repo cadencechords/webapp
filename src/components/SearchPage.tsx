@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import BarLoader from 'react-spinners/BarLoader';
+import LinearProgress from './feedback/LinearProgress';
 import BinderApi from '../api/BinderApi';
 import PageTitle from './PageTitle';
 import SearchResults from './SearchResults';
@@ -68,13 +68,7 @@ export default function SearchPage() {
     <>
       <PageTitle title="Search" />
       <div className="fixed left-0 w-full bottom-14 md:bottom-0">
-        <BarLoader
-          color="#1D4ED8"
-          css="display: block"
-          width="100%"
-          height={3}
-          loading={searching}
-        />
+        {searching && <LinearProgress />}
       </div>
       <WellInput
         placeholder="Search for binders, sets, songs..."

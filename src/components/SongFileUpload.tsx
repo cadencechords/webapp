@@ -1,6 +1,6 @@
 import { useRef, useState, type ChangeEvent } from 'react';
 
-import BarLoader from 'react-spinners/BarLoader';
+import LinearProgress from './feedback/LinearProgress';
 import Button from './Button';
 import FilesApi from '../api/filesApi';
 import { reportError } from '../utils/error';
@@ -64,15 +64,9 @@ export default function SongFileUpload({
         {filesBeingUploaded?.map((file, index) => (
           <div
             key={index}
-            className="border border-gray-300 rounded-md relative px-3 pt-2.5 pb-2"
+            className="relative overflow-hidden border border-outline-variant rounded-medium px-3 pt-3 pb-2 text-body-medium text-on-surface"
           >
-            <BarLoader
-              width="100%"
-              color="#2563eb"
-              css={
-                'display: inline-block; position: absolute; left: 0; top: 0; right: 0; border-top-left-radius: 4px;  border-top-right-radius: 4px'
-              }
-            />
+            <LinearProgress className="absolute top-0 inset-x-0" />
             {file.name}
           </div>
         ))}

@@ -14,7 +14,6 @@ import { Link } from 'react-router-dom';
 import MeterField from '../components/MeterField';
 import PageTitle from '../components/PageTitle';
 import PrintSongDialog from '../components/PrintSongDialog';
-import PulseLoader from 'react-spinners/PulseLoader';
 import SongApi, { type SongUpdates } from '../api/SongApi';
 import SongKeyField from '../components/SongKeyField';
 import SongOptionsPopover from '../components/SongOptionsPopover';
@@ -35,6 +34,7 @@ import FormatOptionLabel from '../components/FormatOptionLabel';
 import { determineCapoNumber } from '../utils/capo';
 import Icon from '../components/Icon';
 import type { Song, Tag, Track, User } from '../types';
+import LoadingIndicator from '../components/feedback/LoadingIndicator';
 
 export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -135,7 +135,7 @@ export default function SongDetailPage() {
   if (!song) {
     return (
       <div className="py-4 text-center">
-        <PulseLoader color="#1f6feb" />
+        <LoadingIndicator className="mx-auto" />
       </div>
     );
   }

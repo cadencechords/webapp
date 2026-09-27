@@ -319,11 +319,14 @@ function SetPresenter() {
   } else {
     return (
       <CenteredPage>
-        <NoDataMessage>
-          <div className="mb-2">This set has no songs</div>
-          <Link to={`/sets/${id}`}>
-            <Button>Go back</Button>
-          </Link>
+        <NoDataMessage
+          description={
+            <Link to={`/sets/${id}`}>
+              <Button>Go back</Button>
+            </Link>
+          }
+        >
+          This set has no songs
         </NoDataMessage>
       </CenteredPage>
     );

@@ -6,7 +6,7 @@ import {
   type MouseEventHandler,
   type ReactNode,
 } from 'react';
-import PulseLoader from 'react-spinners/PulseLoader';
+import LoadingIndicator from './feedback/LoadingIndicator';
 
 export type ButtonColor =
   | 'red'
@@ -130,7 +130,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         type={type}
         ref={ref}
       >
-        {loading ? <PulseLoader color="currentColor" size={6} /> : children}
+        {loading ? <LoadingIndicator size={24} color="inherit" /> : children}
       </button>
     );
   }
@@ -193,7 +193,7 @@ const PrimaryButton = forwardRef<HTMLButtonElement, VariantProps>(
         )}
         {...props}
       >
-        {loading ? <PulseLoader color="currentColor" size={6} /> : children}
+        {loading ? <LoadingIndicator size={24} color="inherit" /> : children}
       </button>
     );
   }
@@ -228,7 +228,7 @@ const AccentButton = forwardRef<HTMLButtonElement, VariantProps>(
         )}
         {...props}
       >
-        {loading ? <PulseLoader color="currentColor" size={6} /> : children}
+        {loading ? <LoadingIndicator size={24} color="inherit" /> : children}
       </button>
     );
   }

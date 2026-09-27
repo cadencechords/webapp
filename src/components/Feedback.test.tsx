@@ -1,9 +1,26 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { compile } from '@tailwindcss/node';
 import Alert from './Alert';
+import Button from './Button';
+import LinearProgress, {
+  bezier,
+  segments,
+  wavePath,
+} from './feedback/LinearProgress';
+import LoadingIndicator from './feedback/LoadingIndicator';
+import {
+  LoadingAnimator,
+  SHAPE_COUNT,
+  SHAPE_PATHS,
+  getShapes,
+  morphedShape,
+  toPath,
+} from './feedback/loadingShapes';
+import NoDataMessage from './NoDataMessage';
+import PageLoading from './PageLoading';
 import OrDivider from './OrDivider';
 import PageTitle from './PageTitle';
 import SectionTitle from './SectionTitle';
@@ -115,4 +132,242 @@ describe('CSS', () => {
       /\.section-border \{[^}]*border-color: var\(--md-sys-color-outline-variant\)/
     );
   });
+});
+
+describe('loading shapes', () => {
+  test('every shape is the same number of points, centered and within -1..1', () => {
+    const shapes = getShapes();
+    expect(shapes).toHaveLength(SHAPE_COUNT);
+    expect(SHAPE_COUNT).toBe(7);
+    for (const shape of shapes) {
+      expect(shape).toHaveLength(shapes[0].length);
+      const xs = shape.map(([x]) => x);
+      const ys = shape.map(([, y]) => y);
+      expect(Math.min(...xs)).toBeGreaterThanOrEqual(-1.0001);
+      expect(Math.max(...xs)).toBeLessThanOrEqual(1.0001);
+      expect(Math.min(...ys)).toBeGreaterThanOrEqual(-1.0001);
+      expect(Math.max(...ys)).toBeLessThanOrEqual(1.0001);
+      // It fills the box one way or the other.
+      expect(
+        Math.max(
+          Math.max(...xs) - Math.min(...xs),
+          Math.max(...ys) - Math.min(...ys)
+        )
+      ).toBeCloseTo(2, 1);
+    }
+  });
+
+  test('morphedShape interpolates between neighbours and wraps around', () => {
+    const shapes = getShapes();
+    expect(morphedShape(0)).toEqual(shapes[0]);
+    expect(morphedShape(1)).toEqual(shapes[1]);
+    expect(morphedShape(SHAPE_COUNT)).toEqual(shapes[0]);
+    const [x, y] = morphedShape(0.5)[10];
+    expect(x).toBeCloseTo((shapes[0][10][0] + shapes[1][10][0]) / 2);
+    expect(y).toBeCloseTo((shapes[0][10][1] + shapes[1][10][1]) / 2);
+  });
+
+  test('toPath draws a closed path at the given scale', () => {
+    expect(
+      toPath(
+        [
+          [1, 0],
+          [0, -0.5],
+        ],
+        10
+      )
+    ).toBe('M10.00 0.00L0.00 -5.00Z');
+  });
+
+  test('the animator moves on a shape every 650ms, on an overshooting spring', () => {
+    const animator = new LoadingAnimator();
+    let now = 1000;
+    animator.update(now);
+    const morphs: number[] = [];
+    for (let frame = 0; frame < 39; frame++) {
+      now += 1000 / 60;
+      animator.update(now);
+      morphs.push(animator.morph);
+    }
+    // 650ms in: past the first shape (the spring overshoots), and turning.
+    expect(Math.max(...morphs)).toBeGreaterThan(1);
+    expect(animator.rotation).toBeGreaterThan(0);
+    for (let frame = 0; frame < 60; frame++) {
+      now += 1000 / 60;
+      animator.update(now);
+    }
+    // About 1.65s in: settling on the third shape's way to the fourth.
+    expect(animator.morph).toBeGreaterThan(1.5);
+    expect(animator.morph).toBeLessThan(3.5);
+  });
+});
+
+describe('LoadingIndicator', () => {
+  function runFrames(count: number, step = 1000 / 60) {
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => {
+      frames.push(callback);
+      return frames.length;
+    });
+    return () => {
+      let now = 0;
+      for (let i = 0; i < count; i++) {
+        const frame = frames.shift();
+        act(() => frame?.((now += step)));
+      }
+    };
+  }
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test('is decorative, primary, and morphs while it turns', () => {
+    const run = runFrames(40);
+    const { container } = render(<LoadingIndicator />);
+    const svg = container.querySelector('svg') as SVGSVGElement;
+    expect(svg).toHaveAttribute('aria-hidden', 'true');
+    expect(svg).toHaveAttribute('width', '48');
+    expect(svg).toHaveClass('text-primary');
+    const path = svg.querySelector('path') as SVGPathElement;
+    const first = path.getAttribute('d');
+    run();
+    expect(path.getAttribute('d')).not.toBe(first);
+    expect(path.getAttribute('transform')).toMatch(/^rotate\(\d/);
+  });
+
+  test('contained: on-primary-container in a primary-container circle', () => {
+    const { container } = render(<LoadingIndicator contained size={40} />);
+    expect(container.querySelector('svg')).toHaveClass(
+      'text-on-primary-container'
+    );
+    expect(container.querySelector('circle')).toHaveClass(
+      'fill-primary-container'
+    );
+    expect(container.querySelector('circle')).toHaveAttribute('r', '20');
+  });
+
+  test('color="inherit" takes the text color, as in a button', () => {
+    const { container } = render(<LoadingIndicator color="inherit" />);
+    expect(container.querySelector('svg')?.getAttribute('class')).not.toMatch(
+      /text-/
+    );
+  });
+
+  test('with reduced motion it keeps its shape and only turns', () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation(
+      query =>
+        ({
+          matches: query === '(prefers-reduced-motion: reduce)',
+        }) as MediaQueryList
+    );
+    const run = runFrames(40);
+    const { container } = render(<LoadingIndicator />);
+    const path = container.querySelector('path') as SVGPathElement;
+    const first = path.getAttribute('d');
+    run();
+    expect(path.getAttribute('d')).toBe(first);
+    expect(path.getAttribute('transform')).not.toBe('rotate(0.00)');
+  });
+
+  test('stops animating when it unmounts', () => {
+    const cancel = vi.spyOn(window, 'cancelAnimationFrame');
+    const { unmount } = render(<LoadingIndicator />);
+    unmount();
+    expect(cancel).toHaveBeenCalled();
+  });
+});
+
+describe('LinearProgress', () => {
+  test('bezier matches CSS easing at its ends and midpoint', () => {
+    const linear = bezier(0, 0, 1, 1);
+    expect(linear(0.3)).toBeCloseTo(0.3, 2);
+    const ease = bezier(0.4, 0, 0.2, 1);
+    expect(ease(0)).toBe(0);
+    expect(ease(1)).toBe(1);
+    expect(ease(0.5)).toBeGreaterThan(0.5);
+  });
+
+  test('two segments chase along an 1800ms cycle', () => {
+    expect(segments(0)).toEqual([
+      [0, 0],
+      [0, 0],
+    ]);
+    const [[tail, head]] = segments(500);
+    expect(head).toBeGreaterThan(tail);
+    // The second segment starts at 1000ms, and the cycle repeats.
+    expect(segments(900)[1]).toEqual([0, 0]);
+    expect(segments(1400)[1][1]).toBeGreaterThan(0);
+    expect(segments(1800 + 500)).toEqual(segments(500));
+  });
+
+  test('wavePath is flat without amplitude and waves with it', () => {
+    expect(wavePath(0, 10, 2, 0, 0)).toBe('M0.00 2.00L10.00 2.00');
+    expect(wavePath(0, 0.2, 2, 0, 0)).toBe('');
+    const wave = wavePath(0, 20, 2, 3, 0);
+    const ys = [...wave.matchAll(/ (-?[\d.]+)/g)].map(match =>
+      Number(match[1])
+    );
+    expect(Math.max(...ys)).toBeGreaterThan(4);
+  });
+
+  test('is decorative and draws once it has a width', () => {
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(200);
+    const { container } = render(<LinearProgress />);
+    const box = container.firstElementChild as HTMLElement;
+    expect(box).toHaveAttribute('aria-hidden', 'true');
+    expect(box.querySelector('svg')).toHaveAttribute('width', '200');
+    expect(box.querySelectorAll('path')[0]).toHaveClass(
+      'stroke-secondary-container'
+    );
+    expect(box.querySelectorAll('path')[1]).toHaveClass('stroke-primary');
+    vi.restoreAllMocks();
+  });
+});
+
+describe('NoDataMessage', () => {
+  test('an icon in a cookie over a headline-small message', () => {
+    const { container } = render(<NoDataMessage type="songs" />);
+    const message = screen.getByText('No songs to show');
+    expect(message).toHaveClass('text-headline-small', 'text-on-surface');
+    const cookie = container.querySelector('svg.fill-primary-container');
+    expect(cookie?.querySelector('path')).toHaveAttribute(
+      'd',
+      SHAPE_PATHS[1]?.d
+    );
+  });
+
+  test('children replace the message; description goes under it', () => {
+    render(
+      <NoDataMessage description={<button>Go back</button>}>
+        This set has no songs
+      </NoDataMessage>
+    );
+    expect(screen.getByText('This set has no songs')).toHaveClass(
+      'text-headline-small'
+    );
+    expect(
+      screen.getByRole('button', { name: 'Go back' }).parentElement
+    ).toHaveClass('text-body-medium');
+  });
+
+  test('shows the loading indicator while loading', () => {
+    const { container } = render(<NoDataMessage loading type="files" />);
+    expect(container.querySelector('[data-loading-indicator]')).not.toBeNull();
+    expect(screen.queryByText('No files to show')).not.toBeInTheDocument();
+  });
+});
+
+test('PageLoading shows its message over the loading indicator', () => {
+  const { container } = render(<PageLoading>Please wait...</PageLoading>);
+  expect(screen.getByText('Please wait...')).toBeInTheDocument();
+  expect(container.querySelector('[data-loading-indicator]')).not.toBeNull();
+});
+
+test('a loading Button shows the indicator in its own text color', () => {
+  const { container } = render(<Button loading>Save</Button>);
+  expect(screen.queryByText('Save')).not.toBeInTheDocument();
+  const indicator = container.querySelector('[data-loading-indicator]');
+  expect(indicator).toHaveAttribute('width', '24');
+  expect(indicator?.getAttribute('class')).not.toMatch(/text-primary/);
 });

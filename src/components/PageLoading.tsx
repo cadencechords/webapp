@@ -1,15 +1,16 @@
 import type { ReactNode } from 'react';
-import PulseLoader from 'react-spinners/PulseLoader';
+import LoadingIndicator from './feedback/LoadingIndicator';
 
 type PageLoadingProps = {
   children?: ReactNode;
 };
 
+// A page's loading state: an optional message over the M3E loading indicator.
 export default function PageLoading({ children }: PageLoadingProps) {
   return (
-    <div className="text-center py-4">
+    <div className="flex flex-col items-center py-4 text-center">
       {children && <div className="mb-4">{children}</div>}
-      <PulseLoader color="#1f6feb" />
+      <LoadingIndicator />
     </div>
   );
 }
