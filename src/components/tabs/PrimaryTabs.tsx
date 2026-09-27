@@ -129,6 +129,20 @@ function Indicator({ list, selectedIndex, tabCount }: IndicatorProps) {
     return () => observer.disconnect();
   }, [list, selectedIndex, tabCount]);
 
+  // Scroll the list sideways (only) to bring the selected tab into view, when
+  // the tabs overflow: Headless UI focuses tabs without scrolling.
+  useLayoutEffect(() => {
+    const tab = list
+      ?.querySelectorAll<HTMLElement>('[role="tab"]')
+      .item(selectedIndex);
+    if (!list || !tab) return;
+    const start = tab.offsetLeft;
+    const end = start + tab.offsetWidth;
+    if (start < list.scrollLeft) list.scrollLeft = start;
+    else if (end > list.scrollLeft + list.clientWidth)
+      list.scrollLeft = end - list.clientWidth;
+  }, [list, selectedIndex]);
+
   // Turn the transition on only after the first placement has painted.
   useLayoutEffect(() => {
     if (box && !placed) {

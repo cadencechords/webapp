@@ -26,8 +26,11 @@ export default function SongTabs({
   const currentSubscription = useSelector(selectCurrentSubscription)!;
   const currentMember = useSelector(selectCurrentMember)!;
 
-  // Both tabs are Pro: without it there's no tab bar (or empty tablist).
-  if (!currentSubscription.isPro) return null;
+  // Both tabs are Pro: without it there's no tab bar (or empty tablist),
+  // just the block's spacing, which keeps the page clear of the mobile nav.
+  if (!currentSubscription.isPro) {
+    return <div className="pt-4 col-span-4 lg:col-span-3 mb-10" />;
+  }
 
   return (
     <Tab.Group as="div" className="pt-4 col-span-4 lg:col-span-3 mb-10">

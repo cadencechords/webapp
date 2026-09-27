@@ -12,6 +12,7 @@ vi.mock('./SongFilesTab', () => ({ default: () => <p>Files panel</p> }));
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 // jsdom has no layout: each tab starts 100px after the one before, its label
@@ -62,7 +63,7 @@ function stubLayout() {
   );
 }
 
-function EventTabs({ onChange }: { onChange?: (index: number) => void }) {
+function ThreeTabs({ onChange }: { onChange?: (index: number) => void }) {
   return (
     <Tab.Group onChange={onChange}>
       <PrimaryTabs>
@@ -80,7 +81,7 @@ function EventTabs({ onChange }: { onChange?: (index: number) => void }) {
 }
 
 test('primary tabs: title-small, primary when selected, with state layers', () => {
-  render(<EventTabs />);
+  render(<ThreeTabs />);
   const tabs = screen.getAllByRole('tab');
   expect(tabs.map(tab => tab.textContent)).toEqual([
     'Details',
@@ -90,7 +91,9 @@ test('primary tabs: title-small, primary when selected, with state layers', () =
   expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
   expect(tabs[0]).toHaveClass('text-primary', 'text-title-small', 'h-12');
   expect(tabs[1]).toHaveClass('text-on-surface-variant', 'state-layer-flat');
+  // relative: the indicator and the labels' offsets are measured from it.
   expect(screen.getByRole('tablist')).toHaveClass(
+    'relative',
     'border-b',
     'border-outline-variant',
     'overflow-x-auto'
@@ -103,7 +106,7 @@ test('primary tabs: title-small, primary when selected, with state layers', () =
 
 test('arrow keys still move between tabs and show their panels', () => {
   const onChange = vi.fn<(index: number) => void>();
-  render(<EventTabs onChange={onChange} />);
+  render(<ThreeTabs onChange={onChange} />);
   const [details] = screen.getAllByRole('tab');
   details.focus();
   fireEvent.keyDown(details, { key: 'ArrowRight' });
@@ -124,7 +127,7 @@ test('the indicator sits under the selected label, as wide as it (even while sca
     frames.push(callback);
     return frames.length;
   });
-  const { container } = render(<EventTabs />);
+  const { container } = render(<ThreeTabs />);
   const indicator = () =>
     container.querySelector('[data-tab-indicator]') as HTMLElement;
 
@@ -162,7 +165,7 @@ test('the indicator follows a label that resizes', () => {
       }
     }
   );
-  const { container } = render(<EventTabs />);
+  const { container } = render(<ThreeTabs />);
   // The labels themselves: a label can grow without the list resizing.
   expect(observed).toContain(screen.getByText('Details'));
   expect(observed).toContain(screen.getByRole('tablist'));
@@ -248,7 +251,7 @@ test('a list mounted hidden gets its indicator when shown, without sliding in', 
   const width = vi
     .spyOn(HTMLElement.prototype, 'offsetWidth', 'get')
     .mockReturnValue(0);
-  const { container } = render(<EventTabs />);
+  const { container } = render(<ThreeTabs />);
   const indicator = () =>
     container.querySelector('[data-tab-indicator]') as HTMLElement | null;
   expect(indicator()).toBeNull();
@@ -261,6 +264,43 @@ test('a list mounted hidden gets its indicator when shown, without sliding in', 
   expect(indicator()?.style.transition).toBe('');
 });
 
+test('removing the selected tab removes the indicator', () => {
+  stubLayout();
+  function Removable({ withSet }: { withSet: boolean }) {
+    return (
+      <Tab.Group selectedIndex={1} onChange={() => {}}>
+        <PrimaryTabs>
+          <PrimaryTab>Details</PrimaryTab>
+          {withSet && <PrimaryTab>Set</PrimaryTab>}
+        </PrimaryTabs>
+      </Tab.Group>
+    );
+  }
+  const { container, rerender } = render(<Removable withSet />);
+  expect(container.querySelector('[data-tab-indicator]')).not.toBeNull();
+  rerender(<Removable withSet={false} />);
+  expect(container.querySelector('[data-tab-indicator]')).toBeNull();
+});
+
+test('selecting a tab scrolls it into view, sideways, when the tabs overflow', () => {
+  stubLayout();
+  render(<ThreeTabs />);
+  const list = screen.getByRole('tablist');
+  // A 150px list, scrolled to the start: "Set" (200-300) is out of view.
+  let scrollLeft = 0;
+  Object.defineProperty(list, 'clientWidth', { value: 150 });
+  Object.defineProperty(list, 'scrollLeft', {
+    get: () => scrollLeft,
+    set: (value: number) => (scrollLeft = value),
+  });
+  vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(100);
+
+  fireEvent.click(screen.getByRole('tab', { name: 'Set' }));
+  expect(scrollLeft).toBe(150);
+  fireEvent.click(screen.getByRole('tab', { name: 'Details' }));
+  expect(scrollLeft).toBe(0);
+});
+
 describe('SongTabs', () => {
   const song = { id: 1, name: 'Amazing Grace', tracks: [] } as unknown as Song;
   const state = (isPro: boolean) => ({
@@ -269,7 +309,7 @@ describe('SongTabs', () => {
   });
 
   test('is left out without Pro: no empty tab bar', () => {
-    const { container } = renderWithProvider(
+    renderWithProvider(
       <SongTabs
         song={song}
         onTrackDeleted={() => {}}
@@ -277,7 +317,7 @@ describe('SongTabs', () => {
       />,
       { preloadedState: state(false) }
     );
-    expect(container).toBeEmptyDOMElement();
+    expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
   });
 
   test('shows Files, selected, then Tracks to Pro members who can view files', () => {
@@ -317,6 +357,9 @@ describe('SongTabs', () => {
     expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual([
       'Tracks',
     ]);
+    // Each tab keeps its own panel: Files' panel isn't shown under Tracks.
+    expect(screen.getByText('Add track')).toBeInTheDocument();
+    expect(screen.queryByText('Files panel')).not.toBeInTheDocument();
   });
 });
 
