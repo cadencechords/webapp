@@ -6,6 +6,7 @@ import { ASSIGN_ROLES } from '../utils/constants';
 import useRemoveMemberFromRole from '../hooks/api/useRemoveMemberFromRole';
 import classNames from 'classnames';
 import Icon from './Icon';
+import { LIST_ITEM } from './lists/listItem';
 import type { Membership, Role } from '../types';
 
 type RoleMemberRowProps = {
@@ -25,14 +26,12 @@ export default function RoleMemberRow({ role, member }: RoleMemberRowProps) {
   return (
     <div
       className={classNames(
-        canRemoveFromRole &&
-          'sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800',
-        'flex items-center justify-between h-12 px-3 py-2 border-b sm:h-10 dark:border-dark-gray-600 last:border-0 sm:rounded-lg sm:border-0'
+        LIST_ITEM,
+        'justify-between',
+        canRemoveFromRole && 'pr-2'
       )}
     >
-      <div className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
-        {member.user.email}
-      </div>
+      <div className="min-w-0 truncate">{member.user.email}</div>
       {canRemoveFromRole && (
         <Button
           variant="icon"

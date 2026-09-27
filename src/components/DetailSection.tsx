@@ -41,7 +41,7 @@ export default function DetailSection({
                 {canEdit && onDelete && (
                   <Icon
                     name="close"
-                    className="w-3 h-3 text-gray-700 cursor-pointer dark:text-dark-gray-200"
+                    className="w-4 h-4 text-on-surface-variant cursor-pointer"
                     onClick={() => onDelete(item.id)}
                   />
                 )}

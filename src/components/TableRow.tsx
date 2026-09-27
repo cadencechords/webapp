@@ -23,16 +23,16 @@ export default function TableRow({
   actions,
 }: TableRowProps) {
   return (
-    <tr className="border-b dark:border-dark-gray-700">
+    <tr className="border-b border-outline-variant font-plain text-body-medium text-on-surface state-layer-flat">
       {columns?.map((column, index) => (
-        <td key={index} className="px-2 py-2 mx-3">
+        <td key={index} className="px-2 py-3">
           {index === 0 ? <span onClick={onClick}>{column}</span> : column}
         </td>
       ))}
 
       {editable && (
-        <td className="px-2 py-2 mx-3">
-          <Icon name="edit" filled className="w-4 h-4 text-purple-700" />
+        <td className="px-2 py-3">
+          <Icon name="edit" filled className="w-4 h-4 text-primary" />
         </td>
       )}
 
@@ -45,10 +45,7 @@ export default function TableRow({
             size="xs"
             disabled={removing}
           >
-            <Icon
-              name="delete"
-              className="w-4 h-4 text-gray-600 dark:text-dark-gray-200"
-            />
+            <Icon name="delete" className="w-4 h-4 text-on-surface-variant" />
           </Button>
         </td>
       )}

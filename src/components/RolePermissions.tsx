@@ -51,7 +51,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-12 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Song permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -117,7 +117,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Binder permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -171,7 +171,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Set permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -237,7 +237,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Session permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -255,7 +255,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Role permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -321,7 +321,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Member permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -351,7 +351,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Event permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -405,7 +405,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         File permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -459,7 +459,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Saved formats
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&
@@ -500,7 +500,7 @@ export default function RolePermissions({
       <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
         Billing permissions
       </div>
-      <div>
+      <div className="list-segmented">
         <Permission
           checkable={
             currentMember.can(EDIT_ROLES) &&

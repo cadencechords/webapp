@@ -1,5 +1,10 @@
 import classNames from 'classnames';
 import Checkbox from './Checkbox';
+import {
+  LIST_ITEM_INTERACTIVE,
+  LIST_ITEM_TWO_LINE,
+  LIST_SUPPORTING_TEXT,
+} from './lists/listItem';
 
 type PermissionProps = {
   name: string;
@@ -26,8 +31,8 @@ export default function Permission({
   return (
     <div
       className={classNames(
-        'flex items-center gap-4 px-3 py-2 border-b sm:rounded-lg dark:border-dark-gray-700 last:border-0 sm:border-0',
-        checkable && 'sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800'
+        LIST_ITEM_TWO_LINE,
+        checkable && LIST_ITEM_INTERACTIVE
       )}
     >
       <Checkbox checked={checked} onChange={handleChange} />
@@ -35,8 +40,8 @@ export default function Permission({
         onClick={() => handleChange(!checked)}
         className={`${checkable && 'cursor-pointer'} w-full`}
       >
-        <div className="font-semibold">{name}</div>
-        <div className="dark:text-dark-gray-200">{description}</div>
+        <div>{name}</div>
+        <div className={LIST_SUPPORTING_TEXT}>{description}</div>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import ProfilePicture from './ProfilePicture';
 import { reportError } from '../utils/error';
 import Icon from './Icon';
 import type { User } from '../types';
+import { getNameOrEmail } from '../utils/model';
 
 type ProfilePictureDetailProps = {
   url: User['image_url'];
@@ -67,7 +68,11 @@ export default function ProfilePictureDetail({
       <Label>Photo</Label>
       <div className="relative m-auto mb-4">
         <div className="flex-center">
-          <ProfilePicture url={url} size="xl2" />
+          <ProfilePicture
+            url={url}
+            name={getNameOrEmail(currentUser)}
+            size="xl2"
+          />
         </div>
         <button
           onClick={() => setShowMobileActionsDialog(true)}

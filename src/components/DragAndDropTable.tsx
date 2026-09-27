@@ -6,6 +6,8 @@ import KeyBadge from './KeyBadge';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import { Link } from 'react-router-dom';
 import Icon from './Icon';
+import classNames from 'classnames';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
 import type { Song } from '../types';
 
 type MovedItem = { id: string; newPosition: number };
@@ -66,21 +68,20 @@ export default function DragAndDropTable({
     ...draggableStyle,
   });
 
-  const getItemClass = (
-    isDragging: boolean,
-    draggableStyle: CSSProperties | undefined
-  ) => {
-    return isDragging
-      ? 'bg-gray-100 dark:bg-dark-gray-700 border-b-0 '
-      : 'bg-white dark:bg-dark-gray-900';
-  };
+  // A segment of a grouped list; list-segmented lifts it while it's dragged
+  // (data-dragging).
+  const ROW = classNames(LIST_ITEM, LIST_ITEM_INTERACTIVE, 'justify-between');
 
   if (rearrangeable) {
     return (
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="list-segmented"
+            >
               {items.map((item, index) => {
                 return (
                   <Draggable
@@ -93,19 +94,14 @@ export default function DragAndDropTable({
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className={
-                          `flex justify-between items-center h-12 px-3 border-b sm:rounded-lg sm:h-10 sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-b-0 ` +
-                          `${getItemClass(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}`
-                        }
+                        className={ROW}
+                        data-dragging={snapshot.isDragging || undefined}
                         style={getItemStyle(
                           snapshot.isDragging,
                           provided.draggableProps.style
                         )}
                       >
-                        <span className="flex items-center">
+                        <span className="flex items-center min-w-0">
                           <Link
                             className="whitespace-pre-wrap cursor-pointer hover:underline"
                             to={`/songs/${item.id}`}
@@ -142,13 +138,10 @@ export default function DragAndDropTable({
     );
   } else {
     return (
-      <>
+      <div className="list-segmented">
         {items.map(item => (
-          <div
-            className="flex items-center justify-between h-12 px-3 border-b sm:rounded-lg sm:h-10 sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-b-0 "
-            key={item.id}
-          >
-            <span className="flex items-center">
+          <div className={ROW} key={item.id}>
+            <span className="flex items-center min-w-0">
               <Link
                 className="cursor-pointer hover:underline"
                 to={`/songs/${item.id}`}
@@ -172,7 +165,7 @@ export default function DragAndDropTable({
             )}
           </div>
         ))}
-      </>
+      </div>
     );
   }
 }

@@ -8,6 +8,7 @@ import Button from './Button';
 import Card from './Card';
 import ProfilePicture from './ProfilePicture';
 import type { Session } from '../types';
+import { getNameOrEmail } from '../utils/model';
 
 type SessionCardProps = {
   isActive?: boolean;
@@ -93,10 +94,14 @@ export default function SessionCard({
   }
 
   return (
-    <Card className={`dark:bg-dark-gray-800 ${className}`}>
+    <Card className={className}>
       <div className="flex mb-8">
         <div className="pt-1">
-          <ProfilePicture url={session.user?.image_url} size="xs" />
+          <ProfilePicture
+            url={session.user?.image_url}
+            name={session.user && getNameOrEmail(session.user)}
+            size="xs"
+          />
         </div>
         <div className="ml-4 text-left">
           <div className="font-semibold">
@@ -104,9 +109,7 @@ export default function SessionCard({
               ? `${session.user.first_name} ${session.user.last_name}`
               : session.user.email}
           </div>
-          <div className="text-sm text-gray-600 dark:text-dark-gray-200">
-            Host
-          </div>
+          <div className="text-body-medium text-on-surface-variant">Host</div>
         </div>
       </div>
 

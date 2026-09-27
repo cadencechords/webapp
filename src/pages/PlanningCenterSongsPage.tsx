@@ -20,6 +20,7 @@ import SongsSelectedForImportModal from '../dialogs/SongsSelectedForImportModal'
 import useImportPlanningCenterSongs from '../hooks/api/useImportPlanningCenterSongs';
 import { toast } from 'react-toastify';
 import type { PcoSong } from '../types';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from '../components/lists/listItem';
 
 export default function PlanningCenterSongsPage() {
   const [query, setQuery] = useState('');
@@ -93,13 +94,13 @@ export default function PlanningCenterSongsPage() {
           {isEmpty ? (
             <NoDataMessage type={'songs'} />
           ) : (
-            <div className="mb-10 md:mb-4">
+            <div className="mb-10 md:mb-4 list-segmented">
               {songPages.map((songs, index) => (
                 <Fragment key={index}>
                   {songs.map(song => (
                     <label
                       key={song.id}
-                      className="flex items-center h-12 gap-4 px-3 border-b sm:rounded-lg sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0"
+                      className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE} cursor-pointer`}
                     >
                       <Checkbox
                         checked={selectedSongs.includes(song)}
@@ -108,9 +109,7 @@ export default function PlanningCenterSongsPage() {
                         }
                         standAlone={false}
                       />
-                      <span className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
-                        {song.title}
-                      </span>
+                      <span className="min-w-0 truncate">{song.title}</span>
                     </label>
                   ))}
                 </Fragment>

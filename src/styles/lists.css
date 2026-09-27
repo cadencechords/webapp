@@ -1,0 +1,30 @@
+/* M3 Expressive grouped lists (CAD-89). Put list-segmented on a list's
+   container: each child becomes a segment on surface-container, 2px apart,
+   with large corners at the ends of the group and small ones between. In the
+   components layer, so an item's own utilities (a background, a radius)
+   still win. */
+@layer components {
+  .list-segmented {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .list-segmented > * {
+    background-color: var(--md-sys-color-surface-container);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+  }
+  .list-segmented > :first-child {
+    border-top-left-radius: var(--md-sys-shape-corner-large);
+    border-top-right-radius: var(--md-sys-shape-corner-large);
+  }
+  .list-segmented > :last-child {
+    border-bottom-left-radius: var(--md-sys-shape-corner-large);
+    border-bottom-right-radius: var(--md-sys-shape-corner-large);
+  }
+  /* A segment being dragged lifts off the list: fully rounded, on level 3
+     (state-layer-flat adds the 16% dragged layer). */
+  .list-segmented > [data-dragging] {
+    border-radius: var(--md-sys-shape-corner-large);
+    box-shadow: var(--md-sys-elevation-level3);
+  }
+}

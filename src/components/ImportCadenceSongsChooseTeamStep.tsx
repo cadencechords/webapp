@@ -84,7 +84,7 @@ function TeamOption({ team, selected, onChange }: TeamOptionProps) {
         selected && 'ring-2 ring-blue-500 dark:ring-dark-blue'
       )}
     >
-      <ProfilePicture url={team.image_url} size="xs" />
+      <ProfilePicture url={team.image_url} name={team.name} size="xs" />
       {team.name}
       <input
         className="absolute w-0 h-0 opacity-0 cursor-pointer"

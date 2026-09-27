@@ -13,6 +13,7 @@ import { useParams } from 'react-router';
 import usePermissionsCheck from '../hooks/usePermissionsCheck';
 import { REMOVE_MEMBERS } from '../utils/constants';
 import type { User } from '../types';
+import { getNameOrEmail } from '../utils/model';
 
 export default function MemberDetail() {
   const { id } = useParams<{ id: string }>();
@@ -82,7 +83,10 @@ export default function MemberDetail() {
             {hasName() ? member.email : 'No name provided yet'}
           </div>
           <div className="mb-2 flex-center">
-            <ProfilePicture url={member.image_url} />
+            <ProfilePicture
+              url={member.image_url}
+              name={getNameOrEmail(member)}
+            />
           </div>
 
           <div className="mb-4 text-sm">

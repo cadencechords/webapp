@@ -4,6 +4,7 @@ import KeyBadge from './KeyBadge';
 import Button from './Button';
 import useRemoveSongFromBinder from '../hooks/api/useRemoveSongFromBinder';
 import Icon from './Icon';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
 import type { Id, Song } from '../types';
 
 type BinderSongRowProps = {
@@ -19,14 +20,14 @@ export default function BinderSongRow({ song, binderId }: BinderSongRowProps) {
     });
 
   return (
-    <div className="flex items-center justify-between h-12 px-3 border-b sm:h-10 sm:rounded-lg sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0">
+    <div
+      className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE} justify-between py-0 pr-2`}
+    >
       <Link
         to={{ pathname: `/songs/${song.id}`, state: song }}
-        className="flex items-center w-full h-full mr-5 overflow-hidden"
+        className="flex items-center self-stretch w-full min-w-0 outline-none"
       >
-        <div className="inline-block overflow-hidden whitespace-nowrap text-ellipsis hover:underline">
-          {song.name}{' '}
-        </div>
+        <div className="min-w-0 truncate">{song.name} </div>
         <KeyBadge songKey={song.transposed_key || song.original_key} />
       </Link>
       <Button

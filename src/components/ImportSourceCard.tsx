@@ -17,7 +17,7 @@ export default function ImportSourceCard({
   to,
 }: ImportSourceCardProps) {
   return (
-    <Card className="flex flex-col justify-between dark:bg-dark-gray-800">
+    <Card className="flex flex-col justify-between">
       <div>
         <div className="flex items-center gap-4">
           {image}

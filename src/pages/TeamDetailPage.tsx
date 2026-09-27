@@ -99,6 +99,7 @@ export default function TeamDetailPage() {
         <div className="flex flex-col items-center w-full max-w-md">
           <ProfilePicture
             url={currentTeam.image_url}
+            name={currentTeam.name}
             size="lg"
             onClick={handleTeamImageClick}
           />

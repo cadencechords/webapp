@@ -6,7 +6,8 @@ type KeyBadgeProps = {
 export default function KeyBadge({ songKey }: KeyBadgeProps) {
   if (songKey) {
     return (
-      <span className="text-xs font-bold text-gray-700 dark:text-dark-gray-200 bg-gray-200 dark:bg-dark-gray-400 dark:border-dark-gray-200 py-0.5 px-1 rounded-md grow-0 ml-2">
+      // An outlined M3 chip, sized to sit inline in a list row.
+      <span className="inline-flex items-center shrink-0 grow-0 h-6 px-2 ml-2 rounded-small border border-outline-variant font-plain text-label-medium text-on-surface-variant">
         {songKey}
       </span>
     );

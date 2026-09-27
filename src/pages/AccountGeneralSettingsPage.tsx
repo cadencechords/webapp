@@ -6,6 +6,7 @@ import SignOutOptions from '../components/SignOutOptions';
 import { selectCurrentUser } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import Icon from '../components/Icon';
+import { getNameOrEmail } from '../utils/model';
 
 export default function AccountGeneralSettingsPage() {
   const currentUser = useSelector(selectCurrentUser);
@@ -22,7 +23,10 @@ export default function AccountGeneralSettingsPage() {
       </Link>
       <div className="text-gray-500">
         <div className="w-24 m-auto my-2 flex-center">
-          <ProfilePicture url={currentUser.image_url} />
+          <ProfilePicture
+            url={currentUser.image_url}
+            name={getNameOrEmail(currentUser)}
+          />
         </div>
         <div className="mb-1 text-sm font-semibold text-center">
           {currentUser.email}

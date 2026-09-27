@@ -18,7 +18,7 @@ export default function TeamLoginOption({
       full
     >
       <div className="flex items-center">
-        <ProfilePicture url={team.image_url} size="sm" />
+        <ProfilePicture url={team.image_url} name={team.name} size="sm" />
         <span className="ml-4">{team.name}</span>
       </div>
     </MobileMenuButton>

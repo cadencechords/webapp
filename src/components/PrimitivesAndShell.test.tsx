@@ -50,8 +50,14 @@ test('Badge defaults to blue and appends its class', () => {
       </Badge>
     </>
   );
-  expect(screen.getByText('Default')).toHaveClass('bg-blue-100', 'ml-2');
-  expect(screen.getByText('Trialing')).toHaveClass('bg-green-100', 'mr-2');
+  expect(screen.getByText('Default')).toHaveClass(
+    'bg-primary-container',
+    'ml-2'
+  );
+  expect(screen.getByText('Trialing')).toHaveClass(
+    'bg-user-green-container',
+    'mr-2'
+  );
 });
 
 test('ButtonGroup reports the clicked option and whether it becomes selected', () => {
@@ -140,7 +146,7 @@ test('NumberBadge and CalendarDateButton style their states', () => {
       </CalendarDateButton>
     </>
   );
-  expect(screen.getByText('3')).toHaveClass('bg-gray-100', 'mr-2');
+  expect(screen.getByText('3')).toHaveClass('bg-on-surface/12', 'mr-2');
   expect(screen.getByText('14')).toHaveClass('bg-blue-600', 'mb-2');
 });
 

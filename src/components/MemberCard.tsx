@@ -10,6 +10,7 @@ import { selectCurrentMember } from '../store/authSlice';
 import { REMOVE_MEMBERS } from '../utils/constants';
 import Icon from './Icon';
 import type { User } from '../types';
+import { getNameOrEmail } from '../utils/model';
 
 type MemberCardProps = {
   /** A team member, with their `position` on the team. */
@@ -83,7 +84,10 @@ export default function MemberCard({
           </Button>
         )}
         <div className="w-20 h-20 m-auto flex-center">
-          <ProfilePicture url={member.image_url} />
+          <ProfilePicture
+            url={member.image_url}
+            name={getNameOrEmail(member)}
+          />
         </div>
         <div>{currentUserBubble}</div>
         <div className="overflow-hidden font-semibold text-ellipsis">

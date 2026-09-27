@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import useTheme from '../hooks/useTheme';
 import Icon from '../components/Icon';
+import { getNameOrEmail } from '../utils/model';
 
 export default function AccountDetailPage() {
   const currentUser = useSelector(selectCurrentUser);
@@ -24,7 +25,10 @@ export default function AccountDetailPage() {
       <div className="max-w-2xl mx-auto">
         <div className="text-gray-500 dark:text-dark-gray-200">
           <div className="w-24 m-auto my-2 flex-center">
-            <ProfilePicture url={currentUser.image_url} />
+            <ProfilePicture
+              url={currentUser.image_url}
+              name={getNameOrEmail(currentUser)}
+            />
           </div>
           <div className="mb-1 text-sm font-semibold text-center">
             {currentUser.email}

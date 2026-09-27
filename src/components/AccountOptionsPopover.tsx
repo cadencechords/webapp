@@ -7,13 +7,20 @@ import StyledPopover from './StyledPopover';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
+import { getNameOrEmail } from '../utils/model';
 
 export default function AccountOptionsPopover() {
   const dispatch = useDispatch();
   const router = useHistory();
   const currentUser = useSelector(selectCurrentUser);
 
-  const button = <ProfilePicture url={currentUser?.image_url} size="xs" />;
+  const button = (
+    <ProfilePicture
+      url={currentUser?.image_url}
+      name={currentUser && getNameOrEmail(currentUser)}
+      size="xs"
+    />
+  );
 
   const handleLogOut = () => {
     dispatch(logOut());

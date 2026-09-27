@@ -12,7 +12,7 @@ export default function TeamOptionsPopover({ team }: TeamOptionsPopoverProps) {
   const button = (
     <div className="flex items-center w-full h-16 px-3 py-2 text-base font-semibold transition-colors dark:hover:bg-dark-gray-700 hover:bg-gray-200">
       <span className="w-8 mr-3">
-        <ProfilePicture url={team.image_url} size="xs" />
+        <ProfilePicture url={team.image_url} name={team.name} size="xs" />
       </span>
       <span className="hidden lg:inline dark:text-dark-gray-100">
         {team.name}

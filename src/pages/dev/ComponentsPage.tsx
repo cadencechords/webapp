@@ -37,6 +37,20 @@ import Drawer from '../../components/Drawer';
 import BottomSheet from '../../components/BottomSheet';
 import StyledPopover from '../../components/StyledPopover';
 import { MenuDivider, MenuItem, MenuList } from '../../components/Menu';
+import Card from '../../components/Card';
+import Badge from '../../components/Badge';
+import KeyBadge from '../../components/KeyBadge';
+import DetailTag from '../../components/DetailTag';
+import NumberBadge from '../../components/NumberBadge';
+import ProfilePicture from '../../components/ProfilePicture';
+import TableHead from '../../components/TableHead';
+import TableRow from '../../components/TableRow';
+import {
+  LIST_ITEM,
+  LIST_ITEM_INTERACTIVE,
+  LIST_ITEM_TWO_LINE,
+  LIST_SUPPORTING_TEXT,
+} from '../../components/lists/listItem';
 
 const VARIANTS: [ButtonVariant, string][] = [
   ['filled', 'Filled'],
@@ -430,6 +444,81 @@ export default function ComponentsPage() {
             </div>
           ))}
         </div>
+      </Section>
+
+      <Section title="Lists, cards and chips">
+        <Row label="List">
+          <div className="w-full max-w-md list-segmented">
+            <div
+              className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE}`}
+              tabIndex={0}
+            >
+              <span className="min-w-0 truncate">Amazing Grace</span>
+              <KeyBadge songKey="G" />
+            </div>
+            <div
+              className={`${LIST_ITEM_TWO_LINE} ${LIST_ITEM_INTERACTIVE}`}
+              tabIndex={0}
+            >
+              <div className="min-w-0">
+                <div className="truncate">Sunday morning</div>
+                <div className={LIST_SUPPORTING_TEXT}>
+                  5 songs · Sun Oct 4, 2026
+                </div>
+              </div>
+            </div>
+            <div
+              className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE}`}
+              tabIndex={0}
+              data-dragging
+            >
+              Being dragged
+            </div>
+          </div>
+        </Row>
+        <Row label="Cards">
+          <div className="grid w-full max-w-2xl grid-cols-3 gap-4">
+            <Card>Filled</Card>
+            <Card variant="elevated">Elevated</Card>
+            <Card variant="outlined">Outlined</Card>
+            <Card onClick={() => {}}>Filled, clickable</Card>
+          </div>
+        </Row>
+        <Row label="Table">
+          <table className="w-full max-w-2xl">
+            <TableHead columns={['EMAIL', 'SENT', '']} />
+            <tbody>
+              <TableRow
+                columns={['ada@example.com', 'Sun Sep 27 2026']}
+                removable
+                onRemove={() => {}}
+              />
+              <TableRow columns={['grace@example.com', 'Sat Sep 26 2026']} />
+            </tbody>
+          </table>
+        </Row>
+        <Row label="Chips">
+          <div className="flex flex-wrap items-center gap-3">
+            <KeyBadge songKey="Bb" />
+            <DetailTag>Hymn</DetailTag>
+            <Badge className="">Default</Badge>
+            <Badge color="green" className="">
+              Trialing
+            </Badge>
+            <NumberBadge className="">3</NumberBadge>
+            <NumberBadge className="" disabled>
+              12
+            </NumberBadge>
+          </div>
+        </Row>
+        <Row label="Avatars">
+          <div className="flex items-center gap-3">
+            <ProfilePicture name="Ada Lovelace" size="xs" />
+            <ProfilePicture name="grace@example.com" size="sm" />
+            <ProfilePicture name="Cadence" />
+            <ProfilePicture size="sm" />
+          </div>
+        </Row>
       </Section>
     </div>
   );

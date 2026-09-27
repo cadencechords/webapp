@@ -9,9 +9,9 @@ type RoleCardProps = {
 export default function RoleCard({ role }: RoleCardProps) {
   return (
     <Link to={`/permissions/${role.id}`}>
-      <Card className="text-center transition-colors cursor-pointer dark:bg-dark-gray-800 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700 hover:bg-gray-200 focus:bg-gray-200">
-        <div className="font-medium">{role.name}</div>
-        <div className="text-sm">
+      <Card interactive className="text-center">
+        <div className="text-title-medium">{role.name}</div>
+        <div className="text-body-medium text-on-surface-variant">
           {role.memberships?.length} member
           {role.memberships?.length !== 1 && 's'}
         </div>

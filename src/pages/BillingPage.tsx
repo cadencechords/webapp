@@ -64,7 +64,7 @@ export default function BillingPage() {
         </div>
       </div>
 
-      <Card className="dark:bg-dark-gray-800">
+      <Card>
         <div className="flex items-center">
           <span className="text-2xl font-bold">{plan_name} Plan</span>
           {isTrialing && (

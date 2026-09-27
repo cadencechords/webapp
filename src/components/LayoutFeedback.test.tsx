@@ -235,11 +235,18 @@ test.each<[string, () => JSX.Element]>([
 
 // With className undefined, React leaves the class attribute out entirely.
 test.each<[string, () => JSX.Element]>([
-  ['StackedList', () => <StackedList />],
   ['AddStickyNoteIcon', () => <AddStickyNoteIcon />],
   ['ScrollIcon', () => <ScrollIcon />],
   ['SessionIcon', () => <SessionIcon />],
 ])('%s renders an empty class', (_, renderComponent) => {
   const { container } = render(renderComponent());
   expect(container.firstElementChild).toHaveAttribute('class', '');
+});
+
+test('StackedList has only its list class by default', () => {
+  const { container } = render(<StackedList />);
+  expect(container.firstElementChild).toHaveAttribute(
+    'class',
+    'list-segmented'
+  );
 });

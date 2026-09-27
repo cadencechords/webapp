@@ -13,6 +13,7 @@ import useImportableCadenceSongs from '../hooks/api/useImportableCadenceSongs';
 import NoDataMessage from './NoDataMessage';
 import Icon from './Icon';
 import type { Id, ImportableTeam, Song } from '../types';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
 
 type ImportCadenceSongsChooseSongsStepProps = {
   selectedTeam?: ImportableTeam | null;
@@ -93,7 +94,7 @@ export default function ImportCadenceSongsChooseSongsStep({
             {filteredSongs.length === 0 ? (
               <NoDataMessage type="songs" />
             ) : (
-              <div className="mb-10">
+              <div className="mb-10 list-segmented">
                 {filteredSongs.map(song => (
                   <SongOption
                     key={song.id}
@@ -128,16 +129,14 @@ function SongOption({ song, selected, onToggleSong }: SongOptionProps) {
   return (
     <label
       key={song.id}
-      className="flex items-center h-12 gap-4 px-3 border-b sm:rounded-lg sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0"
+      className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE} cursor-pointer`}
     >
       <Checkbox
         checked={selected}
         onChange={isChecked => onToggleSong(isChecked, song)}
         standAlone={false}
       />
-      <span className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
-        {song.name}{' '}
-      </span>
+      <span className="min-w-0 truncate">{song.name} </span>
       {hasAnyKeysSet(song) && (
         <KeyBadge songKey={song.transposed_key || song.original_key} />
       )}

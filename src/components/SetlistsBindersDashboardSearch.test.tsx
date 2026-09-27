@@ -419,7 +419,10 @@ test('SetlistsIndexPage splits sets into upcoming (soonest first) and past (late
   );
   expect(await screen.findByText('4 total')).toBeInTheDocument();
   const names = () =>
-    screen.getAllByRole('link').map(link => link.firstChild?.textContent);
+    // A row's headline is the first line of its text.
+    screen
+      .getAllByRole('link')
+      .map(link => link.firstChild?.firstChild?.textContent);
   expect(names()).toEqual(['Sooner', 'Later']);
   fireEvent.click(screen.getByText('Past'));
   expect(names()).toEqual(['Old', 'Older']);

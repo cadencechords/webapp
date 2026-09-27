@@ -12,6 +12,7 @@ import useAuth from '../hooks/useAuth';
 import useJoinLink from '../hooks/useJoinLink';
 import { setTeamId } from '../store/authSlice';
 import { hasName } from '../utils/model';
+import { getNameOrEmail } from '../utils/model';
 
 export default function JoinLinkPage() {
   const { code } = useParams<{ code: string }>();
@@ -133,7 +134,10 @@ export default function JoinLinkPage() {
         </h1>
         <div>
           <Card className="flex flex-col items-center text-center">
-            <ProfilePicture url={currentUser!.image_url} />
+            <ProfilePicture
+              url={currentUser!.image_url}
+              name={getNameOrEmail(currentUser!)}
+            />
             {hasName(currentUser) && (
               <div className="mb-1 text-xl font-semibold">
                 {currentUser!.first_name} {currentUser!.last_name}

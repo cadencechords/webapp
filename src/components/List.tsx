@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 type ListProps<T> = {
@@ -19,7 +20,10 @@ export default function List<T>({
     <>
       {ListHeader && <div>{ListHeader}</div>}
       {data?.length ? (
-        <div className={className}>{data.map(renderItem)}</div>
+        // A grouped M3 list: each row is a segment.
+        <div className={classNames('list-segmented', className)}>
+          {data.map(renderItem)}
+        </div>
       ) : (
         ListEmpty
       )}

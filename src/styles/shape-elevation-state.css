@@ -132,7 +132,8 @@
 /* state-layer-flat: the same overlay as state-layer, painted as a background
    image over the background color instead of a ::before. It doesn't set
    `position`, so it works on elements that are `fixed` or `absolute`. It
-   replaces any background image, and doesn't animate. */
+   replaces any background image, and doesn't animate. data-dragging on the
+   element shows the dragged layer. */
 @utility state-layer-flat {
   --state-layer-opacity: 0;
 
@@ -161,6 +162,9 @@
   }
   &:active {
     --state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  }
+  &[data-dragging] {
+    --state-layer-opacity: var(--md-sys-state-dragged-state-layer-opacity);
   }
   &:disabled,
   &[aria-disabled='true'] {

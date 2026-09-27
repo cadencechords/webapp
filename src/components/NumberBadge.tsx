@@ -13,12 +13,13 @@ export default function NumberBadge({
   className,
   disabled,
 }: NumberBadgeProps) {
+  // An M3 large badge: a count on the error color.
   const colorStyles = disabled
-    ? 'bg-gray-100 dark:bg-dark-gray-700 text-gray-800 dark:text-dark-gray-200'
-    : 'text-blue-700 bg-blue-100';
+    ? 'bg-on-surface/12 text-on-surface/38'
+    : 'bg-error text-on-error';
   return (
     <span
-      className={`rounded-full h-5 w-5 shrink-0 flex-center text-xs ${colorStyles} ${className}`}
+      className={`rounded-full h-4 min-w-4 px-1 shrink-0 flex-center font-plain text-label-small ${colorStyles} ${className}`}
     >
       {children}
     </span>

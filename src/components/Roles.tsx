@@ -27,7 +27,8 @@ export default function Roles({ roles }: RolesProps) {
         <>
           <Card
             onClick={() => setShowCreateDialog(true)}
-            className="font-medium text-center text-gray-600 transition-colors cursor-pointer flex-center dark:text-dark-gray-200 hover:bg-gray-200 focus:bg-gray-200 dark:bg-dark-gray-800 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700"
+            variant="outlined"
+            className="text-center text-label-large text-on-surface-variant flex-center"
           >
             <Icon name="add_circle" className="w-4 h-4 mr-2" />
             New role

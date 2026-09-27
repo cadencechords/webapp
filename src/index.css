@@ -119,6 +119,7 @@
 @import './styles/shape-elevation-state.css';
 @import './styles/motion.css';
 @import './styles/slider.css';
+@import './styles/lists.css';
 
 /* Utilities the /dev/tokens page builds dynamically (the scanner can't see them). */
 @source inline('text-{display,headline,title,body,label}-{large,medium,small}{,-emphasized}');
@@ -268,8 +269,9 @@ button {
 }
 
 @layer components {
+  /* A clickable filled card (M3), with a state layer. */
   .interactive-card {
-    @apply transition-colors bg-gray-50 hover:bg-gray-100 focus:bg-gray-100 dark:bg-dark-gray-800 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700;
+    @apply bg-surface-container-highest text-on-surface state-layer-flat;
   }
 
   .subtext {
