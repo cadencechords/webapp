@@ -25,6 +25,12 @@ import TimeInput from '../../components/inputs/TimeInput';
 import Label from '../../components/Label';
 import FileInput from '../../components/FileInput';
 import SearchBar from '../../components/SearchBar';
+import Checkbox from '../../components/Checkbox';
+import Toggle from '../../components/Toggle';
+import Range from '../../components/Range';
+import Select from '../../components/Select';
+import StyledListBox from '../../components/StyledListBox';
+import ColorPicker from '../../components/ColorPicker';
 
 const VARIANTS: [ButtonVariant, string][] = [
   ['filled', 'Filled'],
@@ -44,6 +50,10 @@ const COLORS: ButtonColor[] = [
   'indigo',
   'pink',
 ];
+const LIST_OPTIONS = ['Member', 'Leader', 'Admin'].map((role, index) => ({
+  value: index,
+  template: role,
+}));
 const SIZES: ButtonSize[] = ['xs', 'sm', 'small', 'md', 'medium'];
 
 function Section({ title, children }: { title: string; children?: ReactNode }) {
@@ -76,6 +86,14 @@ export default function ComponentsPage() {
   const [email, setEmail] = useState('worship@example.com');
   const [query, setQuery] = useState('');
   const [inline, setInline] = useState('Amazing Grace');
+  const [checked, setChecked] = useState(true);
+  const [unchecked, setUnchecked] = useState(false);
+  const [enabled, setEnabled] = useState(true);
+  const [disabledToggle, setDisabledToggle] = useState(false);
+  const [speed, setSpeed] = useState(4);
+  const [font, setFont] = useState('Roboto Mono');
+  const [color, setColor] = useState('rgba(31, 111, 235, 1)');
+  const [listOption, setListOption] = useState(LIST_OPTIONS[0]);
 
   return (
     <div className="min-h-screen p-6 bg-surface text-on-surface font-plain">
@@ -238,6 +256,63 @@ export default function ComponentsPage() {
         </div>
         <div className="mt-6 -ml-5">
           <SearchBar />
+        </div>
+      </Section>
+
+      <Section title="Selection controls">
+        <div className="grid max-w-3xl gap-8 md:grid-cols-2">
+          <Row label="Checkbox">
+            <Checkbox checked={checked} onChange={setChecked} />
+            <Checkbox checked={unchecked} onChange={setUnchecked} />
+            <Checkbox checked color="green" onChange={() => {}} />
+            <Checkbox checked color="pink" onChange={() => {}} />
+          </Row>
+          <div className="space-y-4">
+            <Toggle
+              label="Autosize"
+              enabled={enabled}
+              onChange={setEnabled}
+              spacing="between"
+            />
+            <Toggle
+              label="Show roadmap"
+              enabled={disabledToggle}
+              onChange={setDisabledToggle}
+              spacing="between"
+            />
+          </div>
+          <div className="pt-12">
+            <Range
+              min={1}
+              max={10}
+              step={1}
+              value={speed}
+              onChange={setSpeed}
+            />
+          </div>
+          <div className="w-40">
+            <Select
+              options={['Roboto Mono', 'Open Sans', 'Courier'].map(f => ({
+                value: f,
+                display: f,
+              }))}
+              selected={font}
+              onChange={setFont}
+              className="h-8"
+            />
+          </div>
+          <div className="w-56">
+            <StyledListBox
+              options={LIST_OPTIONS}
+              selectedOption={listOption}
+              onChange={value =>
+                setListOption(LIST_OPTIONS.find(o => o.value === value)!)
+              }
+            />
+          </div>
+          <Row label="Color">
+            <ColorPicker color={color} onChange={setColor} />
+          </Row>
         </div>
       </Section>
     </div>

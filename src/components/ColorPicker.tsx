@@ -39,7 +39,7 @@ export default function ColorPicker({
     <StyledPopover
       button={
         <button
-          className="w-5 h-5 rounded-md border border-gray-300 dark:border-dark-gray-400"
+          className="w-5 h-5 rounded-extra-small border border-outline-variant focus-ring"
           style={{
             backgroundColor: color,
             backgroundImage: `url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill-opacity=".05"><path d="M8 0h8v8H8zM0 8h8v8H0z"/></svg>')`,
@@ -47,7 +47,9 @@ export default function ColorPicker({
         ></button>
       }
     >
-      <RgbaStringColorPicker color={stagedColor} onChange={setStagedColor} />
+      <div className="px-2 pt-2">
+        <RgbaStringColorPicker color={stagedColor} onChange={setStagedColor} />
+      </div>
       <div className="p-2 w-64">
         <Button
           variant="outlined"

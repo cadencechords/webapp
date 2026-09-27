@@ -26,7 +26,8 @@ export default function Select({
         onChange={e => onChange?.(e.target.value)}
         value={selected}
         style={style}
-        className={`w-full p-1 text-xs transition-colors focus:outline-hidden bg-gray-100 dark:bg-dark-gray-600 rounded-md hover:bg-gray-200 focus:bg-gray-200 focus:ring-2 focus:ring-offset-1 focus:ring-blue-400 appearance-none dark:focus:ring-offset-dark-gray-700 ${className}`}
+        // M3 filled dropdown field; the options menu is the browser's.
+        className={`w-full p-1 pr-4 text-xs font-plain text-on-surface bg-surface-container-highest rounded-t-extra-small state-layer-flat focus:outline-hidden appearance-none dark:scheme-dark shadow-[inset_0_-1px_0_var(--color-on-surface-variant)] focus:shadow-[inset_0_-2px_0_var(--color-primary)] transition-fast-effects ${className}`}
         {...props}
       >
         {options.map((option, index) => (
@@ -38,7 +39,7 @@ export default function Select({
       <Icon
         name="keyboard_arrow_down"
         filled
-        className="absolute w-3 h-3 transform -translate-y-1/2 right-1 top-1/2"
+        className="absolute w-3 h-3 transform -translate-y-1/2 right-1 top-1/2 text-on-surface-variant pointer-events-none"
       />
     </span>
   );

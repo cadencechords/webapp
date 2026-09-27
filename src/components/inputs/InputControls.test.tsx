@@ -20,7 +20,7 @@ test('Checkbox defaults to blue and toggles through its hidden input', () => {
   const onChange = vi.fn<ComponentProps<typeof Checkbox>['onChange']>();
   const { container } = render(<Checkbox checked onChange={onChange} />);
   const button = screen.getByRole('button');
-  expect(button).toHaveClass('ring-blue-400', 'bg-blue-600');
+  expect(button).toHaveClass('text-primary');
   expect(button.className).not.toContain('undefined');
   userEvent.click(button);
   expect(onChange).toHaveBeenCalledWith(false);
@@ -38,14 +38,14 @@ test('Range has no stray class and reports numbers', () => {
     vi.fn<NonNullable<ComponentProps<typeof Range>['onChange']>>();
   render(<Range min={0} max={10} value={5} onChange={onChange} />);
   const range = screen.getByRole('slider');
-  expect(range.className).toBe('w-full ');
+  expect(range.className).toBe('m3-slider peer w-full ');
   fireEvent.change(range, { target: { value: '7' } });
   expect(onChange).toHaveBeenCalledWith(7);
 });
 
 test('StyledListBox defaults to a transparent background', () => {
   render(<StyledListBox selectedOption={{ value: 1, template: 'One' }} />);
-  expect(screen.getByRole('button')).toHaveClass('bg-transparent-200');
+  expect(screen.getByRole('button')).toHaveClass('bg-transparent');
 });
 
 test('EditableData is an editable text input by default', () => {

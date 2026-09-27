@@ -1,0 +1,71 @@
+/* M3 Expressive slider (CAD-86), used by Range: a 16px track, a 4x44px bar
+   handle with a 6px gap either side. The parent sets --value (0-1). */
+
+.m3-slider {
+  --slider-handle: 4px;
+  --slider-gap: 6px;
+  /* Center of the handle along the track */
+  --slider-at: calc(
+    var(--value, 0) * (100% - var(--slider-handle)) + var(--slider-handle) / 2
+  );
+  --slider-track: linear-gradient(
+      to right,
+      var(--md-sys-color-primary) 0
+        calc(var(--slider-at) - var(--slider-handle) / 2 - var(--slider-gap)),
+      transparent 0
+        calc(var(--slider-at) + var(--slider-handle) / 2 + var(--slider-gap)),
+      var(--md-sys-color-secondary-container) 0
+    )
+    no-repeat;
+
+  appearance: none;
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.m3-slider::-webkit-slider-runnable-track {
+  height: 16px;
+  border-radius: 8px;
+  background: var(--slider-track);
+}
+.m3-slider::-moz-range-track {
+  height: 16px;
+  border-radius: 8px;
+  background: var(--slider-track);
+}
+
+.m3-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: var(--slider-handle);
+  height: 44px;
+  margin-top: -14px;
+  border-radius: 2px;
+  background: var(--md-sys-color-primary);
+  transition: width var(--md-sys-motion-duration-fast-spatial)
+    var(--md-sys-motion-easing-fast-spatial);
+}
+.m3-slider::-moz-range-thumb {
+  width: var(--slider-handle);
+  height: 44px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--md-sys-color-primary);
+}
+
+/* Pressed: the handle narrows to 2px. */
+.m3-slider:active::-webkit-slider-thumb {
+  width: 2px;
+}
+
+.m3-slider:focus-visible::-webkit-slider-thumb {
+  outline: var(--md-sys-state-focus-indicator-thickness) solid
+    var(--md-sys-color-secondary);
+  outline-offset: var(--md-sys-state-focus-indicator-outer-offset);
+}
+.m3-slider:focus-visible::-moz-range-thumb {
+  outline: var(--md-sys-state-focus-indicator-thickness) solid
+    var(--md-sys-color-secondary);
+  outline-offset: var(--md-sys-state-focus-indicator-outer-offset);
+}
