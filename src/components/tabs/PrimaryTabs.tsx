@@ -1,6 +1,6 @@
 import { Tab } from '@headlessui/react';
 import classNames from 'classnames';
-import { useLayoutEffect, useState } from 'react';
+import { Children, useLayoutEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
 // M3 primary tabs on Headless UI's Tab (keyboard arrows, selection and the
@@ -29,7 +29,11 @@ export function PrimaryTabs({ children, className }: PrimaryTabsProps) {
       {({ selectedIndex }) => (
         <>
           {children}
-          <Indicator list={list} selectedIndex={selectedIndex} />
+          <Indicator
+            list={list}
+            selectedIndex={selectedIndex}
+            tabCount={Children.toArray(children).length}
+          />
         </>
       )}
     </Tab.List>
@@ -63,6 +67,7 @@ export function PrimaryTab({ children, className }: PrimaryTabProps) {
 type IndicatorProps = {
   list: HTMLElement | null;
   selectedIndex: number;
+  tabCount: number;
 };
 
 type IndicatorBox = { left: number; width: number };
@@ -74,7 +79,7 @@ const SLIDE = `left ${SPRING}, width ${SPRING}`;
 // A 3px bar with rounded top corners under the selected tab's label. It
 // slides between tabs on the default-spatial spring; the first time it's
 // placed it doesn't move, so it doesn't slide in from the left edge.
-function Indicator({ list, selectedIndex }: IndicatorProps) {
+function Indicator({ list, selectedIndex, tabCount }: IndicatorProps) {
   const [box, setBox] = useState<IndicatorBox | null>(null);
   const [placed, setPlaced] = useState(false);
 
@@ -101,6 +106,11 @@ function Indicator({ list, selectedIndex }: IndicatorProps) {
         element = element.offsetParent;
       }
       const width = label.offsetWidth;
+      // Hidden (display: none): place it once it's shown, without sliding.
+      if (width === 0) {
+        setBox(null);
+        return;
+      }
       setBox(box =>
         box?.left === left && box.width === width ? box : { left, width }
       );
@@ -108,8 +118,8 @@ function Indicator({ list, selectedIndex }: IndicatorProps) {
 
     measure();
     // Labels change width as fonts load and the list as the window resizes.
-    // (Adding or removing a tab moves the selection's index, which re-runs
-    // this.)
+    // Adding or removing a tab re-runs this (tabCount): in a controlled
+    // Tab.Group the selected index stays put while the tab under it changes.
     if (typeof ResizeObserver === 'undefined') return;
     const observer = new ResizeObserver(measure);
     observer.observe(list);
@@ -117,7 +127,7 @@ function Indicator({ list, selectedIndex }: IndicatorProps) {
       .querySelectorAll('[data-tab-label]')
       .forEach(label => observer.observe(label));
     return () => observer.disconnect();
-  }, [list, selectedIndex]);
+  }, [list, selectedIndex, tabCount]);
 
   // Turn the transition on only after the first placement has painted.
   useLayoutEffect(() => {

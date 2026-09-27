@@ -3,9 +3,12 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import MarkingTabs from './MarkingTabs';
 import SongTabs from './SongTabs';
 import { PrimaryTab, PrimaryTabs } from './tabs/PrimaryTabs';
-import { markingTabs } from '../utils/constants';
+import { VIEW_FILES, markingTabs } from '../utils/constants';
 import { renderWithProvider } from '../utils/test';
 import type { Song } from '../types';
+
+// The Files panel loads files from the API; only the tabs matter here.
+vi.mock('./SongFilesTab', () => ({ default: () => <p>Files panel</p> }));
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -87,7 +90,15 @@ test('primary tabs: title-small, primary when selected, with state layers', () =
   expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
   expect(tabs[0]).toHaveClass('text-primary', 'text-title-small', 'h-12');
   expect(tabs[1]).toHaveClass('text-on-surface-variant', 'state-layer-flat');
-  expect(screen.getByRole('tablist')).toHaveClass('border-outline-variant');
+  expect(screen.getByRole('tablist')).toHaveClass(
+    'border-b',
+    'border-outline-variant',
+    'overflow-x-auto'
+  );
+  expect(tabs[0]).toHaveClass(
+    'focus-visible:outline-3',
+    'focus-visible:-outline-offset-3'
+  );
 });
 
 test('arrow keys still move between tabs and show their panels', () => {
@@ -136,17 +147,25 @@ test('the indicator sits under the selected label, as wide as it (even while sca
 test('the indicator follows a label that resizes', () => {
   stubLayout();
   const measures: ResizeObserverCallback[] = [];
+  const observed = new Set<Element>();
   vi.stubGlobal(
     'ResizeObserver',
     class {
       constructor(callback: ResizeObserverCallback) {
         measures.push(callback);
       }
-      observe() {}
-      disconnect() {}
+      observe(target: Element) {
+        observed.add(target);
+      }
+      disconnect() {
+        observed.clear();
+      }
     }
   );
   const { container } = render(<EventTabs />);
+  // The labels themselves: a label can grow without the list resizing.
+  expect(observed).toContain(screen.getByText('Details'));
+  expect(observed).toContain(screen.getByRole('tablist'));
   const indicator = container.querySelector(
     '[data-tab-indicator]'
   ) as HTMLElement;
@@ -156,7 +175,6 @@ test('the indicator follows a label that resizes', () => {
   vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(70);
   act(() => measures.forEach(measure => measure([], {} as ResizeObserver)));
   expect(indicator.style.width).toBe('70px');
-  vi.unstubAllGlobals();
 });
 
 test('a tab added before the selected one moves the indicator with it', () => {
@@ -186,6 +204,63 @@ test('a tab added before the selected one moves the indicator with it', () => {
   expect(indicator().style.width).toBe(`${'Set'.length * 8}px`);
 });
 
+test('in a controlled group, a tab inserted at the selected index moves the indicator to it', () => {
+  stubLayout();
+  function Controlled({ withReminders }: { withReminders: boolean }) {
+    return (
+      <Tab.Group selectedIndex={1} onChange={() => {}}>
+        <PrimaryTabs>
+          <PrimaryTab>Details</PrimaryTab>
+          {withReminders && <PrimaryTab>Reminders</PrimaryTab>}
+          <PrimaryTab>Set</PrimaryTab>
+        </PrimaryTabs>
+      </Tab.Group>
+    );
+  }
+  const { container, rerender } = render(<Controlled withReminders={false} />);
+  const indicator = () =>
+    container.querySelector('[data-tab-indicator]') as HTMLElement;
+  expect(indicator().style.width).toBe(`${'Set'.length * 8}px`);
+
+  rerender(<Controlled withReminders />);
+  expect(indicator().style.left).toBe('116px');
+  expect(indicator().style.width).toBe(`${'Reminders'.length * 8}px`);
+});
+
+test('a list mounted hidden gets its indicator when shown, without sliding in', () => {
+  stubLayout();
+  const measures: ResizeObserverCallback[] = [];
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      constructor(callback: ResizeObserverCallback) {
+        measures.push(callback);
+      }
+      observe() {}
+      disconnect() {}
+    }
+  );
+  const frames: FrameRequestCallback[] = [];
+  vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => {
+    frames.push(callback);
+    return frames.length;
+  });
+  const width = vi
+    .spyOn(HTMLElement.prototype, 'offsetWidth', 'get')
+    .mockReturnValue(0);
+  const { container } = render(<EventTabs />);
+  const indicator = () =>
+    container.querySelector('[data-tab-indicator]') as HTMLElement | null;
+  expect(indicator()).toBeNull();
+  act(() => frames.forEach(frame => frame(0)));
+
+  // Shown: the labels get their widths.
+  width.mockReturnValue(56);
+  act(() => measures.forEach(measure => measure([], {} as ResizeObserver)));
+  expect(indicator()?.style.left).toBe('16px');
+  expect(indicator()?.style.transition).toBe('');
+});
+
 describe('SongTabs', () => {
   const song = { id: 1, name: 'Amazing Grace', tracks: [] } as unknown as Song;
   const state = (isPro: boolean) => ({
@@ -203,6 +278,31 @@ describe('SongTabs', () => {
       { preloadedState: state(false) }
     );
     expect(container).toBeEmptyDOMElement();
+  });
+
+  test('shows Files, selected, then Tracks to Pro members who can view files', () => {
+    renderWithProvider(
+      <SongTabs
+        song={song}
+        onTrackDeleted={() => {}}
+        onTracksAdded={() => {}}
+      />,
+      {
+        preloadedState: {
+          ...state(true),
+          auth: {
+            currentUser: {
+              id: 1,
+              role: { permissions: [{ name: VIEW_FILES }] },
+            },
+          },
+        },
+      }
+    );
+    const tabs = screen.getAllByRole('tab');
+    expect(tabs.map(tab => tab.textContent)).toEqual(['Files', 'Tracks']);
+    expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText('Files panel')).toBeInTheDocument();
   });
 
   test('shows Tracks alone to Pro members who cannot view files', () => {
