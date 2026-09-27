@@ -31,7 +31,8 @@
   .list-segmented > [data-rbd-placeholder-context-id] {
     background-color: transparent;
   }
-  /* A segment being dragged lifts off the list: fully rounded, on level 3
+  /* A segment being dragged lifts off the list: large corners all round, on
+     level 3
      (state-layer-flat adds the 16% dragged layer). */
   .list-segmented > [data-dragging] {
     border-radius: var(--md-sys-shape-corner-large);
