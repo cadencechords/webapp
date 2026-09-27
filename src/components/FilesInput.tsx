@@ -54,7 +54,7 @@ export default function FilesInput({
         onChange={handleFilesChosen}
       />
       {files?.length === 0 && (
-        <Button full onClick={() => input.current!.click()}>
+        <Button full variant="accent" onClick={() => input.current!.click()}>
           {buttonText}
         </Button>
       )}
@@ -62,7 +62,7 @@ export default function FilesInput({
         {files.map((file, index) => (
           <div
             key={index}
-            className="p-3 border dark:border-dark-gray-600 rounded-md flex-between text-sm"
+            className="p-3 border border-outline-variant rounded-medium flex-between text-body-medium text-on-surface"
           >
             {file.name}
             <Button
@@ -71,7 +71,10 @@ export default function FilesInput({
               className="ml-3"
               onClick={() => handleRemove(file)}
             >
-              <Icon name="delete" className="w-4 h-4 text-gray-500 shrink-0" />
+              <Icon
+                name="delete"
+                className="w-4 h-4 text-on-surface-variant shrink-0"
+              />
             </Button>
           </div>
         ))}

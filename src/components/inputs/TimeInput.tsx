@@ -9,6 +9,7 @@ import {
   parsePeriod,
 } from '../../utils/date';
 
+import classNames from 'classnames';
 import Button from '../Button';
 
 type TimeInputProps = {
@@ -39,7 +40,7 @@ export default function TimeInput({
   const [isFocused, setIsFocused] = useState(false);
 
   const [inputClasses] = useState(
-    'appearance-none focus:outline-hidden outline-hidden w-10 text-center dark:bg-transparent '
+    'appearance-none focus:outline-hidden outline-hidden w-10 text-center bg-transparent text-on-surface placeholder:text-on-surface-variant caret-primary '
   );
 
   const handleHourChange = (typedHour: string) => {
@@ -113,13 +114,15 @@ export default function TimeInput({
 
   return (
     <div
-      className={
-        `border transition-all border-gray-300 dark:border-dark-gray-400 dark:bg-dark-gray-700 rounded-md py-2 flex-center h-10 shadow-xs px-2` +
-        ` ${
-          isFocused &&
-          'ring-offset-2 ring-2 ring-blue-400 ring-offset-dark-gray-700'
-        } ${className}`
-      }
+      // Outlined like OutlinedInput; the focused 2px outline is a 1px border
+      // plus a 1px inset shadow, so nothing moves.
+      className={classNames(
+        'border rounded-extra-small py-2 flex-center min-h-12 px-2 font-plain text-body-large transition-fast-effects',
+        isFocused
+          ? 'border-primary shadow-[inset_0_0_0_1px_var(--color-primary)]'
+          : 'border-outline hover:border-on-surface',
+        className
+      )}
     >
       <input
         onChange={e => handleHourChange(e.target.value)}

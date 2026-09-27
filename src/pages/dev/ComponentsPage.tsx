@@ -17,6 +17,14 @@ import IconButton from '../../components/buttons/IconButton';
 import MobileMenuButton from '../../components/buttons/MobileMenuButton';
 import AddCancelActions from '../../components/buttons/AddCancelActions';
 import Icon from '../../components/Icon';
+import OutlinedInput from '../../components/inputs/OutlinedInput';
+import WellInput from '../../components/inputs/WellInput';
+import OpenInput from '../../components/inputs/OpenInput';
+import EditableData from '../../components/inputs/EditableData';
+import TimeInput from '../../components/inputs/TimeInput';
+import Label from '../../components/Label';
+import FileInput from '../../components/FileInput';
+import SearchBar from '../../components/SearchBar';
 
 const VARIANTS: [ButtonVariant, string][] = [
   ['filled', 'Filled'],
@@ -64,6 +72,10 @@ export default function ComponentsPage() {
   const [styles, setStyles] = useState<string[]>(['bold']);
   const [segment, setSegment] = useState('General');
   const [quality, setQuality] = useState('Major');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('worship@example.com');
+  const [query, setQuery] = useState('');
+  const [inline, setInline] = useState('Amazing Grace');
 
   return (
     <div className="min-h-screen p-6 bg-surface text-on-surface font-plain">
@@ -176,6 +188,56 @@ export default function ComponentsPage() {
             activeButtonLabel={quality}
             onClick={setQuality}
           />
+        </div>
+      </Section>
+
+      <Section title="Text fields">
+        <div className="grid max-w-3xl gap-6 md:grid-cols-2">
+          <OutlinedInput label="Name" value={name} onChange={setName} />
+          <OutlinedInput
+            label="Email"
+            value={email}
+            onChange={setEmail}
+            supportingText="We'll send the invite here"
+          />
+          <OutlinedInput
+            label="Search"
+            placeholder="Song title"
+            value=""
+            onChange={() => {}}
+            error="Couldn't find that song"
+          />
+          <OutlinedInput
+            label="Scheduled date"
+            type="date"
+            value=""
+            onChange={() => {}}
+          />
+          <OutlinedInput
+            label="Add a new theme"
+            button="Create"
+            value=""
+            onChange={() => {}}
+          />
+          <OutlinedInput placeholder="No label" value="" onChange={() => {}} />
+          <WellInput value={query} onChange={setQuery} />
+          <TimeInput defaultValue="7:30 PM" />
+          <div>
+            <Label>Open input</Label>
+            <OpenInput
+              placeholder="Search songs"
+              value={query}
+              onChange={setQuery}
+            />
+          </div>
+          <div>
+            <Label>Editable data</Label>
+            <EditableData value={inline} onChange={setInline} />
+          </div>
+          <FileInput onChange={() => {}} onRemove={() => {}} />
+        </div>
+        <div className="mt-6 -ml-5">
+          <SearchBar />
         </div>
       </Section>
     </div>

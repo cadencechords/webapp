@@ -44,14 +44,14 @@ export default function FileInput({
         accept={accept}
         ref={input}
       />
-      <Button full onClick={handleClick}>
+      <Button full variant="accent" onClick={handleClick}>
         Choose file
       </Button>
       {file && (
-        <div className="flex-between border rounded-md p-3 mt-4">
+        <div className="flex-between border border-outline-variant rounded-medium p-3 mt-4 text-body-medium text-on-surface">
           {file.name}
           <Button size="xs" variant="open" onClick={handleRemoveChosenFile}>
-            <Icon name="close" className="w-5 h-5 text-gray-500" />
+            <Icon name="close" className="w-5 h-5 text-on-surface-variant" />
           </Button>
         </div>
       )}

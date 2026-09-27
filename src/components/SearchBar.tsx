@@ -7,18 +7,14 @@ export default function SearchBar() {
 
   return (
     <div className="ml-5 flex items-center">
-      <Icon
-        name="search"
-        className="h-4 w-4 text-gray-500 dark:text-dark-gray-200"
-      />
-      <span className="ml-4 w-60">
-        <button
-          className="outline-hidden focus:outline-hidden text-gray-500 dark:text-dark-gray-200 w-full text-left p-2"
-          onClick={() => setIsSearching(true)}
-        >
-          Search library
-        </button>
-      </span>
+      {/* M3 search bar: opens the search dialog */}
+      <button
+        className="flex items-center gap-4 w-72 h-12 px-4 rounded-full bg-surface-container-high text-on-surface-variant font-plain text-body-large text-left state-layer-flat focus-ring"
+        onClick={() => setIsSearching(true)}
+      >
+        <Icon name="search" className="h-6 w-6 shrink-0 text-on-surface" />
+        Search library
+      </button>
 
       <SearchDialog
         open={isSearching}
