@@ -20,9 +20,11 @@ export default function NavigationRail() {
   const currentSubscription = useSelector(selectCurrentSubscription);
 
   return (
+    // ::before and ::after reach a screen above and below, so an overscroll
+    // bounce shows more rail rather than the white page behind it.
     <nav
       aria-label="Main"
-      className="fixed inset-y-0 left-0 hidden w-24 md:flex flex-col bg-surface-container lg:w-[220px]"
+      className="fixed inset-y-0 left-0 hidden w-24 md:flex flex-col bg-surface-container lg:w-[220px] before:absolute before:inset-x-0 before:bottom-full before:h-screen before:bg-surface-container after:absolute after:inset-x-0 after:top-full after:h-screen after:bg-surface-container"
     >
       {currentTeam && <TeamOptionsPopover team={currentTeam} />}
       <div className="flex flex-col gap-1 py-3 lg:gap-0 lg:px-3">
