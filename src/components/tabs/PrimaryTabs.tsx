@@ -91,16 +91,25 @@ function Indicator({ list, selectedIndex }: IndicatorProps) {
         setBox(null);
         return;
       }
-      const listRect = list.getBoundingClientRect();
-      const labelRect = label.getBoundingClientRect();
-      setBox({
-        left: labelRect.left - listRect.left + list.scrollLeft,
-        width: labelRect.width,
-      });
+      // Layout offsets, not getBoundingClientRect: those ignore transforms,
+      // so a dialog still scaling in doesn't shrink the indicator. They're
+      // also in the list's scrolled content, where the indicator sits.
+      let left = 0;
+      let element: Element | null = label;
+      while (element instanceof HTMLElement && element !== list) {
+        left += element.offsetLeft;
+        element = element.offsetParent;
+      }
+      const width = label.offsetWidth;
+      setBox(box =>
+        box?.left === left && box.width === width ? box : { left, width }
+      );
     }
 
     measure();
     // Labels change width as fonts load and the list as the window resizes.
+    // (Adding or removing a tab moves the selection's index, which re-runs
+    // this.)
     if (typeof ResizeObserver === 'undefined') return;
     const observer = new ResizeObserver(measure);
     observer.observe(list);

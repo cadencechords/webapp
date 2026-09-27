@@ -26,29 +26,28 @@ export default function SongTabs({
   const currentSubscription = useSelector(selectCurrentSubscription)!;
   const currentMember = useSelector(selectCurrentMember)!;
 
+  // Both tabs are Pro: without it there's no tab bar (or empty tablist).
+  if (!currentSubscription.isPro) return null;
+
   return (
     <Tab.Group as="div" className="pt-4 col-span-4 lg:col-span-3 mb-10">
       <PrimaryTabs>
-        {currentSubscription.isPro && currentMember.can(VIEW_FILES) && (
-          <PrimaryTab>Files</PrimaryTab>
-        )}
-        {currentSubscription.isPro && <PrimaryTab>Tracks</PrimaryTab>}
+        {currentMember.can(VIEW_FILES) && <PrimaryTab>Files</PrimaryTab>}
+        <PrimaryTab>Tracks</PrimaryTab>
       </PrimaryTabs>
       <Tab.Panels as="div" className="mt-4 outline-hidden focus:outline-hidden">
-        {currentSubscription.isPro && currentMember.can(VIEW_FILES) && (
+        {currentMember.can(VIEW_FILES) && (
           <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
             <SongFilesTab onFilesChange={setFiles} files={files} />
           </Tab.Panel>
         )}
-        {currentSubscription.isPro && (
-          <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
-            <SongTracksTab
-              song={song}
-              onDeleted={onTrackDeleted}
-              onTracksAdded={onTracksAdded}
-            />
-          </Tab.Panel>
-        )}
+        <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
+          <SongTracksTab
+            song={song}
+            onDeleted={onTrackDeleted}
+            onTracksAdded={onTracksAdded}
+          />
+        </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
   );
