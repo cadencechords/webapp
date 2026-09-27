@@ -4,7 +4,7 @@ import KeyBadge from './KeyBadge';
 import Button from './Button';
 import useRemoveSongFromBinder from '../hooks/api/useRemoveSongFromBinder';
 import Icon from './Icon';
-import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
+import { LIST_ITEM_INTERACTIVE } from './lists/listItem';
 import type { Id, Song } from '../types';
 
 type BinderSongRowProps = {
@@ -20,12 +20,12 @@ export default function BinderSongRow({ song, binderId }: BinderSongRowProps) {
     });
 
   return (
-    <div
-      className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE} justify-between py-0 pr-2`}
-    >
+    // The link fills the row up to the remove button, so the whole row (bar
+    // the button) opens the song; the focus ring is the link's.
+    <div className="flex items-center gap-2 pr-2 font-plain text-body-large text-on-surface state-layer-flat">
       <Link
         to={{ pathname: `/songs/${song.id}`, state: song }}
-        className="flex items-center self-stretch w-full min-w-0 outline-none"
+        className={`flex items-center flex-1 min-w-0 min-h-14 py-2 pl-4 rounded-[inherit] ${LIST_ITEM_INTERACTIVE}`}
       >
         <div className="min-w-0 truncate">{song.name} </div>
         <KeyBadge songKey={song.transposed_key || song.original_key} />

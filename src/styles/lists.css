@@ -4,10 +4,14 @@
    components layer, so an item's own utilities (a background, a radius)
    still win. */
 @layer components {
+  /* The 2px spacing is a margin, not a flex gap: react-beautiful-dnd measures
+     margins when it moves rows aside and drops them, and ignores gaps. */
   .list-segmented {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+  }
+  .list-segmented > * + * {
+    margin-top: 2px;
   }
   .list-segmented > * {
     background-color: var(--md-sys-color-surface-container);
@@ -17,9 +21,15 @@
     border-top-left-radius: var(--md-sys-shape-corner-large);
     border-top-right-radius: var(--md-sys-shape-corner-large);
   }
-  .list-segmented > :last-child {
+  .list-segmented > :last-child,
+  .list-segmented > :has(+ [data-rbd-placeholder-context-id]:last-child) {
     border-bottom-left-radius: var(--md-sys-shape-corner-large);
     border-bottom-right-radius: var(--md-sys-shape-corner-large);
+  }
+  /* react-beautiful-dnd's placeholder holds the dragged row's place: an
+     empty gap, not a segment. */
+  .list-segmented > [data-rbd-placeholder-context-id] {
+    background-color: transparent;
   }
   /* A segment being dragged lifts off the list: fully rounded, on level 3
      (state-layer-flat adds the 16% dragged layer). */

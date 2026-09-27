@@ -94,26 +94,28 @@ export default function PlanningCenterSongsPage() {
           {isEmpty ? (
             <NoDataMessage type={'songs'} />
           ) : (
-            <div className="mb-10 md:mb-4 list-segmented">
-              {songPages.map((songs, index) => (
-                <Fragment key={index}>
-                  {songs.map(song => (
-                    <label
-                      key={song.id}
-                      className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE} cursor-pointer`}
-                    >
-                      <Checkbox
-                        checked={selectedSongs.includes(song)}
-                        onChange={isChecked =>
-                          handleToggleSong(isChecked, song)
-                        }
-                        standAlone={false}
-                      />
-                      <span className="min-w-0 truncate">{song.title}</span>
-                    </label>
-                  ))}
-                </Fragment>
-              ))}
+            <div className="mb-10 md:mb-4">
+              <div className="list-segmented">
+                {songPages.map((songs, index) => (
+                  <Fragment key={index}>
+                    {songs.map(song => (
+                      <label
+                        key={song.id}
+                        className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE} cursor-pointer`}
+                      >
+                        <Checkbox
+                          checked={selectedSongs.includes(song)}
+                          onChange={isChecked =>
+                            handleToggleSong(isChecked, song)
+                          }
+                          standAlone={false}
+                        />
+                        <span className="min-w-0 truncate">{song.title}</span>
+                      </label>
+                    ))}
+                  </Fragment>
+                ))}
+              </div>
               {hasNextPage && (
                 <MobileMenuButton
                   color="blue"

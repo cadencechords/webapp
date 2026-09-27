@@ -23,7 +23,7 @@ export default function TableRow({
   actions,
 }: TableRowProps) {
   return (
-    <tr className="border-b border-outline-variant font-plain text-body-medium text-on-surface state-layer-flat">
+    <tr className="border-b border-outline-variant font-plain text-body-medium text-on-surface">
       {columns?.map((column, index) => (
         <td key={index} className="px-2 py-3">
           {index === 0 ? <span onClick={onClick}>{column}</span> : column}

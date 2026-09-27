@@ -11,6 +11,8 @@ import List from './List';
 import NumberBadge from './NumberBadge';
 import ProfilePicture, { monogram } from './ProfilePicture';
 import StackedList from './StackedList';
+import BinderSongRow from './BinderSongRow';
+import { renderWithProvider } from '../utils/test';
 import { getNameOrEmail } from '../utils/model';
 import type { Song } from '../types';
 
@@ -196,6 +198,27 @@ describe('DragAndDropTable', () => {
   });
 });
 
+test('BinderSongRow: the link fills the row and takes the focus ring', () => {
+  renderWithProvider(
+    <MemoryRouter>
+      <BinderSongRow song={songs[0]} binderId={5} />
+    </MemoryRouter>
+  );
+  const link = screen.getByRole('link', { name: /Amazing Grace/ });
+  // The link, not the row, is 56dp tall and padded, so the whole row but the
+  // remove button opens the song.
+  expect(link).toHaveClass(
+    'flex-1',
+    'min-h-14',
+    'py-2',
+    'focus-visible:outline-3'
+  );
+  const row = link.parentElement as HTMLElement;
+  expect(row.className).not.toMatch(/\bpy-/);
+  expect(row.className).not.toMatch(/min-h-/);
+  expect(row.querySelector('button')).not.toBeNull();
+});
+
 test('KeyBadge is an outlined chip, and renders nothing without a key', () => {
   const { container, rerender } = render(<KeyBadge songKey="Bb" />);
   expect(screen.getByText('Bb')).toHaveClass(
@@ -241,6 +264,20 @@ describe('list-segmented CSS', () => {
     );
     expect(block).toMatch(
       /\.list-segmented > \[data-dragging\] \{[^}]*box-shadow: var\(--md-sys-elevation-level3\)/
+    );
+  });
+
+  test('segments are spaced by margins, which react-beautiful-dnd measures', () => {
+    expect(css).toMatch(/\.list-segmented > \* \+ \* \{\s*margin-top: 2px/);
+    expect(css).not.toMatch(/\.list-segmented \{[^}]*gap:/);
+  });
+
+  test('the drag placeholder is an empty gap, and the row before it closes the group', () => {
+    expect(css).toMatch(
+      /\.list-segmented > \[data-rbd-placeholder-context-id\] \{\s*background-color: transparent/
+    );
+    expect(css).toMatch(
+      /\.list-segmented > :has\(\+ \[data-rbd-placeholder-context-id\]:last-child\)/
     );
   });
 
