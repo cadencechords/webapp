@@ -15,6 +15,8 @@ beforeAll(async () => {
     'transition-default-spatial',
     'transition-fast-effects',
     'shape-morph',
+    'transition-dialog-enter',
+    'transition-dialog-exit',
   ]);
 });
 
@@ -57,6 +59,17 @@ test('spatial transitions move things; effects transitions change color and opac
 test('reduced motion turns spatial durations off', () => {
   expect(css).toMatch(
     /@media \(prefers-reduced-motion: reduce\)\s*\{\s*:root\s*\{[^}]*--md-sys-motion-duration-default-spatial: 0ms/
+  );
+});
+
+// Reduced motion zeroes only spatial durations, so a dialog's scale has to
+// run on one (CAD-87 shipped an exit scale on an effects duration once).
+test('dialog scales run on spatial durations, so reduced motion turns them off', () => {
+  expect(rule('transition-dialog-enter')).toMatch(
+    /scale var\(--md-sys-motion-duration-default-spatial\)/
+  );
+  expect(rule('transition-dialog-exit')).toMatch(
+    /scale min\(\s*var\(--md-sys-motion-duration-fast-spatial\)/
   );
 });
 

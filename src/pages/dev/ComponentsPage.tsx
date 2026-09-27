@@ -101,13 +101,9 @@ export default function ComponentsPage() {
   const [dialog, setDialog] = useState<
     'basic' | 'fullscreen' | 'delete' | 'drawer' | 'sheet' | null
   >(null);
-  // ConfirmDeleteDialog stays loading after a confirm, so a fresh one is
-  // mounted after each close (not on open, which would skip its enter).
-  const [deleteKey, setDeleteKey] = useState(0);
-  const closeDialog = () => {
-    if (dialog === 'delete') setDeleteKey(key => key + 1);
-    setDialog(null);
-  };
+  // ConfirmDeleteDialog stays loading after a confirm, as it does in the
+  // app (callers close it for good), so reopening it here shows that state.
+  const closeDialog = () => setDialog(null);
 
   return (
     <div className="min-h-screen p-6 bg-surface text-on-surface font-plain">
@@ -366,7 +362,6 @@ export default function ComponentsPage() {
           </div>
         </StyledDialog>
         <ConfirmDeleteDialog
-          key={deleteKey}
           show={dialog === 'delete'}
           onCloseDialog={closeDialog}
           onCancel={closeDialog}
