@@ -7,6 +7,7 @@ import { MenuDivider, MenuItem, MenuList } from './Menu';
 import StyledPopover, { transformOrigin } from './StyledPopover';
 import SongFileOptionsPopover from './SongFileOptionsPopover';
 import SetlistOptionsPopover from './SetlistOptionsPopover';
+import MarkingOptionsPopover from './MarkingOptionsPopover';
 import MobileProfilePictureMenu from './mobile menus/MobileProfilePictureMenu';
 import type { Setlist, SongFile } from '../types';
 
@@ -67,7 +68,12 @@ test('StyledPopover opens an M3 menu surface and closes from its button', async 
     'z-50',
     'w-60'
   );
-  expect(panel).toHaveStyle({ position: 'fixed' });
+  expect(panel).toHaveStyle({ position: 'fixed', transformOrigin: 'left top' });
+  // Scales and fades in...
+  expect(panel).toHaveClass('transition-menu-enter');
+  // ...while popper places it with top/left: a transform would be scaled
+  // along with the menu, sliding it in from the viewport's corner.
+  expect((panel as HTMLElement).style.transform).toBe('');
 
   userEvent.click(screen.getByRole('button', { name: 'Open' }));
   await waitFor(() =>
@@ -193,6 +199,45 @@ test('SetlistOptionsPopover with no songs shows only Delete, without a divider',
   expect(screen.queryByText('Perform')).not.toBeInTheDocument();
   const remove = screen.getByRole('button', { name: 'Delete' });
   expect(remove.parentElement?.querySelector('hr')).toBeNull();
+});
+
+test('SetlistOptionsPopover puts Delete in its own group after Perform', () => {
+  renderWithProvider(
+    <MemoryRouter>
+      <SetlistOptionsPopover
+        setlist={{ id: 1, songs: [{ id: 2 }] } as unknown as Setlist}
+        onPerform={() => {}}
+      />
+    </MemoryRouter>,
+    { preloadedState: memberWith(DELETE_SETLISTS) }
+  );
+  userEvent.click(screen.getAllByRole('button')[0]);
+
+  const perform = screen.getByRole('button', { name: 'Perform' });
+  const divider = perform.nextElementSibling;
+  expect(divider?.tagName).toBe('HR');
+  expect(divider?.nextElementSibling).toBe(
+    screen.getByRole('button', { name: 'Delete' })
+  );
+});
+
+test('MarkingOptionsPopover shows its menu while isOpen', async () => {
+  const { rerender } = render(
+    <MarkingOptionsPopover onDelete={() => {}} isOpen={false} />
+  );
+  expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+
+  rerender(<MarkingOptionsPopover onDelete={() => {}} isOpen />);
+  const remove = screen.getByRole('button', { name: 'Delete' });
+  expect(remove).toHaveClass('text-error');
+  expect(
+    remove.closest('.bg-surface-container')?.getAttribute('style')
+  ).not.toContain('transform:');
+
+  rerender(<MarkingOptionsPopover onDelete={() => {}} isOpen={false} />);
+  await waitFor(() =>
+    expect(screen.queryByText('Delete')).not.toBeInTheDocument()
+  );
 });
 
 test('MobileProfilePictureMenu items run their actions', () => {

@@ -5,7 +5,11 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { noop } from '../utils/constants';
 import { MenuItem, MenuList } from './Menu';
-import { MENU_SURFACE, transformOrigin } from './StyledPopover';
+import {
+  MENU_SURFACE,
+  POPPER_MODIFIERS,
+  transformOrigin,
+} from './StyledPopover';
 import Icon from './Icon';
 
 type MarkingOptionsPopoverProps = {
@@ -38,6 +42,7 @@ export default function MarkingOptionsPopover({
     {
       placement: 'bottom-start',
       strategy: 'fixed',
+      modifiers: POPPER_MODIFIERS,
     }
   );
 

@@ -30,6 +30,7 @@ export default function StyledPopover({
     {
       placement: position,
       strategy: 'fixed',
+      modifiers: POPPER_MODIFIERS,
     }
   );
 
@@ -67,9 +68,17 @@ export default function StyledPopover({
   );
 }
 
-/** The menu container: surface-container, large corners, level 2. */
+/** The menu container: surface-container, large corners, level 2. It
+    doesn't clip, so a color picker's handles can reach past its padding. */
 export const MENU_SURFACE =
-  'bg-surface-container text-on-surface rounded-large shadow-(--md-sys-elevation-level2) overflow-hidden';
+  'bg-surface-container text-on-surface rounded-large shadow-(--md-sys-elevation-level2)';
+
+/** Popper places the menu with top/left rather than a transform: the
+    enter/exit `scale` composes with `transform`, so it would scale popper's
+    translate too and slide the menu in from the viewport's corner. */
+export const POPPER_MODIFIERS = [
+  { name: 'computeStyles', options: { gpuAcceleration: false } },
+];
 
 /** The corner or edge of the menu nearest its button, to grow from. */
 export function transformOrigin(placement: Placement = 'bottom') {
