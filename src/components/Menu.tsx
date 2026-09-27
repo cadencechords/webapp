@@ -13,7 +13,15 @@ type MenuListProps = {
 };
 
 export function MenuList({ children, className = '' }: MenuListProps) {
-  return <div className={classNames('py-2', className)}>{children}</div>;
+  // Rounded and clipped like the menu surface, so the first and last items'
+  // state layers and focus rings stay inside its corners.
+  return (
+    <div
+      className={classNames('py-2 overflow-hidden rounded-large', className)}
+    >
+      {children}
+    </div>
+  );
 }
 
 export function MenuDivider() {

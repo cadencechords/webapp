@@ -79,7 +79,9 @@ export default function MarkingOptionsPopover({
           }}
           style={{
             ...styles.popper,
-            transformOrigin: transformOrigin(state?.placement),
+            transformOrigin: transformOrigin(
+              state?.placement ?? 'bottom-start'
+            ),
             ...style,
           }}
           {...attributes.popper}

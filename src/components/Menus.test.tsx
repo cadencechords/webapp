@@ -72,7 +72,9 @@ test('StyledPopover opens an M3 menu surface and closes from its button', async 
   // Scales and fades in...
   expect(panel).toHaveClass('transition-menu-enter');
   // ...while popper places it with top/left: a transform would be scaled
-  // along with the menu, sliding it in from the viewport's corner.
+  // along with the menu, sliding it in from the viewport's corner. (Popper
+  // places it after a microtask; data-popper-placement marks that.)
+  await waitFor(() => expect(panel).toHaveAttribute('data-popper-placement'));
   expect((panel as HTMLElement).style.transform).toBe('');
 
   userEvent.click(screen.getByRole('button', { name: 'Open' }));
@@ -223,18 +225,21 @@ test('SetlistOptionsPopover puts Delete in its own group after Perform', () => {
 
 test('MarkingOptionsPopover shows its menu while isOpen', async () => {
   const { rerender } = render(
-    <MarkingOptionsPopover onDelete={() => {}} isOpen={false} />
+    <MarkingOptionsPopover button="Mark" onDelete={() => {}} isOpen={false} />
   );
   expect(screen.queryByText('Delete')).not.toBeInTheDocument();
 
-  rerender(<MarkingOptionsPopover onDelete={() => {}} isOpen />);
+  rerender(<MarkingOptionsPopover button="Mark" onDelete={() => {}} isOpen />);
   const remove = screen.getByRole('button', { name: 'Delete' });
   expect(remove).toHaveClass('text-error');
-  expect(
-    remove.closest('.bg-surface-container')?.getAttribute('style')
-  ).not.toContain('transform:');
+  // Once popper has placed it, it's placed with top/left, not a transform.
+  const surface = remove.closest('.bg-surface-container') as HTMLElement;
+  await waitFor(() => expect(surface).toHaveAttribute('data-popper-placement'));
+  expect(surface.style.transform).toBe('');
 
-  rerender(<MarkingOptionsPopover onDelete={() => {}} isOpen={false} />);
+  rerender(
+    <MarkingOptionsPopover button="Mark" onDelete={() => {}} isOpen={false} />
+  );
   await waitFor(() =>
     expect(screen.queryByText('Delete')).not.toBeInTheDocument()
   );
