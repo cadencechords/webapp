@@ -4,18 +4,20 @@
    components layer, so an item's own utilities (a background, a radius)
    still win. */
 @layer components {
-  /* The 2px spacing is a margin, not a flex gap: react-beautiful-dnd measures
-     margins when it moves rows aside and drops them, and ignores gaps. */
+  /* The 2px spacing is margins, not a flex gap: react-beautiful-dnd measures
+     margins when it moves rows aside and drops them, and ignores gaps. Every
+     segment gets the same 1px above and below (flex margins don't collapse),
+     so a row's margin box is the same wherever it's dragged from or to; the
+     container's negative margins take back the 1px at each end. */
   .list-segmented {
     display: flex;
     flex-direction: column;
-  }
-  .list-segmented > * + * {
-    margin-top: 2px;
+    margin-block: -1px;
   }
   .list-segmented > * {
     background-color: var(--md-sys-color-surface-container);
     border-radius: var(--md-sys-shape-corner-extra-small);
+    margin-block: 1px;
   }
   .list-segmented > :first-child {
     border-top-left-radius: var(--md-sys-shape-corner-large);

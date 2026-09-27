@@ -21,8 +21,9 @@ export default function BinderSongRow({ song, binderId }: BinderSongRowProps) {
 
   return (
     // The link fills the row up to the remove button, so the whole row (bar
-    // the button) opens the song; the focus ring is the link's.
-    <div className="flex items-center gap-2 pr-2 font-plain text-body-large text-on-surface state-layer-flat">
+    // the button) opens the song. The link has the state layer and focus
+    // ring; the button has its own.
+    <div className="flex items-center gap-2 pr-2 font-plain text-body-large text-on-surface">
       <Link
         to={{ pathname: `/songs/${song.id}`, state: song }}
         className={`flex items-center flex-1 min-w-0 min-h-14 py-2 pl-4 rounded-[inherit] ${LIST_ITEM_INTERACTIVE}`}

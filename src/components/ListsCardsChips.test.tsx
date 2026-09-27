@@ -214,6 +214,9 @@ test('BinderSongRow: the link fills the row and takes the focus ring', () => {
     'focus-visible:outline-3'
   );
   const row = link.parentElement as HTMLElement;
+  // One state layer: the link's (a second on the row would stack on hover).
+  expect(link).toHaveClass('state-layer-flat');
+  expect(row).not.toHaveClass('state-layer-flat');
   expect(row.className).not.toMatch(/\bpy-/);
   expect(row.className).not.toMatch(/min-h-/);
   expect(row.querySelector('button')).not.toBeNull();
@@ -268,7 +271,10 @@ describe('list-segmented CSS', () => {
   });
 
   test('segments are spaced by margins, which react-beautiful-dnd measures', () => {
-    expect(css).toMatch(/\.list-segmented > \* \+ \* \{\s*margin-top: 2px/);
+    // The same margin on every segment, so a row's margin box doesn't depend
+    // on its position.
+    expect(css).toMatch(/\.list-segmented > \* \{[^}]*margin-block: 1px/);
+    expect(css).toMatch(/\.list-segmented \{[^}]*margin-block: -1px/);
     expect(css).not.toMatch(/\.list-segmented \{[^}]*gap:/);
   });
 
