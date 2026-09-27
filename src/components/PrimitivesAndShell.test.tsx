@@ -13,7 +13,7 @@ import NoTeamYet from './NoTeamYet';
 import NumberBadge from './NumberBadge';
 import QuickAdd from './QuickAdd';
 import SegmentedControl from './SegmentedControl';
-import Sidenav from './Sidenav';
+import NavigationRail from './NavigationRail';
 import TextAutosize from './TextAutosize';
 import ButtonSwitch from './buttons/ButtonSwitch';
 import CalendarDateButton from './buttons/CalendarDateButton';
@@ -301,10 +301,10 @@ test('MemberMenu hides removal without a member', () => {
   expect(screen.queryByText('Remove from team')).not.toBeInTheDocument();
 });
 
-test('Sidenav shows the links the member can use', () => {
+test('NavigationRail shows the links the member can use', () => {
   renderWithProvider(
     <MemoryRouter>
-      <Sidenav />
+      <NavigationRail />
     </MemoryRouter>,
     { preloadedState: memberState([MANAGE_BILLING]) }
   );

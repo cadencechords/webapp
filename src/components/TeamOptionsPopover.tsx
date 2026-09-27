@@ -9,14 +9,16 @@ type TeamOptionsPopoverProps = {
 };
 
 export default function TeamOptionsPopover({ team }: TeamOptionsPopoverProps) {
+  // The rail's header: the team's picture in a 48dp circle (collapsed), or
+  // picture and name in a 56dp pill (expanded).
   const button = (
-    <div className="flex items-center w-full h-16 px-3 py-2 text-base font-semibold transition-colors dark:hover:bg-dark-gray-700 hover:bg-gray-200">
-      <span className="w-8 mr-3">
+    <div className="flex items-center h-16 px-6 lg:px-3">
+      <div className="flex items-center justify-center w-12 h-12 rounded-full state-layer text-on-surface lg:justify-start lg:w-full lg:h-14 lg:gap-3 lg:px-3">
         <ProfilePicture url={team.image_url} name={team.name} size="xs" />
-      </span>
-      <span className="hidden lg:inline dark:text-dark-gray-100">
-        {team.name}
-      </span>
+        <span className="hidden truncate lg:inline font-plain text-title-small">
+          {team.name}
+        </span>
+      </div>
     </div>
   );
   return (

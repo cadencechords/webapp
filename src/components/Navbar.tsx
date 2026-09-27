@@ -18,7 +18,7 @@ export default function Navbar() {
     currentMember.can(MANAGE_BILLING) && subscription?.plan_name === 'Starter';
 
   return (
-    <nav className="items-center justify-between hidden h-16 px-4 border-b md:flex md:ml-14 lg:ml-56 dark:border-dark-gray-700">
+    <nav className="items-center justify-between hidden h-16 px-4 border-b md:flex md:ml-24 lg:ml-[220px] dark:border-dark-gray-700">
       <SearchBar />
       <span className="flex-center">
         {showUpgradeButton && (

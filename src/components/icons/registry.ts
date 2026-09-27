@@ -22,7 +22,10 @@ import ChevronLeft from '@material-symbols/svg-400/rounded/chevron_left.svg?reac
 import ChevronRight from '@material-symbols/svg-400/rounded/chevron_right.svg?react';
 import Close from '@material-symbols/svg-400/rounded/close.svg?react';
 import CloseFilled from '@material-symbols/svg-400/rounded/close-fill.svg?react';
+import CreditCard from '@material-symbols/svg-400/rounded/credit_card.svg?react';
 import CreditCardFilled from '@material-symbols/svg-400/rounded/credit_card-fill.svg?react';
+import Dashboard from '@material-symbols/svg-400/rounded/dashboard.svg?react';
+import DashboardFilled from '@material-symbols/svg-400/rounded/dashboard-fill.svg?react';
 import Delete from '@material-symbols/svg-400/rounded/delete.svg?react';
 import Description from '@material-symbols/svg-400/rounded/description.svg?react';
 import DesktopWindows from '@material-symbols/svg-400/rounded/desktop_windows.svg?react';
@@ -36,6 +39,7 @@ import Inbox from '@material-symbols/svg-400/rounded/inbox.svg?react';
 import Info from '@material-symbols/svg-400/rounded/info.svg?react';
 import KeyboardArrowDown from '@material-symbols/svg-400/rounded/keyboard_arrow_down.svg?react';
 import KeyboardArrowDownFilled from '@material-symbols/svg-400/rounded/keyboard_arrow_down-fill.svg?react';
+import Lock from '@material-symbols/svg-400/rounded/lock.svg?react';
 import LockFilled from '@material-symbols/svg-400/rounded/lock-fill.svg?react';
 import Logout from '@material-symbols/svg-400/rounded/logout.svg?react';
 import Mail from '@material-symbols/svg-400/rounded/mail.svg?react';
@@ -44,6 +48,7 @@ import Mobile from '@material-symbols/svg-400/rounded/mobile.svg?react';
 import MoodFilled from '@material-symbols/svg-400/rounded/mood-fill.svg?react';
 import MoreHorizFilled from '@material-symbols/svg-400/rounded/more_horiz-fill.svg?react';
 import MoreVert from '@material-symbols/svg-400/rounded/more_vert.svg?react';
+import MusicNote from '@material-symbols/svg-400/rounded/music_note.svg?react';
 import MusicNoteFilled from '@material-symbols/svg-400/rounded/music_note-fill.svg?react';
 import NoteAdd from '@material-symbols/svg-400/rounded/note_add.svg?react';
 import Notes from '@material-symbols/svg-400/rounded/notes.svg?react';
@@ -52,11 +57,14 @@ import Notifications from '@material-symbols/svg-400/rounded/notifications.svg?r
 import NotificationsFilled from '@material-symbols/svg-400/rounded/notifications-fill.svg?react';
 import Palette from '@material-symbols/svg-400/rounded/palette.svg?react';
 import PauseCircleFilled from '@material-symbols/svg-400/rounded/pause_circle-fill.svg?react';
+import Person from '@material-symbols/svg-400/rounded/person.svg?react';
 import PersonFilled from '@material-symbols/svg-400/rounded/person-fill.svg?react';
 import PersonRemove from '@material-symbols/svg-400/rounded/person_remove.svg?react';
 import PlayArrow from '@material-symbols/svg-400/rounded/play_arrow.svg?react';
 import PlayCircleFilled from '@material-symbols/svg-400/rounded/play_circle-fill.svg?react';
 import Print from '@material-symbols/svg-400/rounded/print.svg?react';
+import QueueMusic from '@material-symbols/svg-400/rounded/queue_music.svg?react';
+import QueueMusicFilled from '@material-symbols/svg-400/rounded/queue_music-fill.svg?react';
 import Remove from '@material-symbols/svg-400/rounded/remove.svg?react';
 import Search from '@material-symbols/svg-400/rounded/search.svg?react';
 import SearchFilled from '@material-symbols/svg-400/rounded/search-fill.svg?react';
@@ -90,7 +98,10 @@ export const ICONS = {
   chevron_right: ChevronRight,
   close: Close,
   'close-fill': CloseFilled,
+  credit_card: CreditCard,
   'credit_card-fill': CreditCardFilled,
+  dashboard: Dashboard,
+  'dashboard-fill': DashboardFilled,
   delete: Delete,
   description: Description,
   desktop_windows: DesktopWindows,
@@ -104,6 +115,7 @@ export const ICONS = {
   info: Info,
   keyboard_arrow_down: KeyboardArrowDown,
   'keyboard_arrow_down-fill': KeyboardArrowDownFilled,
+  lock: Lock,
   'lock-fill': LockFilled,
   logout: Logout,
   mail: Mail,
@@ -112,6 +124,7 @@ export const ICONS = {
   'mood-fill': MoodFilled,
   'more_horiz-fill': MoreHorizFilled,
   more_vert: MoreVert,
+  music_note: MusicNote,
   'music_note-fill': MusicNoteFilled,
   note_add: NoteAdd,
   notes: Notes,
@@ -120,11 +133,14 @@ export const ICONS = {
   'notifications-fill': NotificationsFilled,
   palette: Palette,
   'pause_circle-fill': PauseCircleFilled,
+  person: Person,
   'person-fill': PersonFilled,
   person_remove: PersonRemove,
   play_arrow: PlayArrow,
   'play_circle-fill': PlayCircleFilled,
   print: Print,
+  queue_music: QueueMusic,
+  'queue_music-fill': QueueMusicFilled,
   remove: Remove,
   search: Search,
   'search-fill': SearchFilled,

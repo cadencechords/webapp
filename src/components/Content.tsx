@@ -19,7 +19,7 @@ import { Route } from 'react-router-dom';
 import SearchPage from './SearchPage';
 import SetlistDetailPage from '../pages/SetlistDetailPage';
 import SetlistsIndexPage from '../pages/SetlistsIndexPage';
-import Sidenav from './Sidenav';
+import NavigationRail from './NavigationRail';
 import SongDetailPage from '../pages/SongDetailPage';
 import ImportSongsPage from '../pages/ImportSongsPage';
 import SongsIndexPage from '../pages/SongsIndexPage';
@@ -57,11 +57,14 @@ export default function Content() {
 
   return (
     <>
-      <Sidenav />
+      <NavigationRail />
       <Navbar />
       <MobileNav />
       <div
-        className={classNames(!isChat && 'p-3 md:px-10', 'md:ml-14 lg:ml-56')}
+        className={classNames(
+          !isChat && 'p-3 md:px-10',
+          'md:ml-24 lg:ml-[220px]'
+        )}
       >
         <div className={classNames(!isChat && 'container', 'mx-auto')}>
           <Route path="/" exact>

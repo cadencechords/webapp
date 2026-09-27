@@ -1,11 +1,9 @@
 import { createRef, type MouseEventHandler } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
 import Button from './Button';
 import AddCancelActions from './buttons/AddCancelActions';
 import MobileMenuButton from './buttons/MobileMenuButton';
-import SidenavLink from './SidenavLink';
 import TransposeOption from './TransposeOption';
 import useDialog from '../hooks/useDialog';
 
@@ -96,22 +94,6 @@ test('AddCancelActions labels the add button "Add" by default', () => {
 test('TransposeOption has no stray class when className is left out', () => {
   render(<TransposeOption>C</TransposeOption>);
   expect(screen.getByRole('button').className).not.toContain('undefined');
-});
-
-test('SidenavLink matches nested routes unless exact', () => {
-  const { rerender } = render(
-    <MemoryRouter initialEntries={['/songs/1']}>
-      <SidenavLink to="/songs" text="Songs" />
-    </MemoryRouter>
-  );
-  expect(screen.getByRole('link')).toHaveClass('text-blue-700');
-
-  rerender(
-    <MemoryRouter initialEntries={['/songs/1']}>
-      <SidenavLink to="/songs" text="Songs" exact />
-    </MemoryRouter>
-  );
-  expect(screen.getByRole('link')).not.toHaveClass('text-blue-700');
 });
 
 test('useDialog opens and closes', () => {

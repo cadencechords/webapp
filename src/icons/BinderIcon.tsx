@@ -1,13 +1,33 @@
 type BinderIconProps = {
   className?: string;
+  /** The folder drawn as a 2px outline, for unselected navigation. */
+  outlined?: boolean;
 };
 
-export default function BinderIcon({ className }: BinderIconProps) {
+const NOTE =
+  'M19 9H15.5V13.06L15 13C13.9 13 13 13.9 13 15C13 16.11 13.9 17 15 17C16.11 17 17 16.11 17 15V11H19V9Z';
+
+export default function BinderIcon({
+  className,
+  outlined = false,
+}: BinderIconProps) {
+  if (outlined) {
+    return (
+      <svg className={className} viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fillRule="evenodd"
+          d="M10 4L12 6H20C21.1 6 22 6.89 22 8V18C22 19.1 21.1 20 20 20H4C2.89 20 2 19.1 2 18L2 6C2 4.89 2.89 4 4 4H10ZM4 6V18H20V8H11.17L9.17 6H4Z"
+        />
+        <path fill="currentColor" d={NOTE} />
+      </svg>
+    );
+  }
   return (
     <svg className={className} viewBox="0 0 24 24">
       <path
         fill="currentColor"
-        d="M10 4L12 6H20C21.1 6 22 6.89 22 8V18C22 19.1 21.1 20 20 20H4C2.89 20 2 19.1 2 18L2 6C2 4.89 2.89 4 4 4H10M19 9H15.5V13.06L15 13C13.9 13 13 13.9 13 15C13 16.11 13.9 17 15 17C16.11 17 17 16.11 17 15V11H19V9Z"
+        d={`M10 4L12 6H20C21.1 6 22 6.89 22 8V18C22 19.1 21.1 20 20 20H4C2.89 20 2 19.1 2 18L2 6C2 4.89 2.89 4 4 4H10${NOTE}`}
       />
     </svg>
   );

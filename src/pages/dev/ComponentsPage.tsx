@@ -39,6 +39,9 @@ import StyledPopover from '../../components/StyledPopover';
 import { MenuDivider, MenuItem, MenuList } from '../../components/Menu';
 import Card from '../../components/Card';
 import { Tab } from '@headlessui/react';
+import { MemoryRouter } from 'react-router-dom';
+import NavigationRailItem from '../../components/NavigationRailItem';
+import BinderIcon from '../../icons/BinderIcon';
 import { PrimaryTab, PrimaryTabs } from '../../components/tabs/PrimaryTabs';
 import Badge from '../../components/Badge';
 import KeyBadge from '../../components/KeyBadge';
@@ -543,6 +546,43 @@ export default function ComponentsPage() {
             <Tab.Panel>Set panel</Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
+      </Section>
+
+      <Section title="Navigation rail">
+        <p className="mb-4 text-body-medium text-on-surface-variant">
+          Collapsed below 1024px, expanded above. Pick a destination to move the
+          indicator.
+        </p>
+        {/* Its own router, so the links don't leave this page. */}
+        <MemoryRouter initialEntries={['/songs']}>
+          <div className="flex flex-col w-24 gap-1 py-3 rounded-large bg-surface-container lg:w-[220px] lg:gap-0 lg:px-3">
+            <NavigationRailItem
+              text="Dashboard"
+              to="/"
+              exact
+              icon={<Icon name="dashboard" className="w-6 h-6" />}
+              activeIcon={<Icon name="dashboard" filled className="w-6 h-6" />}
+            />
+            <NavigationRailItem
+              text="Songs"
+              to="/songs"
+              icon={<Icon name="music_note" className="w-6 h-6" />}
+              activeIcon={<Icon name="music_note" filled className="w-6 h-6" />}
+            />
+            <NavigationRailItem
+              text="Binders"
+              to="/binders"
+              icon={<BinderIcon outlined className="w-6 h-6" />}
+              activeIcon={<BinderIcon className="w-6 h-6" />}
+            />
+            <NavigationRailItem
+              text="Team members"
+              to="/members"
+              icon={<Icon name="person" className="w-6 h-6" />}
+              activeIcon={<Icon name="person" filled className="w-6 h-6" />}
+            />
+          </div>
+        </MemoryRouter>
       </Section>
 
       <Section title="Feedback">
