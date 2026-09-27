@@ -32,7 +32,7 @@ export default function FormatPresets({
   if (formatPresets) {
     return (
       <div className="w-full">
-        <div className="text-lg font-semibold flex-between section-border">
+        <div className="text-title-large font-plain text-on-surface section-border">
           Format presets
           {selectedFormatPreset?.id !== defaultFormatPreset?.id && (
             <Button

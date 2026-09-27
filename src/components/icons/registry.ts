@@ -29,8 +29,10 @@ import DesktopWindows from '@material-symbols/svg-400/rounded/desktop_windows.sv
 import Download from '@material-symbols/svg-400/rounded/download.svg?react';
 import Edit from '@material-symbols/svg-400/rounded/edit.svg?react';
 import EditFilled from '@material-symbols/svg-400/rounded/edit-fill.svg?react';
+import ErrorIcon from '@material-symbols/svg-400/rounded/error.svg?react';
 import GroupFilled from '@material-symbols/svg-400/rounded/group-fill.svg?react';
 import Image from '@material-symbols/svg-400/rounded/image.svg?react';
+import Inbox from '@material-symbols/svg-400/rounded/inbox.svg?react';
 import Info from '@material-symbols/svg-400/rounded/info.svg?react';
 import KeyboardArrowDown from '@material-symbols/svg-400/rounded/keyboard_arrow_down.svg?react';
 import KeyboardArrowDownFilled from '@material-symbols/svg-400/rounded/keyboard_arrow_down-fill.svg?react';
@@ -64,6 +66,7 @@ import SwapHoriz from '@material-symbols/svg-400/rounded/swap_horiz.svg?react';
 import SwapHorizFilled from '@material-symbols/svg-400/rounded/swap_horiz-fill.svg?react';
 import Tune from '@material-symbols/svg-400/rounded/tune.svg?react';
 import UnfoldMoreFilled from '@material-symbols/svg-400/rounded/unfold_more-fill.svg?react';
+import Warning from '@material-symbols/svg-400/rounded/warning.svg?react';
 
 // '<name>' is the outlined icon, '<name>-fill' the filled one.
 export const ICONS = {
@@ -94,8 +97,10 @@ export const ICONS = {
   download: Download,
   edit: Edit,
   'edit-fill': EditFilled,
+  error: ErrorIcon,
   'group-fill': GroupFilled,
   image: Image,
+  inbox: Inbox,
   info: Info,
   keyboard_arrow_down: KeyboardArrowDown,
   'keyboard_arrow_down-fill': KeyboardArrowDownFilled,
@@ -129,6 +134,7 @@ export const ICONS = {
   'swap_horiz-fill': SwapHorizFilled,
   tune: Tune,
   'unfold_more-fill': UnfoldMoreFilled,
+  warning: Warning,
 };
 
 /** A registered icon, e.g. 'delete' or 'check_circle-fill'. */

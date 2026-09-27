@@ -174,7 +174,7 @@ test('LoginPage shows the API errors in a red alert', async () => {
   fireEvent.click(screen.getByText('Login'));
 
   const message = await screen.findByText('Invalid login credentials.');
-  expect(message).toHaveClass('bg-red-100');
+  expect(message.parentElement).toHaveClass('bg-error-container');
   expect(screen.getByPlaceholderText('password')).toHaveValue('');
 });
 
@@ -193,7 +193,7 @@ test('SignUpPage shows success in blue and the API errors in red', async () => {
   fireEvent.click(screen.getByText('Sign Up'));
 
   const thanks = await screen.findByText(/thanks for signing up/i);
-  expect(thanks).toHaveClass('bg-blue-100');
+  expect(thanks.parentElement).toHaveClass('bg-secondary-container');
   expect(AuthApi.signUp).toHaveBeenCalledWith({
     email: 'a@b.co',
     password: 'correct horse',
@@ -211,7 +211,9 @@ test('SignUpPage shows success in blue and the API errors in red', async () => {
   fillIn();
   fireEvent.click(screen.getByText('Sign Up'));
 
-  expect(await screen.findByText('Email is taken')).toHaveClass('bg-red-100');
+  expect((await screen.findByText('Email is taken')).parentElement).toHaveClass(
+    'bg-error-container'
+  );
 });
 
 test('ForgotPasswordPage sends the typed email', async () => {
@@ -267,7 +269,9 @@ test('ResetPasswordPage shows the API errors, or rejects a link without its para
   type('password', 'correct horse');
   type('enter your password again', 'correct horse');
   fireEvent.click(screen.getByText('Set password'));
-  expect(await screen.findByText('Link expired')).toHaveClass('bg-red-100');
+  expect((await screen.findByText('Link expired')).parentElement).toHaveClass(
+    'bg-error-container'
+  );
   unmount();
 
   renderAt(
@@ -305,9 +309,9 @@ test('ClaimInvitationPage shows a 404 and sends a 400 to sign up', async () => {
     '/invitations',
     <ClaimInvitationPage />
   );
-  expect(await screen.findByText('Invitation not found')).toHaveClass(
-    'bg-red-100'
-  );
+  expect(
+    (await screen.findByText('Invitation not found')).parentElement
+  ).toHaveClass('bg-error-container');
   unmount();
 
   vi.mocked(InvitationApi.claimOne).mockRejectedValueOnce({
@@ -335,7 +339,9 @@ test('InvitationSignUpPage signs up with the token and shows the API message', a
   type('enter your password again', 'correct horse');
   fireEvent.click(screen.getByText('Sign Up'));
 
-  expect(await screen.findByText('Token expired')).toHaveClass('bg-red-100');
+  expect((await screen.findByText('Token expired')).parentElement).toHaveClass(
+    'bg-error-container'
+  );
   expect(InvitationApi.signUpThroughToken).toHaveBeenCalledWith({
     token: 'INV',
     password: 'correct horse',

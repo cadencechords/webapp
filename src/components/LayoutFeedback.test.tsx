@@ -44,9 +44,9 @@ const song = {
 } as Song;
 const member = { auth: { currentUser: { id: 1, role: { permissions: [] } } } };
 
-test('Alert defaults to blue and not dismissable', () => {
+test('Alert defaults to blue (secondary-container) and not dismissable', () => {
   const { container } = render(<Alert>Hi</Alert>);
-  expect(container.firstElementChild).toHaveClass('bg-blue-100');
+  expect(container.firstElementChild).toHaveClass('bg-secondary-container');
   expect(screen.queryByRole('button')).not.toBeInTheDocument();
 });
 
@@ -72,7 +72,12 @@ test('StyledDialog defaults to md, fullscreen, bordered, with a close button', (
 test('PageTitle defaults to a left-aligned, read-only title', () => {
   render(<PageTitle title="Songs" />);
   const title = screen.getByRole('heading');
-  expect(title).toHaveClass('justify-left');
+  // justify-start: the old justify-left/-right weren't Tailwind classes.
+  expect(title).toHaveClass(
+    'justify-start',
+    'text-headline-small-emphasized',
+    'text-on-surface'
+  );
   expect(title.className).not.toContain('undefined');
 });
 

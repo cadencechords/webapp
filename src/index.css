@@ -120,6 +120,7 @@
 @import './styles/motion.css';
 @import './styles/slider.css';
 @import './styles/lists.css';
+@import './styles/snackbar.css';
 
 /* Utilities the /dev/tokens page builds dynamically (the scanner can't see them). */
 @source inline('text-{display,headline,title,body,label}-{large,medium,small}{,-emphasized}');
@@ -274,12 +275,14 @@ button {
     @apply bg-surface-container-highest text-on-surface state-layer-flat;
   }
 
+  /* Secondary text beside a heading or label. */
   .subtext {
-    @apply text-gray-600 dark:text-dark-gray-200;
+    @apply text-on-surface-variant;
   }
 
+  /* A section's top divider. */
   .section-border {
-    @apply pt-3 mt-8 mb-3 border-t flex-between dark:border-dark-gray-600;
+    @apply pt-3 mt-8 mb-3 border-t border-outline-variant flex-between;
   }
 }
 

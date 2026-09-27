@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 type SectionTitleProps = {
@@ -6,6 +7,8 @@ type SectionTitleProps = {
   className?: string;
 };
 
+// A section's heading in title-large, optionally over an outline-variant
+// divider.
 export default function SectionTitle({
   title,
   underline,
@@ -13,9 +16,11 @@ export default function SectionTitle({
 }: SectionTitleProps) {
   return (
     <h2
-      className={`mt-3 mb-2 font-semibold text-lg ${
-        underline ? ' border-b dark:border-dark-gray-600 pb-2' : ''
-      } ${className}`}
+      className={classNames(
+        'mt-3 mb-2 text-title-large font-plain text-on-surface',
+        underline && 'border-b border-outline-variant pb-2',
+        className
+      )}
     >
       {title}
     </h2>

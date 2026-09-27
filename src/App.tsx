@@ -38,7 +38,8 @@ function App() {
             </CenteredPage>
           }
         >
-          <ToastContainer />
+          {/* M3 snackbars: see src/styles/snackbar.css. */}
+          <ToastContainer position="bottom-center" hideProgressBar />
           <Sentry.ErrorBoundary
             showDialog
             fallback={({ error }) => <AppFallback error={error} />}

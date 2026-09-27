@@ -1,15 +1,20 @@
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import Button from './Button';
 import Icon from './Icon';
+import type { OutlinedIconName } from './icons/registry';
 
 type AlertProps = {
   dismissable?: boolean;
-  color?: keyof typeof COLOR_CLASSES;
+  /** The severity: red for errors, yellow for warnings, green for success,
+      blue for information and gray for a neutral note. */
+  color?: keyof typeof SEVERITIES;
   onDismiss?: () => void;
   children?: ReactNode;
   className?: string;
 };
 
+// An M3 inline banner: the severity's container color, a leading icon and
+// body-medium text, with an optional dismiss button.
 export default function Alert({
   dismissable = false,
   color = 'blue',
@@ -17,29 +22,53 @@ export default function Alert({
   children,
   className,
 }: AlertProps) {
+  const { container, icon } = SEVERITIES[color];
   return (
     <div
-      className={`rounded-lg ${COLOR_CLASSES[color]} flex-between p-2 ${className}`}
+      className={classNames(
+        'flex items-start gap-3 rounded-medium px-4 py-3 text-body-medium',
+        container,
+        className
+      )}
     >
-      {children}
+      <Icon name={icon} className="w-5 h-5 shrink-0 my-px" />
+      <div className="flex-1 min-w-0">{children}</div>
       {dismissable && (
-        <Button size="xs" variant="open" color="black" onClick={onDismiss}>
-          <Icon name="close" className="w-4 h-4" />
-        </Button>
+        <button
+          type="button"
+          aria-label="Dismiss"
+          className="flex-center shrink-0 w-10 h-10 -my-2.5 -mr-2 rounded-full state-layer-flat focus-ring"
+          onClick={onDismiss}
+        >
+          <Icon name="close" className="w-5 h-5" />
+        </button>
       )}
     </div>
   );
 }
 
-const COLOR_CLASSES = {
-  red: 'bg-red-100 text-red-800 dark:bg-dark-red dark:text-red-900',
-  blue: 'bg-blue-100 text-blue-800',
-  gray: 'bg-gray-100 text-gray-800 dark:bg-dark-gray-700 dark:text-dark-gray-200',
-  yellow: 'bg-yellow-100 text-gray-800',
-  green: 'bg-green-100 text-gray-800',
-  indigo: 'bg-indigo-100 text-indigo-800',
-  purple: 'bg-purple-100 text-purple-800',
-  pink: 'bg-pink-100 text-pink-800',
-  black: 'bg-black text-white',
-  white: 'bg-white text-black',
+const SEVERITIES: Record<
+  'red' | 'yellow' | 'green' | 'blue' | 'gray',
+  { container: string; icon: OutlinedIconName }
+> = {
+  red: {
+    container: 'bg-error-container text-on-error-container',
+    icon: 'error',
+  },
+  yellow: {
+    container: 'bg-tertiary-container text-on-tertiary-container',
+    icon: 'warning',
+  },
+  green: {
+    container: 'bg-tertiary-container text-on-tertiary-container',
+    icon: 'check_circle',
+  },
+  blue: {
+    container: 'bg-secondary-container text-on-secondary-container',
+    icon: 'info',
+  },
+  gray: {
+    container: 'bg-surface-container-highest text-on-surface-variant',
+    icon: 'info',
+  },
 };
