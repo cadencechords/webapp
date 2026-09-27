@@ -148,8 +148,11 @@ const IconButton = forwardRef<HTMLButtonElement, VariantProps>(
       <button
         disabled={disabled}
         className={classNames(
+          // No display class: callers hide these with `hidden sm:block`.
+          // Icons are display:block (preflight), so center them in the
+          // minimum size with margins instead.
           baseClasses,
-          'inline-flex items-center justify-center',
+          '[&>svg]:mx-auto',
           iconSizes[size],
           disabled ? disabledContentClasses : ICON_COLORS[color],
           className

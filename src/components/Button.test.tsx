@@ -242,3 +242,39 @@ describe('Button colors and states (CAD-84)', () => {
     );
   });
 });
+
+test('loading behaves as before: filled and tonal disable, text and outlined drop clicks', () => {
+  const onClick = vi.fn<MouseEventHandler<HTMLButtonElement>>();
+  render(
+    <>
+      <Button loading onClick={onClick}>
+        filled
+      </Button>
+      <Button variant="accent" loading onClick={onClick}>
+        tonal
+      </Button>
+      <Button variant="outlined" name="outlined" loading onClick={onClick}>
+        x
+      </Button>
+    </>
+  );
+  const [filled, tonal] = screen.getAllByRole('button');
+  expect(filled).toBeDisabled();
+  expect(tonal).toBeDisabled();
+  const outlined = screen.getByRole('button', { name: 'outlined' });
+  expect(outlined).toBeEnabled();
+  userEvent.click(outlined);
+  expect(onClick).not.toHaveBeenCalled();
+});
+
+test("an icon button leaves display to the caller's className", () => {
+  // SongDetailPage hides its print button with `hidden sm:block`
+  render(
+    <Button variant="icon" className="hidden sm:block">
+      i
+    </Button>
+  );
+  expect(screen.getByRole('button', { hidden: true }).className).not.toMatch(
+    /\b(inline-flex|flex|inline-block|grid)\b/
+  );
+});

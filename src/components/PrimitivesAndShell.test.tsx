@@ -327,3 +327,29 @@ test('connected button groups round the outer corners and the selected button', 
     'rounded-r-[16px]'
   );
 });
+
+test('connected groups: a lone button is round, S size, and every selected button rounds', () => {
+  const { rerender } = render(
+    <SegmentedControl
+      options={['Only']}
+      selected=""
+      onChange={() => {}}
+      name="lone"
+    />
+  );
+  expect(screen.getByText('Only')).toHaveClass('rounded-[20px]', 'h-10');
+
+  rerender(
+    <ButtonGroup
+      options={[
+        { value: 'a', display: 'A' },
+        { value: 'b', display: 'B' },
+        { value: 'c', display: 'C' },
+      ]}
+      selected={['a', 'c']}
+    />
+  );
+  expect(screen.getByText('A')).toHaveClass('rounded-[16px]', 'bg-primary');
+  expect(screen.getByText('B')).toHaveClass('rounded-[4px]');
+  expect(screen.getByText('C')).toHaveClass('rounded-[16px]', 'bg-primary');
+});
