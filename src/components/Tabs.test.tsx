@@ -289,10 +289,10 @@ test('selecting a tab scrolls it into view, sideways, when the tabs overflow', (
   // A 150px list, scrolled to the start: "Set" (200-300) is out of view.
   let scrollLeft = 0;
   Object.defineProperty(list, 'clientWidth', { value: 150 });
-  Object.defineProperty(list, 'scrollLeft', {
-    get: () => scrollLeft,
-    set: (value: number) => (scrollLeft = value),
-  });
+  Object.defineProperty(list, 'scrollLeft', { get: () => scrollLeft });
+  list.scrollTo = ((options: ScrollToOptions) => {
+    scrollLeft = options.left ?? scrollLeft;
+  }) as typeof list.scrollTo;
   vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(100);
 
   fireEvent.click(screen.getByRole('tab', { name: 'Set' }));
