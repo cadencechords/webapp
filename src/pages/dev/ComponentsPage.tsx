@@ -101,10 +101,13 @@ export default function ComponentsPage() {
   const [dialog, setDialog] = useState<
     'basic' | 'fullscreen' | 'delete' | 'drawer' | 'sheet' | null
   >(null);
-  // ConfirmDeleteDialog stays loading after a confirm, so each opening gets
-  // a fresh one.
+  // ConfirmDeleteDialog stays loading after a confirm, so a fresh one is
+  // mounted after each close (not on open, which would skip its enter).
   const [deleteKey, setDeleteKey] = useState(0);
-  const closeDialog = () => setDialog(null);
+  const closeDialog = () => {
+    if (dialog === 'delete') setDeleteKey(key => key + 1);
+    setDialog(null);
+  };
 
   return (
     <div className="min-h-screen p-6 bg-surface text-on-surface font-plain">
@@ -335,13 +338,7 @@ export default function ComponentsPage() {
           <Button variant="accent" onClick={() => setDialog('fullscreen')}>
             Full-screen dialog
           </Button>
-          <Button
-            variant="accent"
-            onClick={() => {
-              setDeleteKey(key => key + 1);
-              setDialog('delete');
-            }}
-          >
+          <Button variant="accent" onClick={() => setDialog('delete')}>
             Confirm delete
           </Button>
           <Button variant="accent" onClick={() => setDialog('drawer')}>

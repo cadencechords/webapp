@@ -140,8 +140,14 @@
       var(--md-sys-motion-easing-default-effects);
 }
 @utility transition-dialog-exit {
+  /* The scale keeps a spatial duration (0 with reduced motion) with an
+     effects curve, capped at the fade so it ends by the time it's hidden. */
   transition:
-    scale var(--md-sys-motion-duration-fast-effects)
+    scale
+      min(
+        var(--md-sys-motion-duration-fast-spatial),
+        var(--md-sys-motion-duration-fast-effects)
+      )
       var(--md-sys-motion-easing-fast-effects),
     opacity var(--md-sys-motion-duration-fast-effects)
       var(--md-sys-motion-easing-fast-effects);
