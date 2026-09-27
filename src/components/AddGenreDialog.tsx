@@ -127,7 +127,7 @@ export default function AddGenreDialog({
       />
       {availableGenres.length === 0 ? (
         <div className="py-4">
-          <NoDataMessage loading={loading}>
+          <NoDataMessage compact loading={loading}>
             There are no genres to choose from
           </NoDataMessage>
         </div>

@@ -553,6 +553,13 @@ export default function ComponentsPage() {
             <Button loading>Save</Button>
           </div>
         </Row>
+        <Row label="Full-width loading">
+          <div className="w-full max-w-md">
+            <Button loading full>
+              Login
+            </Button>
+          </div>
+        </Row>
         <Row label="Linear progress">
           <div className="flex flex-col gap-4 w-full max-w-md">
             <LinearProgress />
@@ -607,6 +614,11 @@ export default function ComponentsPage() {
         <Row label="Empty state">
           <div className="w-full max-w-md">
             <NoDataMessage type="songs" />
+          </div>
+        </Row>
+        <Row label="Compact">
+          <div className="w-full max-w-md">
+            <NoDataMessage compact>No binders found</NoDataMessage>
           </div>
         </Row>
         <Row label="Titles">

@@ -49,7 +49,7 @@ export default function SetlistSessionsList({
         Sessions
       </div>
       {sessions.length === 0 ? (
-        <NoDataMessage loading={loading}>
+        <NoDataMessage compact loading={loading}>
           No active sessions to show
         </NoDataMessage>
       ) : (

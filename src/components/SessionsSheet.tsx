@@ -47,7 +47,7 @@ export default function SessionsSheet({
           />
         ))
       ) : (
-        <NoDataMessage>No available sessions to join</NoDataMessage>
+        <NoDataMessage compact>No available sessions to join</NoDataMessage>
       )}
     </div>
   );

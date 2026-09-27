@@ -63,7 +63,7 @@ export default function SongFilesTab({
       )}
 
       {loading || files?.length === 0 ? (
-        <NoDataMessage loading={loading} type="files" />
+        <NoDataMessage compact loading={loading} type="files" />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {files?.map(file => (

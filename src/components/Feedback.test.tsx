@@ -1,4 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { toast } from 'react-toastify';
 import userEvent from '@testing-library/user-event';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -11,6 +13,9 @@ import LinearProgress, {
   wavePath,
 } from './feedback/LinearProgress';
 import LoadingIndicator from './feedback/LoadingIndicator';
+import Snackbars from './feedback/Snackbars';
+import Icon from './Icon';
+import OutlinedInput from './inputs/OutlinedInput';
 import {
   LoadingAnimator,
   SHAPE_COUNT,
@@ -38,6 +43,21 @@ describe('Alert', () => {
     expect(banner).toHaveClass(container, text, 'rounded-medium');
     // A decorative leading icon: screen readers read the message alone.
     expect(banner.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  test.each([
+    ['red', 'error'],
+    ['yellow', 'warning'],
+    ['green', 'check_circle'],
+    ['blue', 'info'],
+    ['gray', 'info'],
+  ] as const)('%s leads with the %s icon', (color, icon) => {
+    // yellow and green share tertiary-container: the icon tells them apart.
+    render(<Alert color={color}>Message</Alert>);
+    const svg = screen.getByText('Message').parentElement?.querySelector('svg');
+    const expected = document.createElement('div');
+    expected.innerHTML = renderToStaticMarkup(<Icon name={icon} />);
+    expect(svg?.innerHTML).toBe(expected.firstElementChild?.innerHTML);
   });
 
   test('keeps its className and dismisses from a labelled button', () => {
@@ -124,6 +144,15 @@ describe('CSS', () => {
     );
   });
 
+  test('snackbars sit above the mobile nav, inset on phones', () => {
+    expect(css).toMatch(
+      /@media \(max-width: 767px\) \{\s*\.Toastify \.Toastify__toast-container--bottom-center \{\s*bottom: 3\.5rem/
+    );
+    expect(css).toMatch(
+      /@media only screen and \(max-width: 480px\) \{\s*\.Toastify \.Toastify__toast-container \{\s*width: auto;\s*left: 1rem;\s*right: 1rem/
+    );
+  });
+
   test('.subtext and .section-border use the color tokens', () => {
     expect(css).toMatch(
       /\.subtext \{\s*color: var\(--md-sys-color-on-surface-variant\)/
@@ -167,6 +196,21 @@ describe('loading shapes', () => {
     expect(y).toBeCloseTo((shapes[0][10][1] + shapes[1][10][1]) / 2);
   });
 
+  test('shapes keep their size through every morph', () => {
+    // Every outline starts straight up: a morph between outlines starting at
+    // different angles drags points across the shape and shrinks it.
+    const meanRadius = (points: [number, number][]) =>
+      points.reduce((sum, [x, y]) => sum + Math.hypot(x, y), 0) / points.length;
+    const shapes = getShapes();
+    for (let i = 0; i < SHAPE_COUNT; i++) {
+      const ends =
+        (meanRadius(shapes[i]) + meanRadius(shapes[(i + 1) % SHAPE_COUNT])) / 2;
+      expect(meanRadius(morphedShape(i + 0.5))).toBeGreaterThan(ends * 0.9);
+      expect(shapes[i][0][0]).toBeCloseTo(0, 1);
+      expect(shapes[i][0][1]).toBeLessThan(0);
+    }
+  });
+
   test('toPath draws a closed path at the given scale', () => {
     expect(
       toPath(
@@ -177,6 +221,30 @@ describe('loading shapes', () => {
         10
       )
     ).toBe('M10.00 0.00L0.00 -5.00Z');
+  });
+
+  test('the animator starts a new shape at 650ms, and turns without jumps', () => {
+    const animator = new LoadingAnimator();
+    let now = 0;
+    animator.update(now);
+    let previous = animator.rotation;
+    let largestTurn = 0;
+    const morphAt: Record<number, number> = {};
+    // 1ms frames for 2s: the morph's target moves on at 650ms and 1300ms.
+    for (let ms = 1; ms <= 2000; ms++) {
+      animator.update((now += 1));
+      const turn = Math.abs(animator.rotation - previous);
+      largestTurn = Math.max(largestTurn, Math.min(turn, 360 - turn));
+      previous = animator.rotation;
+      morphAt[ms] = animator.morph;
+    }
+    // Settled on the way to the second shape just before 650ms, heading for
+    // the third after it, and so on.
+    expect(morphAt[649]).toBeLessThan(1.2);
+    expect(morphAt[900]).toBeGreaterThan(1.5);
+    expect(morphAt[1299]).toBeLessThan(2.2);
+    expect(morphAt[1550]).toBeGreaterThan(2.5);
+    expect(largestTurn).toBeLessThan(2);
   });
 
   test('the animator moves on a shape every 650ms, on an overshooting spring', () => {
@@ -205,9 +273,10 @@ describe('loading shapes', () => {
 describe('LoadingIndicator', () => {
   function runFrames(count: number, step = 1000 / 60) {
     const frames: FrameRequestCallback[] = [];
+    let id = 0;
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => {
       frames.push(callback);
-      return frames.length;
+      return ++id;
     });
     return () => {
       let now = 0;
@@ -271,14 +340,24 @@ describe('LoadingIndicator', () => {
   });
 
   test('stops animating when it unmounts', () => {
+    const run = runFrames(5);
     const cancel = vi.spyOn(window, 'cancelAnimationFrame');
     const { unmount } = render(<LoadingIndicator />);
+    run();
     unmount();
-    expect(cancel).toHaveBeenCalled();
+    // The frame it scheduled last, not a stale one.
+    const latest = vi.mocked(window.requestAnimationFrame).mock.results.at(-1)
+      ?.value as number;
+    expect(latest).toBeGreaterThan(1);
+    expect(cancel).toHaveBeenCalledWith(latest);
   });
 });
 
 describe('LinearProgress', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   test('bezier matches CSS easing at its ends and midpoint', () => {
     const linear = bezier(0, 0, 1, 1);
     expect(linear(0.3)).toBeCloseTo(0.3, 2);
@@ -321,7 +400,21 @@ describe('LinearProgress', () => {
       'stroke-secondary-container'
     );
     expect(box.querySelectorAll('path')[1]).toHaveClass('stroke-primary');
-    vi.restoreAllMocks();
+  });
+
+  test('stops animating when it unmounts', () => {
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(200);
+    const frames: FrameRequestCallback[] = [];
+    const request = vi
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation(callback => frames.push(callback));
+    const cancel = vi.spyOn(window, 'cancelAnimationFrame');
+    const { unmount } = render(<LinearProgress />);
+    for (let i = 1; i <= 3; i++) act(() => frames[frames.length - 1](i * 16));
+    unmount();
+    const latest = request.mock.results.at(-1)?.value as number;
+    expect(latest).toBeGreaterThan(1);
+    expect(cancel).toHaveBeenCalledWith(latest);
   });
 });
 
@@ -351,6 +444,20 @@ describe('NoDataMessage', () => {
     ).toHaveClass('text-body-medium');
   });
 
+  test('compact: one body-medium line beside a small cookie', () => {
+    const { container } = render(
+      <NoDataMessage compact>No binders found</NoDataMessage>
+    );
+    expect(screen.getByText('No binders found').parentElement).toHaveClass(
+      'text-body-medium',
+      'text-on-surface-variant'
+    );
+    expect(container.querySelector('.text-headline-small')).toBeNull();
+    expect(
+      container.querySelector('svg.fill-primary-container')?.parentElement
+    ).toHaveClass('w-10', 'h-10');
+  });
+
   test('shows the loading indicator while loading', () => {
     const { container } = render(<NoDataMessage loading type="files" />);
     expect(container.querySelector('[data-loading-indicator]')).not.toBeNull();
@@ -363,6 +470,48 @@ test('PageLoading shows its message over the loading indicator', () => {
   expect(screen.getByText('Please wait...')).toBeInTheDocument();
   expect(container.querySelector('[data-loading-indicator]')).not.toBeNull();
 });
+
+test('Snackbars: bottom-centered, without the progress bar, as alerts', async () => {
+  render(<Snackbars />);
+  act(() => {
+    toast('Host ended session');
+  });
+  const message = await screen.findByText('Host ended session');
+  expect(message.closest('.Toastify__toast-container')).toHaveClass(
+    'Toastify__toast-container--bottom-center'
+  );
+  expect(message.closest('[role="alert"]')).not.toBeNull();
+  // hideProgressBar keeps the timer bar (it drives autoClose) but hides it.
+  expect(document.querySelector('.Toastify__progress-bar')).toHaveAttribute(
+    'aria-hidden',
+    'true'
+  );
+});
+
+test('OutlinedInput shows the indicator in its button while loading', () => {
+  const { container } = render(
+    <OutlinedInput value="" onChange={() => {}} button="Join" buttonLoading />
+  );
+  expect(screen.queryByText('Join')).not.toBeInTheDocument();
+  const indicator = container.querySelector('[data-loading-indicator]');
+  expect(indicator).toHaveAttribute('width', '24');
+  expect(indicator?.getAttribute('class')).not.toMatch(/text-primary/);
+});
+
+test.each(['filled', 'accent', 'open'] as const)(
+  'a loading %s Button shows an inline indicator, centered by the button',
+  variant => {
+    const { container } = render(
+      <Button variant={variant} loading full>
+        Save
+      </Button>
+    );
+    const indicator = container.querySelector('[data-loading-indicator]');
+    expect(indicator).toHaveClass('inline-block');
+    expect(indicator).toHaveAttribute('width', '24');
+    expect(screen.queryByText('Save')).not.toBeInTheDocument();
+  }
+);
 
 test('a loading Button shows the indicator in its own text color', () => {
   const { container } = render(<Button loading>Save</Button>);

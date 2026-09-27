@@ -11,7 +11,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import PageLoading from './components/PageLoading';
 import SecuredRoutes from './components/SecuredRoutes';
 import SignUpPage from './pages/SignUpPage';
-import { ToastContainer } from 'react-toastify';
+import Snackbars from './components/feedback/Snackbars';
 import JoinLinkPage from './pages/JoinLinkPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ThemeProvider from './contexts/ThemeProvider';
@@ -38,8 +38,7 @@ function App() {
             </CenteredPage>
           }
         >
-          {/* M3 snackbars: see src/styles/snackbar.css. */}
-          <ToastContainer position="bottom-center" hideProgressBar />
+          <Snackbars />
           <Sentry.ErrorBoundary
             showDialog
             fallback={({ error }) => <AppFallback error={error} />}

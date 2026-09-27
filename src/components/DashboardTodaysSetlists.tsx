@@ -60,7 +60,7 @@ export default function DashboardTodaysSetlists({
       {setlists && setlists.length > 0 ? (
         buildSetlists()
       ) : (
-        <NoDataMessage>No sets are scheduled for today</NoDataMessage>
+        <NoDataMessage compact>No sets are scheduled for today</NoDataMessage>
       )}
     </div>
   );

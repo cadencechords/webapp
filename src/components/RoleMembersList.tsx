@@ -40,7 +40,9 @@ export default function RoleMembersList({
           <RoleMemberRow key={member.id} member={member} role={role} />
         )}
         ListEmpty={
-          <NoDataMessage>There are no members in this role yet</NoDataMessage>
+          <NoDataMessage compact>
+            There are no members in this role yet
+          </NoDataMessage>
         }
       />
       <AddMembersToRoleDialog

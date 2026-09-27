@@ -64,7 +64,7 @@ export default function SearchResults({
             Binders
           </h3>
           {binders.length === 0 ? (
-            <NoDataMessage>No binders found</NoDataMessage>
+            <NoDataMessage compact>No binders found</NoDataMessage>
           ) : (
             binders
           )}
@@ -72,7 +72,7 @@ export default function SearchResults({
         <section className="mb-4">
           <h3 className="mb-1 font-semibold dark:text-dark-gray-100">Songs</h3>
           {songs.length === 0 ? (
-            <NoDataMessage>No songs found</NoDataMessage>
+            <NoDataMessage compact>No songs found</NoDataMessage>
           ) : (
             songs
           )}
@@ -80,7 +80,7 @@ export default function SearchResults({
         <section>
           <h3 className="mb-1 font-semibold dark:text-dark-gray-100">Sets</h3>
           {setlists.length === 0 ? (
-            <NoDataMessage>No sets found</NoDataMessage>
+            <NoDataMessage compact>No sets found</NoDataMessage>
           ) : (
             setlists
           )}

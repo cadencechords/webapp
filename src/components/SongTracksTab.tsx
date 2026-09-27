@@ -36,7 +36,7 @@ export default function SongTracksTab({
         </Button>
       </div>
       {song?.tracks?.length === 0 ? (
-        <NoDataMessage type="tracks" />
+        <NoDataMessage compact type="tracks" />
       ) : (
         <div className="overflow-x-scroll whitespace-nowrap flex">
           {song?.tracks?.map(track => (

@@ -45,7 +45,7 @@ export default function FormatPresets({
           )}
         </div>
         {formatPresets.length === 0 ? (
-          <NoDataMessage type="format presets" />
+          <NoDataMessage compact type="format presets" />
         ) : (
           <div className="flex gap-4 p-4 overflow-x-auto flex-nowrap">
             {formatPresets.map(formatPreset => (

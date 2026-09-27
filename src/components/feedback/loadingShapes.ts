@@ -1,17 +1,17 @@
-// Material 3 Expressive loading-indicator shapes and their morph.
-//
-// Ported from m3e-canvas lib/shapes.ts (MIT License, Copyright (c) 2026
-// lnkiai, https://github.com/lnkiai/m3e-canvas). That file ports
-// material-components-android's LoadingIndicatorAnimatorDelegate and
-// LoadingIndicatorDrawingDelegate (Apache License 2.0, Copyright (C) 2024
-// The Android Open Source Project), by way of
-// https://github.com/Aler1x/m3-loading-indicator (Apache License 2.0,
-// Copyright 2026 Alerix). The SVG path data is from the Material Design
-// shape assets (Copyright (C) 2024 Google LLC).
-//
-// Each shape is sampled into the same number of points, so a morph is a
-// point-by-point interpolation. Sequence: soft burst, 9-sided cookie,
-// pentagon, pill, sunny, 4-sided cookie, oval.
+/*! Loading-indicator shapes and animation ported from M3E Canvas
+ * (https://github.com/lnkiai/m3e-canvas), Copyright (c) 2026 lnkiai, MIT
+ * License. It ports material-components-android's
+ * LoadingIndicatorAnimatorDelegate and LoadingIndicatorDrawingDelegate
+ * (Copyright (C) 2024 The Android Open Source Project, Apache License 2.0),
+ * following https://github.com/Aler1x/m3-loading-indicator (Copyright 2026
+ * Alerix, Apache License 2.0). Shape path data: Material Design assets,
+ * Copyright (C) 2024 Google LLC. License texts and notices:
+ * /third-party-notices.txt. @license MIT AND Apache-2.0 */
+
+// Material 3 Expressive loading-indicator shapes and their morph. Each shape
+// is sampled into the same number of points, so a morph is a point-by-point
+// interpolation. Sequence: soft burst, 9-sided cookie, pentagon, pill, sunny,
+// 4-sided cookie, oval.
 
 import { stepSpring, type SpringState } from '../../utils/spring';
 
@@ -131,9 +131,25 @@ function resample(points: Point[], n: number): Point[] {
   return out;
 }
 
+// Starts the outline at its point nearest straight up, so every shape starts
+// at the same angle: morphs are point by point, and mismatched starts drag
+// points across the shape, shrinking it mid-morph.
+function startAtTop(points: Point[]): Point[] {
+  let start = 0;
+  let nearest = Infinity;
+  points.forEach(([x, y], i) => {
+    const off = Math.abs(Math.atan2(y, x) + Math.PI / 2);
+    if (off < nearest) {
+      nearest = off;
+      start = i;
+    }
+  });
+  return [...points.slice(start), ...points.slice(0, start)];
+}
+
 function oval(n: number): Point[] {
   return Array.from({ length: n }, (_, i): Point => {
-    const t = (i / n) * 2 * Math.PI;
+    const t = (i / n) * 2 * Math.PI - Math.PI / 2;
     return [Math.cos(t), 0.74 * Math.sin(t)];
   });
 }
@@ -144,7 +160,7 @@ let shapes: Point[][] | null = null;
 export function getShapes(): Point[][] {
   shapes ??= SHAPE_PATHS.map(path =>
     path
-      ? resample(normalize(pathToPoints(path.d)), POINTS_PER_SHAPE)
+      ? startAtTop(resample(normalize(pathToPoints(path.d)), POINTS_PER_SHAPE))
       : oval(POINTS_PER_SHAPE)
   );
   return shapes;

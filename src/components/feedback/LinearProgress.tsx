@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 
 // The M3 Expressive indeterminate linear progress indicator: two primary
 // segments chase along a secondary-container track, with 4px gaps and round
-// caps, optionally wavy.
-//
-// Ported from m3e-canvas components/Loading.tsx (MIT License, Copyright (c)
-// 2026 lnkiai, https://github.com/lnkiai/m3e-canvas), which follows
-// material-components-android's linear indeterminate timings.
+// caps, optionally wavy. Unlike upstream, the gap is measured between the
+// round caps at every thickness.
+
+/*! Ported from M3E Canvas components/Loading.tsx
+ * (https://github.com/lnkiai/m3e-canvas), Copyright (c) 2026 lnkiai, MIT
+ * License, which follows material-components-android's linear indeterminate
+ * timings. License text: /third-party-notices.txt. @license MIT */
 
 type LinearProgressProps = {
   /** A wave through the active segments (M3 Expressive's wavy style). */

@@ -50,7 +50,7 @@ export default function DetailSection({
           ))}
         </div>
       ) : (
-        <NoDataMessage type={title.toLowerCase()} />
+        <NoDataMessage compact type={title.toLowerCase()} />
       )}
     </div>
   );

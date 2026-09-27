@@ -46,7 +46,9 @@ export default function PendingInvitationsList({
     <>
       <SectionTitle title="Pending invitations" />
       {invitations.length === 0 ? (
-        <NoDataMessage loading={loading}>No pending invitations</NoDataMessage>
+        <NoDataMessage compact loading={loading}>
+          No pending invitations
+        </NoDataMessage>
       ) : (
         <table className="w-full">
           <TableHead columns={['EMAIL', 'SENT', '']} />

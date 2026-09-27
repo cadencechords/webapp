@@ -62,8 +62,10 @@ export default function LoadingIndicator({
       width={size}
       height={size}
       viewBox={`${-size / 2} ${-size / 2} ${size} ${size}`}
+      // Inline, as the dots it replaces were, so a button or a text-center
+      // box centers it (Tailwind makes svgs blocks).
       className={classNames(
-        'shrink-0',
+        'inline-block align-middle shrink-0',
         color === 'primary' &&
           (contained ? 'text-on-primary-container' : 'text-primary'),
         className
