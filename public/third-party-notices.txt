@@ -1,9 +1,9 @@
 Third-party notices for the Cadence web app
 ===========================================
 
-The loading indicator's shapes and animation (src/components/feedback/
-loadingShapes.ts) and the linear progress indicator (src/components/feedback/
-LinearProgress.tsx) are ported from M3E Canvas.
+The loading indicator (src/components/feedback/loadingShapes.ts and
+LoadingIndicator.tsx) and the linear progress indicator
+(src/components/feedback/LinearProgress.tsx) are ported from M3E Canvas.
 
 -------------------------------------------------------------------------------
 M3E Canvas

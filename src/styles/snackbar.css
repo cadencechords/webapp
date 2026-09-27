@@ -74,11 +74,11 @@
   outline-offset: -3px;
 }
 
-/* Below md, above the mobile nav bar (as SearchPage's progress bar is). */
-@media (max-width: 767px) {
-  .Toastify .Toastify__toast-container--bottom-center {
-    bottom: 3.5rem;
-  }
+/* Above the bottom bars: the mobile nav below md, and the set presenter's
+   navigation at every width (it's 45px; a toast over it would take its
+   clicks). */
+.Toastify .Toastify__toast-container--bottom-center {
+  bottom: 3.5rem;
 }
 
 /* On phones toastify stretches toasts edge to edge and squares them. */

@@ -1,3 +1,7 @@
+/*! Adapted from M3E Canvas components/Loading.tsx
+ * (https://github.com/lnkiai/m3e-canvas), Copyright (c) 2026 lnkiai, MIT
+ * License. License text: /third-party-notices.txt. @license MIT */
+
 import classNames from 'classnames';
 import { useEffect, useRef } from 'react';
 import { prefersReducedMotion } from '../../utils/spring';
@@ -21,8 +25,9 @@ type LoadingIndicatorProps = {
 
 // The M3 Expressive loading indicator: a shape that morphs through the
 // Material shapes while it turns (see loadingShapes.ts). With reduced motion
-// it keeps its first shape and only turns, steadily. It's decorative, as the
-// dots it replaces were: screen readers announce nothing for it.
+// it keeps its first shape and only turns, steadily. It's aria-hidden:
+// screen readers announce nothing for it, as they did for the empty dots it
+// replaces.
 export default function LoadingIndicator({
   size = 48,
   contained = false,

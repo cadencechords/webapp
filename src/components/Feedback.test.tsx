@@ -1,4 +1,10 @@
-import { act, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { toast } from 'react-toastify';
 import userEvent from '@testing-library/user-event';
@@ -146,7 +152,7 @@ describe('CSS', () => {
 
   test('snackbars sit above the mobile nav, inset on phones', () => {
     expect(css).toMatch(
-      /@media \(max-width: 767px\) \{\s*\.Toastify \.Toastify__toast-container--bottom-center \{\s*bottom: 3\.5rem/
+      /\.Toastify \.Toastify__toast-container--bottom-center \{\s*bottom: 3\.5rem/
     );
     expect(css).toMatch(
       /@media only screen and \(max-width: 480px\) \{\s*\.Toastify \.Toastify__toast-container \{\s*width: auto;\s*left: 1rem;\s*right: 1rem/
@@ -245,6 +251,34 @@ describe('loading shapes', () => {
     expect(morphAt[1299]).toBeLessThan(2.2);
     expect(morphAt[1550]).toBeGreaterThan(2.5);
     expect(largestTurn).toBeLessThan(2);
+  });
+
+  test("the animator runs on Android's spring and turns 140° per shape", () => {
+    const animator = new LoadingAnimator();
+    let now = 0;
+    animator.update(now);
+    let peak = 0;
+    let peakAt = 0;
+    let turned = 0;
+    let previous = animator.rotation;
+    // 1ms frames for 6.5s: ten shapes.
+    for (let ms = 1; ms <= 6500; ms++) {
+      animator.update((now += 1));
+      if (ms < 650 && animator.morph > peak) {
+        peak = animator.morph;
+        peakAt = ms;
+      }
+      turned += (animator.rotation - previous + 360) % 360;
+      previous = animator.rotation;
+    }
+    // Stiffness 200, damping ratio 0.6: overshoots by e^(-0.6π/0.8) ≈ 9.5%,
+    // peaking at π/(√200·0.8) ≈ 278ms.
+    expect(peak).toBeCloseTo(1.095, 2);
+    expect(peakAt).toBeGreaterThan(265);
+    expect(peakAt).toBeLessThan(290);
+    // Ten shapes at 140° each (50° steadily plus 90° with the morph).
+    expect(turned).toBeGreaterThan(1395);
+    expect(turned).toBeLessThan(1405);
   });
 
   test('the animator moves on a shape every 650ms, on an overshooting spring', () => {
@@ -402,6 +436,70 @@ describe('LinearProgress', () => {
     expect(box.querySelectorAll('path')[1]).toHaveClass('stroke-primary');
   });
 
+  test('segment timings: heads and tails over the 1800ms cycle', () => {
+    // First segment: head 0-750ms, tail 333-1183ms; second: head
+    // 1000-1567ms, tail 1267-1800ms.
+    expect(segments(749)[0][1]).toBeLessThan(1);
+    expect(segments(750)[0][1]).toBe(1);
+    expect(segments(333)[0][0]).toBe(0);
+    expect(segments(1183)[0][0]).toBe(1);
+    expect(segments(1566)[1][1]).toBeLessThan(1);
+    expect(segments(1567)[1][1]).toBe(1);
+    expect(segments(1267)[1][0]).toBe(0);
+    expect(segments(1799)[1][0]).toBeLessThan(1);
+  });
+
+  function drawAt(ms: number, props: { wavy?: boolean } = {}) {
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(200);
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback =>
+      frames.push(callback)
+    );
+    const { container } = render(<LinearProgress {...props} />);
+    act(() => frames[frames.length - 1](1000));
+    act(() => frames[frames.length - 1](1000 + ms));
+    const [track, active] = container.querySelectorAll('path');
+    const xs = (d: string | null) =>
+      [...(d ?? '').matchAll(/[ML](-?[\d.]+) (-?[\d.]+)/g)].map(match => [
+        Number(match[1]),
+        Number(match[2]),
+      ]);
+    return {
+      track: xs(track.getAttribute('d')),
+      active: xs(active.getAttribute('d')),
+    };
+  }
+
+  test('4px gaps between the round caps, and the caps inside the box', () => {
+    // At 500ms the first segment runs from its tail to its head, with track
+    // on both sides of it.
+    const { track, active } = drawAt(500);
+    const [tail, head] = segments(500)[0];
+    // The 4px bar's round caps overhang by 2px: it's inset 2px at each end
+    // of the 200px box, and 196px long.
+    expect(active[0][0]).toBeCloseTo(2 + 196 * tail, 1);
+    expect(active.at(-1)?.[0]).toBeCloseTo(2 + 196 * head, 1);
+    expect(track[0][0]).toBe(2);
+    expect(track.at(-1)?.[0]).toBe(198);
+    // Cap to cap, 4px: the track stops 4px + both caps (4px) short.
+    const trackEnds = track.map(([x]) => x);
+    expect(trackEnds.some(x => Math.abs(active[0][0] - 8 - x) < 0.01)).toBe(
+      true
+    );
+    expect(
+      trackEnds.some(x => Math.abs(active.at(-1)![0] + 8 - x) < 0.01)
+    ).toBe(true);
+  });
+
+  test('wavy segments wave; flat ones are straight', () => {
+    const ys = (points: number[][]) => points.map(([, y]) => y);
+    const flat = ys(drawAt(500).active);
+    expect(Math.max(...flat) - Math.min(...flat)).toBe(0);
+    vi.restoreAllMocks();
+    const wavy = ys(drawAt(500, { wavy: true }).active);
+    expect(Math.max(...wavy) - Math.min(...wavy)).toBeGreaterThan(4);
+  });
+
   test('stops animating when it unmounts', () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(200);
     const frames: FrameRequestCallback[] = [];
@@ -442,6 +540,12 @@ describe('NoDataMessage', () => {
     expect(
       screen.getByRole('button', { name: 'Go back' }).parentElement
     ).toHaveClass('text-body-medium');
+  });
+
+  test('type wins over children', () => {
+    render(<NoDataMessage type="songs">Ignored</NoDataMessage>);
+    expect(screen.getByText('No songs to show')).toBeInTheDocument();
+    expect(screen.queryByText('Ignored')).not.toBeInTheDocument();
   });
 
   test('compact: one body-medium line beside a small cookie', () => {
@@ -485,6 +589,28 @@ test('Snackbars: bottom-centered, without the progress bar, as alerts', async ()
   expect(document.querySelector('.Toastify__progress-bar')).toHaveAttribute(
     'aria-hidden',
     'true'
+  );
+});
+
+test("Snackbars keep toastify's timing: the hidden 5s timer bar closes them", async () => {
+  render(<Snackbars />);
+  act(() => {
+    toast('Left session');
+  });
+  await screen.findByText('Left session');
+  const timer = document.querySelector(
+    '.Toastify__progress-bar'
+  ) as HTMLElement;
+  // autoClose is toastify's default, run as the (hidden) bar's animation.
+  expect(timer.style.animationDuration).toBe('5000ms');
+  fireEvent.animationEnd(timer);
+  // It leaves on its exit animation.
+  const toastElement = document.querySelector(
+    '.Toastify__toast'
+  ) as HTMLElement;
+  fireEvent.animationEnd(toastElement);
+  await waitFor(() =>
+    expect(screen.queryByText('Left session')).not.toBeInTheDocument()
   );
 });
 

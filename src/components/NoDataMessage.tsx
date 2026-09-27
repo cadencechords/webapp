@@ -7,7 +7,7 @@ import { SHAPE_PATHS } from './feedback/loadingShapes';
 type NoDataMessageProps = {
   /** What there's none of, e.g. "songs" shows "No songs to show". */
   type?: string;
-  /** The message, in place of `type`'s. */
+  /** The message, when there's no `type`. */
   children?: ReactNode;
   /** A line (or an action) under the message. */
   description?: ReactNode;
@@ -33,8 +33,10 @@ export default function NoDataMessage({
   loading,
   compact = false,
 }: NoDataMessageProps) {
-  const message =
-    children ?? (type ? `No ${type} to show` : 'No items to show');
+  // type wins over children, as before.
+  const message = type
+    ? `No ${type} to show`
+    : (children ?? 'No items to show');
 
   if (loading) {
     return (

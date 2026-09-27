@@ -124,7 +124,7 @@ export default function PlanningCenterSongsPage() {
                   disabled={isFetchingNextPage}
                 >
                   {isFetchingNextPage ? (
-                    <LoadingIndicator size={24} />
+                    <LoadingIndicator size={20} />
                   ) : (
                     'Load more'
                   )}
