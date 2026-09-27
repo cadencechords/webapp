@@ -34,20 +34,16 @@ export default function ConfirmDeleteDialog({
       fullscreen={false}
       borderedTop={false}
     >
-      <div className="mb-6">
+      <div className="mb-6 text-body-medium text-on-surface-variant">
         {children ? children : 'Deleting this item is irreversible.'}
       </div>
-      <div className="flex gap-2">
-        <Button full color="red" onClick={onCancel}>
+      {/* M3 dialog actions, aligned to the end: the same buttons in the same
+          order, with the destructive one in the error role. */}
+      <div className="flex justify-end gap-2">
+        <Button variant="open" color="blue" onClick={onCancel}>
           Cancel
         </Button>
-        <Button
-          full
-          variant="open"
-          color="gray"
-          onClick={handleConfirm}
-          loading={loading}
-        >
+        <Button color="red" onClick={handleConfirm} loading={loading}>
           Yes, delete
         </Button>
       </div>

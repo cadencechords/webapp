@@ -163,7 +163,7 @@ export default function PrintSongDialog({
             </div>
           </FormatOption>
 
-          <div className="pt-4 mt-8 border-t dark:border-dark-gray-600">
+          <div className="pt-4 mt-8 border-t border-outline-variant">
             <FormatOption>
               <FormatOptionLabel>Bold chords</FormatOptionLabel>
               <Checkbox

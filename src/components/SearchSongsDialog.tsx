@@ -96,7 +96,7 @@ export default function SearchSongsDialog({
 
   return (
     <StyledDialog open={open} onCloseDialog={handleClose} borderedTop={false}>
-      <div className="pb-2 border-b dark:border-dark-gray-400 mb-7">
+      <div className="pb-2 border-b border-outline-variant mb-7">
         <OpenInput
           placeholder="Search for a specific song"
           value={query}

@@ -78,7 +78,7 @@ export default function SearchDialog({
       borderedTop={false}
       showClose={false}
     >
-      <div className="pb-4 border-b dark:border-dark-gray-400">
+      <div className="pb-4 border-b border-outline-variant">
         <OpenInput
           placeholder="Search for binders, songs or sets"
           onChange={handleSearchQueryChange}

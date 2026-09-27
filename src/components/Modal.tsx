@@ -42,11 +42,14 @@ export default function Modal({
         <BottomSheet open={open} onDismiss={onClose} className="relative z-50">
           <div className="p-3 pt-0">
             <div className="px-3 mb-4 flex-between">
-              <Button variant="icon" size="md" onClick={onClose} tabIndex={1}>
-                <Icon
-                  name="close"
-                  className="w-5 h-5 text-gray-700 dark:text-dark-gray-200"
-                />
+              <Button
+                variant="icon"
+                size="md"
+                color="gray"
+                onClick={onClose}
+                tabIndex={1}
+              >
+                <Icon name="close" className="w-6 h-6" />
               </Button>
               {headerRight ? headerRight : <div />}
             </div>

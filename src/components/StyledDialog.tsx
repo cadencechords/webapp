@@ -34,9 +34,12 @@ export default function StyledDialog({
     ? `min-h-screen sm:min-h-full w-full ${SM_MAX_WIDTHS[size]} `
     : ` ${MAX_WIDTHS[size]} w-full `;
 
+  // M3 basic dialog; a fullscreen one is an M3 full-screen dialog (the
+  // surface, no corners) below sm. my-8 leaves room for the shadow inside
+  // the scrolling container, which would clip it at the panel's edge.
   const mobileStyleClasses = fullscreen
-    ? ` sm:shadow-xl sm:rounded-xl sm:mt-8 `
-    : ` shadow-xl rounded-xl mt-8`;
+    ? ` bg-surface sm:bg-surface-container-high sm:shadow-(--md-sys-elevation-level3) sm:rounded-extra-large sm:my-8 `
+    : ` bg-surface-container-high shadow-(--md-sys-elevation-level3) rounded-extra-large my-8`;
 
   return (
     <Transition show={open} as={Fragment}>
@@ -53,33 +56,34 @@ export default function StyledDialog({
         <div className="max-h-full overflow-auto text-center sm:px-4">
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-300"
+            enter="transition-default-effects"
             enterFrom="opacity-0"
             enterTo="opacity-100"
-            leave="ease-in duration-200"
+            leave="transition-fast-effects"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className={`fixed inset-0 bg-black/20`} />
+            <Dialog.Overlay className="fixed inset-0 bg-scrim/32" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
           <span className="inline-block align-middle" aria-hidden="true">
             &#8203;
           </span>
+          {/* Scale on the default-spatial spring, fade on default-effects */}
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0 scale-95"
+            enter="transition-dialog-enter"
+            enterFrom="opacity-0 scale-90"
             enterTo="opacity-100 scale-100"
-            leave="ease-in duration-200"
+            leave="transition-dialog-exit"
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
             <div
               className={
                 `inline-block ${sizeClasses} ${mobileStyleClasses} ` +
-                ` relative overflow-y-auto text-left align-middle transition-all transform bg-white dark:bg-dark-gray-700 `
+                ` relative overflow-y-auto text-left align-middle font-plain text-on-surface `
               }
             >
               {showClose && (
@@ -87,28 +91,32 @@ export default function StyledDialog({
                   <Button
                     variant="icon"
                     size="md"
+                    color="gray"
                     onClick={onCloseDialog}
                     tabIndex={1}
                   >
-                    <Icon
-                      name="close"
-                      className="w-4 h-4 text-gray-700 dark:text-dark-gray-200"
-                    />
+                    <Icon name="close" className="w-6 h-6" />
                   </Button>
                 </span>
               )}
               <Dialog.Title
                 as="h3"
                 className={
-                  borderedTop ? ` border-b dark:border-dark-gray-400 ` : ''
+                  borderedTop ? ` border-b border-outline-variant ` : ''
                 }
               >
-                <div className="px-3 py-6 text-lg font-semibold leading-6 text-gray-900 whitespace-pre dark:text-dark-gray-100 sm:px-5">
+                <div
+                  className={classNames(
+                    'px-4 py-6 text-headline-small text-on-surface whitespace-pre sm:px-6',
+                    // Room for the close button
+                    showClose && 'pr-16 sm:pr-16'
+                  )}
+                >
                   {title}
                 </div>
               </Dialog.Title>
               <div
-                className={`my-2 px-3 sm:px-5 ${
+                className={`my-2 px-4 sm:px-6 ${
                   borderedTop ? ' py-4 ' : ' pb-6 pt-0 '
                 }`}
               >

@@ -131,11 +131,21 @@
   transition-duration: var(--default-transition-duration);
 }
 
-/* react-spring-bottom-sheet colors, on the color tokens. :root:root beats the
-   library's own :root defaults regardless of stylesheet order. */
+/* react-spring-bottom-sheet as an M3 bottom sheet: surface-container-low,
+   extra-large top corners, a 32x4 drag handle in on-surface-variant at 40%
+   and a 32% scrim. :root:root beats the library's own :root defaults
+   regardless of stylesheet order. */
 :root:root {
   --rsbs-bg: var(--md-sys-color-surface-container-low);
   --rsbs-handle-bg: --alpha(var(--md-sys-color-on-surface-variant) / 40%);
+  /* The scrim role is #000 in both themes; spelled out so browsers without
+     color-mix don't fall back to an opaque scrim. */
+  --rsbs-backdrop-bg: rgb(0 0 0 / 32%);
+  --rsbs-overlay-rounded: var(--md-sys-shape-corner-extra-large);
+}
+[data-rsbs-header]:before {
+  width: 32px !important;
+  height: 4px !important;
 }
 
 /* v2 defaults that v4 changed. */

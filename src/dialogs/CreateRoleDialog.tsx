@@ -50,7 +50,7 @@ export default function CreateRoleDialog({
     >
       <div className="mb-4 pt-2">
         <div className="mb-2">
-          Name <span className="text-red-600">*</span>
+          Name <span className="text-error">*</span>
         </div>
         <OutlinedInput
           placeholder="ex: Editors"

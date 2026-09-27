@@ -31,6 +31,10 @@ import Range from '../../components/Range';
 import Select from '../../components/Select';
 import StyledListBox from '../../components/StyledListBox';
 import ColorPicker from '../../components/ColorPicker';
+import StyledDialog from '../../components/StyledDialog';
+import ConfirmDeleteDialog from '../../dialogs/ConfirmDeleteDialog';
+import Drawer from '../../components/Drawer';
+import BottomSheet from '../../components/BottomSheet';
 
 const VARIANTS: [ButtonVariant, string][] = [
   ['filled', 'Filled'],
@@ -94,6 +98,10 @@ export default function ComponentsPage() {
   const [font, setFont] = useState('Roboto Mono');
   const [color, setColor] = useState('rgba(31, 111, 235, 1)');
   const [listOption, setListOption] = useState(LIST_OPTIONS[0]);
+  const [dialog, setDialog] = useState<
+    'basic' | 'fullscreen' | 'delete' | 'drawer' | 'sheet' | null
+  >(null);
+  const closeDialog = () => setDialog(null);
 
   return (
     <div className="min-h-screen p-6 bg-surface text-on-surface font-plain">
@@ -314,6 +322,55 @@ export default function ComponentsPage() {
             <ColorPicker color={color} onChange={setColor} />
           </Row>
         </div>
+      </Section>
+
+      <Section title="Dialogs and sheets">
+        <div className="flex flex-wrap gap-3">
+          <Button variant="accent" onClick={() => setDialog('basic')}>
+            Basic dialog
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('fullscreen')}>
+            Full-screen dialog
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('delete')}>
+            Confirm delete
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('drawer')}>
+            Side sheet
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('sheet')}>
+            Bottom sheet
+          </Button>
+        </div>
+        <StyledDialog
+          open={dialog === 'basic' || dialog === 'fullscreen'}
+          onCloseDialog={closeDialog}
+          title="Create a setlist"
+          fullscreen={dialog === 'fullscreen'}
+        >
+          <div className="space-y-4">
+            <OutlinedInput label="Name" value="" onChange={() => {}} />
+            <OutlinedInput
+              label="Scheduled date"
+              type="date"
+              value=""
+              onChange={() => {}}
+            />
+            <AddCancelActions onCancel={closeDialog} onAdd={closeDialog} />
+          </div>
+        </StyledDialog>
+        <ConfirmDeleteDialog
+          show={dialog === 'delete'}
+          onCloseDialog={closeDialog}
+          onCancel={closeDialog}
+          onConfirm={closeDialog}
+        />
+        <Drawer open={dialog === 'drawer'} onClose={closeDialog}>
+          <div className="p-4 text-title-medium">Adjustments</div>
+        </Drawer>
+        <BottomSheet open={dialog === 'sheet'} onClose={closeDialog}>
+          <div className="p-6 pt-16 text-body-large">A bottom sheet</div>
+        </BottomSheet>
       </Section>
     </div>
   );

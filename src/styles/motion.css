@@ -121,3 +121,25 @@
     border-radius: var(--shape-morph-to, var(--md-sys-shape-corner-medium));
   }
 }
+
+/* Dialogs and sheets entering and leaving (CAD-87): size and position on the
+   default-spatial spring and opacity on default-effects; leaving is quicker,
+   on the fast curves. */
+@utility transition-dialog-enter {
+  transition:
+    scale var(--md-sys-motion-duration-default-spatial)
+      var(--md-sys-motion-easing-default-spatial),
+    translate var(--md-sys-motion-duration-default-spatial)
+      var(--md-sys-motion-easing-default-spatial),
+    opacity var(--md-sys-motion-duration-default-effects)
+      var(--md-sys-motion-easing-default-effects);
+}
+@utility transition-dialog-exit {
+  transition:
+    scale var(--md-sys-motion-duration-fast-spatial)
+      var(--md-sys-motion-easing-fast-effects),
+    translate var(--md-sys-motion-duration-fast-spatial)
+      var(--md-sys-motion-easing-fast-effects),
+    opacity var(--md-sys-motion-duration-fast-effects)
+      var(--md-sys-motion-easing-fast-effects);
+}

@@ -57,7 +57,13 @@ test('StyledDialog defaults to md, fullscreen, bordered, with a close button', (
     </StyledDialog>
   );
   const panel = screen.getByText('Body').closest('.inline-block');
-  expect(panel).toHaveClass('sm:max-w-md', 'min-h-screen', 'sm:rounded-xl');
+  expect(panel).toHaveClass(
+    'sm:max-w-md',
+    'min-h-screen',
+    'sm:rounded-extra-large',
+    'bg-surface',
+    'sm:bg-surface-container-high'
+  );
   expect(within(panel as HTMLElement).getByRole('button')).toBeInTheDocument();
   expect(screen.getByRole('heading')).toHaveClass('border-b');
   expect(screen.getByText('Body').parentElement).toHaveClass('py-4');

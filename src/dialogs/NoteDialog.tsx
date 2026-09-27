@@ -82,7 +82,7 @@ function NoteForm({
         placeholder="Type here"
         onChange={e => handleUpdate('content', e.target.value)}
         value={updates.content || ''}
-        className="w-full p-2 mb-4 text-base transition-colors border rounded-md outline-hidden resize-none border-dark-gray-600 focus:outline-hidden focus:border-blue-400 dark:focus:border-dark-blue dark:bg-dark-gray-900 "
+        className="w-full px-4 py-3 mb-4 text-body-large text-on-surface placeholder:text-on-surface-variant caret-primary bg-transparent transition-fast-effects border rounded-extra-small outline-hidden resize-none border-outline hover:border-on-surface focus:outline-hidden focus:border-primary focus:shadow-[inset_0_0_0_1px_var(--color-primary)]"
       ></textarea>
       <Label>Note color</Label>
       <NoteColorOption

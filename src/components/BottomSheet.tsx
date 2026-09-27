@@ -18,13 +18,13 @@ export default function BottomSheet({
   return (
     <div
       className={
-        `z-30 fixed w-full transition-all ease-in-out duration-200 ` +
+        `z-30 fixed w-full transition-default-spatial ` +
         `${open ? 'bottom-0' : '-bottom-full'}`
       }
     >
       <div
-        className={`rounded-t-md bg-white dark:bg-dark-gray-700 w-full md:w-3/4 lg:w-1/2 max-w-lg mx-auto relative z-30 ${className}`}
-        style={{ boxShadow: '0 0px 50px -5px rgba(0, 0, 0, .25)' }}
+        // M3 bottom sheet
+        className={`rounded-t-extra-large bg-surface-container-low text-on-surface shadow-(--md-sys-elevation-level1) w-full md:w-3/4 lg:w-1/2 max-w-lg mx-auto relative z-30 ${className}`}
       >
         <Button
           variant="icon"

@@ -110,10 +110,7 @@ function KeyTransposer({
                 className="absolute outline-hidden -top-1 -right-1 focus:outline-hidden"
                 onClick={() => handleKeyChange(null)}
               >
-                <Icon
-                  name="delete"
-                  className="w-4 h-4 text-red-600 dark:text-dark-red"
-                />
+                <Icon name="delete" className="w-4 h-4 text-error" />
               </button>
               <h1 className="mb-2 text-3xl font-bold text-center">
                 {workingTransposedKey}

@@ -73,7 +73,7 @@ export default function AddMembersToRoleDialog({
         {isSuccess &&
           membersNotInRole().map(member => (
             <div
-              className="gap-4 py-3 border-b cursor-pointer flex-between dark:border-dark-gray-400 last:border-b-0"
+              className="gap-4 py-3 border-b cursor-pointer flex-between border-outline-variant last:border-b-0"
               key={member.id}
             >
               <Checkbox

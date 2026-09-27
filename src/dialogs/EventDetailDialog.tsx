@@ -31,7 +31,7 @@ export default function EventDetailDialog({
         </div>
         <div className="col-span-9">
           <div className="mb-1 text-2xl">{event?.title}</div>
-          <div className="text-gray-600 dark:text-dark-gray-200">
+          <div className="text-on-surface-variant">
             {format(event?.start_time, 'MMMM D, YYYY')}&nbsp;
             {startTime && '(' + startTime}
             {startTime && endTime && '-'}
