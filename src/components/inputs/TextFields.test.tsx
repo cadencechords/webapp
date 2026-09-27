@@ -1,6 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { FocusEventHandler, MouseEventHandler } from 'react';
+import {
+  createRef,
+  type FocusEventHandler,
+  type MouseEventHandler,
+} from 'react';
 import OutlinedInput from './OutlinedInput';
 import WellInput from './WellInput';
 import TimeInput from './TimeInput';
@@ -140,4 +144,27 @@ test('SearchBar opens the search dialog', () => {
   expect(screen.queryByText('dialog')).not.toBeInTheDocument();
   userEvent.click(screen.getByRole('button', { name: 'Search library' }));
   expect(screen.getByText('dialog')).toBeInTheDocument();
+});
+
+test('OutlinedInput forwards its ref to the input, and an empty error is no error', () => {
+  const ref = createRef<HTMLInputElement>();
+  render(<OutlinedInput ref={ref} label="Name" error="" onChange={() => {}} />);
+  const input = screen.getByLabelText('Name');
+  expect(ref.current).toBe(input);
+  ref.current!.focus();
+  expect(input).toHaveFocus();
+  expect(input).not.toHaveAttribute('aria-invalid');
+});
+
+test('OutlinedInput always has a legend, so the outline lines up with or without a label', () => {
+  const { container } = render(
+    <>
+      <OutlinedInput onChange={() => {}} />
+      <OutlinedInput label="Name" onChange={() => {}} />
+    </>
+  );
+  const [unlabeled, labeled] = container.querySelectorAll('fieldset');
+  expect(unlabeled.querySelector('legend')).toHaveClass('max-w-[0.01px]');
+  expect(unlabeled.querySelector('legend')).toBeEmptyDOMElement();
+  expect(labeled.querySelector('legend')).toHaveTextContent('Name');
 });

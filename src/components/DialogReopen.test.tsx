@@ -152,9 +152,7 @@ test('ChangeSetlistDateDialog reopens on the scheduled date', async () => {
     </MemoryRouter>
   );
   const { rerender } = render(dialog(true));
-  // OutlinedInput's label isn't tied to its input. Non-null: the dialog is
-  // open whenever this is called.
-  const input = () => document.getElementById('date-picker')!;
+  const input = () => screen.getByLabelText('Scheduled date');
   expect(input()).toHaveValue('2026-09-26');
   fireEvent.change(input(), { target: { value: '2026-10-01' } });
   expect(input()).toHaveValue('2026-10-01');

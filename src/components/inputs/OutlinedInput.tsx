@@ -75,7 +75,8 @@ const OutlinedInput = forwardRef<HTMLInputElement, OutlinedInputProps>(
       hasValue ||
       !!placeholder ||
       FORMATTED_TYPES.includes(type.toLowerCase());
-    const hasError = error !== undefined && error !== null && error !== false;
+    // An empty message ('' when valid) isn't an error.
+    const hasError = !!error;
     const helpText = hasError ? error : supportingText;
 
     const handleOnKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -141,16 +142,16 @@ const OutlinedInput = forwardRef<HTMLInputElement, OutlinedInputProps>(
                     : 'border-outline peer-hover:border-on-surface'
               )}
             >
-              {label && (
-                <legend
-                  className={classNames(
-                    'invisible h-[11px] p-0 text-body-small whitespace-nowrap overflow-hidden',
-                    floated ? 'max-w-full' : 'max-w-[0.01px]'
-                  )}
-                >
-                  <span className="px-1">{label}</span>
-                </legend>
-              )}
+              {/* Always rendered: the fieldset's -5px top lines its border
+                  up with the middle of this 11px legend. */}
+              <legend
+                className={classNames(
+                  'invisible h-[11px] p-0 text-body-small whitespace-nowrap overflow-hidden',
+                  label && floated ? 'max-w-full' : 'max-w-[0.01px]'
+                )}
+              >
+                {label && <span className="px-1">{label}</span>}
+              </legend>
             </fieldset>
             {label && (
               <label
