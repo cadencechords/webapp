@@ -292,7 +292,8 @@ export default function ComponentsPage() {
           </div>
           <FileInput onChange={() => {}} onRemove={() => {}} />
         </div>
-        <div className="mt-6 -ml-5">
+        {/* On the header's surface, where the app shows it. */}
+        <div className="flex items-center h-16 pr-4 mt-6 rounded-large bg-surface-container w-fit">
           <SearchBar />
         </div>
       </Section>
