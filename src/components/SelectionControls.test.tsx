@@ -22,11 +22,45 @@ test('Checkbox shows the check only when checked, in the on-color', () => {
   expect(screen.getByRole('button')).toHaveClass('text-user-green');
 });
 
-test('Checkbox with standAlone off leaves clicks to its parent', () => {
+// jsdom doesn't hit-test, so this pins the structure that makes the input
+// take clicks in a browser: first in a wrapper that isolates it, covering
+// the button with z-[1], and nothing in the button positioned above it. (A
+// regression here broke clicks inside <label> rows and doubled row clicks;
+// see CAD-86's review.)
+test('Checkbox keeps its invisible input first and on top of the box', () => {
+  const { container } = render(
+    <Checkbox checked onChange={() => {}} className="mr-4" />
+  );
+  const wrapper = container.firstElementChild!;
+  expect(wrapper).toHaveClass('relative', 'isolate', 'mr-4');
+  const [input, button] = Array.from(wrapper.children);
+  expect(input.tagName).toBe('INPUT');
+  expect(button.tagName).toBe('BUTTON');
+  expect(input).toHaveClass('absolute', 'inset-0', 'z-[1]', 'opacity-0');
+  for (const element of [button, ...button.querySelectorAll('*')]) {
+    expect(element.className.toString()).not.toMatch(
+      /(^|\s)(relative|absolute|fixed|sticky|z-\S+|before:\S+)(\s|$)/
+    );
+  }
+});
+
+test('Checkbox in a label row toggles once from a click on its input', () => {
   const onChange = vi.fn<ComponentProps<typeof Checkbox>['onChange']>();
-  render(<Checkbox checked={false} onChange={onChange} standAlone={false} />);
-  userEvent.click(screen.getByRole('button'));
-  expect(onChange).not.toHaveBeenCalled();
+  const onRow = vi.fn<() => void>();
+  const { container } = render(
+    <label onClick={onRow}>
+      <Checkbox checked={false} onChange={onChange} standAlone={false} />
+      Song
+    </label>
+  );
+  userEvent.click(container.querySelector('input')!);
+  expect(onChange).toHaveBeenCalledTimes(1);
+  expect(onChange).toHaveBeenCalledWith(true);
+  expect(onRow).toHaveBeenCalledTimes(1);
+
+  // The label's text forwards to the input, its first labelable element
+  userEvent.click(screen.getByText('Song'));
+  expect(onChange).toHaveBeenCalledTimes(2);
 });
 
 test('Toggle switches with the keyboard and its thumb grows when on', () => {
@@ -57,12 +91,20 @@ test('Range paints the track from where its value is, and shows the value', () =
   rerender(<Range min={1} max={10} value={10} onChange={() => {}} />);
   expect(wrapper.style.getPropertyValue('--value')).toBe('1');
 
-  // Out of range values are clamped, and an uncontrolled Range starts halfway
+  // Out of range values are clamped
   rerender(<Range min={1} max={10} value={20} onChange={() => {}} />);
   expect(wrapper.style.getPropertyValue('--value')).toBe('1');
-  rerender(<Range />);
+});
+
+test('an uncontrolled Range starts halfway and its track follows the handle', () => {
+  const onChange = vi.fn<(value: number) => void>();
+  const { container } = render(<Range onChange={onChange} />);
+  const wrapper = container.firstElementChild as HTMLElement;
   expect(wrapper.style.getPropertyValue('--value')).toBe('0.5');
-  expect(screen.getByRole('slider')).toBeInTheDocument();
+  fireEvent.change(screen.getByRole('slider'), { target: { value: '80' } });
+  expect(onChange).toHaveBeenCalledWith(80);
+  expect(wrapper.style.getPropertyValue('--value')).toBe('0.8');
+  expect(screen.getByText('80')).toHaveAttribute('aria-hidden', 'true');
 });
 
 test('Select is still a native select that reports its value', () => {

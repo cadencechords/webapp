@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 
 type RangeProps = {
   className?: string;
@@ -21,10 +21,13 @@ export default function Range({
   onChange,
   value,
 }: RangeProps) {
+  // Uncontrolled: what's been dragged to, so the track follows the handle.
+  const [dragged, setDragged] = useState<number>();
+  const shown = value ?? dragged;
   // The native input's defaults: 0 to 100, starting halfway.
   const lower = min ?? 0;
   const upper = max ?? 100;
-  const current = value ?? (lower + upper) / 2;
+  const current = shown ?? (lower + upper) / 2;
   const fraction =
     upper > lower
       ? Math.min(1, Math.max(0, (current - lower) / (upper - lower)))
@@ -41,16 +44,19 @@ export default function Range({
         step={step}
         max={max}
         min={min}
-        onChange={e => onChange?.(parseInt(e.target.value))}
+        onChange={e => {
+          setDragged(parseInt(e.target.value));
+          onChange?.(parseInt(e.target.value));
+        }}
         value={value}
       />
-      {value !== undefined && (
+      {shown !== undefined && (
         <span
           aria-hidden="true"
           className="absolute bottom-full mb-1 -translate-x-1/2 min-w-12 px-4 py-3 rounded-full bg-inverse-surface text-inverse-on-surface font-plain text-label-large text-center pointer-events-none opacity-0 scale-75 transition-fast-effects peer-active:opacity-100 peer-active:scale-100 peer-focus-visible:opacity-100 peer-focus-visible:scale-100"
           style={{ left: 'calc(var(--value) * (100% - 4px) + 2px)' }}
         >
-          {value}
+          {shown}
         </span>
       )}
     </span>

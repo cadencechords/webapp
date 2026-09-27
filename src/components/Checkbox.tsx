@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useRef } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import Icon from './Icon';
 
 type CheckboxProps = {
@@ -25,32 +25,49 @@ export default function Checkbox({
     ref.current?.click();
   }
 
+  // The invisible input takes the clicks, as it always has: a click inside
+  // a <label> reaches it, and a clickable row gets one click. It stays first
+  // in the DOM (a label forwards to its first labelable element, and the
+  // button is one) and paints on top with z-[1], kept inside the checkbox by
+  // `isolate`. The button is reached by keyboard. The 40px state layer is a
+  // box-shadow, so it doesn't widen the click area.
+  const stateLayer = (opacity: number) =>
+    `0 0 0 10px color-mix(in srgb, currentColor ${opacity}%, transparent), inset 0 0 0 10px color-mix(in srgb, currentColor ${opacity}%, transparent)`;
+
   return (
-    <>
+    <span
+      className={classNames(
+        'group relative isolate inline-flex shrink-0',
+        className
+      )}
+      style={
+        {
+          '--checkbox-hover': stateLayer(8),
+          '--checkbox-press': stateLayer(10),
+        } as CSSProperties
+      }
+    >
       <input
         ref={ref}
         type="checkbox"
-        className="absolute w-5 h-5 opacity-0"
+        className="absolute inset-0 z-[1] w-5 h-5 m-0 opacity-0 cursor-pointer"
         readOnly
         checked={checked}
         onChange={() => onChange(!checked)}
         id={id}
       />
-      {/* M3 checkbox: an 18px box in the 20px button, with a 40px state
-          layer circle drawn outside it. */}
+      {/* M3 checkbox: an 18px box in the 20px button */}
       <button
         className={classNames(
-          'relative w-5 h-5 shrink-0 flex-center rounded-[2px] cursor-pointer outline-hidden focus-ring',
-          "before:content-[''] before:absolute before:-inset-2.5 before:rounded-full before:bg-current before:opacity-0 before:transition-opacity",
-          'hover:before:opacity-[0.08] focus-visible:before:opacity-[0.1] active:before:opacity-[0.1]',
-          checked ? CHECKED_COLORS[color] : 'text-on-surface-variant',
-          className
+          'w-5 h-5 shrink-0 flex-center rounded-full cursor-pointer outline-hidden focus-ring transition-fast-effects',
+          'group-hover:shadow-(--checkbox-hover) focus-visible:shadow-(--checkbox-press) group-has-[input:focus-visible]:shadow-(--checkbox-press) group-active:shadow-(--checkbox-press)',
+          checked ? CHECKED_COLORS[color] : 'text-on-surface-variant'
         )}
         onClick={standAlone ? handleClick : undefined}
       >
         <span
           className={classNames(
-            'relative w-[18px] h-[18px] flex-center rounded-[2px] transition-fast-effects',
+            'w-[18px] h-[18px] flex-center rounded-[2px] transition-fast-effects',
             checked ? 'bg-current' : 'border-2 border-current'
           )}
         >
@@ -65,7 +82,7 @@ export default function Checkbox({
           />
         </span>
       </button>
-    </>
+    </span>
   );
 }
 
