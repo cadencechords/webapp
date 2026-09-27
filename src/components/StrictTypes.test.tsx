@@ -54,14 +54,14 @@ test('EventColorOption without a color keeps its "undefined" class', () => {
 
 test("an accent Button gets its size's padding", () => {
   const { rerender } = render(<Button variant="accent">Save</Button>);
-  expect(screen.getByRole('button')).toHaveClass('px-3', 'h-9');
+  expect(screen.getByRole('button')).toHaveClass('px-4', 'h-10');
 
   rerender(
     <Button variant="accent" size="md">
       Save
     </Button>
   );
-  expect(screen.getByRole('button')).toHaveClass('px-10', 'h-14');
+  expect(screen.getByRole('button')).toHaveClass('px-6', 'h-14');
   expect(screen.getByRole('button').className).not.toContain('undefined');
 });
 

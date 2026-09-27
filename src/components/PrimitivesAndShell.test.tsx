@@ -63,8 +63,8 @@ test('ButtonGroup reports the clicked option and whether it becomes selected', (
   render(
     <ButtonGroup options={options} selected={['bold']} onChange={onChange} />
   );
-  expect(screen.getByText('B')).toHaveClass('bg-gray-700');
-  expect(screen.getByText('I')).not.toHaveClass('bg-gray-700');
+  expect(screen.getByText('B')).toHaveClass('bg-primary');
+  expect(screen.getByText('I')).not.toHaveClass('bg-primary');
   fireEvent.click(screen.getByText('B'));
   expect(onChange).toHaveBeenLastCalledWith({
     selected: false,
@@ -89,7 +89,7 @@ test('SegmentedControl checks the selected option and reports changes', () => {
     />
   );
   expect(screen.getByLabelText('General')).toBeChecked();
-  expect(screen.getByText('Chords')).toHaveClass('text-xs');
+  expect(screen.getByText('Chords')).toHaveClass('text-label-medium');
   fireEvent.click(screen.getByLabelText('Chords'));
   expect(onChange).toHaveBeenCalledWith('Chords');
 });
@@ -306,4 +306,24 @@ test('Sidenav shows the links the member can use', () => {
   expect(screen.getByText('Billing')).toBeInTheDocument();
   expect(screen.queryByText('Permissions')).not.toBeInTheDocument();
   expect(screen.queryByText('Calendar')).not.toBeInTheDocument();
+});
+
+test('connected button groups round the outer corners and the selected button', () => {
+  render(
+    <ButtonSwitch
+      buttonLabels={['Major', 'Minor', 'Other']}
+      activeButtonLabel="Minor"
+      onClick={() => {}}
+    />
+  );
+  expect(screen.getByText('Major')).toHaveClass(
+    'rounded-l-[16px]',
+    'rounded-r-[4px]',
+    'bg-surface-container'
+  );
+  expect(screen.getByText('Minor')).toHaveClass('rounded-[16px]', 'bg-primary');
+  expect(screen.getByText('Other')).toHaveClass(
+    'rounded-l-[4px]',
+    'rounded-r-[16px]'
+  );
 });

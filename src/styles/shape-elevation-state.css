@@ -129,6 +129,45 @@
   }
 }
 
+/* state-layer-flat: the same overlay as state-layer, painted as a background
+   image over the background color instead of a ::before. It doesn't set
+   `position`, so it works on elements that are `fixed` or `absolute`. It
+   replaces any background image, and doesn't animate. */
+@utility state-layer-flat {
+  --state-layer-opacity: 0;
+
+  /* Browsers without color-mix get no state layer (the minifier's fallback
+     for them would be solid currentColor, hiding the content). */
+  @supports (color: color-mix(in srgb, red, red)) {
+    background-image: linear-gradient(
+      color-mix(
+        in srgb,
+        currentColor calc(var(--state-layer-opacity) * 100%),
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        currentColor calc(var(--state-layer-opacity) * 100%),
+        transparent
+      )
+    );
+  }
+
+  &:hover {
+    --state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
+  }
+  &:focus-visible {
+    --state-layer-opacity: var(--md-sys-state-focus-state-layer-opacity);
+  }
+  &:active {
+    --state-layer-opacity: var(--md-sys-state-pressed-state-layer-opacity);
+  }
+  &:disabled,
+  &[aria-disabled='true'] {
+    --state-layer-opacity: 0;
+  }
+}
+
 /* focus-ring: the M3 focus indicator on keyboard focus. */
 @utility focus-ring {
   &:focus-visible {

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { BACKGROUND_COLORS, type ButtonColor } from './Button';
+import { BUTTON_COLORS, type ButtonColor } from './Button';
 import { Switch } from '@headlessui/react';
 
 type ToggleProps = {
@@ -26,7 +26,7 @@ export default function Toggle({
           onChange={onChange}
           className={`${
             enabled
-              ? BACKGROUND_COLORS[color]
+              ? BUTTON_COLORS[color].filled
               : 'bg-gray-200 dark:bg-dark-gray-400'
           } relative inline-flex items-center md:h-6 h-7 rounded-full md:w-11 w-12 transition-colors focus:outline-hidden `}
         >

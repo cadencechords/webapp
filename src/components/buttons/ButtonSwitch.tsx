@@ -1,4 +1,9 @@
 import type { ReactNode } from 'react';
+import classNames from 'classnames';
+import {
+  connectedButtonClasses,
+  connectedGroupClasses,
+} from './connectedButtonGroup';
 
 type ButtonSwitchProps = {
   activeButtonLabel: string;
@@ -13,10 +18,12 @@ export default function ButtonSwitch({
   onClick,
 }: ButtonSwitchProps) {
   return (
-    <div className="flex shrink-0 p-1 bg-gray-100 border border-gray-100 rounded-full dark:bg-dark-gray-800 dark:border-dark-gray-600">
+    <div className={classNames(connectedGroupClasses, 'shrink-0')}>
       {buttonLabels.map((label, index) => (
         <ButtonSwitchOption
           key={index}
+          index={index}
+          count={buttonLabels.length}
           active={label === activeButtonLabel}
           onClick={() => onClick(label)}
         >
@@ -31,29 +38,27 @@ type ButtonSwitchOptionProps = {
   children: ReactNode;
   active: boolean;
   onClick: () => void;
+  /** Position in the group, which sets the corners. */
+  index: number;
+  count: number;
 };
 
 export function ButtonSwitchOption({
   children,
   active,
   onClick,
+  index,
+  count,
 }: ButtonSwitchOptionProps) {
-  const baseButtonClasses =
-    'outline-hidden focus:outline-hidden flex-1 text-xs text-gray-600 dark:text-dark-gray-100 font-semibold ';
+  const className = classNames(
+    connectedButtonClasses({ index, count, selected: active, size: 'xs' }),
+    'text-label-medium'
+  );
   if (active) {
-    return (
-      <button
-        className={
-          'bg-white dark:bg-dark-gray-400 py-1 flex-1 rounded-full shadow-xs ' +
-          baseButtonClasses
-        }
-      >
-        {children}
-      </button>
-    );
+    return <button className={className}>{children}</button>;
   } else {
     return (
-      <button className={'flex-1 ' + baseButtonClasses} onClick={onClick}>
+      <button className={className} onClick={onClick}>
         {children}
       </button>
     );

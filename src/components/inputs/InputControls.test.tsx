@@ -29,7 +29,7 @@ test('Checkbox defaults to blue and toggles through its hidden input', () => {
 
 test('Toggle defaults to blue with no spacing', () => {
   const { container } = render(<Toggle enabled label="On" />);
-  expect(screen.getByRole('switch')).toHaveClass('bg-blue-600');
+  expect(screen.getByRole('switch')).toHaveClass('bg-primary');
   expect(container.firstElementChild?.className).toBe('flex items-center ');
 });
 

@@ -1,5 +1,5 @@
-import { BACKGROUND_COLORS } from '../Button';
 import { getTimeFromDate } from '../../utils/date';
+import { userColorClasses } from '../../utils/userColors';
 import type { CalendarEvent } from '../../types';
 
 /** The fields of an event that an entry shows. */
@@ -18,8 +18,9 @@ export default function CalendarEventEntry<E extends CalendarEventEntryEvent>({
   event,
   onClick,
 }: CalendarEventEntryProps<E>) {
+  // An event's color is user data, so it uses the user colors.
   const colors = event.color
-    ? `${BACKGROUND_COLORS[event.color]} text-white transition-colors`
+    ? `${userColorClasses(event.color).color} ${userColorClasses(event.color).onColor} transition-colors`
     : 'text-black';
 
   return (

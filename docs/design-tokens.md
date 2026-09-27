@@ -2,7 +2,7 @@
 
 Foundations for the M3 Expressive redesign. Tokens are CSS custom properties
 (`--md-sys-*`) exposed as Tailwind utilities. They are all imported from
-`src/index.css`. See them rendered at **`/dev/tokens`**. That route isn't
+`src/index.css`. See them rendered at **`/dev/tokens`**, and the shared components built on them at **`/dev/components`**. That route isn't
 linked from the nav and is lazy-loaded.
 
 Existing screens still use the pinned Tailwind v2 palette (`gray-*`, `blue-*`,
@@ -54,12 +54,13 @@ has an `-emphasized` variant that is one weight heavier (400 → 500, 500 → 70
 
 ## Shape, elevation, state layers (`src/styles/shape-elevation-state.css`)
 
-| What          | Utilities                                                                                                                                                                                       | Notes                                                                                                                                |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Corner radius | `rounded-extra-small` (4) · `small` (8) · `medium` (12) · `large` (16) · `large-increased` (20) · `extra-large` (28) · `extra-large-increased` (32) · `extra-extra-large` (48) · `rounded-full` | M3 names; Tailwind's `rounded-sm/md/lg` are unchanged                                                                                |
-| Elevation     | `elevation-0` … `elevation-5`                                                                                                                                                                   | Surface-container tone plus the level's shadow                                                                                       |
-| State layer   | `state-layer`                                                                                                                                                                                   | `currentColor` overlay at 8% hover, 10% focus, 10% pressed, 16% dragged (`data-dragging`). Uses `::before`, drawn behind the content |
-| Focus ring    | `focus-ring`                                                                                                                                                                                    | 3px `secondary` outline, 2px offset, on `:focus-visible`                                                                             |
+| What             | Utilities                                                                                                                                                                                       | Notes                                                                                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Corner radius    | `rounded-extra-small` (4) · `small` (8) · `medium` (12) · `large` (16) · `large-increased` (20) · `extra-large` (28) · `extra-large-increased` (32) · `extra-extra-large` (48) · `rounded-full` | M3 names; Tailwind's `rounded-sm/md/lg` are unchanged                                                                                                                           |
+| Elevation        | `elevation-0` … `elevation-5`                                                                                                                                                                   | Surface-container tone plus the level's shadow                                                                                                                                  |
+| State layer      | `state-layer`                                                                                                                                                                                   | `currentColor` overlay at 8% hover, 10% focus, 10% pressed, 16% dragged (`data-dragging`). Uses `::before`, drawn behind the content                                            |
+| Flat state layer | `state-layer-flat`                                                                                                                                                                              | The same overlay painted as a background image, with no `::before` and no `position`, so it works on `fixed`/`absolute` elements. Replaces any background image. Buttons use it |
+| Focus ring       | `focus-ring`                                                                                                                                                                                    | 3px `secondary` outline, 2px offset, on `:focus-visible`                                                                                                                        |
 
 ## Motion (`src/styles/motion.css`, `src/utils/spring.ts`)
 

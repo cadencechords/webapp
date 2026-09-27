@@ -68,8 +68,8 @@ test('BoldItalicButtonGroup selects the set styles and reports toggles', () => {
     <BoldItalicButtonGroup isBold isItalic={false} onChange={onChange} />
   );
   const [bold, italic] = container.querySelectorAll('button');
-  expect(bold).toHaveClass('bg-gray-700');
-  expect(italic).not.toHaveClass('bg-gray-700');
+  expect(bold).toHaveClass('bg-primary');
+  expect(italic).not.toHaveClass('bg-primary');
 
   fireEvent.click(bold);
   expect(onChange).toHaveBeenLastCalledWith('bold_chords', false);

@@ -485,7 +485,7 @@ describe('calendar', () => {
     render(<CalendarEventEntry event={event} onClick={onClick} />);
     const button = screen.getByRole('button');
     expect(button).toHaveTextContent('7:30pm Practice');
-    expect(button.className).toContain('bg-red-500');
+    expect(button).toHaveClass('bg-user-red', 'text-on-user-red');
 
     fireEvent.click(button);
     expect(onClick).toHaveBeenCalledWith(event);
