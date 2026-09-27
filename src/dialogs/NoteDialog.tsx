@@ -2,7 +2,6 @@ import Button from '../components/Button';
 import Label from '../components/Label';
 import NoteColorOption from '../components/NoteColorOption';
 import StyledDialog from '../components/StyledDialog';
-import { useEffect } from 'react';
 import { useState } from 'react';
 import Icon from '../components/Icon';
 import type { SongNote } from '../types';
@@ -25,11 +24,34 @@ export default function NoteDialog({
   onUpdate,
   onDelete,
 }: NoteDialogProps) {
-  const [updates, setUpdates] = useState<NoteUpdates>({});
+  return (
+    <StyledDialog
+      open={open}
+      onCloseDialog={onCloseDialog}
+      borderedTop={false}
+      title="Edit note"
+    >
+      {/* StyledDialog unmounts its contents while closed, so each opening
+          starts from the note as it is now. */}
+      <NoteForm
+        note={note}
+        onCloseDialog={onCloseDialog}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+      />
+    </StyledDialog>
+  );
+}
 
-  useEffect(() => {
-    setUpdates({ content: note.content });
-  }, [note]);
+function NoteForm({
+  note,
+  onCloseDialog,
+  onUpdate,
+  onDelete,
+}: Omit<NoteDialogProps, 'open'>) {
+  const [updates, setUpdates] = useState<NoteUpdates>(() => ({
+    content: note.content,
+  }));
 
   function handleUpdate(field: keyof NoteUpdates, value: string) {
     setUpdates(currentUpdates => ({ ...currentUpdates, [field]: value }));
@@ -37,7 +59,6 @@ export default function NoteDialog({
 
   function handleConfirmUpdates() {
     onUpdate(updates);
-    setUpdates({});
     onCloseDialog();
   }
 
@@ -50,18 +71,12 @@ export default function NoteDialog({
   }
 
   function handleDelete() {
-    setUpdates({});
     onDelete();
     onCloseDialog();
   }
 
   return (
-    <StyledDialog
-      open={open}
-      onCloseDialog={onCloseDialog}
-      borderedTop={false}
-      title="Edit note"
-    >
+    <>
       <Label>Note</Label>
       <textarea
         placeholder="Type here"
@@ -98,7 +113,7 @@ export default function NoteDialog({
           <Icon name="delete" className="w-5 h-5" />
         </Button>
       </div>
-    </StyledDialog>
+    </>
   );
 }
 

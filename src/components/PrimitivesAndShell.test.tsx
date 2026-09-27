@@ -1,11 +1,12 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ComponentProps } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { renderWithProvider } from '../utils/test';
 import UserApi from '../api/UserApi';
 import { MANAGE_BILLING, REMOVE_MEMBERS } from '../utils/constants';
 import AppFallback from './AppFallback';
 import Badge from './Badge';
-import ButtonGroup from './ButtonGroup';
+import ButtonGroup, { type ButtonGroupChange } from './ButtonGroup';
 import Drawer from './Drawer';
 import KeyBadge from './KeyBadge';
 import NoTeamYet from './NoTeamYet';
@@ -54,7 +55,7 @@ test('Badge defaults to blue and appends its class', () => {
 });
 
 test('ButtonGroup reports the clicked option and whether it becomes selected', () => {
-  const onChange = vi.fn();
+  const onChange = vi.fn<(change: ButtonGroupChange<string>) => void>();
   const options = [
     { value: 'bold', display: 'B' },
     { value: 'italic', display: 'I' },
@@ -77,7 +78,7 @@ test('ButtonGroup reports the clicked option and whether it becomes selected', (
 });
 
 test('SegmentedControl checks the selected option and reports changes', () => {
-  const onChange = vi.fn();
+  const onChange = vi.fn<ComponentProps<typeof SegmentedControl>['onChange']>();
   render(
     <SegmentedControl
       options={['General', 'Chords']}
@@ -94,7 +95,7 @@ test('SegmentedControl checks the selected option and reports changes', () => {
 });
 
 test('ButtonSwitch reports clicks on the inactive label only', () => {
-  const onClick = vi.fn();
+  const onClick = vi.fn<ComponentProps<typeof ButtonSwitch>['onClick']>();
   render(
     <ButtonSwitch
       buttonLabels={['Major', 'Minor']}
@@ -114,7 +115,7 @@ test('KeyBadge renders nothing without a key', () => {
 });
 
 test('SongKeyButton disables the blank key', () => {
-  const onClick = vi.fn();
+  const onClick = vi.fn<ComponentProps<typeof SongKeyButton>['onClick']>();
   render(
     <>
       <SongKeyButton songKey="" onClick={onClick} selected={false} />
@@ -160,7 +161,7 @@ test('TextAutosize fits the text to its container when autosizing', () => {
 });
 
 test('Drawer closes from its backdrop and slides in when open', () => {
-  const onClose = vi.fn();
+  const onClose = vi.fn<ComponentProps<typeof Drawer>['onClose']>();
   const { container } = render(
     <Drawer open onClose={onClose}>
       Adjustments
@@ -173,7 +174,7 @@ test('Drawer closes from its backdrop and slides in when open', () => {
 });
 
 test('QuickAdd calls onAdd', () => {
-  const onAdd = vi.fn();
+  const onAdd = vi.fn<ComponentProps<typeof QuickAdd>['onAdd']>();
   render(<QuickAdd onAdd={onAdd} />);
   fireEvent.click(screen.getByRole('button'));
   expect(onAdd).toHaveBeenCalled();
@@ -245,7 +246,7 @@ test('MemberMenu titles the member and removes them from the team', async () => 
       // Only awaited: MemberMenu reads nothing from the response.
       {} as Awaited<ReturnType<typeof UserApi.deleteMembership>>
     );
-  const onRemoved = vi.fn();
+  const onRemoved = vi.fn<ComponentProps<typeof MemberMenu>['onRemoved']>();
   renderWithProvider(
     <MemberMenu
       open

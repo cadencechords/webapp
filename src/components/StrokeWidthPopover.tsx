@@ -20,10 +20,13 @@ export default function StrokeWidthPopover({
     setStrokeWidth,
   } = useAnnotationsToolbar();
   const [color, setColor] = useState(defaultColor);
-
-  useEffect(() => {
+  // Follow the toolbar's color whenever it changes.
+  const [previousDefaultColor, setPreviousDefaultColor] =
+    useState(defaultColor);
+  if (defaultColor !== previousDefaultColor) {
+    setPreviousDefaultColor(defaultColor);
     setColor(defaultColor);
-  }, [defaultColor]);
+  }
 
   const debounced = useDebounce(color, 100);
 

@@ -1,4 +1,4 @@
-import { createRef } from 'react';
+import { createRef, type MouseEventHandler } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -28,7 +28,7 @@ describe('Button', () => {
   });
 
   test('open variant: bold, labelled by name, no clicks while loading', () => {
-    const onClick = vi.fn();
+    const onClick = vi.fn<MouseEventHandler<HTMLButtonElement>>();
     const { rerender } = render(
       <Button variant="open" name="Close" onClick={onClick}>
         x
@@ -79,8 +79,8 @@ test('MobileMenuButton defaults to a black, medium, enabled button', () => {
 });
 
 test('AddCancelActions labels the add button "Add" by default', () => {
-  const onAdd = vi.fn();
-  const onCancel = vi.fn();
+  const onAdd = vi.fn<MouseEventHandler<HTMLButtonElement>>();
+  const onCancel = vi.fn<MouseEventHandler<HTMLButtonElement>>();
   render(<AddCancelActions onAdd={onAdd} onCancel={onCancel} />);
   userEvent.click(screen.getByRole('button', { name: 'Add' }));
   userEvent.click(screen.getByRole('button', { name: 'Cancel' }));

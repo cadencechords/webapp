@@ -1,5 +1,4 @@
 import { format, getTimeFromDate } from '../utils/date';
-import { useEffect, useState } from 'react';
 
 import EventColorOption from '../components/EventColorOption';
 import EventDetailSheet from '../components/EventDetailSheet';
@@ -21,17 +20,8 @@ export default function EventDetailDialog({
   onCloseDialog,
   onDeleted,
 }: EventDetailDialogProps) {
-  const [startTime, setStartTime] = useState<string | null>();
-  const [endTime, setEndTime] = useState<string | null>();
-  useEffect(() => {
-    if (event?.start_time) {
-      setStartTime(getTimeFromDate(event.start_time));
-    }
-
-    if (event?.end_time) {
-      setEndTime(getTimeFromDate(event.end_time));
-    }
-  }, [event]);
+  const startTime = getTimeFromDate(event?.start_time);
+  const endTime = getTimeFromDate(event?.end_time);
 
   function constructTitle() {
     return (

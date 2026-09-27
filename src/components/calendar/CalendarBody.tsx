@@ -3,7 +3,7 @@ import type { CalendarDate } from '../../utils/date';
 import type { CalendarEvent } from '../../types';
 
 type CalendarBodyProps = {
-  /** Six weeks from `getCalendarDates`; unset until they're worked out. */
+  /** Six weeks from `getCalendarDates`. Without them, nothing renders. */
   weeks?: (CalendarDate | null)[][];
   /** The month's events. */
   events?: CalendarEvent[];

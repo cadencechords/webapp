@@ -16,6 +16,7 @@ import Button from '../components/Button';
 import { MessageInput as CustomMessageInput } from '../components/chat/MessageInput';
 import { MessageOptions } from '../components/chat/MessageOptions';
 import Icon from '../components/Icon';
+import { reportError } from '../utils/error';
 
 const client = new StreamChat('svcbduxgv7sw');
 
@@ -35,12 +36,18 @@ export default function ChatPage() {
   });
 
   useEffect(() => {
-    if (chat_token && !channel && id && teamId) {
-      client.connectUser({ id: `${id}` }, chat_token);
-      const channel = client.channel('messaging', `${teamId}`);
-      setChannel(channel);
-    }
-  }, [chat_token, channel, id, teamId]);
+    if (!chat_token || !id || !teamId) return;
+
+    // Show the team's channel once the user is connected.
+    let ignore = false;
+    client.connectUser({ id: `${id}` }, chat_token).then(() => {
+      if (!ignore) setChannel(client.channel('messaging', `${teamId}`));
+    }, reportError);
+
+    return () => {
+      ignore = true;
+    };
+  }, [chat_token, id, teamId]);
 
   if (!channel) return null;
 

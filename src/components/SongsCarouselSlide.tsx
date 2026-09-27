@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import NotesList from './NotesList';
 import Roadmap from './Roadmap';
-import _ from 'lodash';
+import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { html } from '../utils/SongUtils';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
@@ -30,30 +30,31 @@ export default function SongsCarouselSlide({
   const [roadmap, setRoadmap] = useState(() => song.roadmap);
   const [notes, setNotes] = useState(() => song.notes);
 
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce(
-      <K extends 'roadmap' | 'notes'>(
-        field: K,
-        updatedValue: PresentedSong[K]
-      ) => {
-        onSongUpdate(field, updatedValue);
-      },
-      200
-    ),
-    [onSongUpdate]
+  // Each call passes the onSongUpdate of its own render. SetPresenterPage's
+  // updates the song being viewed when it runs, so the latest one would put
+  // an edit on another song if the viewed song changed during the wait.
+  const debounce = useDebouncedCallback(
+    <K extends 'roadmap' | 'notes'>(
+      update: typeof onSongUpdate,
+      field: K,
+      updatedValue: PresentedSong[K]
+    ) => {
+      update(field, updatedValue);
+    },
+    200,
+    'flush'
   );
 
   function handleRoadmapUpdate(field: 'roadmap', updatedRoadmap: string[]) {
     setRoadmap(updatedRoadmap);
-    debounce('roadmap', updatedRoadmap);
+    debounce(onSongUpdate, 'roadmap', updatedRoadmap);
   }
 
   function onDeleteNote(noteId: number) {
     const updatedNotes = notes?.filter(note => note.id !== noteId);
 
     setNotes(updatedNotes);
-    debounce('notes', updatedNotes);
+    debounce(onSongUpdate, 'notes', updatedNotes);
   }
 
   function handleMarkingDeleted(deletedId: number) {

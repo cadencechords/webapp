@@ -1,5 +1,5 @@
 import { DELETE_ROLES, EDIT_ROLES } from '../utils/constants';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Button from '../components/Button';
@@ -10,7 +10,7 @@ import PageTitle from '../components/PageTitle';
 import RoleMembers from '../components/RoleMembersList';
 import RolePermissions from '../components/RolePermissions';
 import RolesApi from '../api/rolesApi';
-import _ from 'lodash';
+import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
@@ -75,19 +75,20 @@ export default function RoleDetailPage() {
 
   function handleChange(field: keyof RoleUpdates, value: string) {
     setRole(previousRole => ({ ...previousRole, [field]: value }));
-    debounce(field, value);
+    debounce(id, field, value);
   }
 
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce((field: keyof RoleUpdates, newValue: string) => {
+  // The id is passed in, so a waiting save goes to the role it was typed for.
+  const debounce = useDebouncedCallback(
+    (roleId: string, field: keyof RoleUpdates, newValue: string) => {
       try {
-        RolesApi.updateOne({ [field]: newValue }, id);
+        RolesApi.updateOne({ [field]: newValue }, roleId);
       } catch (error) {
         reportError(error);
       }
-    }, 1000),
-    []
+    },
+    1000,
+    'flush'
   );
 
   if (isLoadingRole || isLoadingPermissions) return <PageLoading />;

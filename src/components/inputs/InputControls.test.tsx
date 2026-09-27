@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { ComponentProps } from 'react';
 import BinderColor from '../BinderColor';
 import Checkbox from '../Checkbox';
 import EditableData from './EditableData';
@@ -16,7 +17,7 @@ import WellInput from './WellInput';
 // These pin the defaults that used to live in defaultProps (CAD-119).
 
 test('Checkbox defaults to blue and toggles through its hidden input', () => {
-  const onChange = vi.fn();
+  const onChange = vi.fn<ComponentProps<typeof Checkbox>['onChange']>();
   const { container } = render(<Checkbox checked onChange={onChange} />);
   const button = screen.getByRole('button');
   expect(button).toHaveClass('ring-blue-400', 'bg-blue-600');
@@ -33,7 +34,8 @@ test('Toggle defaults to blue with no spacing', () => {
 });
 
 test('Range has no stray class and reports numbers', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<NonNullable<ComponentProps<typeof Range>['onChange']>>();
   render(<Range min={0} max={10} value={5} onChange={onChange} />);
   const range = screen.getByRole('slider');
   expect(range.className).toBe('w-full ');
@@ -47,7 +49,8 @@ test('StyledListBox defaults to a transparent background', () => {
 });
 
 test('EditableData is an editable text input by default', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<NonNullable<ComponentProps<typeof EditableData>['onChange']>>();
   render(<EditableData value="" onChange={onChange} />);
   const input = screen.getByRole('textbox');
   expect(input).toHaveAttribute('type', 'text');
@@ -78,7 +81,7 @@ test('OpenInput and WellInput defaults', () => {
 });
 
 test('OutlinedInput defaults to type text and calls onEnter', () => {
-  const onEnter = vi.fn();
+  const onEnter = vi.fn<() => void>();
   render(<OutlinedInput value="" onChange={() => {}} onEnter={onEnter} />);
   const input = screen.getByRole('textbox');
   expect(input).toHaveAttribute('type', 'text');
@@ -98,7 +101,8 @@ test('FileInput accepts any file by default', () => {
 });
 
 test('BinderColor defaults to a white, size 4, editable swatch', () => {
-  const onClick = vi.fn();
+  const onClick =
+    vi.fn<NonNullable<ComponentProps<typeof BinderColor>['onClick']>>();
   const { container } = render(<BinderColor onClick={onClick} />);
   const swatch = container.firstElementChild as HTMLElement;
   expect(swatch).toHaveClass('h-4', 'w-4', 'cursor-pointer');

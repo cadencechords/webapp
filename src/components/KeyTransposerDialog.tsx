@@ -1,5 +1,5 @@
 import { isMinor, parseNote } from '../utils/SongUtils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Button from './Button';
 import SongKeyButton from './buttons/SongKeyButton';
@@ -25,6 +25,34 @@ export default function KeyTransposerDialog({
   onChange,
   content,
 }: KeyTransposerDialogProps) {
+  return (
+    <StyledDialog
+      borderedTop={false}
+      open={open}
+      onCloseDialog={onCloseDialog}
+      title={
+        originalKey ? 'Original key:  ' + originalKey : 'None selected yet'
+      }
+      fullscreen={false}
+    >
+      {/* StyledDialog unmounts its contents while closed, so each opening
+          starts from the current keys. */}
+      <KeyTransposer
+        onCloseDialog={onCloseDialog}
+        originalKey={originalKey}
+        transposedKey={transposedKey}
+        onChange={onChange}
+      />
+    </StyledDialog>
+  );
+}
+
+function KeyTransposer({
+  onCloseDialog,
+  originalKey,
+  transposedKey,
+  onChange,
+}: Omit<KeyTransposerDialogProps, 'open' | 'content'>) {
   const [workingTransposedKey, setWorkingTransposedKey] = useState<
     string | null
   >(() => {
@@ -36,18 +64,6 @@ export default function KeyTransposerDialog({
       return isMinor(originalKey) ? 'Gm' : 'G';
     }
   });
-
-  useEffect(() => {
-    if (open) {
-      if (transposedKey) {
-        setWorkingTransposedKey(transposedKey);
-      } else if (originalKey) {
-        setWorkingTransposedKey(originalKey);
-      } else {
-        setWorkingTransposedKey(isMinor(originalKey) ? 'Gm' : 'G');
-      }
-    }
-  }, [open, originalKey, transposedKey]);
 
   const handleKeyChange = (newKey: string | null) => {
     setWorkingTransposedKey(newKey);
@@ -74,15 +90,7 @@ export default function KeyTransposerDialog({
   };
 
   return (
-    <StyledDialog
-      borderedTop={false}
-      open={open}
-      onCloseDialog={onCloseDialog}
-      title={
-        originalKey ? 'Original key:  ' + originalKey : 'None selected yet'
-      }
-      fullscreen={false}
-    >
+    <>
       <div className="gap-8 mb-4 flex-center">
         <div className="flex-col flex-center">
           <h1 className="mb-2 text-3xl font-bold text-center">{originalKey}</h1>
@@ -136,7 +144,7 @@ export default function KeyTransposerDialog({
           Confirm
         </Button>
       </div>
-    </StyledDialog>
+    </>
   );
 }
 

@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { reportError } from '../utils/error';
+import useTrackSearch from '../hooks/useTrackSearch';
 import PageLoading from './PageLoading';
 import TracksApi, { type YouTubeVideo } from '../api/tracksApi';
 import YouTubeTrackResult from './YouTubeTrackResult';
 import type { NewTrack } from '../types';
+
+async function searchYoutube(query: string) {
+  const { data } = await TracksApi.searchYoutube(query);
+  return data?.items || [];
+}
 
 type YouTubeSearchResultsProps = {
   query: string;
@@ -16,29 +20,7 @@ export default function YouTubeSearchResults({
   onTrackClick,
   selectedTracks,
 }: YouTubeSearchResultsProps) {
-  const [results, setResults] = useState<YouTubeVideo[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    const id = setTimeout(() => {
-      async function search() {
-        try {
-          const { data } = await TracksApi.searchYoutube(query);
-          setResults(data?.items || []);
-        } catch (error) {
-          reportError(error);
-        } finally {
-          setLoading(false);
-        }
-      }
-      if (query) {
-        search();
-      }
-    }, 800);
-
-    return () => clearTimeout(id);
-  }, [query]);
+  const { results, loading } = useTrackSearch(query, searchYoutube);
 
   function isSelected(resultInQuestion: YouTubeVideo) {
     return !!selectedTracks.find(

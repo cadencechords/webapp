@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Button from './Button';
 import { EDIT_SONGS } from '../utils/constants';
@@ -25,10 +25,12 @@ export default function MetronomeSheet({
   const [updates, setUpdates] = useState<{ bpm: number | undefined } | null>();
   const [loading, setLoading] = useState(false);
   const currentMember = useSelector(selectCurrentMember);
-
-  useEffect(() => {
+  // Drop unsaved changes when another song is shown.
+  const [previousSongId, setPreviousSongId] = useState(song.id);
+  if (song.id !== previousSongId) {
+    setPreviousSongId(song.id);
     setUpdates(null);
-  }, [song.id]);
+  }
 
   function handleBpmChange(bpm: number | undefined) {
     // Non-null: kept as before, this throws if the membership hasn't loaded.

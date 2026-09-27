@@ -7,6 +7,7 @@ import RolesApi from '../../api/rolesApi';
 import MembershipsApi from '../../api/membershipsApi';
 import PlanningCenterApi from '../../api/PlanningCenterApi';
 import EventsApi from '../../api/eventsApi';
+import type SetlistApi from '../../api/SetlistApi';
 import useAddSongsToBinder from './useAddSongsToBinder';
 import useRemoveSongFromBinder from './useRemoveSongFromBinder';
 import useAddMembersToRole from './useAddMembersToRole';
@@ -19,6 +20,7 @@ import usePlanningCenterSongs from './usePlanningCenterSongs';
 import useBinder from './useBinder';
 import useRole from './useRole';
 import { toMonthYearDate } from '../../utils/DateUtils';
+import type { reportError } from '../../utils/error';
 import type {
   Binder,
   CalendarEvent,
@@ -30,24 +32,33 @@ import type {
 
 vi.mock('../../api/BinderApi', () => ({
   default: {
-    addSongs: vi.fn(),
-    removeSongs: vi.fn(),
-    deleteOneById: vi.fn(),
-    getOneById: vi.fn(),
+    addSongs: vi.fn<typeof BinderApi.addSongs>(),
+    removeSongs: vi.fn<typeof BinderApi.removeSongs>(),
+    deleteOneById: vi.fn<typeof BinderApi.deleteOneById>(),
+    getOneById: vi.fn<typeof BinderApi.getOneById>(),
   },
 }));
 vi.mock('../../api/rolesApi', () => ({
-  default: { assignRoleBulk: vi.fn(), getOne: vi.fn() },
+  default: {
+    assignRoleBulk: vi.fn<typeof RolesApi.assignRoleBulk>(),
+    getOne: vi.fn<typeof RolesApi.getOne>(),
+  },
 }));
 vi.mock('../../api/membershipsApi', () => ({
-  default: { assignRole: vi.fn() },
+  default: { assignRole: vi.fn<typeof MembershipsApi.assignRole>() },
 }));
 vi.mock('../../api/PlanningCenterApi', () => ({
-  default: { getSongs: vi.fn() },
+  default: { getSongs: vi.fn<typeof PlanningCenterApi.getSongs>() },
 }));
-vi.mock('../../api/eventsApi', () => ({ default: { get: vi.fn() } }));
-vi.mock('../../api/SetlistApi', () => ({ default: { getOne: vi.fn() } }));
-vi.mock('../../utils/error', () => ({ reportError: vi.fn() }));
+vi.mock('../../api/eventsApi', () => ({
+  default: { get: vi.fn<typeof EventsApi.get>() },
+}));
+vi.mock('../../api/SetlistApi', () => ({
+  default: { getOne: vi.fn<typeof SetlistApi.getOne>() },
+}));
+vi.mock('../../utils/error', () => ({
+  reportError: vi.fn<typeof reportError>(),
+}));
 
 /**
  * A response with just `data`. A cast, because the hooks read nothing else
@@ -110,7 +121,7 @@ describe('optimistic cache updates', () => {
     const binder: Binder = { id: 7, name: 'Hymns', songs: [song(1)] };
     queryClient.setQueryData(['binders', '7'], binder);
     vi.mocked(BinderApi.addSongs).mockResolvedValue(response([song(2)]));
-    const onSuccess = vi.fn();
+    const onSuccess = vi.fn<() => void>();
 
     const hook = renderHookValue(() => useAddSongsToBinder({ onSuccess }));
     act(() => hook.current.run({ binderId: 7, songIds: [2] }));
@@ -134,7 +145,7 @@ describe('optimistic cache updates', () => {
       songs: [song(1), song(2)],
     });
     vi.mocked(BinderApi.removeSongs).mockResolvedValue(response(undefined));
-    const onSuccess = vi.fn();
+    const onSuccess = vi.fn<() => void>();
 
     const hook = renderHookValue(() => useRemoveSongFromBinder({ onSuccess }));
     act(() => hook.current.run({ binderId: 7, songId: 1 }));
@@ -153,7 +164,7 @@ describe('optimistic cache updates', () => {
     queryClient.setQueryData(['roles', '3'], role);
     const added = [membership(2, role)];
     vi.mocked(RolesApi.assignRoleBulk).mockResolvedValue(response(added));
-    const onSuccess = vi.fn();
+    const onSuccess = vi.fn<() => void>();
 
     const hook = renderHookValue(() => useAddMembersToRole({ onSuccess }));
     act(() => hook.current.run({ memberIds: [2], roleId: 3 }));
@@ -174,7 +185,7 @@ describe('optimistic cache updates', () => {
     queryClient.setQueryData(['roles', '3'], role);
     const request = deferred<AxiosResponse<Membership>>();
     vi.mocked(MembershipsApi.assignRole).mockReturnValue(request.promise);
-    const onSuccess = vi.fn();
+    const onSuccess = vi.fn<() => void>();
 
     const hook = renderHookValue(() => useRemoveMemberFromRole({ onSuccess }));
     act(() => hook.current.run({ memberId: 1, roleId: 3 }));
@@ -223,7 +234,7 @@ describe('optimistic cache updates', () => {
 
 test('useDeleteBinder succeeds without waiting for the delete', async () => {
   vi.mocked(BinderApi.deleteOneById).mockReturnValue(pending());
-  const onSuccess = vi.fn();
+  const onSuccess = vi.fn<() => void>();
 
   const hook = renderHookValue(() => useDeleteBinder({ onSuccess }));
   act(() => hook.current.run(7));
@@ -264,7 +275,7 @@ describe('data before the query loads', () => {
 test('useCalendarEvent passes onSuccess the loaded event', async () => {
   const event: CalendarEvent = { id: 5, title: 'Rehearsal' };
   vi.mocked(EventsApi.get).mockResolvedValue(response(event));
-  const onSuccess = vi.fn();
+  const onSuccess = vi.fn<(event: CalendarEvent) => void>();
 
   renderHookValue(() => useCalendarEvent(5, { onSuccess }));
 

@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { reportError } from '../utils/error';
+import useTrackSearch from '../hooks/useTrackSearch';
 import PageLoading from './PageLoading';
 import TracksApi, { type SpotifyTrack } from '../api/tracksApi';
 import SpotifyTrackResult from './SpotifyTrackResult';
 import type { NewTrack } from '../types';
+
+async function searchSpotify(query: string) {
+  const { data } = await TracksApi.searchSpotify(query);
+  return data?.tracks?.items || [];
+}
 
 type SpotifySearchResultsProps = {
   query: string;
@@ -16,29 +20,7 @@ export default function SpotifySearchResults({
   onTrackClick,
   selectedTracks,
 }: SpotifySearchResultsProps) {
-  const [results, setResults] = useState<SpotifyTrack[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    const id = setTimeout(() => {
-      async function search() {
-        try {
-          const { data } = await TracksApi.searchSpotify(query);
-          setResults(data?.tracks?.items || []);
-        } catch (error) {
-          reportError(error);
-        } finally {
-          setLoading(false);
-        }
-      }
-      if (query) {
-        search();
-      }
-    }, 800);
-
-    return () => clearTimeout(id);
-  }, [query]);
+  const { results, loading } = useTrackSearch(query, searchSpotify);
 
   function isSelected(resultInQuestion: SpotifyTrack) {
     return !!selectedTracks.find(

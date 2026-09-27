@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import AddCancelActions from './buttons/AddCancelActions';
 import OutlinedInput from './inputs/OutlinedInput';
@@ -21,17 +21,33 @@ export default function ChangeSetlistDateDialog({
   scheduledDate,
   onDateChanged,
 }: ChangeSetlistDateDialogProps) {
+  return (
+    <StyledDialog
+      open={open}
+      onCloseDialog={onCloseDialog}
+      title="Change scheduled date"
+    >
+      {/* StyledDialog unmounts its contents while closed, so each opening
+          starts from the current date. */}
+      <ChangeSetlistDateForm
+        onCloseDialog={onCloseDialog}
+        scheduledDate={scheduledDate}
+        onDateChanged={onDateChanged}
+      />
+    </StyledDialog>
+  );
+}
+
+function ChangeSetlistDateForm({
+  onCloseDialog,
+  scheduledDate,
+  onDateChanged,
+}: Omit<ChangeSetlistDateDialogProps, 'open'>) {
   const [editingScheduledDate, setEditingScheduledDate] =
     useState(scheduledDate);
   const [dateValid, setDateValid] = useState(false);
   const [updating, setUpdating] = useState(false);
   const { id } = useParams<{ id: string }>();
-
-  useEffect(() => {
-    if (open) {
-      setEditingScheduledDate(scheduledDate);
-    }
-  }, [scheduledDate, open]);
 
   const handleDateChange = (newDate: string) => {
     const dateToValidate = new Date(newDate);
@@ -39,22 +55,12 @@ export default function ChangeSetlistDateDialog({
     setEditingScheduledDate(newDate);
   };
 
-  const clearFields = () => {
-    setDateValid(false);
-    setUpdating(false);
-  };
-
-  const handleCloseDialog = () => {
-    clearFields();
-    onCloseDialog();
-  };
-
   const handleUpdateDate = async () => {
     setUpdating(true);
     try {
       await SetlistApi.updateOne({ scheduledDate: editingScheduledDate }, id);
       onDateChanged(editingScheduledDate);
-      handleCloseDialog();
+      onCloseDialog();
     } catch (error) {
       reportError(error);
       setUpdating(false);
@@ -62,11 +68,7 @@ export default function ChangeSetlistDateDialog({
   };
 
   return (
-    <StyledDialog
-      open={open}
-      onCloseDialog={handleCloseDialog}
-      title="Change scheduled date"
-    >
+    <>
       <div className="mb-4">
         <OutlinedInput
           type="date"
@@ -84,10 +86,10 @@ export default function ChangeSetlistDateDialog({
       <AddCancelActions
         addDisabled={!dateValid}
         addText="Update date"
-        onCancel={handleCloseDialog}
+        onCancel={onCloseDialog}
         onAdd={handleUpdateDate}
         loadingAdd={updating}
       />
-    </StyledDialog>
+    </>
   );
 }

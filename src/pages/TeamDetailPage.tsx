@@ -3,7 +3,7 @@ import {
   selectCurrentTeam,
   setCurrentTeam,
 } from '../store/authSlice';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { EDIT_TEAM } from '../utils/constants';
@@ -12,7 +12,7 @@ import MobileProfilePictureMenu from '../components/mobile menus/MobileProfilePi
 import PageTitle from '../components/PageTitle';
 import ProfilePicture from '../components/ProfilePicture';
 import TeamApi from '../api/TeamApi';
-import _ from 'lodash';
+import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { format } from '../utils/date';
 import { reportError } from '../utils/error';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
@@ -81,16 +81,16 @@ export default function TeamDetailPage() {
     debounce(newName);
   };
 
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce((newName: string) => {
+  const debounce = useDebouncedCallback(
+    (newName: string) => {
       try {
         TeamApi.update({ name: newName });
       } catch (error) {
         reportError(error);
       }
-    }, 1000),
-    []
+    },
+    1000,
+    'flush'
   );
 
   if (currentTeam && currentSubscription) {

@@ -77,17 +77,18 @@ test.each(CHROMATIC)('%s keeps its hue (within 10 degrees)', name => {
 });
 
 test('chromatic colors stay distinguishable from each other', () => {
-  for (const a of CHROMATIC) {
-    for (const b of CHROMATIC) {
-      if (a < b)
-        expect(
-          hueDistance(
-            hue(generateUserColor(a).light.color),
-            hue(generateUserColor(b).light.color)
-          ),
-          `${a}/${b}`
-        ).toBeGreaterThanOrEqual(10);
-    }
+  const pairs = CHROMATIC.flatMap(a =>
+    CHROMATIC.filter(b => a < b).map(b => [a, b])
+  );
+  expect(pairs).toHaveLength((CHROMATIC.length * (CHROMATIC.length - 1)) / 2);
+  for (const [a, b] of pairs) {
+    expect(
+      hueDistance(
+        hue(generateUserColor(a).light.color),
+        hue(generateUserColor(b).light.color)
+      ),
+      `${a}/${b}`
+    ).toBeGreaterThanOrEqual(10);
   }
 });
 

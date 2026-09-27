@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Button from '../components/Button';
 import CenteredPage from '../components/CenteredPage';
@@ -11,24 +11,29 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import useQuery from '../hooks/useQuery';
 
+/** The plan the URL's `requested_plan` asks for, if it's one, else Starter. */
+function planToSelect(requestedPlan: string | null) {
+  return requestedPlan === 'Starter' || requestedPlan === 'Pro'
+    ? requestedPlan
+    : 'Starter';
+}
+
 export default function CreateNewTeamPage() {
   const [teamName, setTeamIdName] = useState('');
-  const [selectedPlan, setSelectedPlan] = useState('Starter');
+  const requestedPlan = useQuery().get('requested_plan');
+  const [selectedPlan, setSelectedPlan] = useState(() =>
+    planToSelect(requestedPlan)
+  );
+  // Select the requested plan again whenever the URL asks for another.
+  const [previousRequestedPlan, setPreviousRequestedPlan] =
+    useState(requestedPlan);
+  if (requestedPlan !== previousRequestedPlan) {
+    setPreviousRequestedPlan(requestedPlan);
+    setSelectedPlan(planToSelect(requestedPlan));
+  }
   const [loading, setLoading] = useState(false);
   const router = useHistory();
   const dispatch = useDispatch();
-  const requestedPlan = useQuery().get('requested_plan');
-
-  useEffect(() => {
-    if (
-      requestedPlan &&
-      (requestedPlan === 'Starter' || requestedPlan === 'Pro')
-    ) {
-      setSelectedPlan(requestedPlan);
-    } else {
-      setSelectedPlan('Starter');
-    }
-  }, [requestedPlan]);
 
   const handleCreate = async () => {
     setLoading(!loading);

@@ -1,5 +1,6 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
+import type { ComponentProps } from 'react';
 import type { AxiosResponse } from 'axios';
 import InvitationApi from '../api/InvitationApi';
 import MembershipsApi from '../api/membershipsApi';
@@ -77,8 +78,10 @@ describe('SendInvitesDialog', () => {
     vi.mocked(InvitationApi.createOne).mockResolvedValueOnce(
       response(invitation)
     );
-    const onInviteSent = vi.fn();
-    const onCloseDialog = vi.fn();
+    const onInviteSent =
+      vi.fn<ComponentProps<typeof SendInvitesDialog>['onInviteSent']>();
+    const onCloseDialog =
+      vi.fn<ComponentProps<typeof SendInvitesDialog>['onCloseDialog']>();
     renderWithProvider(
       <SendInvitesDialog
         open
@@ -127,7 +130,10 @@ describe('PendingInvitationsList', () => {
 
   test('lists when each invitation was sent, and deletes one', async () => {
     vi.mocked(InvitationApi.deleteOne).mockResolvedValueOnce(response({}));
-    const onInvitationDeleted = vi.fn();
+    const onInvitationDeleted =
+      vi.fn<
+        ComponentProps<typeof PendingInvitationsList>['onInvitationDeleted']
+      >();
     renderWithProvider(
       <PendingInvitationsList
         invitations={[invitation]}
@@ -189,7 +195,8 @@ describe('JoinLinkSection', () => {
 describe('MemberCard', () => {
   test("saves the current user's position a second after they stop typing", () => {
     vi.useFakeTimers();
-    const onPositionChanged = vi.fn();
+    const onPositionChanged =
+      vi.fn<ComponentProps<typeof MemberCard>['onPositionChanged']>();
     renderWithProvider(
       <MemoryRouter>
         <MemberCard
@@ -233,7 +240,8 @@ describe('RolePermissions', () => {
   test('toggles a permission on and off for the role', async () => {
     vi.mocked(RolesApi.addPermission).mockResolvedValue(response({}));
     vi.mocked(RolesApi.removePermission).mockResolvedValue(response({}));
-    const onPermissionToggled = vi.fn();
+    const onPermissionToggled =
+      vi.fn<ComponentProps<typeof RolePermissions>['onPermissionToggled']>();
     renderWithProvider(
       <RolePermissions role={role} onPermissionToggled={onPermissionToggled} />,
       { preloadedState: auth([EDIT_ROLES]) }
@@ -253,7 +261,8 @@ describe('RolePermissions', () => {
   });
 
   test("the admin role's permissions can't be changed", () => {
-    const onPermissionToggled = vi.fn();
+    const onPermissionToggled =
+      vi.fn<ComponentProps<typeof RolePermissions>['onPermissionToggled']>();
     renderWithProvider(
       <RolePermissions
         role={{ ...role, is_admin: true }}
@@ -281,13 +290,17 @@ describe('RoleDetailPage', () => {
     memberships: [membership],
   };
 
-  function renderPage() {
-    vi.mocked(RolesApi.getOne).mockResolvedValue(response(role));
+  function renderPage(
+    roleRequest: ReturnType<typeof RolesApi.getOne> = Promise.resolve(
+      response(role)
+    )
+  ) {
+    vi.mocked(RolesApi.getOne).mockReturnValue(roleRequest);
     vi.mocked(PermissionApi.getAll).mockResolvedValue(
       response([{ name: 'Add songs' }, { name: 'Edit songs' }])
     );
     vi.mocked(TeamApi.getMemberships).mockResolvedValue(response([]));
-    renderWithProvider(
+    return renderWithProvider(
       <MemoryRouter initialEntries={['/permissions/4']}>
         <Route path="/permissions/:id">
           <RoleDetailPage />
@@ -296,6 +309,26 @@ describe('RoleDetailPage', () => {
       { preloadedState: auth([EDIT_ROLES, ASSIGN_ROLES]) }
     );
   }
+
+  // useRole's placeholder must be the same object each render, or useCopy
+  // resets during render until React gives up ("Too many re-renders"). Both
+  // tests re-render the page before the role arrives.
+  test('keeps loading when the permissions arrive before the role', async () => {
+    const { container } = renderPage(new Promise(() => {}));
+    await waitFor(() => expect(PermissionApi.getAll).toHaveBeenCalled());
+    // react-query passes the permissions on after a timeout.
+    await act(() => new Promise(resolve => setTimeout(resolve, 20)));
+    // PageLoading's spinner: a crash would have emptied the page.
+    expect(container).not.toBeEmptyDOMElement();
+    expect(screen.queryByText('Add songs')).not.toBeInTheDocument();
+  });
+
+  test('says so when the role fails to load', async () => {
+    renderPage(Promise.reject(new Error('offline')));
+    expect(
+      await screen.findByText('There was an issue retrieving this role.')
+    ).toBeInTheDocument();
+  });
 
   test('checks a permission once it is added to the role', async () => {
     vi.mocked(RolesApi.addPermission).mockResolvedValue(response({}));

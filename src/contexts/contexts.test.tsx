@@ -227,10 +227,16 @@ test('SessionsProvider starts with no sessions and no active session', () => {
 });
 
 // Every consumer destructures the context value, so outside its provider it
-// has always thrown.
+// has always thrown. Since CAD-121 the context hook throws first, naming the
+// provider.
 describe('consumers throw outside their provider', () => {
   function NoProvider({ children }: { children?: ReactNode }) {
     return <MemoryRouter>{children}</MemoryRouter>;
+  }
+
+  /** The context hooks' error for a missing `provider`. */
+  function outside(provider: string) {
+    return `must be used inside a${/^[AEIOU]/.test(provider) ? 'n' : ''} ${provider}`;
   }
 
   beforeEach(() => {
@@ -241,19 +247,23 @@ describe('consumers throw outside their provider', () => {
   });
 
   test.each([
-    ['useTheme', useTheme],
-    ['usePerformanceMode', usePerformanceMode],
-    ['useAnnotationsToolbar', useAnnotationsToolbar],
-    ['useSongEditor', useSongEditor],
-    ['useEventForm', useEventForm],
-  ])('%s', (_, hook: () => unknown) => {
-    expect(() => renderHookValue(hook, NoProvider)).toThrow();
+    ['useTheme', useTheme, 'ThemeProvider'],
+    ['usePerformanceMode', usePerformanceMode, 'PerformanceModeProvider'],
+    [
+      'useAnnotationsToolbar',
+      useAnnotationsToolbar,
+      'AnnotationsToolbarProvider',
+    ],
+    ['useSongEditor', useSongEditor, 'SongEditorProvider'],
+    ['useEventForm', useEventForm, 'EventFormProvider'],
+  ])('%s', (_, hook: () => unknown, provider: string) => {
+    expect(() => renderHookValue(hook, NoProvider)).toThrow(outside(provider));
   });
 
   test('SessionsSheet', () => {
     expect(() =>
       render(<SessionsSheet className="" onClose={() => {}} />)
-    ).toThrow();
+    ).toThrow(outside('SessionsProvider'));
   });
 
   // New in CAD-121: the context hooks name the missing provider.
@@ -273,9 +283,7 @@ describe('consumers throw outside their provider', () => {
     ['useEventFormContext', useEventFormContext, 'EventFormProvider'],
     ['useSessionsContext', useSessionsContext, 'SessionsProvider'],
   ])('%s names its provider', (_, hook: () => unknown, provider: string) => {
-    expect(() => renderHookValue(hook, NoProvider)).toThrow(
-      `must be used inside a${/^[AEIOU]/.test(provider) ? 'n' : ''} ${provider}`
-    );
+    expect(() => renderHookValue(hook, NoProvider)).toThrow(outside(provider));
   });
 });
 

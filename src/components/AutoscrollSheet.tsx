@@ -35,13 +35,15 @@ export default function AutoscrollSheet({
   const [loading, setLoading] = useState(false);
   const [animationFrameId, setAnimationFrameId] = useState<number | null>();
 
-  useEffect(() => {
+  // Another song stops scrolling and drops unsaved speed changes. Clearing
+  // the frame id cancels the running frame, through the cleanup below.
+  const [previousSongId, setPreviousSongId] = useState(song.id);
+  if (song.id !== previousSongId) {
+    setPreviousSongId(song.id);
     setIsScrolling(false);
     setUpdates(null);
-    cancelFrame(animationFrameId);
     setAnimationFrameId(null);
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [song.id]);
+  }
 
   useEffect(() => {
     return () => cancelFrame(animationFrameId);

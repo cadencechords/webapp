@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import axios from 'axios';
+import type { ComponentProps } from 'react';
 import Button from './Button';
 import DetailSection from './DetailSection';
 import EventColorOption from './EventColorOption';
@@ -42,7 +43,8 @@ test('ShapeMarking renders known shapes and nothing for others', () => {
 });
 
 test('EventColorOption without a color keeps its "undefined" class', () => {
-  const onClick = vi.fn();
+  const onClick =
+    vi.fn<NonNullable<ComponentProps<typeof EventColorOption>['onClick']>>();
   render(<EventColorOption onClick={onClick} />);
   const button = screen.getByRole('button');
   expect(button.className).toContain(' undefined ');
@@ -76,10 +78,10 @@ test('DetailSection shows its empty message without items', () => {
 });
 
 test('MarkingOptionsPopover closes on a click outside it', () => {
-  const onClose = vi.fn();
+  const onClose = vi.fn<() => void>();
   render(
     <>
-      <MarkingOptionsPopover onDelete={vi.fn()} onClose={onClose} />
+      <MarkingOptionsPopover onDelete={vi.fn<() => void>()} onClose={onClose} />
       <p>Outside</p>
     </>
   );

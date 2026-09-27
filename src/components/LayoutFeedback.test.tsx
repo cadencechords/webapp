@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { renderWithProvider } from '../utils/test';
@@ -21,7 +21,12 @@ import StyledDialog from './StyledDialog';
 import StyledPopover from './StyledPopover';
 import TableRow from './TableRow';
 import TeamLoginOptions from './TeamLoginOptions';
+import { EDIT_SONGS } from '../utils/constants';
 import type { Song } from '../types';
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 // These pin the defaults that used to live in defaultProps (CAD-120).
 
@@ -123,6 +128,64 @@ test('AutoscrollSheet has no stray classes', () => {
   userEvent.click(container.querySelector('button') as HTMLElement);
   const shortcut = container.querySelector('.fixed.flex-center');
   expect(shortcut?.className).toBe('fixed flex-center flex-col z-10 ');
+});
+
+test('AutoscrollSheet stops scrolling when another song is shown', () => {
+  const requestFrame = vi
+    .spyOn(window, 'requestAnimationFrame')
+    .mockReturnValue(42);
+  const cancelFrame = vi
+    .spyOn(window, 'cancelAnimationFrame')
+    .mockImplementation(() => {});
+  const { container, rerender } = renderWithProvider(
+    <AutoscrollSheet song={song} onSongChange={() => {}} />,
+    { preloadedState: member }
+  );
+  const toggle = () => container.querySelector('button') as HTMLElement;
+
+  userEvent.click(toggle());
+  expect(requestFrame).toHaveBeenCalledTimes(1);
+  expect(cancelFrame).not.toHaveBeenCalledWith(42);
+
+  rerender(
+    <AutoscrollSheet
+      song={{ ...song, id: song.id + 1 }}
+      onSongChange={() => {}}
+    />
+  );
+  expect(cancelFrame).toHaveBeenCalledWith(42);
+
+  // No longer scrolling, so the toggle starts again rather than stopping.
+  userEvent.click(toggle());
+  expect(requestFrame).toHaveBeenCalledTimes(2);
+});
+
+test('AutoscrollSheet drops an unsaved speed change when another song is shown', () => {
+  const editor = {
+    auth: {
+      currentUser: {
+        id: 1,
+        role: { permissions: [{ name: EDIT_SONGS }] },
+      },
+    },
+  };
+  const { container, rerender } = renderWithProvider(
+    <AutoscrollSheet song={song} onSongChange={() => {}} />,
+    { preloadedState: editor }
+  );
+
+  fireEvent.change(container.querySelector('input[type="range"]')!, {
+    target: { value: '3' },
+  });
+  expect(screen.getByText('Save changes')).toBeInTheDocument();
+
+  rerender(
+    <AutoscrollSheet
+      song={{ ...song, id: song.id + 1 }}
+      onSongChange={() => {}}
+    />
+  );
+  expect(screen.queryByText('Save changes')).not.toBeInTheDocument();
 });
 
 test('MetronomeSheet has no stray class', () => {

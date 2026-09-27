@@ -1,5 +1,5 @@
 import { SPRINGS, createSpring, isSettled, stepSpring } from './spring';
-import type { SpringSpec, SpringState } from './spring';
+import type { SpringOptions, SpringSpec, SpringState } from './spring';
 
 type SpringName = keyof typeof SPRINGS;
 
@@ -70,7 +70,7 @@ describe('createSpring', () => {
 
   test('animates to the target and calls onRest once', () => {
     const updates: number[] = [];
-    const onRest = vi.fn();
+    const onRest = vi.fn<NonNullable<SpringOptions['onRest']>>();
     const spring = createSpring(0, {
       spec: SPRINGS.defaultEffects,
       onUpdate: v => updates.push(v),
@@ -98,7 +98,7 @@ describe('createSpring', () => {
 
   test('spatial springs jump to the target when reduced motion is preferred', () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
-    const onUpdate = vi.fn();
+    const onUpdate = vi.fn<NonNullable<SpringOptions['onUpdate']>>();
     createSpring(0, { spec: SPRINGS.defaultSpatial, onUpdate }).to(50);
     expect(onUpdate).toHaveBeenLastCalledWith(50);
     expect(frames).toHaveLength(0);

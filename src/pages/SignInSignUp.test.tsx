@@ -1,7 +1,7 @@
 // @vitest-environment-options {"url": "https://app.example.com/"}
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { AxiosResponse } from 'axios';
-import type { ReactElement } from 'react';
+import type { ComponentProps, ReactElement } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import OneSignal from 'react-onesignal';
 import AuthApi from '../api/AuthApi';
@@ -28,31 +28,45 @@ import TeamLoginPage from './TeamLoginPage';
 
 vi.mock('../api/AuthApi', () => ({
   default: {
-    login: vi.fn(),
-    signUp: vi.fn(),
-    sendResetPasswordInstructions: vi.fn(),
-    resetPassword: vi.fn(),
+    login: vi.fn<typeof AuthApi.login>(),
+    signUp: vi.fn<typeof AuthApi.signUp>(),
+    sendResetPasswordInstructions:
+      vi.fn<typeof AuthApi.sendResetPasswordInstructions>(),
+    resetPassword: vi.fn<typeof AuthApi.resetPassword>(),
   },
 }));
 vi.mock('../api/InvitationApi', () => ({
-  default: { claimOne: vi.fn(), signUpThroughToken: vi.fn() },
+  default: {
+    claimOne: vi.fn<typeof InvitationApi.claimOne>(),
+    signUpThroughToken: vi.fn<typeof InvitationApi.signUpThroughToken>(),
+  },
 }));
 vi.mock('../api/joinLinkApi', () => ({
-  default: { getByJoinLinkCode: vi.fn(), join: vi.fn() },
+  default: {
+    getByJoinLinkCode: vi.fn<typeof JoinLinkApi.getByJoinLinkCode>(),
+    join: vi.fn<typeof JoinLinkApi.join>(),
+  },
 }));
 vi.mock('../api/TeamApi', () => ({
-  default: { getAll: vi.fn(), getCurrentTeam: vi.fn() },
+  default: {
+    getAll: vi.fn<typeof TeamApi.getAll>(),
+    getCurrentTeam: vi.fn<typeof TeamApi.getCurrentTeam>(),
+  },
 }));
 vi.mock('../api/UserApi', () => ({
-  default: { getCurrentUser: vi.fn(), getTeamMembership: vi.fn() },
+  default: {
+    getCurrentUser: vi.fn<typeof UserApi.getCurrentUser>(),
+    getTeamMembership: vi.fn<typeof UserApi.getTeamMembership>(),
+  },
 }));
 vi.mock('react-onesignal', () => ({
   default: {
-    init: vi.fn(),
-    setExternalUserId: vi.fn(),
-    showSlidedownPrompt: vi.fn(),
-    addListenerForNotificationOpened: vi.fn(),
-    removeExternalUserId: vi.fn(),
+    init: vi.fn<typeof OneSignal.init>(),
+    setExternalUserId: vi.fn<typeof OneSignal.setExternalUserId>(),
+    showSlidedownPrompt: vi.fn<typeof OneSignal.showSlidedownPrompt>(),
+    addListenerForNotificationOpened:
+      vi.fn<typeof OneSignal.addListenerForNotificationOpened>(),
+    removeExternalUserId: vi.fn<typeof OneSignal.removeExternalUserId>(),
   },
 }));
 vi.mock('../utils/error');
@@ -114,7 +128,8 @@ function type(placeholder: string, value: string) {
 }
 
 test('TeamLoginOption logs in to its team by id', () => {
-  const onLoginTeam = vi.fn();
+  const onLoginTeam =
+    vi.fn<ComponentProps<typeof TeamLoginOption>['onLoginTeam']>();
   render(<TeamLoginOption team={team} onLoginTeam={onLoginTeam} />);
 
   fireEvent.click(screen.getByText('Worship Team'));
@@ -352,7 +367,9 @@ test('JoinLinkPage shows the API message when the link fails', async () => {
   });
   renderAt('/join/abc', '/join/:code', <JoinLinkPage />);
 
-  await screen.findByText(/unable to find a team with this link/i);
+  expect(
+    await screen.findByText(/unable to find a team with this link/i)
+  ).toBeInTheDocument();
 });
 
 test('TeamLoginPage lists the teams to log in to', async () => {

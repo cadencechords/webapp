@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import StyledPopover from './StyledPopover';
 import { RgbaStringColorPicker } from 'react-colorful';
 import Button from './Button';
@@ -15,10 +15,12 @@ export default function ColorPicker({
   onChange,
 }: ColorPickerProps) {
   const [stagedColor, setStagedColor] = useState(color);
-
-  useEffect(() => {
+  // Start the staged color over whenever the color changes.
+  const [previousColor, setPreviousColor] = useState(color);
+  if (color !== previousColor) {
+    setPreviousColor(color);
     setStagedColor(color);
-  }, [color]);
+  }
 
   function handleConfirm() {
     onChange(stagedColor);

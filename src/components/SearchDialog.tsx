@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import BinderApi from '../api/BinderApi';
 import OpenInput from './inputs/OpenInput';
@@ -6,7 +6,7 @@ import SearchResults from './SearchResults';
 import SetlistApi from '../api/SetlistApi';
 import SongApi from '../api/SongApi';
 import StyledDialog from './StyledDialog';
-import _ from 'lodash';
+import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { reportError } from '../utils/error';
 import type { Binder, Setlist, Song } from '../types';
 
@@ -30,9 +30,8 @@ export default function SearchDialog({
     null
   );
 
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce(async (nameToSearchFor: string) => {
+  const debounce = useDebouncedCallback(
+    async (nameToSearchFor: string) => {
       if (nameToSearchFor && nameToSearchFor !== '') {
         const results: SearchResultsData = {
           binders: [],
@@ -54,8 +53,9 @@ export default function SearchDialog({
           reportError(error);
         }
       }
-    }, 300),
-    []
+    },
+    300,
+    'cancel'
   );
 
   const handleSearchQueryChange = (newQuery: string) => {
@@ -64,6 +64,8 @@ export default function SearchDialog({
   };
 
   const handleCloseDialog = () => {
+    // A search still waiting would bring the results back after the clear.
+    debounce.cancel();
     setSearchQuery('');
     setSearchResults(null);
     onCloseDialog();

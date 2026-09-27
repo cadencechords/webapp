@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { fireEvent, render } from '@testing-library/react';
+import type { ComponentProps } from 'react';
 import AnnotationsApi from './annotationsApi';
 import BillingApi from './billingApi';
 import BinderApi from './BinderApi';
@@ -168,8 +169,8 @@ describe('subscriptionSlice', () => {
 });
 
 test('TapTempo reports the bpm from the time between two taps', () => {
-  const onBpmChange = vi.fn();
-  const onTap = vi.fn();
+  const onBpmChange = vi.fn<ComponentProps<typeof TapTempo>['onBpmChange']>();
+  const onTap = vi.fn<ComponentProps<typeof TapTempo>['onTap']>();
   const now = vi.spyOn(Date.prototype, 'getTime');
   const { getByText } = render(
     <TapTempo onBpmChange={onBpmChange} onTap={onTap} />

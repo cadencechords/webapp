@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { BACKGROUND_COLORS } from '../Button';
 import { getTimeFromDate } from '../../utils/date';
 import type { CalendarEvent } from '../../types';
@@ -20,19 +18,9 @@ export default function CalendarEventEntry<E extends CalendarEventEntryEvent>({
   event,
   onClick,
 }: CalendarEventEntryProps<E>) {
-  const [colors, setColors] = useState(() =>
-    event.color
-      ? `${BACKGROUND_COLORS[event.color]} text-white transition-colors`
-      : 'text-black'
-  );
-
-  useEffect(() => {
-    if (event?.color) {
-      setColors(
-        `${BACKGROUND_COLORS[event.color]} text-white transition-colors`
-      );
-    }
-  }, [event?.color]);
+  const colors = event.color
+    ? `${BACKGROUND_COLORS[event.color]} text-white transition-colors`
+    : 'text-black';
 
   return (
     <button

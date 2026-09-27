@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import Draggable from 'react-draggable';
 import type {
@@ -9,7 +9,7 @@ import type {
 import NoteDialog from '../dialogs/NoteDialog';
 import type { NoteUpdates } from '../dialogs/NoteDialog';
 import NotesApi from '../api/notesApi';
-import _ from 'lodash';
+import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { reportError } from '../utils/error';
 import Icon from './Icon';
 import type { SongNote } from '../types';
@@ -81,22 +81,23 @@ export default function Note({
     }
   }
 
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
-  const debounce = useCallback(
-    _.debounce(async (content: string) => {
+  // The ids are passed in, so a waiting save goes to the note it was typed in.
+  const debounce = useDebouncedCallback(
+    (songIdToSave: number, noteId: number, content: string) => {
       try {
-        NotesApi.update(songId, note.id, { content });
+        NotesApi.update(songIdToSave, noteId, { content });
         onUpdate?.({ content });
       } catch (error) {
         reportError(error);
       }
-    }, 1200),
-    [songId, note.id]
+    },
+    1200,
+    'flush'
   );
 
   function handleContentChange(newContent: string) {
     setContent(newContent);
-    debounce(newContent);
+    debounce(songId, note.id, newContent);
   }
 
   return (

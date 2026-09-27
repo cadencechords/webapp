@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
-import type { ReactElement } from 'react';
+import type { ComponentProps, ReactElement } from 'react';
 import { renderWithProvider } from '../utils/test';
 import TracksApi, {
   type AppleMusicSong,
@@ -74,7 +74,8 @@ function atSong(page: ReactElement, path = '/songs/:id') {
 }
 
 test('AppleMusicTrackResult sizes the artwork and reports the picked track', () => {
-  const onClick = vi.fn();
+  const onClick =
+    vi.fn<ComponentProps<typeof AppleMusicTrackResult>['onClick']>();
   const track: AppleMusicSong = {
     id: 'am1',
     attributes: {
@@ -106,7 +107,7 @@ test('AppleMusicTrackResult sizes the artwork and reports the picked track', () 
 });
 
 test('YouTubeTrackResult reports a watch link and falls back to the default thumbnail', () => {
-  const onClick = vi.fn();
+  const onClick = vi.fn<ComponentProps<typeof YouTubeTrackResult>['onClick']>();
   const track: YouTubeVideo = {
     id: { videoId: 'v1' },
     snippet: {
@@ -150,8 +151,10 @@ test('AddTracksDialog searches Spotify, collects the picked tracks and saves the
   vi.mocked(TracksApi.createBulk).mockResolvedValue({
     data: saved,
   } as Awaited<ReturnType<typeof TracksApi.createBulk>>);
-  const onTracksAdded = vi.fn();
-  const onCloseDialog = vi.fn();
+  const onTracksAdded =
+    vi.fn<ComponentProps<typeof AddTracksDialog>['onTracksAdded']>();
+  const onCloseDialog =
+    vi.fn<ComponentProps<typeof AddTracksDialog>['onCloseDialog']>();
   const song = { id: 5, name: 'Holy', format: {} } as Song;
 
   render(
@@ -190,8 +193,8 @@ test('AddTracksDialog searches Spotify, collects the picked tracks and saves the
 });
 
 test('FilesInput reports chosen and removed files, and clears the input when empty', () => {
-  const onChange = vi.fn();
-  const onRemove = vi.fn();
+  const onChange = vi.fn<ComponentProps<typeof FilesInput>['onChange']>();
+  const onRemove = vi.fn<ComponentProps<typeof FilesInput>['onRemove']>();
   const { container } = render(
     <FilesInput onChange={onChange} onRemove={onRemove} buttonText="Choose" />
   );
@@ -212,7 +215,7 @@ test('FilesInput reports chosen and removed files, and clears the input when emp
 });
 
 test('KeyChooserDialog builds the key from the note and the quality', () => {
-  const onChange = vi.fn();
+  const onChange = vi.fn<ComponentProps<typeof KeyChooserDialog>['onChange']>();
   render(
     <KeyChooserDialog
       open
@@ -236,7 +239,8 @@ function tonesTransposed() {
 }
 
 test('KeyTransposerDialog counts the semitones and can clear the transposed key', () => {
-  const onChange = vi.fn();
+  const onChange =
+    vi.fn<ComponentProps<typeof KeyTransposerDialog>['onChange']>();
   render(
     <KeyTransposerDialog
       open
@@ -274,7 +278,8 @@ test('KeyOptionsPopover shows the capo key and its fret', () => {
 });
 
 test('TransposeKeySheet steps the key a half step, passing an unset key through', () => {
-  const onUpdateSong = vi.fn();
+  const onUpdateSong =
+    vi.fn<ComponentProps<typeof TransposeKeySheet>['onUpdateSong']>();
   const song = { id: 1, name: 'Song', format: {}, original_key: 'G' } as Song;
   const { rerender } = renderWithProvider(
     <TransposeKeySheet
@@ -312,7 +317,8 @@ test('SongFilesTab loads the files, then removes a deleted one', async () => {
   vi.mocked(FilesApi.getFilesForSong).mockResolvedValue({
     data: files,
   } as Awaited<ReturnType<typeof FilesApi.getFilesForSong>>);
-  const onFilesChange = vi.fn();
+  const onFilesChange =
+    vi.fn<ComponentProps<typeof SongFilesTab>['onFilesChange']>();
 
   const { rerender } = renderWithProvider(
     atSong(<SongFilesTab onFilesChange={onFilesChange} />),

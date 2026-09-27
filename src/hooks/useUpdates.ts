@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { isEmpty } from '../utils/ObjectUtils';
 
 /**
@@ -12,12 +12,22 @@ export default function useUpdates<T extends object>(originalValue: T) {
   const [updatedValue, setUpdatedValue] = useState(originalValue);
   const isDirty = !isEmpty(updates);
 
-  useEffect(() => {
+  // Whenever the original changes or the updates are cleared, and nothing is
+  // being edited, start over from the original.
+  const [previous, setPrevious] = useState({
+    stringifiedOriginalValue,
+    isDirty,
+  });
+  if (
+    stringifiedOriginalValue !== previous.stringifiedOriginalValue ||
+    isDirty !== previous.isDirty
+  ) {
+    setPrevious({ stringifiedOriginalValue, isDirty });
     if (!isDirty) {
       setUpdatedValue(JSON.parse(stringifiedOriginalValue));
       setUpdates({});
     }
-  }, [stringifiedOriginalValue, isDirty]);
+  }
 
   function onChange<K extends keyof T>(field: K, value: T[K]) {
     setUpdates(previousUpdates => ({ ...previousUpdates, [field]: value }));

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { MutableRefObject } from 'react';
 
 import Button from './Button';
 import MetronomeTool from '../tools/metronome';
@@ -13,9 +14,21 @@ type MetronomeProps = {
   onBpmChange: (bpm: number | undefined) => void;
 };
 
+/**
+ * The ref's metronome, created on first use. Only effects and handlers use
+ * it, and the tempo effect sets its tempo straight away.
+ */
+function metronomeIn(ref: MutableRefObject<MetronomeTool | null>) {
+  if (ref.current === null) {
+    ref.current = new MetronomeTool();
+  }
+  return ref.current;
+}
+
 export default function Metronome({ bpm, onBpmChange }: MetronomeProps) {
   const [isOn, setIsOn] = useState(false);
-  const [metronome] = useState(() => new MetronomeTool(bpm));
+  // A ref, not state: the effect below sets its tempo in place.
+  const metronomeRef = useRef<MetronomeTool | null>(null);
   const iconClasses = 'w-14 h-14 text-blue-600 dark:text-dark-blue';
 
   // The input passes a string, TapTempo a number.
@@ -33,29 +46,31 @@ export default function Metronome({ bpm, onBpmChange }: MetronomeProps) {
   };
 
   useEffect(() => {
+    const metronome = metronomeIn(metronomeRef);
     metronome.tempo = bpm;
     if (isOn) {
-      metronome?.stop();
-      metronome?.start();
+      metronome.stop();
+      metronome.start();
     }
-  }, [bpm, metronome, isOn]);
+  }, [bpm, isOn]);
 
   useEffect(() => {
-    return () => metronome?.stop();
-  }, [metronome]);
+    const metronome = metronomeIn(metronomeRef);
+    return () => metronome.stop();
+  }, []);
 
   const handleToggleMetronome = () => {
     if (isOn) {
-      metronome.stop();
+      metronomeIn(metronomeRef).stop();
       setIsOn(false);
     } else {
-      metronome.start();
+      metronomeIn(metronomeRef).start();
       setIsOn(true);
     }
   };
 
   const handlePauseMetronome = () => {
-    metronome?.stop();
+    metronomeIn(metronomeRef).stop();
     setIsOn(false);
   };
 

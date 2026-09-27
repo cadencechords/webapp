@@ -1,5 +1,5 @@
 import { parseNote, parseQuality } from '../utils/SongUtils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Button from './Button';
 import ButtonSwitch from './buttons/ButtonSwitch';
@@ -20,6 +20,34 @@ export default function KeyChooserDialog({
   currentSongKey,
   onChange,
 }: KeyChooserDialogProps) {
+  return (
+    <StyledDialog
+      borderedTop={false}
+      open={open}
+      onCloseDialog={onCloseDialog}
+      title={
+        currentSongKey
+          ? 'Original key:  ' + currentSongKey
+          : 'Original key: none'
+      }
+      fullscreen={false}
+    >
+      {/* StyledDialog unmounts its contents while closed, so each opening
+          starts from the current key. */}
+      <KeyChooser
+        onCloseDialog={onCloseDialog}
+        currentSongKey={currentSongKey}
+        onChange={onChange}
+      />
+    </StyledDialog>
+  );
+}
+
+function KeyChooser({
+  onCloseDialog,
+  currentSongKey,
+  onChange,
+}: Omit<KeyChooserDialogProps, 'open'>) {
   const [keyNote, setKeyNote] = useState(() => {
     if (currentSongKey) {
       return parseNote(currentSongKey);
@@ -31,17 +59,6 @@ export default function KeyChooserDialog({
   const [keyQuality, setKeyQuality] = useState(() => {
     return parseQuality(currentSongKey);
   });
-
-  useEffect(() => {
-    if (currentSongKey?.charAt?.(0)) {
-      // As: a first character means currentSongKey is a non-empty string.
-      setKeyNote(parseNote(currentSongKey as string));
-    } else {
-      setKeyNote('G');
-    }
-
-    setKeyQuality(parseQuality(currentSongKey));
-  }, [currentSongKey, open]);
 
   const handleKeyChange = (newKey: string) => {
     setKeyNote(newKey);
@@ -57,17 +74,7 @@ export default function KeyChooserDialog({
   };
 
   return (
-    <StyledDialog
-      borderedTop={false}
-      open={open}
-      onCloseDialog={onCloseDialog}
-      title={
-        currentSongKey
-          ? 'Original key:  ' + currentSongKey
-          : 'Original key: none'
-      }
-      fullscreen={false}
-    >
+    <>
       <h1 className="text-center text-3xl font-bold mb-4">
         {keyNote + keyQuality}
       </h1>
@@ -98,7 +105,7 @@ export default function KeyChooserDialog({
           Confirm
         </Button>
       </div>
-    </StyledDialog>
+    </>
   );
 }
 

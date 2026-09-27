@@ -46,7 +46,7 @@ yarn build
 ```
 
 Fix type errors instead of hiding them with `@ts-ignore`, `@ts-expect-error`
-or `any`. Fix lint errors too, instead of adding `oxlint-disable` comments or
+or `any`. Fix lint errors too, instead of adding comments that disable oxlint rules or
 turning rules off in `.oxlintrc.json`.
 
 ## Pull requests

@@ -1,13 +1,15 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import AddMarkingsModal from './AddMarkingsModal';
 import Annotations from './Annotations';
 import AnnotationsToolbar from './AnnotationsToolbar';
 import ColorDialog from './ColorDialog';
 import ColorPicker from './ColorPicker';
+import ColorPickerPopover from './ColorPickerPopover';
+import StrokeWidthPopover from './StrokeWidthPopover';
 import Marking from './Marking';
 import MarkupPopover from './MarkupPopover';
-import Note from './Note';
+import Note, { type NoteUpdateHandler } from './Note';
 import NoteColorOption from './NoteColorOption';
 import NotesApi from '../api/notesApi';
 import ThemeProvider from '../contexts/ThemeProvider';
@@ -18,6 +20,11 @@ import type {
 } from '../contexts/PerformanceModeProvider';
 import AnnotationsToolbarProvider from '../contexts/AnnotationsToolbarProvider';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
+import type {
+  useCreateMarking,
+  useDeleteMarking,
+  useUpdateMarking,
+} from '../hooks/api/markings.hooks';
 import type { AnnotationPath, Marking as MarkingModel } from '../types';
 
 // Pins the behavior of the notes, markings, annotations and colour pickers
@@ -25,7 +32,7 @@ import type { AnnotationPath, Marking as MarkingModel } from '../types';
 
 vi.mock('../api/notesApi');
 
-const createMarking = vi.fn();
+const createMarking = vi.fn<ReturnType<typeof useCreateMarking>['run']>();
 const createMarkingOptions: { onSuccess?: (marking: MarkingModel) => void } =
   {};
 vi.mock('../hooks/api/markings.hooks', () => ({
@@ -33,8 +40,12 @@ vi.mock('../hooks/api/markings.hooks', () => ({
     createMarkingOptions.onSuccess = options.onSuccess;
     return { isLoading: false, run: createMarking };
   },
-  useUpdateMarking: () => ({ run: vi.fn() }),
-  useDeleteMarking: () => ({ run: vi.fn() }),
+  useUpdateMarking: () => ({
+    run: vi.fn<ReturnType<typeof useUpdateMarking>['run']>(),
+  }),
+  useDeleteMarking: () => ({
+    run: vi.fn<ReturnType<typeof useDeleteMarking>['run']>(),
+  }),
 }));
 
 // Modal renders a dialog (not a bottom sheet) from the sm breakpoint up.
@@ -62,7 +73,7 @@ afterEach(() => {
 
 function Providers({
   mode = 'perform',
-  setMode = vi.fn(),
+  setMode = vi.fn<PerformanceModeContextValue['setMode']>(),
   children,
 }: {
   mode?: PerformanceMode;
@@ -94,9 +105,14 @@ describe('Note', () => {
 
   test('saves typed content 1200ms after the last change', () => {
     vi.useFakeTimers();
-    const onUpdate = vi.fn();
+    const onUpdate = vi.fn<NoteUpdateHandler>();
     render(
-      <Note songId={3} note={note} onDelete={vi.fn()} onUpdate={onUpdate} />
+      <Note
+        songId={3}
+        note={note}
+        onDelete={vi.fn<ComponentProps<typeof Note>['onDelete']>()}
+        onUpdate={onUpdate}
+      />
     );
 
     const textarea = screen.getByPlaceholderText('Type here');
@@ -121,8 +137,30 @@ describe('Note', () => {
     expect(onUpdate.mock.calls[0]).toHaveLength(1);
   });
 
+  test('saves content still waiting when the note unmounts', () => {
+    vi.useFakeTimers();
+    const { unmount } = render(
+      <Note
+        songId={3}
+        note={note}
+        onDelete={vi.fn<ComponentProps<typeof Note>['onDelete']>()}
+      />
+    );
+    fireEvent.change(screen.getByPlaceholderText('Type here'), {
+      target: { value: 'Speed up' },
+    });
+
+    unmount();
+    expect(NotesApi.update).toHaveBeenCalledWith(3, 7, { content: 'Speed up' });
+
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+    expect(NotesApi.update).toHaveBeenCalledTimes(1);
+  });
+
   test('NoteColorOption passes its color to onClick', () => {
-    const onClick = vi.fn();
+    const onClick = vi.fn<ComponentProps<typeof NoteColorOption>['onClick']>();
     render(<NoteColorOption color="bg-pink-200" selected onClick={onClick} />);
     const button = screen.getByRole('button');
     expect(button.className).toContain('ring-2');
@@ -144,7 +182,13 @@ describe('Marking', () => {
   };
 
   test('reads its position, scale and rotation with parseFloat', () => {
-    render(<Marking marking={marking} song={{ id: 3 }} onDeleted={vi.fn()} />);
+    render(
+      <Marking
+        marking={marking}
+        song={{ id: 3 }}
+        onDeleted={vi.fn<ComponentProps<typeof Marking>['onDeleted']>()}
+      />
+    );
 
     const text = screen.getByText('mf');
     expect(text.style.transform).toBe('rotate(45deg) scale(1.5)');
@@ -157,7 +201,7 @@ describe('Marking', () => {
       <Marking
         marking={{ ...marking, marking_type: 'roadmap', content: '2X' }}
         song={{ id: 3 }}
-        onDeleted={vi.fn()}
+        onDeleted={vi.fn<ComponentProps<typeof Marking>['onDeleted']>()}
       />
     );
     expect(screen.getByText('2X').style.fontFamily).toBe('');
@@ -166,8 +210,9 @@ describe('Marking', () => {
 
 describe('AddMarkingsModal', () => {
   test('creates the picked marking and reports it once saved', () => {
-    const onClose = vi.fn();
-    const onMarkingAdded = vi.fn();
+    const onClose = vi.fn<ComponentProps<typeof AddMarkingsModal>['onClose']>();
+    const onMarkingAdded =
+      vi.fn<ComponentProps<typeof AddMarkingsModal>['onMarkingAdded']>();
     render(
       <AddMarkingsModal
         open
@@ -273,11 +318,17 @@ describe('AnnotationsToolbar', () => {
   });
 
   test('MarkupPopover starts annotating', () => {
-    const setMode = vi.fn();
-    const onAddNote = vi.fn();
+    const setMode = vi.fn<PerformanceModeContextValue['setMode']>();
+    const onAddNote =
+      vi.fn<ComponentProps<typeof MarkupPopover>['onAddNote']>();
     render(
       <Providers setMode={setMode}>
-        <MarkupPopover onAddNote={onAddNote} onShowMarkingsModal={vi.fn()} />
+        <MarkupPopover
+          onAddNote={onAddNote}
+          onShowMarkingsModal={vi.fn<
+            ComponentProps<typeof MarkupPopover>['onShowMarkingsModal']
+          >()}
+        />
       </Providers>
     );
     // The popover's button, around the icon Button.
@@ -293,7 +344,7 @@ describe('AnnotationsToolbar', () => {
 
 describe('colour pickers', () => {
   test('ColorPicker confirms the staged color or cancels to its own', () => {
-    const onChange = vi.fn();
+    const onChange = vi.fn<ComponentProps<typeof ColorPicker>['onChange']>();
     render(<ColorPicker color="rgba(1, 2, 3, 1)" onChange={onChange} />);
 
     fireEvent.click(screen.getAllByRole('button')[0]);
@@ -313,9 +364,57 @@ describe('colour pickers', () => {
     expect(onChange).toHaveBeenLastCalledWith('rgba(255, 255, 255, 0)');
   });
 
+  test('ColorPicker drops the staged color when its color changes', () => {
+    const onChange = vi.fn<ComponentProps<typeof ColorPicker>['onChange']>();
+    const { rerender } = render(
+      <ColorPicker color="rgba(1, 2, 3, 1)" onChange={onChange} />
+    );
+    fireEvent.click(screen.getAllByRole('button')[0]);
+    const makeTransparent = screen
+      .getAllByRole('button')
+      .find(button => button.className.includes('w-8 h-8'));
+    if (!makeTransparent) throw new Error('No make-transparent button');
+    fireEvent.click(makeTransparent);
+
+    rerender(<ColorPicker color="rgba(4, 5, 6, 1)" onChange={onChange} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+    expect(onChange).toHaveBeenLastCalledWith('rgba(4, 5, 6, 1)');
+  });
+
+  test.each([
+    ['ColorPickerPopover', ColorPickerPopover],
+    ['StrokeWidthPopover', StrokeWidthPopover],
+  ])('%s follows the toolbar color when it changes', (_, Popover) => {
+    function SetBlue() {
+      const { setColor } = useAnnotationsToolbar();
+      return (
+        <button onClick={() => setColor('rgba(0, 0, 255, 1)')}>Blue</button>
+      );
+    }
+    render(
+      <Providers>
+        <Popover button={<span>Pick</span>} />
+        <SetBlue />
+      </Providers>
+    );
+    fireEvent.click(screen.getByText('Pick'));
+    // Black, the light theme's default, has hue 0.
+    expect(screen.getByRole('slider', { name: 'Hue' })).toHaveAttribute(
+      'aria-valuetext',
+      '0'
+    );
+
+    fireEvent.click(screen.getByText('Blue'));
+    expect(screen.getByRole('slider', { name: 'Hue' })).toHaveAttribute(
+      'aria-valuetext',
+      '240'
+    );
+  });
+
   test('ColorDialog confirms the binder color unless another is picked', () => {
-    const onChange = vi.fn();
-    const onCloseDialog = vi.fn();
+    const onChange = vi.fn<ComponentProps<typeof ColorDialog>['onChange']>();
+    const onCloseDialog =
+      vi.fn<ComponentProps<typeof ColorDialog>['onCloseDialog']>();
     const { rerender } = render(
       <ColorDialog
         open

@@ -3,7 +3,7 @@ import {
   getCalendarDates,
   getMonthYearFromDate,
 } from '../../utils/date';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import CalendarBody from './CalendarBody';
 import CalendarHeader from './CalendarHeader';
@@ -28,29 +28,20 @@ export default function Calendar({
 }: CalendarProps) {
   const [month, setMonth] = useState(dayjs().month());
   const [year, setYear] = useState(dayjs().year());
-  const [calendarWeeks, setCalendarWeeks] =
-    useState<ReturnType<typeof getCalendarDates>>();
+  const calendarWeeks = useMemo(
+    () => getCalendarDates(month, year),
+    [month, year]
+  );
   const [eventToShow, setEventToShow] = useState<CalendarEvent | null>();
   /** Keyed by `getMonthYearFromDate`, e.g. `'0 2024'`. */
-  const [eventsByMonth, setEventsByMonth] = useState<
-    Record<string, CalendarEvent[]>
-  >({});
-
-  useEffect(() => {
-    setCalendarWeeks(getCalendarDates(month, year));
-  }, [month, year]);
-
-  useEffect(() => {
-    if (events) {
-      const updatedEventsByMonth: Record<string, CalendarEvent[]> = {};
-      events.forEach(event => {
-        const monthYearKey = getMonthYearFromDate(event.start_time);
-        updatedEventsByMonth[monthYearKey] =
-          updatedEventsByMonth[monthYearKey] || [];
-        updatedEventsByMonth[monthYearKey].push(event);
-      });
-      setEventsByMonth(updatedEventsByMonth);
-    }
+  const eventsByMonth = useMemo(() => {
+    const byMonth: Record<string, CalendarEvent[]> = {};
+    events?.forEach(event => {
+      const monthYearKey = getMonthYearFromDate(event.start_time);
+      byMonth[monthYearKey] = byMonth[monthYearKey] || [];
+      byMonth[monthYearKey].push(event);
+    });
+    return byMonth;
   }, [events]);
 
   const handleChangeMonth = (directionToChange: number) => {
