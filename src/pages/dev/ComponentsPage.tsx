@@ -38,6 +38,8 @@ import BottomSheet from '../../components/BottomSheet';
 import StyledPopover from '../../components/StyledPopover';
 import { MenuDivider, MenuItem, MenuList } from '../../components/Menu';
 import Card from '../../components/Card';
+import { Tab } from '@headlessui/react';
+import { PrimaryTab, PrimaryTabs } from '../../components/tabs/PrimaryTabs';
 import Badge from '../../components/Badge';
 import KeyBadge from '../../components/KeyBadge';
 import DetailTag from '../../components/DetailTag';
@@ -519,6 +521,21 @@ export default function ComponentsPage() {
             <ProfilePicture size="sm" />
           </div>
         </Row>
+      </Section>
+
+      <Section title="Tabs">
+        <Tab.Group as="div" className="max-w-xl">
+          <PrimaryTabs>
+            <PrimaryTab>Details</PrimaryTab>
+            <PrimaryTab>Reminders</PrimaryTab>
+            <PrimaryTab>Set</PrimaryTab>
+          </PrimaryTabs>
+          <Tab.Panels className="py-4 text-body-medium text-on-surface-variant">
+            <Tab.Panel>Details panel</Tab.Panel>
+            <Tab.Panel>Reminders panel</Tab.Panel>
+            <Tab.Panel>Set panel</Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
       </Section>
     </div>
   );

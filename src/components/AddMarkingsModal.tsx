@@ -55,7 +55,7 @@ export default function AddMarkingsModal({
       }
     >
       <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
-        <MarkingTabs selectedIndex={selectedTab} />
+        <MarkingTabs />
         <Tab.Panels>
           <DynamicOptionsPanel onAddMarking={handleAddMarking} />
           <RoadmapOptionsPanel onAddMarking={handleAddMarking} />

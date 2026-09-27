@@ -1,29 +1,14 @@
-import { Tab } from '@headlessui/react';
-import classNames from 'classnames';
 import React from 'react';
 import { markingTabs } from '../utils/constants';
+import { PrimaryTab, PrimaryTabs } from './tabs/PrimaryTabs';
 
-type MarkingTabsProps = {
-  /** The index of the selected tab in `markingTabs`. */
-  selectedIndex: number;
-};
-
-export default function MarkingTabs({ selectedIndex }: MarkingTabsProps) {
+// The marking categories; the Tab.Group around them tracks the selection.
+export default function MarkingTabs() {
   return (
-    <Tab.List className="flex gap-3 mb-4 text-sm font-semibold text-gray-700 dark:text-dark-gray-200">
-      {markingTabs.map((tab, index) => (
-        <Tab
-          key={tab}
-          className={classNames(
-            'rounded-full h-7 px-3 outline-hidden focus:outline-hidden transition-colors',
-            selectedIndex === index
-              ? 'text-white bg-blue-600 dark:bg-dark-blue'
-              : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700'
-          )}
-        >
-          {tab}
-        </Tab>
+    <PrimaryTabs className="mb-4">
+      {markingTabs.map(tab => (
+        <PrimaryTab key={tab}>{tab}</PrimaryTab>
       ))}
-    </Tab.List>
+    </PrimaryTabs>
   );
 }

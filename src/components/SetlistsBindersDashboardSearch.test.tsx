@@ -146,8 +146,16 @@ test('SetlistsTabs maps the tab index to upcoming and past', () => {
   renderWithProvider(
     <SetlistsTabs selectedTab="upcoming" onChange={onChange} />
   );
-  expect(screen.getByText('Upcoming')).toHaveClass('bg-blue-600');
-  expect(screen.getByText('Past')).not.toHaveClass('bg-blue-600');
+  expect(screen.getByRole('tab', { name: 'Upcoming' })).toHaveAttribute(
+    'aria-selected',
+    'true'
+  );
+  expect(screen.getByRole('tab', { name: 'Upcoming' })).toHaveClass(
+    'text-primary'
+  );
+  expect(screen.getByRole('tab', { name: 'Past' })).toHaveClass(
+    'text-on-surface-variant'
+  );
   fireEvent.click(screen.getByText('Past'));
   expect(onChange).toHaveBeenLastCalledWith('past');
 });

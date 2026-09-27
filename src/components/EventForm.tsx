@@ -3,6 +3,7 @@ import React from 'react';
 import EventFormDetailsPanel from './EventFormDetailsPanel';
 import EventFormRemindersPanel from './EventFormRemindersPanel';
 import EventFormSetlistPanel from './EventFormSetlistPanel';
+import { PrimaryTab, PrimaryTabs } from './tabs/PrimaryTabs';
 import useSetlists from '../hooks/api/useSetlists';
 import useTeamMembers from '../hooks/api/useTeamMembers';
 
@@ -13,41 +14,11 @@ export default function EventForm() {
   return (
     <div>
       <Tab.Group as="div" className="col-span-4 pt-4 mb-10 lg:col-span-3">
-        <Tab.List>
-          <Tab className="outline-hidden focus:outline-hidden">
-            {({ selected }) => (
-              <div
-                className={`${
-                  selected ? SELECTED_TAB_CLASSES : ''
-                } ${TAB_CLASSES}`}
-              >
-                Details
-              </div>
-            )}
-          </Tab>
-          <Tab className="outline-hidden focus:outline-hidden">
-            {({ selected }) => (
-              <div
-                className={`${
-                  selected ? SELECTED_TAB_CLASSES : ''
-                } ${TAB_CLASSES}`}
-              >
-                Reminders
-              </div>
-            )}
-          </Tab>
-          <Tab className="outline-hidden focus:outline-hidden">
-            {({ selected }) => (
-              <div
-                className={`${
-                  selected ? SELECTED_TAB_CLASSES : ''
-                } ${TAB_CLASSES}`}
-              >
-                Set
-              </div>
-            )}
-          </Tab>
-        </Tab.List>
+        <PrimaryTabs>
+          <PrimaryTab>Details</PrimaryTab>
+          <PrimaryTab>Reminders</PrimaryTab>
+          <PrimaryTab>Set</PrimaryTab>
+        </PrimaryTabs>
         <Tab.Panels
           as="div"
           className="mt-6 outline-hidden focus:outline-hidden"
@@ -66,8 +37,3 @@ export default function EventForm() {
     </div>
   );
 }
-
-const TAB_CLASSES =
-  'px-4 py-1 font-medium hover:bg-gray-100 dark:hover:bg-dark-gray-800 transition-colors text-sm';
-const SELECTED_TAB_CLASSES =
-  'border-b-2 border-blue-600 dark:border-dark-blue text-blue-700';

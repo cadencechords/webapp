@@ -1,6 +1,6 @@
 import { Tab } from '@headlessui/react';
-import classNames from 'classnames';
 import React from 'react';
+import { PrimaryTab, PrimaryTabs } from './tabs/PrimaryTabs';
 
 export type SetlistsTab = 'upcoming' | 'past';
 
@@ -20,28 +20,10 @@ export default function SetlistsTabs({
   }
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={handleChange}>
-      <Tab.List className="flex gap-3 mb-4 text-sm font-semibold text-gray-700 dark:text-dark-gray-200">
-        <Tab
-          className={classNames(
-            'rounded-full h-7 px-3 outline-hidden focus:outline-hidden transition-colors',
-            selectedIndex === 0
-              ? 'text-white bg-blue-600 dark:bg-dark-blue'
-              : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700'
-          )}
-        >
-          Upcoming
-        </Tab>
-        <Tab
-          className={classNames(
-            'rounded-full h-7 px-3 outline-hidden focus:outline-hidden transition-colors',
-            selectedIndex === 1
-              ? 'text-white bg-blue-600 dark:bg-dark-blue'
-              : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700'
-          )}
-        >
-          Past
-        </Tab>
-      </Tab.List>
+      <PrimaryTabs className="mb-4">
+        <PrimaryTab>Upcoming</PrimaryTab>
+        <PrimaryTab>Past</PrimaryTab>
+      </PrimaryTabs>
     </Tab.Group>
   );
 }

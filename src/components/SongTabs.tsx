@@ -6,6 +6,7 @@ import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import SongTracksTab from './SongTracksTab';
+import { PrimaryTab, PrimaryTabs } from './tabs/PrimaryTabs';
 import type { Song, SongFile, Track } from '../types';
 
 type SongTabsProps = {
@@ -26,38 +27,13 @@ export default function SongTabs({
   const currentMember = useSelector(selectCurrentMember)!;
 
   return (
-    <Tab.Group
-      as="div"
-      className="border-t dark:border-dark-gray-700 lg:border-none pt-4 col-span-4 lg:col-span-3 mb-10 "
-    >
-      <Tab.List>
+    <Tab.Group as="div" className="pt-4 col-span-4 lg:col-span-3 mb-10">
+      <PrimaryTabs>
         {currentSubscription.isPro && currentMember.can(VIEW_FILES) && (
-          <Tab className="outline-hidden focus:outline-hidden">
-            {({ selected }) => (
-              <div
-                className={`${
-                  selected ? SELECTED_TAB_CLASSES : ''
-                } ${TAB_CLASSES}`}
-              >
-                Files
-              </div>
-            )}
-          </Tab>
+          <PrimaryTab>Files</PrimaryTab>
         )}
-        {currentSubscription.isPro && (
-          <Tab className="outline-hidden focus:outline-hidden">
-            {({ selected }) => (
-              <div
-                className={`${
-                  selected ? SELECTED_TAB_CLASSES : ''
-                } ${TAB_CLASSES}`}
-              >
-                Tracks
-              </div>
-            )}
-          </Tab>
-        )}
-      </Tab.List>
+        {currentSubscription.isPro && <PrimaryTab>Tracks</PrimaryTab>}
+      </PrimaryTabs>
       <Tab.Panels as="div" className="mt-4 outline-hidden focus:outline-hidden">
         {currentSubscription.isPro && currentMember.can(VIEW_FILES) && (
           <Tab.Panel as="div" className="outline-hidden focus:outline-hidden">
@@ -77,7 +53,3 @@ export default function SongTabs({
     </Tab.Group>
   );
 }
-
-const TAB_CLASSES =
-  'px-3 py-2 font-medium hover:bg-gray-100 dark:hover:bg-dark-gray-800 transition-colors';
-const SELECTED_TAB_CLASSES = 'border-b-4 border-blue-600 dark:border-dark-blue';
