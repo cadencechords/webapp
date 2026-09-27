@@ -215,7 +215,8 @@ test('BinderSongRow: the link fills the row and takes the focus ring', () => {
   );
   const row = link.parentElement as HTMLElement;
   // One state layer: the link's (a second on the row would stack on hover).
-  expect(link).toHaveClass('state-layer-flat');
+  // rounded-[inherit] keeps its state layer inside the group's end corners.
+  expect(link).toHaveClass('state-layer-flat', 'rounded-[inherit]');
   expect(row).not.toHaveClass('state-layer-flat');
   expect(row.className).not.toMatch(/\bpy-/);
   expect(row.className).not.toMatch(/min-h-/);
@@ -275,7 +276,9 @@ describe('list-segmented CSS', () => {
     // on its position.
     expect(css).toMatch(/\.list-segmented > \* \{[^}]*margin-block: 1px/);
     expect(css).toMatch(/\.list-segmented \{[^}]*margin-block: -1px/);
-    expect(css).not.toMatch(/\.list-segmented \{[^}]*gap:/);
+    const start = css.indexOf('@layer components {\n  .list-segmented');
+    const block = css.slice(start, css.indexOf('\n}', start));
+    expect(block).not.toMatch(/\bgap:/);
   });
 
   test('the drag placeholder is an empty gap, and the row before it closes the group', () => {
@@ -283,7 +286,7 @@ describe('list-segmented CSS', () => {
       /\.list-segmented > \[data-rbd-placeholder-context-id\] \{\s*background-color: transparent/
     );
     expect(css).toMatch(
-      /\.list-segmented > :has\(\+ \[data-rbd-placeholder-context-id\]:last-child\)/
+      /\.list-segmented > :has\(\+ \[data-rbd-placeholder-context-id\]:last-child\) \{\s*border-bottom-left-radius: var\(--md-sys-shape-corner-large\)/
     );
   });
 
