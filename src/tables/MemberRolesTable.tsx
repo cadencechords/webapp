@@ -61,7 +61,13 @@ export default function MemberRolesTable({
             {currentMember!.can(ASSIGN_ROLES) ? (
               <div className="shrink-0">
                 <MenuSelect
-                  options={roleOptions ?? []}
+                  // The member's own role until the roles load, so the
+                  // button isn't blank.
+                  options={
+                    roleOptions ?? [
+                      { value: member.role.name, display: member.role.name },
+                    ]
+                  }
                   selected={member.role.name}
                   onChange={roleName =>
                     assignRoleToMember({ memberId: member.id, roleName })

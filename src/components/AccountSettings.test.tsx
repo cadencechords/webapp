@@ -303,6 +303,37 @@ test('BillingPage summarizes Pro, with every feature included', () => {
   );
 });
 
+test.each([
+  ['trialing', 'Trial', 'bg-tertiary-container'],
+  ['past_due', 'Past due', 'bg-error-container'],
+  ['canceled', 'Canceled', 'bg-error-container'],
+])('BillingPage shows a %s subscription as %s', (status, text, color) => {
+  vi.mocked(useSubscription).mockReturnValue({
+    data: { plan_name: 'Pro', price: 20, status, store: 'stripe' },
+    isLoading: false,
+    isError: false,
+    isSuccess: true,
+    isFetching: false,
+    error: null,
+  });
+  renderWithProvider(<BillingPage />);
+  expect(screen.getByText(text)).toHaveClass(color);
+  expect(screen.queryByText('Active')).not.toBeInTheDocument();
+});
+
+test('BillingPage shows no status when the subscription has none', () => {
+  vi.mocked(useSubscription).mockReturnValue({
+    data: {},
+    isLoading: false,
+    isError: true,
+    isSuccess: false,
+    isFetching: false,
+    error: null,
+  });
+  renderWithProvider(<BillingPage />);
+  expect(screen.queryByText('Status')).not.toBeInTheDocument();
+});
+
 test('BillingPage offers the upgrade on Free, marking the Pro features', () => {
   vi.mocked(useSubscription).mockReturnValue({
     data: { plan_name: 'Free', status: 'active' },

@@ -74,9 +74,14 @@ export default function BillingPage() {
                 )
               }
             </Detail>
-            <Detail label="Status">
-              <StatusPill status={status} />
-            </Detail>
+            {
+              // None when the subscription couldn't load.
+              status && (
+                <Detail label="Status">
+                  <StatusPill status={status} />
+                </Detail>
+              )
+            }
             {isTrialing && (
               <Detail label="Trial ends">
                 {format(trialEndDate, 'MMM D')}
@@ -122,13 +127,13 @@ const PRO_ONLY = [
 
 /** Active on primary-container, Trial on tertiary-container, or any other
     status (past due, canceled…) as is on error-container, with a dot. */
-function StatusPill({ status }: { status?: string | null }) {
+function StatusPill({ status }: { status: string }) {
   const label =
     status === 'active'
       ? 'Active'
       : status === 'trialing'
         ? 'Trial'
-        : capitalize((status ?? 'unknown').replace(/_/g, ' '));
+        : capitalize(status.replace(/_/g, ' '));
 
   return (
     <span
