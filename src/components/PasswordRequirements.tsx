@@ -1,4 +1,4 @@
-import Alert from './Alert';
+import classNames from 'classnames';
 import Icon from './Icon';
 
 type PasswordRequirementsProps = {
@@ -6,39 +6,35 @@ type PasswordRequirementsProps = {
   isUncommon?: boolean;
 };
 
+// What a new password needs, as supporting text under its field: each rule
+// gets a primary check once it's met.
 export default function PasswordRequirements({
   isLongEnough = false,
   isUncommon = false,
 }: PasswordRequirementsProps) {
-  const checkIcon = (
-    <Icon
-      name="check_circle"
-      className="w-4 h-4 mx-3 text-green-600 dark:text-dark-green"
-    />
-  );
-  const xIcon = (
-    <Icon
-      name="cancel"
-      className="w-4 h-4 mx-3 text-red-600 dark:text-dark-red"
-    />
-  );
+  const rules = [
+    { met: isLongEnough, text: 'At least 8 characters' },
+    { met: isUncommon, text: 'Not a common password' },
+  ];
   return (
-    <div className="mb-4">
-      <Alert color="gray">
-        <div className="flex flex-col text-sm">
-          <div className="font-semibold">Your password should:</div>
-          <ul>
-            <li className="flex items-center mt-1">
-              {isLongEnough ? checkIcon : xIcon}
-              Be at least 8 characters long
-            </li>
-            <li className="flex items-center mt-1">
-              {isUncommon ? checkIcon : xIcon}
-              Not be a common password
-            </li>
-          </ul>
-        </div>
-      </Alert>
-    </div>
+    <ul
+      aria-label="Password requirements"
+      className="flex flex-col gap-1 px-4 font-plain text-body-small text-on-surface-variant"
+    >
+      {rules.map(({ met, text }) => (
+        <li key={text} className="flex items-center gap-2">
+          {met ? (
+            <Icon
+              name="check_circle"
+              filled
+              className="w-4 h-4 shrink-0 text-primary"
+            />
+          ) : (
+            <Icon name="cancel" className="w-4 h-4 shrink-0" />
+          )}
+          <span className={classNames(met && 'text-on-surface')}>{text}</span>
+        </li>
+      ))}
+    </ul>
   );
 }

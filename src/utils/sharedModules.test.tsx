@@ -67,6 +67,21 @@ describe('authSlice', () => {
     expect(member?.can('Delete songs')).toBe(false);
   });
 
+  test('selectCurrentMember keeps the same member until the user changes', () => {
+    const store = setupStore({ auth: { currentUser: user } });
+    store.dispatch(setMembership({ role: editor }));
+    const member = selectCurrentMember(store.getState());
+    // Other state changing: the same object, so components and effects that
+    // depend on it don't re-run.
+    store.dispatch(setTeamId(8));
+    expect(selectCurrentMember(store.getState())).toBe(member);
+
+    store.dispatch(updateCurrentUser({ ...user, first_name: 'Anne' }));
+    const updated = selectCurrentMember(store.getState());
+    expect(updated).not.toBe(member);
+    expect(updated?.first_name).toBe('Anne');
+  });
+
   test('selectCurrentMember throws with no current user', () => {
     expect(() => selectCurrentMember(setupStore().getState())).toThrow(
       TypeError
@@ -265,30 +280,14 @@ describe('date', () => {
     expect(weeks[0][4]?.fullDate.getDate()).toBe(1);
   });
 
-  test('getCalendarDates pads week 4 from the month end, even with a 6th week', () => {
-    // Kept as is: June 2024 needs six weeks. padRight pads week 4 by the
-    // weekday of June 30 (a Sunday), so week 4 gets six nulls after the 29th
-    // and week 5 holds just the 30th, unpadded.
+  test('getCalendarDates pads the last week, even when it is the 6th', () => {
+    // June 2024 needs six weeks: it starts on a Saturday and ends on a Sunday.
     const numbers = getCalendarDates(5, 2024).map(week =>
       week.map(day => day?.dateNumber ?? null)
     );
     expect(numbers[0]).toEqual([null, null, null, null, null, null, 1]);
-    expect(numbers[4]).toEqual([
-      23,
-      24,
-      25,
-      26,
-      27,
-      28,
-      29,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-    ]);
-    expect(numbers[5]).toEqual([30]);
+    expect(numbers[4]).toEqual([23, 24, 25, 26, 27, 28, 29]);
+    expect(numbers[5]).toEqual([30, null, null, null, null, null, null]);
   });
 
   test('getTimeFromDate: empty, midnight, and a time', () => {

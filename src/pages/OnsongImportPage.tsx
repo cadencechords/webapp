@@ -5,7 +5,6 @@ import OnsongChooseBinderForSongs from '../components/OnsongChooseBinderForSongs
 import OnsongChooseSongsFromBackup from '../components/OnsongChooseSongsFromBackup';
 import OnsongImportStatus from '../components/OnsongImportStatus';
 import OnsongReviewImport from '../components/OnsongReviewImport';
-import PageTitle from '../components/PageTitle';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useHistory } from 'react-router-dom';
@@ -184,10 +183,5 @@ export default function OnsongImportPage() {
     }
   };
 
-  return (
-    <div className="max-w-2xl mx-auto">
-      <PageTitle title="Import from Onsong" align="center" className="my-5" />
-      {getWizardPage()}
-    </div>
-  );
+  return <div className="max-w-2xl mx-auto mt-4">{getWizardPage()}</div>;
 }

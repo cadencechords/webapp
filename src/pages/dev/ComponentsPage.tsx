@@ -24,7 +24,6 @@ import EditableData from '../../components/inputs/EditableData';
 import TimeInput from '../../components/inputs/TimeInput';
 import Label from '../../components/Label';
 import FileInput from '../../components/FileInput';
-import SearchBar from '../../components/SearchBar';
 import Checkbox from '../../components/Checkbox';
 import Toggle from '../../components/Toggle';
 import Range from '../../components/Range';
@@ -42,6 +41,7 @@ import { Tab } from '@headlessui/react';
 import { MemoryRouter } from 'react-router-dom';
 import NavigationRailItem from '../../components/NavigationRailItem';
 import BinderIcon from '../../icons/BinderIcon';
+import BinderColor from '../../components/BinderColor';
 import { PrimaryTab, PrimaryTabs } from '../../components/tabs/PrimaryTabs';
 import Badge from '../../components/Badge';
 import KeyBadge from '../../components/KeyBadge';
@@ -86,6 +86,20 @@ const LIST_OPTIONS = ['Member', 'Leader', 'Admin'].map((role, index) => ({
   value: index,
   template: role,
 }));
+// The M3 corner scale (docs/design-tokens.md), as full class names so
+// Tailwind sees them.
+const CORNERS: [string, string][] = [
+  ['rounded-none', 'none · 0'],
+  ['rounded-extra-small', 'extra-small · 4'],
+  ['rounded-small', 'small · 8'],
+  ['rounded-medium', 'medium · 12'],
+  ['rounded-large', 'large · 16'],
+  ['rounded-large-increased', 'large-increased · 20'],
+  ['rounded-extra-large', 'extra-large · 28'],
+  ['rounded-extra-large-increased', 'extra-large-increased · 32'],
+  ['rounded-extra-extra-large', 'extra-extra-large · 48'],
+  ['rounded-full', 'full'],
+];
 const SIZES: ButtonSize[] = ['xs', 'sm', 'small', 'md', 'medium'];
 
 function Section({ title, children }: { title: string; children?: ReactNode }) {
@@ -141,6 +155,33 @@ export default function ComponentsPage() {
         layers, the press morph and the focus ring. Toggle the app theme to
         check dark mode.
       </p>
+
+      <Section title="Shapes">
+        <div className="flex flex-wrap gap-4 mb-6">
+          {CORNERS.map(([className, label]) => (
+            <div key={className} className="flex flex-col items-center w-28">
+              <div className={`w-24 h-24 bg-primary-container ${className}`} />
+              <code className="mt-2 text-center text-label-small text-on-surface-variant">
+                {label}
+              </code>
+            </div>
+          ))}
+        </div>
+        <Row label="Press morph">
+          <button
+            type="button"
+            className="w-24 h-24 rounded-extra-large bg-secondary-container text-on-secondary-container state-layer shape-morph focus-ring text-label-large"
+          >
+            Press me
+          </button>
+        </Row>
+        <Row label="Folder color">
+          <BinderColor color="blue" />
+          <BinderColor color="red" />
+          <BinderColor color="green" size={3} />
+          <BinderColor color="none" />
+        </Row>
+      </Section>
 
       <Section title="Buttons">
         {VARIANTS.map(([variant, label]) => (
@@ -292,9 +333,6 @@ export default function ComponentsPage() {
           </div>
           <FileInput onChange={() => {}} onRemove={() => {}} />
         </div>
-        <div className="mt-6 -ml-5">
-          <SearchBar />
-        </div>
       </Section>
 
       <Section title="Selection controls">
@@ -439,6 +477,7 @@ export default function ComponentsPage() {
                 <MenuList className="w-60">
                   <MenuItem icon={<Icon name="print" />}>Print</MenuItem>
                   <MenuItem
+                    selected
                     icon={<Icon name="edit" />}
                     trailing={<Icon name="check" className="w-5 h-5" />}
                   >
@@ -465,8 +504,10 @@ export default function ComponentsPage() {
               className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE}`}
               tabIndex={0}
             >
-              <span className="min-w-0 truncate">Amazing Grace</span>
-              <KeyBadge songKey="G" />
+              <span className="flex items-center min-w-0">
+                <span className="min-w-0 truncate">Amazing Grace</span>
+                <KeyBadge songKey="G" />
+              </span>
             </div>
             <div
               className={`${LIST_ITEM_TWO_LINE} ${LIST_ITEM_INTERACTIVE}`}
@@ -555,31 +596,27 @@ export default function ComponentsPage() {
         </p>
         {/* Its own router, so the links don't leave this page. */}
         <MemoryRouter initialEntries={['/songs']}>
-          <div className="flex flex-col w-24 gap-1 py-3 rounded-large bg-surface-container lg:w-[220px] lg:gap-0 lg:px-3">
+          <div className="flex flex-col w-24 gap-1 py-3 rounded-large border border-outline-variant lg:w-[220px] lg:gap-0 lg:px-3">
             <NavigationRailItem
               text="Dashboard"
               to="/"
               exact
-              icon={<Icon name="dashboard" className="w-6 h-6" />}
-              activeIcon={<Icon name="dashboard" filled className="w-6 h-6" />}
+              icon={<Icon name="dashboard" filled className="w-6 h-6" />}
             />
             <NavigationRailItem
               text="Songs"
               to="/songs"
-              icon={<Icon name="music_note" className="w-6 h-6" />}
-              activeIcon={<Icon name="music_note" filled className="w-6 h-6" />}
+              icon={<Icon name="music_note" filled className="w-6 h-6" />}
             />
             <NavigationRailItem
-              text="Binders"
-              to="/binders"
-              icon={<BinderIcon outlined className="w-6 h-6" />}
-              activeIcon={<BinderIcon className="w-6 h-6" />}
+              text="Folders"
+              to="/folders"
+              icon={<BinderIcon className="w-6 h-6" />}
             />
             <NavigationRailItem
               text="Team members"
               to="/members"
-              icon={<Icon name="person" className="w-6 h-6" />}
-              activeIcon={<Icon name="person" filled className="w-6 h-6" />}
+              icon={<Icon name="person" filled className="w-6 h-6" />}
             />
           </div>
         </MemoryRouter>
@@ -658,7 +695,7 @@ export default function ComponentsPage() {
         </Row>
         <Row label="Compact">
           <div className="w-full max-w-md">
-            <NoDataMessage compact>No binders found</NoDataMessage>
+            <NoDataMessage compact>No folders found</NoDataMessage>
           </div>
         </Row>
         <Row label="Titles">

@@ -8,11 +8,7 @@ import {
 import OutlinedInput from './OutlinedInput';
 import WellInput from './WellInput';
 import TimeInput from './TimeInput';
-import SearchBar from '../SearchBar';
-
-vi.mock('../SearchDialog', () => ({
-  default: ({ open }: { open: boolean }) => (open ? <div>dialog</div> : null),
-}));
+import SearchField from './SearchField';
 
 // CAD-85: the M3 text fields keep their behavior.
 
@@ -129,21 +125,43 @@ test('WellInput is a filled field and keeps its className and placeholder', () =
   expect(input).toHaveClass('bg-surface-container-highest', 'mb-4');
 });
 
-test('TimeInput shows focus on its outline', () => {
-  const { container } = render(<TimeInput defaultValue="7:30 PM" />);
-  const [hour] = screen.getAllByPlaceholderText('00');
-  const field = container.firstElementChild!;
-  expect(field).toHaveClass('border-outline');
+test('TimeInput shows focus on its outline, with its label in the notch', () => {
+  const { container } = render(
+    <TimeInput defaultValue="7:30 PM" label="Start time" />
+  );
+  const hour = screen.getByRole('textbox', { name: 'Start time hour' });
+  const outline = container.querySelector('fieldset')!;
+  expect(outline).toHaveClass('border-outline');
+  expect(outline.querySelector('legend')).toHaveTextContent('Start time');
   fireEvent.focus(hour);
-  expect(field).toHaveClass('border-primary');
-  expect(field.className).not.toContain('undefined');
+  expect(outline).toHaveClass('border-2', 'border-primary');
+  expect(container.firstElementChild!.className).not.toContain('undefined');
 });
 
-test('SearchBar opens the search dialog', () => {
-  render(<SearchBar />);
-  expect(screen.queryByText('dialog')).not.toBeInTheDocument();
-  userEvent.click(screen.getByRole('button', { name: 'Search library' }));
-  expect(screen.getByText('dialog')).toBeInTheDocument();
+test('SearchField is a search box that clears', () => {
+  const onChange = vi.fn<(value: string) => void>();
+  const { rerender } = render(
+    <SearchField placeholder="Search your songs" value="" onChange={onChange} />
+  );
+  const box = screen.getByRole('searchbox', { name: 'Search your songs' });
+  // No clear button while empty.
+  expect(
+    screen.queryByRole('button', { name: 'Clear search' })
+  ).not.toBeInTheDocument();
+
+  fireEvent.change(box, { target: { value: 'grace' } });
+  expect(onChange).toHaveBeenLastCalledWith('grace');
+
+  rerender(
+    <SearchField
+      placeholder="Search your songs"
+      value="grace"
+      onChange={onChange}
+    />
+  );
+  userEvent.click(screen.getByRole('button', { name: 'Clear search' }));
+  expect(onChange).toHaveBeenLastCalledWith('');
+  expect(box).toHaveFocus();
 });
 
 test('OutlinedInput forwards its ref to the input, and an empty error is no error', () => {

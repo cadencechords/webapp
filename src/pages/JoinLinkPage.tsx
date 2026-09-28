@@ -2,17 +2,14 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Alert from '../components/Alert';
+import AuthPage, { FILLED_LINK, TEXT_LINK } from '../components/AuthPage';
 import Button from '../components/Button';
-import Card from '../components/Card';
-import CenteredPage from '../components/CenteredPage';
-import OrDivider from '../components/OrDivider';
-import PageLoading from '../components/PageLoading';
+import LoadingIndicator from '../components/feedback/LoadingIndicator';
 import ProfilePicture from '../components/ProfilePicture';
 import useAuth from '../hooks/useAuth';
 import useJoinLink from '../hooks/useJoinLink';
 import { setTeamId } from '../store/authSlice';
-import { hasName } from '../utils/model';
-import { getNameOrEmail } from '../utils/model';
+import { getNameOrEmail, hasName } from '../utils/model';
 
 export default function JoinLinkPage() {
   const { code } = useParams<{ code: string }>();
@@ -76,94 +73,105 @@ export default function JoinLinkPage() {
     router.push('/');
   }
 
+  const signInAgainUrl = `/login?target_url=${window.location.pathname}`;
+  const otherUserFooter = (
+    <>
+      Not you?
+      <Link to={signInAgainUrl} className={TEXT_LINK}>
+        Sign in as someone else
+      </Link>
+    </>
+  );
+
   if (errored) {
     return (
-      <CenteredPage>
-        <Alert color="red">We were unable to find a team with this link.</Alert>
-      </CenteredPage>
+      <AuthPage
+        title="We couldn't find that team"
+        description="We were unable to find a team with this link. Ask your team for a new one."
+      />
     );
   }
 
   if (isAnythingLoading) {
     return (
-      <CenteredPage>
-        <PageLoading />
-      </CenteredPage>
+      <AuthPage
+        title="Checking your link"
+        description="Just a moment while we find your team."
+      >
+        <div className="flex justify-center">
+          <LoadingIndicator />
+        </div>
+      </AuthPage>
     );
   }
 
   if (isEverythingResolved && !currentUser) {
     return (
-      <CenteredPage>
-        <Alert color="yellow">
-          You need to be logged in first to join this team. Taking you to the
-          login page.
-        </Alert>
-      </CenteredPage>
+      <AuthPage
+        title="Sign in to join"
+        description="You need to be signed in to join this team. Taking you to the sign-in page…"
+      >
+        <Link to={signInAgainUrl} className={FILLED_LINK}>
+          Sign in now
+        </Link>
+      </AuthPage>
     );
   }
 
   if (isEverythingResolved && currentUser && isAlreadyOnTeam()) {
     return (
-      <CenteredPage>
-        <h1 className="mb-8 text-xl text-center">
-          You&apos;re already on <span className="font-bold">{team?.name}</span>
-        </h1>
-        <Link to="/">
-          <Button full={true} onClick={handleGoToTeam} name="go to team">
-            Go to team
-          </Button>
+      <AuthPage
+        title={`You're already on ${team?.name}`}
+        description="No need to join again. Pick up where you left off."
+        footer={otherUserFooter}
+      >
+        <Link to="/" onClick={handleGoToTeam} className={FILLED_LINK}>
+          Go to team
         </Link>
-        <OrDivider />
-        <Link to={`/login?target_url=${window.location.pathname}`}>
-          <Button variant="open" full={true} name="use other user">
-            Login as someone else
-          </Button>
-        </Link>
-      </CenteredPage>
+      </AuthPage>
     );
   }
 
   // Non-null (currentUser! below): past the returns above, the link and the
-  // user have loaded, and a signed-out user got the log-in alert instead.
+  // user have loaded, and a signed-out user got the sign-in page instead.
   return (
-    <CenteredPage>
-      <>
-        <h1 className="mb-8 text-2xl text-center">
-          You are now joining <span className="font-bold">{team?.name}</span>
-        </h1>
-        <div>
-          <Card className="flex flex-col items-center text-center">
-            <ProfilePicture
-              url={currentUser!.image_url}
-              name={getNameOrEmail(currentUser!)}
-            />
+    <AuthPage
+      title={`Join ${team?.name}`}
+      description="You'll join the team with this account."
+      footer={otherUserFooter}
+    >
+      <div className="flex flex-col gap-6">
+        {/* The account that's joining, as a list segment. */}
+        <div className="flex items-center gap-4 px-5 py-4 rounded-extra-large bg-surface-container font-plain">
+          <ProfilePicture
+            url={currentUser!.image_url}
+            name={getNameOrEmail(currentUser!)}
+            size="md"
+          />
+          <div className="flex-1 min-w-0">
             {hasName(currentUser) && (
-              <div className="mb-1 text-xl font-semibold">
+              <div className="truncate text-title-medium text-on-surface">
                 {currentUser!.first_name} {currentUser!.last_name}
               </div>
             )}
-            <span className="mb-4">{currentUser!.email}</span>
-
-            {errored && error && <Alert color="yellow">{error}</Alert>}
-
-            <Button
-              full={true}
-              name="join"
-              onClick={handleJoinTeam}
-              loading={joinLoading}
-            >
-              Join team
-            </Button>
-          </Card>
-          <OrDivider />
-          <Link to={`/login?target_url=${window.location.pathname}`}>
-            <Button variant="open" full name="use other user">
-              Login as someone else
-            </Button>
-          </Link>
+            <div className="truncate text-body-medium text-on-surface-variant">
+              {currentUser!.email}
+            </div>
+          </div>
         </div>
-      </>
-    </CenteredPage>
+
+        {errored && error && <Alert color="yellow">{error}</Alert>}
+
+        <Button
+          full
+          size="md"
+          name="join"
+          onClick={handleJoinTeam}
+          loading={joinLoading}
+        >
+          Join team
+        </Button>
+      </div>
+    </AuthPage>
   );
 }

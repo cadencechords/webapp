@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import CalendarDateButton from '../buttons/CalendarDateButton';
 import CalendarEventEntry from './CalendarEventEntry';
 import type { CalendarEvent as FullCalendarEvent } from '../../types';
@@ -23,6 +24,8 @@ type CalendarCellProps<E extends CalendarEvent> = {
   onEventClick?: (event: E) => void;
 };
 
+// A day on surface-container-lowest, its number over its events; the padding
+// days around the month recede onto surface-container-low.
 export default function CalendarCell<E extends CalendarEvent>({
   date,
   className = '',
@@ -31,8 +34,13 @@ export default function CalendarCell<E extends CalendarEvent>({
 }: CalendarCellProps<E>) {
   if (date) {
     return (
-      <div className={`col-span-1 h-28 w-full p-1 ${className}`}>
-        <CalendarDateButton selected={date.isToday} className="mb-2">
+      <div
+        className={classNames(
+          'flex flex-col gap-1 min-w-0 min-h-24 sm:min-h-28 p-1 bg-surface-container-lowest',
+          className
+        )}
+      >
+        <CalendarDateButton selected={date.isToday} className="self-center">
           {date.dateNumber}
         </CalendarDateButton>
         {events?.map(event => (
@@ -45,6 +53,13 @@ export default function CalendarCell<E extends CalendarEvent>({
       </div>
     );
   } else {
-    return <div className={`col-span-1 h-28 w-full py-1 ${className}`}></div>;
+    return (
+      <div
+        className={classNames(
+          'min-h-24 sm:min-h-28 bg-surface-container-low',
+          className
+        )}
+      />
+    );
   }
 }

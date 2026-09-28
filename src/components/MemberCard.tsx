@@ -1,4 +1,4 @@
-import Button from './Button';
+import Button, { buttonClasses } from './Button';
 import EditableData from './inputs/EditableData';
 import { Link } from 'react-router-dom';
 import ProfilePicture from './ProfilePicture';
@@ -48,63 +48,70 @@ export default function MemberCard({
     debounce(member.id, newPosition);
   };
 
-  if (member) {
-    let currentUserBubble;
-    if (isCurrentUser) {
-      currentUserBubble = (
-        <span className="rounded-full px-3 py-0.5 bg-purple-600 text-white text-xs mb-1 inline">
-          Me
-        </span>
-      );
-    }
+  if (!member) return null;
 
-    let teamPosition = null;
-    if (isCurrentUser) {
-      teamPosition = (
+  const name = member.first_name
+    ? `${member.first_name} ${member.last_name}`
+    : member.email;
+
+  // An M3E profile card: a large avatar, the name and position centered,
+  // and a tonal "View profile" button along the bottom.
+  return (
+    <div className="relative flex flex-col items-center gap-1 p-6 pt-8 text-center rounded-extra-large bg-surface-container-low text-on-surface font-plain">
+      {currentMember.can(REMOVE_MEMBERS) && (
+        <Button
+          variant="icon"
+          color="gray"
+          size="md"
+          name={`Options for ${name}`}
+          className="absolute right-2 top-2"
+          onClick={onShowMemberMenu}
+        >
+          <Icon name="more_vert" className="w-6 h-6" />
+        </Button>
+      )}
+      <div className="mb-3">
+        <ProfilePicture
+          url={member.image_url}
+          name={getNameOrEmail(member)}
+          size="lg"
+        />
+      </div>
+      <div className="flex items-center justify-center w-full min-w-0 gap-2">
+        <span className="truncate text-title-large">{name}</span>
+        {isCurrentUser && (
+          <span className="shrink-0 px-2 h-6 leading-6 rounded-full bg-tertiary-container text-on-tertiary-container text-label-medium">
+            Me
+          </span>
+        )}
+      </div>
+      {isCurrentUser ? (
         <EditableData
           value={member.position || ''}
           placeholder="What's your position on the team?"
           centered
           onChange={handlePositionChange}
         />
-      );
-    } else {
-      teamPosition = <div className="text-sm">{member.position}</div>;
-    }
-    return (
-      <div className="relative z-10 flex flex-col px-5 py-3 text-center rounded-md bg-gray-50 dark:bg-dark-gray-800">
-        {currentMember.can(REMOVE_MEMBERS) && (
-          <Button
-            variant="icon"
-            size="md"
-            className="absolute right-2 top-2"
-            onClick={onShowMemberMenu}
-          >
-            <Icon name="more_vert" className="h-5 text-gray-600" />
-          </Button>
-        )}
-        <div className="w-20 h-20 m-auto flex-center">
-          <ProfilePicture
-            url={member.image_url}
-            name={getNameOrEmail(member)}
-          />
-        </div>
-        <div>{currentUserBubble}</div>
-        <div className="overflow-hidden font-semibold text-ellipsis">
-          {member.first_name
-            ? member.first_name + ' ' + member.last_name
-            : member.email}
-        </div>
-        {teamPosition}
-        <div className="grow"></div>
-        <Link to={`/members/${member.id}`}>
-          <Button variant="accent" size="xs" full className="mt-2">
-            View profile
-          </Button>
-        </Link>
-      </div>
-    );
-  } else {
-    return null;
-  }
+      ) : (
+        member.position && (
+          <div className="text-body-medium text-on-surface-variant">
+            {member.position}
+          </div>
+        )
+      )}
+      <div className="grow" />
+      <Link
+        to={`/members/${member.id}`}
+        className={buttonClasses({
+          variant: 'accent',
+          color: 'gray',
+          size: 'sm',
+          full: true,
+          className: 'flex-center mt-4',
+        })}
+      >
+        View profile
+      </Link>
+    </div>
+  );
 }

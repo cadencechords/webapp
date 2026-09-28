@@ -31,11 +31,17 @@ export default function TeamLoginPage() {
 
   return (
     <CenteredPage>
-      <div className="text-center">
-        {loading && <LoadingIndicator className="mx-auto" />}
-        {!loading && teams.length === 0 && <NoTeamYet />}
-        {!loading && teams.length > 0 && <TeamLoginOptions teams={teams} />}
-      </div>
+      {loading && (
+        <div className="flex justify-center">
+          <LoadingIndicator />
+        </div>
+      )}
+      {!loading && teams.length === 0 && (
+        <div className="text-center">
+          <NoTeamYet />
+        </div>
+      )}
+      {!loading && teams.length > 0 && <TeamLoginOptions teams={teams} />}
     </CenteredPage>
   );
 }

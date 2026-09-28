@@ -83,6 +83,25 @@ describe('ImportSongsPage', () => {
     ).toBeInTheDocument();
   });
 
+  test('lists the sources as rows, each one link', () => {
+    renderAt('/import', <ImportSongsPage />);
+    const services = screen.getByRole('link', {
+      name: /Planning Center Services/,
+    });
+    expect(services.parentElement).toHaveClass('list-segmented');
+    expect(services).toHaveClass('min-h-[72px]');
+    expect(services.querySelector('img')).toHaveAttribute(
+      'src',
+      '/services.png'
+    );
+    // No buttons nested in the links.
+    expect(screen.queryAllByRole('button')).toHaveLength(0);
+    expect(screen.getByRole('link', { name: /Files/ })).toHaveAttribute(
+      'href',
+      '/import/files'
+    );
+  });
+
   test('sends members who cannot add songs to the library', () => {
     renderAt('/import', <ImportSongsPage />, member([]));
     expect(screen.getByText('Song library')).toBeInTheDocument();
@@ -157,20 +176,99 @@ describe('ImportCadenceSongsPage', () => {
       name: /choose songs/i,
     });
     expect(chooseSongs).toBeDisabled();
+    expect(
+      screen.getByRole('heading', { name: 'Choose a team' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Step 1 of 2')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Back to import sources' })
+    ).toHaveAttribute('href', '/import');
     const team = screen.getByText('Other team').closest('label');
     expect(team).toHaveAttribute('id', '5');
+    expect(team?.parentElement).toHaveClass('list-segmented');
     userEvent.click(screen.getByRole('radio'));
+    // The chosen team is highlighted.
+    expect(team).toHaveClass('bg-primary-container');
     userEvent.click(chooseSongs);
 
+    expect(
+      await screen.findByRole('heading', { name: 'Choose songs' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('From Other team')).toBeInTheDocument();
     userEvent.click(await screen.findByText('Amazing Grace'));
     expect(ImportsApi.getImportableSongs).toHaveBeenCalledWith(5);
-    const [importButton] = screen.getAllByRole('button', {
-      name: 'Import 1 song',
-    });
-    userEvent.click(importButton);
+    expect(screen.getByText('1 selected')).toBeInTheDocument();
+    userEvent.click(screen.getByRole('button', { name: 'Import 1 song' }));
 
-    expect(await screen.findByText('Import successful!')).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Import successful!' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('1 song is in your library now.')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'View songs' })).toHaveAttribute(
+      'href',
+      '/songs'
+    );
     expect(ImportsApi.importSongsFromTeam).toHaveBeenCalledWith(5, [11]);
+  });
+});
+
+describe('ImportCadenceSongsPage while loading', () => {
+  test('shows only the loading indicator, not an empty message', async () => {
+    let finishTeams = () => {};
+    vi.mocked(ImportsApi.getImportableTeams).mockReturnValueOnce(
+      new Promise(resolve => {
+        finishTeams = () =>
+          resolve({
+            data: [{ id: 5, name: 'Other team' }],
+          } as Response<typeof ImportsApi.getImportableTeams>);
+      })
+    );
+    let finishSongs = () => {};
+    vi.mocked(ImportsApi.getImportableSongs).mockReturnValueOnce(
+      new Promise(resolve => {
+        finishSongs = () =>
+          resolve({
+            data: [{ id: 11, name: 'Amazing Grace', format: {} }],
+          } as Response<typeof ImportsApi.getImportableSongs>);
+      })
+    );
+    renderAt('/import/cadence', <ImportCadenceSongsPage />);
+
+    expect(screen.queryByText('No teams to show')).not.toBeInTheDocument();
+    finishTeams();
+    userEvent.click(await screen.findByRole('radio'));
+    userEvent.click(screen.getByRole('button', { name: /choose songs/i }));
+
+    await screen.findByRole('heading', { name: 'Choose songs' });
+    expect(screen.queryByText('No songs to show')).not.toBeInTheDocument();
+    expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
+    finishSongs();
+    expect(await screen.findByText('Amazing Grace')).toBeInTheDocument();
+  });
+});
+
+describe('ImportCadenceSongsPage going back', () => {
+  test('goes back from the songs to the team', async () => {
+    vi.mocked(ImportsApi.getImportableTeams).mockResolvedValueOnce({
+      data: [{ id: 5, name: 'Other team' }],
+    } as Response<typeof ImportsApi.getImportableTeams>);
+    vi.mocked(ImportsApi.getImportableSongs).mockResolvedValueOnce({
+      data: [{ id: 11, name: 'Amazing Grace', format: {} }],
+    } as Response<typeof ImportsApi.getImportableSongs>);
+    renderAt('/import/cadence', <ImportCadenceSongsPage />);
+
+    userEvent.click(await screen.findByRole('radio'));
+    userEvent.click(screen.getByRole('button', { name: /choose songs/i }));
+    userEvent.click(
+      await screen.findByRole('button', { name: 'Back to choosing a team' })
+    );
+    expect(
+      await screen.findByRole('heading', { name: 'Choose a team' })
+    ).toBeInTheDocument();
+    // The team stays chosen.
+    expect(screen.getByRole('radio')).toBeChecked();
   });
 });
 
@@ -187,9 +285,12 @@ describe('OnsongImportPage', () => {
     } as Response<typeof OnsongApi.unzip>);
     userEvent.upload(fileInput(container), backup);
     expect(await screen.findByText('2 songs in backup')).toBeInTheDocument();
-    userEvent.click(screen.getByRole('button', { name: 'Check all' }));
+    expect(
+      screen.getByText('Song A').closest('label')?.parentElement
+    ).toHaveClass('list-segmented');
+    userEvent.click(screen.getByRole('button', { name: 'Select all' }));
     expect(screen.getByText('2 selected')).toBeInTheDocument();
-    userEvent.click(screen.getByRole('button', { name: /choose binder/i }));
+    userEvent.click(screen.getByRole('button', { name: /choose folder/i }));
   }
 
   test('imports the chosen songs into the chosen binder', async () => {
@@ -202,15 +303,23 @@ describe('OnsongImportPage', () => {
     const { container } = renderAt('/import/onsong', <OnsongImportPage />);
     await chooseAllSongs(container);
 
-    userEvent.click(await screen.findByText('Sunday'));
+    const sunday = await screen.findByRole('radio', { name: 'Sunday' });
+    userEvent.click(sunday);
+    expect(sunday).toHaveAttribute('aria-checked', 'true');
+    expect(sunday).toHaveClass('bg-primary-container');
     userEvent.click(screen.getByRole('button', { name: /review/i }));
-    expect(screen.getByText('Importing 2 songs')).toBeInTheDocument();
-    expect(screen.getByText('Into the "Sunday" binder')).toBeInTheDocument();
-    userEvent.click(screen.getByRole('button', { name: 'Import!' }));
+    expect(
+      screen.getByText('Importing 2 songs into Sunday')
+    ).toBeInTheDocument();
+    userEvent.click(screen.getByRole('button', { name: 'Import 2 songs' }));
 
     expect(
-      await screen.findByText('Your songs have finished importing!')
+      await screen.findByRole('heading', { name: 'Import successful!' })
     ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'View songs' })).toHaveAttribute(
+      'href',
+      '/songs'
+    );
     expect(OnsongApi.unzip).toHaveBeenCalledWith(backup);
     expect(OnsongApi.import).toHaveBeenCalledWith(files, 9, 42);
   });
@@ -227,16 +336,39 @@ describe('OnsongImportPage', () => {
     await chooseAllSongs(container);
 
     expect(
-      await screen.findByText(/you don't have any binders/i)
+      await screen.findByText(/you don't have any folders/i)
     ).toBeInTheDocument();
     userEvent.click(screen.getByRole('button', { name: /review/i }));
-    userEvent.click(screen.getByRole('button', { name: 'Import!' }));
+    expect(
+      screen.getByText('Importing 2 songs, not into a folder')
+    ).toBeInTheDocument();
+    userEvent.click(screen.getByRole('button', { name: 'Import 2 songs' }));
 
     expect(
-      await screen.findByText(/couldn't import some songs/i)
+      await screen.findByRole('heading', {
+        name: "Some songs couldn't be imported",
+      })
     ).toBeInTheDocument();
     expect(screen.getByText('Song B')).toBeInTheDocument();
     expect(OnsongApi.import).toHaveBeenCalledWith(files, undefined, 42);
+  });
+
+  test('explains how to export a backup, then asks for it', () => {
+    renderAt('/import/onsong', <OnsongImportPage />);
+    expect(
+      screen.getByRole('heading', { name: 'Choose your OnSong backup' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Step 1 of 4')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'How to export' })).toHaveAttribute(
+      'target',
+      '_blank'
+    );
+    expect(
+      screen.getByRole('button', { name: 'Choose backup file' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /choose songs/i })
+    ).not.toBeInTheDocument();
   });
 
   test('sends members who cannot add songs to the library', () => {

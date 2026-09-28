@@ -1,4 +1,6 @@
 import { act, fireEvent, screen } from '@testing-library/react';
+import type { AxiosResponse } from 'axios';
+import SetlistApi from '../api/SetlistApi';
 import type { ReactNode } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { renderWithProvider } from '../utils/test';
@@ -24,9 +26,15 @@ vi.mock('../contexts/SessionsProvider', () => ({
     onTryToJoinAsMember: vi.fn<SessionsContextValue['onTryToJoinAsMember']>(),
   }),
 }));
-vi.mock('../hooks/api/currentUser.hooks', () => ({
-  useCurrentUser: () => ({ data: { id: 1 } }),
+// The current user, loaded unless a test says otherwise.
+const currentUser = vi.hoisted(() => ({
+  value: { data: { id: 1 } as { id: number } | undefined, isLoading: false },
 }));
+vi.mock('../hooks/api/currentUser.hooks', () => ({
+  useCurrentUser: () => currentUser.value,
+}));
+vi.mock('../api/SetlistApi');
+vi.mock('../utils/error');
 vi.mock('../hooks/usePerformanceMode', () => ({
   default: () => ({ isPerforming: false, isAnnotating: false }),
 }));
@@ -73,7 +81,11 @@ const sunday = {
   ],
 } as Setlist;
 
-function renderPresenter() {
+beforeEach(() => {
+  currentUser.value = { data: { id: 1 }, isLoading: false };
+});
+
+function renderPresenter(stored: Partial<Setlist> = sunday) {
   return renderWithProvider(
     <MemoryRouter initialEntries={['/sets/5/present']}>
       <Route path="/sets/:id/present">
@@ -82,7 +94,7 @@ function renderPresenter() {
     </MemoryRouter>,
     {
       preloadedState: {
-        presenter: { setlistBeingPresented: sunday, songBeingPresented: {} },
+        presenter: { setlistBeingPresented: stored, songBeingPresented: {} },
         subscription: { subscription: { isPro: false } },
       },
     }
@@ -119,4 +131,58 @@ test('keeps edits until another set is stored, then starts over from it', () => 
     screen.getByText('Psalm 23: transposed false, capo false')
   ).toBeInTheDocument();
   expect(screen.queryByText(/^Edited:/)).not.toBeInTheDocument();
+});
+
+// A set with songs used to flash "This set has no songs" while it or the
+// current user was still loading.
+describe('while loading', () => {
+  const noSongs = () => screen.queryByText('This set has no songs');
+
+  test('waits for the current user before showing the songs', () => {
+    currentUser.value = { data: undefined, isLoading: true };
+    const { rerender } = renderPresenter();
+    expect(noSongs()).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Amazing Grace/)).not.toBeInTheDocument();
+
+    currentUser.value = { data: { id: 1 }, isLoading: false };
+    rerender(
+      <MemoryRouter initialEntries={['/sets/5/present']}>
+        <Route path="/sets/:id/present">
+          <SetPresenterPage />
+        </Route>
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/^Amazing Grace/)).toBeInTheDocument();
+  });
+
+  test('waits for the set when it’s opened directly', async () => {
+    let finish = () => {};
+    vi.mocked(SetlistApi.getOne).mockReturnValue(
+      new Promise(resolve => {
+        finish = () => resolve({ data: sunday } as AxiosResponse<Setlist>);
+      })
+    );
+    renderPresenter({});
+    expect(noSongs()).not.toBeInTheDocument();
+
+    await act(async () => finish());
+    expect(await screen.findByText(/^Amazing Grace/)).toBeInTheDocument();
+    expect(noSongs()).not.toBeInTheDocument();
+  });
+
+  test('still says so when the set really has no songs', () => {
+    renderPresenter({ ...sunday, songs: [] });
+    expect(noSongs()).toBeInTheDocument();
+  });
+
+  test('says the set couldn’t be loaded when the request fails', async () => {
+    vi.mocked(SetlistApi.getOne).mockRejectedValue({
+      response: { status: 500 },
+    });
+    renderPresenter({});
+    expect(
+      await screen.findByText("This set couldn't be loaded")
+    ).toBeInTheDocument();
+    expect(noSongs()).not.toBeInTheDocument();
+  });
 });

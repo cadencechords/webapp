@@ -97,7 +97,7 @@ describe('Card', () => {
   });
 });
 
-test('List groups its rows in a segmented container, or shows ListEmpty', () => {
+test('List puts its rows in a divided list, or shows ListEmpty', () => {
   const { rerender } = render(
     <List
       data={['a', 'b']}
@@ -107,7 +107,7 @@ test('List groups its rows in a segmented container, or shows ListEmpty', () => 
     />
   );
   expect(screen.getByText('a').parentElement).toHaveClass(
-    'list-segmented',
+    'list-divided',
     'delay-100'
   );
 
@@ -220,14 +220,24 @@ test('BinderSongRow: the link fills the row and takes the focus ring', () => {
   expect(row).not.toHaveClass('state-layer-flat');
   expect(row.className).not.toMatch(/\bpy-/);
   expect(row.className).not.toMatch(/min-h-/);
-  expect(row.querySelector('button')).not.toBeNull();
+  // The remove button: a 40px icon button with a 20px icon, named for the song.
+  const remove = screen.getByRole('button', {
+    name: 'Remove Amazing Grace from folder',
+  });
+  expect(row).toContainElement(remove);
+  expect(remove).toHaveClass('min-w-10', 'min-h-10', 'shrink-0');
+  expect(remove.querySelector('svg')).toHaveClass('w-5', 'h-5');
 });
 
-test('KeyBadge is an outlined chip, and renders nothing without a key', () => {
+test('KeyBadge is a rounded square on secondary-container, and renders nothing without a key', () => {
   const { container, rerender } = render(<KeyBadge songKey="Bb" />);
   expect(screen.getByText('Bb')).toHaveClass(
-    'rounded-small',
-    'border-outline-variant'
+    'min-w-[22px]',
+    'px-1',
+    'h-[22px]',
+    'rounded-[9px]',
+    'bg-secondary-container',
+    'text-on-secondary-container'
   );
   rerender(<KeyBadge />);
   expect(container).toBeEmptyDOMElement();

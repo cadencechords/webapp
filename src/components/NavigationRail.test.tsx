@@ -37,17 +37,18 @@ const link = (name: string) => within(nav()).getByRole('link', { name });
 const indicator = (name: string) =>
   link(name).querySelector('[data-rail-indicator]');
 
-test('the rail lists every destination, in order, with the team on top', () => {
+test('the rail lists every destination, in order, under the team and account', () => {
   renderRail('/', [VIEW_EVENTS, VIEW_ROLES, MANAGE_BILLING]);
   expect(
     within(nav())
       .getAllByRole('link')
       .map(a => [a.textContent, a.getAttribute('href')])
   ).toEqual([
+    ['Search', '/search'],
     ['Dashboard', '/'],
     ['Songs', '/songs'],
     ['Sets', '/sets'],
-    ['Binders', '/binders'],
+    ['Folders', '/folders'],
     ['Team members', '/members'],
     ['Calendar', '/calendar'],
     ['Permissions', '/permissions'],
@@ -55,7 +56,7 @@ test('the rail lists every destination, in order, with the team on top', () => {
   ]);
   const team = within(nav()).getByRole('button', { name: /Worship team/ });
   expect(
-    team.compareDocumentPosition(link('Dashboard')) &
+    team.compareDocumentPosition(link('Search')) &
       Node.DOCUMENT_POSITION_FOLLOWING
   ).toBeTruthy();
 });
@@ -67,12 +68,12 @@ test('the rail hides what the member or plan can’t use', () => {
   expect(within(nav()).queryByRole('separator')).not.toBeInTheDocument();
 });
 
-test('the current destination is marked, filled and shows its indicator', () => {
+test('the current destination is marked and shows its indicator', () => {
   renderRail('/songs/12', []);
   expect(link('Songs')).toHaveAttribute('aria-current', 'page');
-  expect(link('Songs')).toHaveClass('text-on-secondary-container');
+  expect(link('Songs')).toHaveClass('text-on-primary-container');
   expect(indicator('Songs')).toHaveClass(
-    'bg-secondary-container',
+    'bg-primary-container',
     'rounded-full',
     'scale-x-100',
     'opacity-100'
@@ -88,38 +89,10 @@ test('the current destination is marked, filled and shows its indicator', () => 
   expect(indicator('Dashboard')).toHaveClass('scale-x-0', 'opacity-0');
 });
 
-test('an item swaps its outlined icon for the filled one when selected', () => {
-  const item = (path: string) =>
-    render(
-      <MemoryRouter initialEntries={[path]}>
-        <NavigationRailItem
-          to="/songs"
-          text="Songs"
-          icon={<i data-testid="outlined" />}
-          activeIcon={<i data-testid="filled" />}
-        />
-      </MemoryRouter>
-    );
-  const { unmount } = item('/sets');
-  expect(screen.getByTestId('outlined')).toBeInTheDocument();
-  expect(screen.queryByTestId('filled')).not.toBeInTheDocument();
-  unmount();
-
-  item('/songs');
-  expect(screen.getByTestId('filled')).toBeInTheDocument();
-  expect(screen.queryByTestId('outlined')).not.toBeInTheDocument();
-});
-
 test('NavigationRailItem matches nested routes unless exact', () => {
   const item = (exact: boolean) => (
     <MemoryRouter initialEntries={['/songs/1']}>
-      <NavigationRailItem
-        to="/songs"
-        text="Songs"
-        icon={null}
-        activeIcon={null}
-        exact={exact}
-      />
+      <NavigationRailItem to="/songs" text="Songs" icon={null} exact={exact} />
     </MemoryRouter>
   );
   const { rerender } = render(item(false));
@@ -131,8 +104,8 @@ test('NavigationRailItem matches nested routes unless exact', () => {
 
 test('following a link moves the indicator', () => {
   renderRail('/songs', []);
-  fireEvent.click(link('Binders'));
-  expect(link('Binders')).toHaveAttribute('aria-current', 'page');
-  expect(indicator('Binders')).toHaveClass('scale-x-100');
+  fireEvent.click(link('Folders'));
+  expect(link('Folders')).toHaveAttribute('aria-current', 'page');
+  expect(indicator('Folders')).toHaveClass('scale-x-100');
   expect(indicator('Songs')).toHaveClass('scale-x-0');
 });

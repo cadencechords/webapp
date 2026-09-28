@@ -40,4 +40,15 @@
     border-radius: var(--md-sys-shape-corner-large);
     box-shadow: var(--md-sys-elevation-level3);
   }
+
+  /* A long list (songs, sets, binders): rows straight on the page, no
+     container or dividers; row height separates them. With nothing to line
+     up with, a row's hover is rounded. */
+  .list-divided {
+    display: flex;
+    flex-direction: column;
+  }
+  .list-divided > * {
+    border-radius: var(--md-sys-shape-corner-medium);
+  }
 }

@@ -10,14 +10,18 @@ Existing screens still use the pinned Tailwind v2 palette (`gray-*`, `blue-*`,
 
 ## Color (`src/styles/color-tokens.css`, generated)
 
-Every M3 role, generated from the brand blue `#1f6feb` with
+Every M3 role, from the mobile app's hand-tuned palette
+(`MATERIAL_LIGHT_COLORS` / `MATERIAL_DARK_COLORS` in the app repo's
+`src/constants/Colors.ts`, copied into `scripts/color-tokens.mts`), so web and
+mobile share one set of colors. Any role it doesn't set falls back to the
+scheme generated from the brand blue `#1f6feb` with
 `@material/material-color-utilities` (TonalSpot, 2025 spec, default
 contrast). Light values are on `:root` and dark values on `.dark`, so the
 `ThemeProvider` class toggle switches them.
 
 - Utilities: `bg-primary`, `text-on-primary-container`, `bg-surface-container-high`, `border-outline-variant`, `bg-scrim/50`, …
-- Regenerate: change the seed or variant in `scripts/color-tokens.mts`, then run `yarn tokens:color`.
-  A test fails if the checked-in file is out of date. Another test checks that every on-X/X pair meets 4.5:1.
+- Regenerate: change the palette (or the seed or variant) in `scripts/color-tokens.mts`, then run `yarn tokens:color`. Keep it in step with the mobile app's `Colors.ts`.
+  A test fails if the checked-in file is out of date. Another test checks contrast: text on the surfaces meets 4.5:1, and each accent on-X/X pair (primary, secondary, tertiary, error, fixed) meets 3:1, since the mobile app's palette sits below 4.5:1 in places.
 
 ## User colors (binders, notes, events)
 

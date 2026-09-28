@@ -10,10 +10,11 @@ function Go({ to }: { to: string }) {
 }
 
 function isSelected(planName: string) {
-  return screen
-    .getByText(planName, { selector: '.uppercase' })
-    .closest('.rounded-md')!
-    .classList.contains('border-blue-500');
+  return (
+    screen
+      .getByRole('radio', { name: new RegExp(`^${planName}`) })
+      .getAttribute('aria-checked') === 'true'
+  );
 }
 
 test.each([
@@ -39,7 +40,7 @@ test('a picked plan stays until the URL requests another', () => {
       <Go to="/teams/new?requested_plan=Starter" />
     </MemoryRouter>
   );
-  fireEvent.click(screen.getByText('Starter', { selector: '.uppercase' }));
+  fireEvent.click(screen.getByRole('radio', { name: /^Starter/ }));
   expect(isSelected('Starter')).toBe(true);
 
   // The same requested plan: the pick stays.
@@ -48,7 +49,7 @@ test('a picked plan stays until the URL requests another', () => {
   );
   expect(isSelected('Starter')).toBe(true);
 
-  fireEvent.click(screen.getByText('Pro', { selector: '.uppercase' }));
+  fireEvent.click(screen.getByRole('radio', { name: /^Pro/ }));
   fireEvent.click(screen.getByText('Go /teams/new?requested_plan=Starter'));
   expect(isSelected('Starter')).toBe(true);
 });

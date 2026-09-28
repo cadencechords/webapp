@@ -20,8 +20,8 @@ export default function List<T>({
     <>
       {ListHeader && <div>{ListHeader}</div>}
       {data?.length ? (
-        // A grouped M3 list: each row is a segment.
-        <div className={classNames('list-segmented', className)}>
+        // Rows on the page with dividers between them (list-divided).
+        <div className={classNames('list-divided', className)}>
           {data.map(renderItem)}
         </div>
       ) : (

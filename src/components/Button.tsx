@@ -141,12 +141,22 @@ export default Button;
 // M3E standard icon button
 const IconButton = forwardRef<HTMLButtonElement, VariantProps>(
   (
-    { size = 'md', className, children, disabled, color = 'gray', ...props },
+    {
+      size = 'md',
+      className,
+      children,
+      disabled,
+      color = 'gray',
+      name,
+      ...props
+    },
     ref
   ) => {
     return (
       <button
         disabled={disabled}
+        // name is the accessible name, as on the other variants.
+        aria-label={name}
         className={classNames(
           // No display class: callers hide these with `hidden sm:block`.
           // Icons are display:block (preflight), so center them in the
@@ -233,6 +243,36 @@ const AccentButton = forwardRef<HTMLButtonElement, VariantProps>(
     );
   }
 );
+
+/**
+ * A filled, tonal (accent) or text (open) button's classes, for a link that
+ * looks like one: a <button> inside a link isn't valid, and adds a second tab
+ * stop. Pass `flex-center` in `className`: a link doesn't center its content
+ * the way a <button> does.
+ */
+export function buttonClasses({
+  variant = 'filled',
+  color = 'blue',
+  size = 'md',
+  full = false,
+  className,
+}: {
+  variant?: 'filled' | 'accent' | 'open';
+  color?: ButtonColor;
+  size?: ButtonSize;
+  full?: boolean;
+  className?: string;
+} = {}) {
+  return classNames(
+    baseClasses,
+    sizeClasses[size],
+    BUTTON_COLORS[color][
+      variant === 'filled' ? 'filled' : variant === 'accent' ? 'tonal' : 'text'
+    ],
+    full && 'w-full',
+    className
+  );
+}
 
 /** Classes for one `color`, by the kind of button it's used on. */
 export type ButtonColorClasses = {

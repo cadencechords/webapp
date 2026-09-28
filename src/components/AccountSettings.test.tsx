@@ -1,16 +1,20 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { ComponentProps } from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom';
 import { MessageProvider, type MessageContextValue } from 'stream-chat-react';
 import type { StreamMessage } from 'stream-chat-react';
 import FeedbackApi from '../api/FeedbackApi';
 import FileApi from '../api/FileApi';
 import PcoApi from '../api/PlanningCenterApi';
 import settingsApi from '../api/settingsApi';
+import UserApi from '../api/UserApi';
 import useSubscription from '../hooks/api/useSubscription';
 import type useCreateCustomerPortalSession from '../hooks/api/useCreateCustomerProtalSession';
 import { useUpdateCurrentUser } from '../hooks/api/currentUser.hooks';
 import AccountAppearancePage from '../pages/AccountAppearancePage';
+import ThemeProvider from '../contexts/ThemeProvider';
+import AccountGeneralSettingsPage from '../pages/AccountGeneralSettingsPage';
+import AccountProfilePage from '../pages/AccountProfilePage';
 import AccountNotificationSettingsPage from '../pages/AccountNotificationSettingsPage';
 import BillingPage from '../pages/BillingPage';
 import FeedbackPopover from './FeedbackPopover';
@@ -31,6 +35,7 @@ vi.mock('../api/FeedbackApi');
 vi.mock('../api/FileApi');
 vi.mock('../api/PlanningCenterApi');
 vi.mock('../api/settingsApi');
+vi.mock('../api/UserApi');
 vi.mock('../hooks/api/useSubscription');
 vi.mock('../hooks/api/useCreateCustomerProtalSession', () => ({
   default: () => ({
@@ -151,17 +156,19 @@ test('NotificationSetting toggles each channel and saves it', () => {
     email_enabled: false,
   });
 
-  fireEvent.click(screen.getByText('Text message'));
-  expect(onChange).toHaveBeenLastCalledWith({ ...setting, sms_enabled: true });
-  expect(settingsApi.updateNotificationSetting).toHaveBeenLastCalledWith(7, {
-    sms_enabled: true,
-  });
-
   fireEvent.click(screen.getByText('App (Push)'));
   expect(onChange).toHaveBeenLastCalledWith({ ...setting, push_enabled: true });
   expect(settingsApi.updateNotificationSetting).toHaveBeenLastCalledWith(7, {
     push_enabled: true,
   });
+
+  // Text messages are gone.
+  expect(screen.queryByText('Text message')).toBeNull();
+
+  // Each channel is a switch in a segmented list, named by its row.
+  const email = screen.getByRole('switch', { name: /Email/ });
+  expect(email.closest('.list-segmented')).not.toBeNull();
+  expect(screen.getAllByRole('switch')).toHaveLength(2);
 });
 
 test('NotificationSetting renders without a setting', () => {
@@ -191,8 +198,17 @@ test('AccountNotificationSettingsPage shows the event reminder setting and updat
     </MemoryRouter>
   );
 
-  await screen.findByText('Event reminder');
+  expect(
+    await screen.findByRole('heading', { name: 'Event reminder' })
+  ).toBeInTheDocument();
   expect(screen.queryByText('Other')).toBeNull();
+  expect(
+    screen.getByRole('heading', { level: 1, name: 'Notifications' })
+  ).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Back to account' })).toHaveAttribute(
+    'href',
+    '/account'
+  );
 
   fireEvent.click(screen.getByText('Email'));
   expect(settingsApi.updateNotificationSetting).toHaveBeenCalledWith(2, {
@@ -218,7 +234,8 @@ test('TeamPlanOption picks its plan by name', () => {
     />
   );
   const option = container.firstChild as HTMLElement;
-  expect(option).toHaveClass('mb-8', 'border-gray-300');
+  expect(option).toHaveClass('mb-8', 'bg-surface-container');
+  expect(option).toHaveAttribute('aria-checked', 'false');
   fireEvent.click(screen.getByText('Pro'));
   expect(onClick).toHaveBeenCalledWith('Pro');
 
@@ -232,7 +249,8 @@ test('TeamPlanOption picks its plan by name', () => {
       trialMessage="7 Day Free Trial"
     />
   );
-  expect(option).toHaveClass('border-blue-500');
+  expect(option).toHaveClass('bg-primary-container', 'outline-primary');
+  expect(option).toHaveAttribute('aria-checked', 'true');
 });
 
 test.each([
@@ -250,16 +268,12 @@ test.each([
   });
   renderWithProvider(<BillingPage />);
   expect(screen.getByText(text)).toBeInTheDocument();
-  expect(screen.getByText('Pro Plan')).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Pro' })).toBeInTheDocument();
 });
 
-test('BillingPage shows the trial end date while trialing', () => {
+test('BillingPage summarizes Pro, with every feature included', () => {
   vi.mocked(useSubscription).mockReturnValue({
-    data: {
-      plan_name: 'Pro',
-      status: 'trialing',
-      expires_at: '2026-03-05T12:00:00',
-    },
+    data: { plan_name: 'Pro', price: 20, status: 'active', store: 'stripe' },
     isLoading: false,
     isError: false,
     isSuccess: true,
@@ -267,7 +281,48 @@ test('BillingPage shows the trial end date while trialing', () => {
     error: null,
   });
   renderWithProvider(<BillingPage />);
-  expect(screen.getByText('Trialing until Mar 5')).toBeInTheDocument();
+  const summary = screen
+    .getByRole('heading', { name: 'Pro' })
+    .closest('section')!;
+  expect(summary).toHaveClass('bg-surface-container-low');
+  expect(summary).toHaveTextContent('Current plan');
+  expect(summary).toHaveTextContent('StatusActive');
+  expect(screen.getByText('Active')).toHaveClass('bg-primary-container');
+  expect(
+    screen.getByText('Sessions').closest('li')!.querySelector('svg')
+  ).toHaveClass('text-primary');
+  expect(
+    screen.getByRole('button', { name: 'Manage subscription' })
+  ).toBeInTheDocument();
+  expect(
+    screen.queryByRole('button', { name: 'Upgrade to Pro' })
+  ).not.toBeInTheDocument();
+  // Nothing is marked Pro-only when you're on Pro.
+  expect(screen.getByText('Sessions').closest('li')).not.toHaveClass(
+    'text-on-surface-variant'
+  );
+});
+
+test('BillingPage offers the upgrade on Free, marking the Pro features', () => {
+  vi.mocked(useSubscription).mockReturnValue({
+    data: { plan_name: 'Free', status: 'active' },
+    isLoading: false,
+    isError: false,
+    isSuccess: true,
+    isFetching: false,
+    error: null,
+  });
+  renderWithProvider(<BillingPage />);
+  expect(screen.getByRole('heading', { name: 'Free' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Upgrade to Pro' })).toHaveClass(
+    'bg-primary'
+  );
+  const sessions = screen.getByText('Sessions').closest('li')!;
+  expect(sessions).toHaveClass('text-on-surface-variant');
+  expect(sessions).toHaveTextContent('Pro');
+  expect(screen.getByText('Metronome').closest('li')).not.toHaveClass(
+    'text-on-surface-variant'
+  );
 });
 
 test('AccountAppearancePage saves the hide chords preference', () => {
@@ -279,12 +334,51 @@ test('AccountAppearancePage saves the hide chords preference', () => {
     error: null,
   });
   render(
-    <MemoryRouter>
-      <AccountAppearancePage />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <AccountAppearancePage />
+      </MemoryRouter>
+    </ThemeProvider>
   );
-  fireEvent.click(screen.getByRole('checkbox'));
+  expect(
+    screen.getByRole('heading', { level: 1, name: 'Appearance' })
+  ).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Back to account' })).toHaveAttribute(
+    'href',
+    '/account'
+  );
+  expect(screen.getByRole('heading', { name: 'Songs' })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('switch', { name: /Show chords/ }));
   expect(run).toHaveBeenCalledWith({ prefers_hide_chords: true });
+});
+
+test('AccountAppearancePage switches the dark theme', () => {
+  vi.mocked(useUpdateCurrentUser).mockReturnValue({
+    run: vi.fn<ReturnType<typeof useUpdateCurrentUser>['run']>(),
+    isLoading: false,
+    isError: false,
+    error: null,
+  });
+  localStorage.setItem('theme', 'light');
+  render(
+    <ThemeProvider>
+      <MemoryRouter>
+        <AccountAppearancePage />
+      </MemoryRouter>
+    </ThemeProvider>
+  );
+  expect(screen.getByRole('heading', { name: 'Theme' })).toBeInTheDocument();
+  const dark = screen.getByRole('switch', { name: /Dark theme/ });
+  expect(dark).not.toBeChecked();
+
+  fireEvent.click(screen.getByText('Dark theme'));
+  expect(dark).toBeChecked();
+  expect(document.documentElement).toHaveClass('dark');
+  expect(localStorage.getItem('theme')).toBe('dark');
+
+  fireEvent.click(dark);
+  expect(document.documentElement).not.toHaveClass('dark');
+  localStorage.removeItem('theme');
 });
 
 test('Integrations disconnects Planning Center', async () => {
@@ -298,7 +392,8 @@ test('Integrations disconnects Planning Center', async () => {
     { preloadedState: { auth: { currentUser } } }
   );
 
-  fireEvent.click(screen.getByText('Disconnect'));
+  expect(screen.getByText('Connected')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Disconnect' }));
   await waitFor(() =>
     expect(store.getState().auth.currentUser).toEqual({
       ...currentUser,
@@ -306,6 +401,138 @@ test('Integrations disconnects Planning Center', async () => {
     })
   );
   expect(PcoApi.disconnect).toHaveBeenCalled();
+});
+
+describe('AccountGeneralSettingsPage', () => {
+  function renderPage(currentUser: object) {
+    return renderWithProvider(
+      <MemoryRouter initialEntries={['/account/settings']}>
+        <AccountGeneralSettingsPage />
+        <Route path="/login" exact>
+          <p>Signed out</p>
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: { auth: { currentUser } } }
+    );
+  }
+
+  test('goes back to the account menu and opens the profile', () => {
+    renderPage({
+      id: 1,
+      email: 'a@b.c',
+      first_name: 'Ada',
+      last_name: 'Lovelace',
+    });
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'General' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Back to account' })
+    ).toHaveAttribute('href', '/account');
+    const profile = screen.getByRole('link', { name: /Ada Lovelace/ });
+    expect(profile).toHaveAttribute('href', '/account/profile');
+    expect(profile).toHaveTextContent('a@b.c');
+  });
+
+  test('asks for a name when there isn’t one', () => {
+    renderPage({ id: 1, email: 'a@b.c' });
+    expect(screen.getByRole('link', { name: /Add your name/ })).toHaveAttribute(
+      'href',
+      '/account/profile'
+    );
+  });
+
+  test('lists the integrations and sign-out options as segmented lists', () => {
+    renderPage({ id: 1, email: 'a@b.c', pco_connected: false });
+    const planningCenter = screen.getByText('Planning Center');
+    expect(planningCenter.closest('.list-segmented')).not.toBeNull();
+    expect(screen.getByText('Not connected')).toBeInTheDocument();
+    // Planning Center's own icon leads the row.
+    expect(
+      planningCenter.closest('.list-segmented > *')!.querySelector('img')
+    ).toHaveAttribute('src', '/services.png');
+    expect(
+      screen.queryByRole('button', { name: 'Disconnect' })
+    ).not.toBeInTheDocument();
+
+    expect(screen.getByRole('link', { name: /Switch teams/ })).toHaveAttribute(
+      'href',
+      '/login/teams'
+    );
+    expect(screen.getByText('Log out')).toHaveClass('text-error');
+  });
+
+  test('logs out', () => {
+    const { store } = renderPage({ id: 1, email: 'a@b.c' });
+    fireEvent.click(screen.getByRole('button', { name: /Log out/ }));
+    expect(store.getState().auth.currentUser).toBeFalsy();
+    expect(screen.getByText('Signed out')).toBeInTheDocument();
+  });
+});
+
+describe('AccountProfilePage', () => {
+  function renderPage(currentUser: object) {
+    return renderWithProvider(
+      <MemoryRouter>
+        <AccountProfilePage />
+      </MemoryRouter>,
+      { preloadedState: { auth: { currentUser } } }
+    );
+  }
+
+  test('has the account header, and the photo and info on cards', () => {
+    renderPage({ id: 1, email: 'a@b.c', image_url: 'me.png' });
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Profile' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Back to account' })
+    ).toHaveAttribute('href', '/account');
+    expect(
+      screen.getByRole('button', { name: 'Change photo' }).closest('section')
+    ).toHaveClass('rounded-extra-large-increased');
+    expect(
+      screen.getByRole('heading', { name: 'Personal info' }).closest('section')
+    ).toHaveClass('rounded-extra-large-increased');
+  });
+
+  test('offers Add photo, and no Remove, without a photo', () => {
+    renderPage({ id: 1, email: 'a@b.c' });
+    expect(
+      screen.getByRole('button', { name: 'Add photo' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Remove' })
+    ).not.toBeInTheDocument();
+  });
+
+  test('saves an edited name', async () => {
+    const currentUser = { id: 1, email: 'a@b.c', first_name: 'Ada' };
+    vi.mocked(UserApi.updateCurrentUser).mockResolvedValue(
+      // `as`: the page reads only `data`.
+      { data: { ...currentUser, first_name: 'Grace' } } as Awaited<
+        ReturnType<typeof UserApi.updateCurrentUser>
+      >
+    );
+    const { store } = renderPage(currentUser);
+    const save = screen.getByRole('button', { name: 'Save' });
+    expect(save).toBeDisabled();
+    // Just the name: no phone number now that there are no text messages.
+    expect(screen.getAllByRole('textbox')).toHaveLength(2);
+    expect(screen.queryByText('Phone number')).toBeNull();
+
+    fireEvent.change(screen.getByDisplayValue('Ada'), {
+      target: { value: 'Grace' },
+    });
+    fireEvent.click(save);
+    await waitFor(() =>
+      expect(store.getState().auth.currentUser?.first_name).toBe('Grace')
+    );
+    expect(UserApi.updateCurrentUser).toHaveBeenCalledWith({
+      first_name: 'Grace',
+    });
+    expect(save).toBeDisabled();
+  });
 });
 
 describe('ProfilePictureDetail', () => {

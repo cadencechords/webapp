@@ -93,26 +93,39 @@ test('ConfirmDeleteDialog keeps Cancel then Yes, delete, with delete in the erro
   expect(onConfirm).toHaveBeenCalledTimes(1);
 });
 
-test('Drawer is an M3 side sheet whose scrim closes it', () => {
+test('Drawer is an M3 bottom sheet on phones and a side sheet from sm, with a headline and a close button', () => {
   const onClose = vi.fn<() => void>();
   const { container, rerender } = render(
-    <Drawer open onClose={onClose}>
+    <Drawer open onClose={onClose} title="Song settings">
       menu
     </Drawer>
   );
   const [scrim, sheet] = Array.from(container.children);
   expect(scrim).toHaveClass('visible', 'bg-scrim/32');
-  expect(sheet).toHaveClass('bg-surface-container-low', 'translate-x-0');
+  expect(sheet).toHaveAccessibleName('Song settings');
+  expect(sheet).toHaveClass(
+    'bg-surface-container-low',
+    'rounded-t-extra-large',
+    'sm:w-[360px]',
+    'translate-y-0',
+    'sm:translate-x-0'
+  );
+  expect(
+    screen.getByRole('heading', { name: 'Song settings' })
+  ).toBeInTheDocument();
   userEvent.click(scrim);
   expect(onClose).toHaveBeenCalledTimes(1);
+  userEvent.click(screen.getByRole('button', { name: 'Close' }));
+  expect(onClose).toHaveBeenCalledTimes(2);
 
   rerender(
-    <Drawer open={false} onClose={onClose}>
+    <Drawer open={false} onClose={onClose} title="Song settings">
       menu
     </Drawer>
   );
   expect(scrim).toHaveClass('hidden');
-  expect(sheet).toHaveClass('translate-x-56');
+  expect(sheet).toHaveClass('translate-y-full', 'sm:translate-x-full');
+  expect(sheet).toHaveAttribute('aria-hidden', 'true');
 });
 
 test('BottomSheet slides by its open prop and closes from its button', () => {

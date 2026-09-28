@@ -1,8 +1,7 @@
-import React from 'react';
+import classNames from 'classnames';
+import type { ReactNode } from 'react';
 import PageTitle from '../components/PageTitle';
 import Button from '../components/Button';
-import Card from '../components/Card';
-import Badge from '../components/Badge';
 import { format } from '../utils/date';
 import useSubscription from '../hooks/api/useSubscription';
 import PageLoading from '../components/PageLoading';
@@ -20,140 +19,163 @@ export default function BillingPage() {
   const trialEndDate = expires_at ? new Date(expires_at) : null;
   const isTrialing = status === 'trialing' && trialEndDate;
 
-  const checkIcon = (
-    <Icon
-      name="check"
-      className="w-4 h-4 mr-3 text-green-600 dark:text-dark-green"
-    />
-  );
-  const xIcon = (
-    <Icon
-      name="close"
-      className="w-4 h-4 mr-3 text-gray-600 dark:text-dark-gray-200"
-    />
-  );
-
   if (isLoading) return <PageLoading />;
 
+  const action =
+    isStripe && isPro ? (
+      <Button
+        variant="accent"
+        color="gray"
+        size="sm"
+        onClick={() => createCustomerPortalSession()}
+        loading={isCreatingSession}
+      >
+        Manage subscription
+      </Button>
+    ) : !isPro ? (
+      <Button
+        size="sm"
+        onClick={() => createCustomerPortalSession()}
+        loading={isCreatingSession}
+      >
+        Upgrade to Pro
+      </Button>
+    ) : null;
+
+  // A summary card for the plan (its name and action, then its price and
+  // status as label/value pairs), then a card of what it includes, in two
+  // columns.
   return (
-    <div>
-      <div className="mb-8 flex-between">
-        <PageTitle title="Billing" />
-        <div className="hidden md:block">
-          {isStripe && isPro && (
-            <Button
-              color="purple"
-              variant="accent"
-              className="w-24 whitespace-nowrap"
-              onClick={() => createCustomerPortalSession()}
-              loading={isCreatingSession}
-            >
-              Manage
-            </Button>
-          )}
-          {!isPro && (
-            <Button
-              color="purple"
-              className="w-24"
-              onClick={() => createCustomerPortalSession()}
-              loading={isCreatingSession}
-            >
-              Upgrade
-            </Button>
-          )}
-        </div>
-      </div>
-
-      <Card>
-        <div className="flex items-center">
-          <span className="text-2xl font-bold">{plan_name} Plan</span>
-          {isTrialing && (
-            <Badge color="green" className="inline-block ml-3">
-              Trialing until {format(trialEndDate, 'MMM D')}
-            </Badge>
-          )}
-        </div>
-
-        <div className="my-6 font-bold">
-          {
-            // `?? 0`: no price is free, as `undefined > 0` was false.
-            (price ?? 0) > 0 ? (
-              <>
-                <span className="text-xl">$20.00</span> / month
-              </>
-            ) : (
-              <span className="text-xl">Free</span>
-            )
-          }
-        </div>
-
-        <div className="flex flex-col mt-4 text-sm md:flex-row">
-          <div className="flex-1">
-            <div className="flex items-center">
-              {checkIcon}
-              Unlimited songs, binders and sets
-            </div>
-            <div className="flex items-center mt-2">
-              {checkIcon}
-              Unlimited teams
-            </div>
-            <div className="flex items-center mt-2">
-              {checkIcon}
-              Permissions and access control
-            </div>
-            <div className="flex items-center mt-2">
-              {checkIcon}
-              Metronome
-            </div>
-            <div className="flex items-center mt-2">
-              {checkIcon}
-              Autoscroll
-            </div>
-          </div>
-          <div className="flex-1 mt-6 md:mt-0">
-            {!isPro && (
-              <div className="mb-2 font-semibold text-gray-700 dark:text-dark-gray-200">
-                Not included:
+    <div className="max-w-3xl mx-auto font-plain text-on-surface">
+      <PageTitle title="Billing" />
+      {/* PageTitle pads its text 8px: the rest lines up with it. */}
+      <div className="flex flex-col gap-8 px-2">
+        <section className="rounded-extra-large-increased bg-surface-container-low">
+          <div className="flex flex-wrap items-center justify-between gap-4 p-6">
+            <div>
+              <div className="text-label-large text-on-surface-variant">
+                Current plan
               </div>
-            )}
-            <div className="flex items-center">
-              {isPro ? checkIcon : xIcon}Sessions
+              <h2 className="text-headline-small-emphasized">{plan_name}</h2>
             </div>
-            <div className="flex items-center mt-2">
-              {isPro ? checkIcon : xIcon}Sticky notes
-            </div>
-            <div className="flex items-center mt-2">
-              {isPro ? checkIcon : xIcon}File management
-            </div>
-            <div className="flex items-center mt-2">
-              {isPro ? checkIcon : xIcon}Spotify, Apple Music and YouTube tracks
-            </div>
+            {action}
           </div>
-        </div>
-      </Card>
-      <div className="mt-8 md:hidden">
-        {isStripe && isPro && (
-          <Button
-            full={true}
-            color="purple"
-            variant="outlined"
-            onClick={() => createCustomerPortalSession()}
-            loading={isCreatingSession}
-          >
-            Manage
-          </Button>
-        )}
-        {!isPro && (
-          <Button
-            full={true}
-            color="purple"
-            onClick={() => createCustomerPortalSession()}
-            loading={isCreatingSession}
-          >
-            Upgrade
-          </Button>
-        )}
+          <dl className="grid grid-cols-2 gap-4 px-6 py-5 border-t border-outline-variant sm:grid-cols-3">
+            <Detail label="Price">
+              {
+                // `?? 0`: no price is free, as `undefined > 0` was false.
+                (price ?? 0) > 0 ? (
+                  <>
+                    <span className="text-title-large">$20.00</span>
+                    <span className="text-on-surface-variant"> / month</span>
+                  </>
+                ) : (
+                  <span className="text-title-large">Free</span>
+                )
+              }
+            </Detail>
+            <Detail label="Status">
+              <StatusPill trial={!!isTrialing} />
+            </Detail>
+            {isTrialing && (
+              <Detail label="Trial ends">
+                {format(trialEndDate, 'MMM D')}
+              </Detail>
+            )}
+          </dl>
+        </section>
+
+        <section className="p-6 rounded-extra-large-increased bg-surface-container-low">
+          <h2 className="mb-4 text-title-medium">What&rsquo;s included</h2>
+          <ul className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2 text-body-large">
+            {INCLUDED.map(feature => (
+              <Feature key={feature} included>
+                {feature}
+              </Feature>
+            ))}
+            {PRO_ONLY.map(feature => (
+              <Feature key={feature} included={isPro}>
+                {feature}
+              </Feature>
+            ))}
+          </ul>
+        </section>
       </div>
     </div>
+  );
+}
+
+const INCLUDED = [
+  'Unlimited songs, folders and sets',
+  'Unlimited teams',
+  'Permissions and access control',
+  'Metronome',
+  'Autoscroll',
+];
+
+const PRO_ONLY = [
+  'Sessions',
+  'Sticky notes',
+  'File management',
+  'Spotify, Apple Music and YouTube tracks',
+];
+
+/** Active on primary-container, or Trial on tertiary-container, with a dot. */
+function StatusPill({ trial }: { trial: boolean }) {
+  return (
+    <span
+      className={classNames(
+        'inline-flex items-center gap-2 h-7 px-3 rounded-full text-label-large',
+        trial
+          ? 'bg-tertiary-container text-on-tertiary-container'
+          : 'bg-primary-container text-on-primary-container'
+      )}
+    >
+      <span className="w-2 h-2 rounded-full bg-current" aria-hidden="true" />
+      {trial ? 'Trial' : 'Active'}
+    </span>
+  );
+}
+
+function Detail({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div>
+      <dt className="text-label-medium text-on-surface-variant">{label}</dt>
+      <dd className="text-body-large">{children}</dd>
+    </div>
+  );
+}
+
+/** A feature: a check when the plan has it, or muted with a Pro label. */
+function Feature({
+  included,
+  children,
+}: {
+  included: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <li
+      className={classNames(
+        'flex items-start gap-3',
+        !included && 'text-on-surface-variant'
+      )}
+    >
+      <Icon
+        name={included ? 'check' : 'remove'}
+        className={classNames(
+          'w-6 h-6 shrink-0',
+          included ? 'text-primary' : 'text-on-surface-variant'
+        )}
+      />
+      <span>
+        {children}
+        {!included && (
+          <span className="inline-flex items-center h-5 px-2 ml-2 align-middle rounded-full bg-surface-container-highest text-label-small">
+            Pro
+          </span>
+        )}
+      </span>
+    </li>
   );
 }

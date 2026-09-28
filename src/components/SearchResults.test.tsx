@@ -28,7 +28,7 @@ test('SearchResults links each result and keys the links', () => {
   const hrefs = screen
     .getAllByRole('link')
     .map(link => link.getAttribute('href'));
-  expect(hrefs).toEqual(['/binders/1', '/songs/2', '/songs/3']);
+  expect(hrefs).toEqual(['/folders/1', '/songs/2', '/songs/3']);
   expect(screen.getByText('No sets found')).toBeInTheDocument();
 
   fireEvent.click(screen.getByText('Worship'));

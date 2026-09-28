@@ -12,7 +12,8 @@ type PrimaryTabsProps = {
   className?: string;
 };
 
-/** The row of tabs, with a divider under it and the sliding indicator. */
+/** The row of tabs and the sliding indicator. No full-width divider under
+    them: only the indicator marks the row's edge. */
 export function PrimaryTabs({ children, className }: PrimaryTabsProps) {
   // State, not a ref: Headless UI attaches the list's ref after its
   // children's layout effects run, so the indicator waits for it.
@@ -21,10 +22,7 @@ export function PrimaryTabs({ children, className }: PrimaryTabsProps) {
   return (
     <Tab.List
       ref={setList}
-      className={classNames(
-        'relative flex overflow-x-auto border-b border-outline-variant',
-        className
-      )}
+      className={classNames('relative flex overflow-x-auto', className)}
     >
       {({ selectedIndex }) => (
         <>
@@ -52,7 +50,7 @@ export function PrimaryTab({ children, className }: PrimaryTabProps) {
       className={({ selected }) =>
         classNames(
           'shrink-0 flex-center h-12 px-4 font-plain text-title-small whitespace-nowrap',
-          'state-layer-flat outline-none focus-visible:outline-3 focus-visible:outline-solid focus-visible:outline-secondary focus-visible:-outline-offset-3',
+          'state-layer-flat outline-none',
           selected ? 'text-primary' : 'text-on-surface-variant',
           className
         )

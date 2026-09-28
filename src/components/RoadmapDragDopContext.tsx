@@ -6,6 +6,7 @@ import type {
 } from 'react-beautiful-dnd';
 
 import RoadmapSection from './RoadmapSection';
+import Icon from './Icon';
 import { useState } from 'react';
 
 type RoadmapDragDropContextProps = {
@@ -102,7 +103,9 @@ export default function RoadmapDragDropContext({
             ref={provided.innerRef}
             {...provided.droppableProps}
             onScroll={handleScroll}
-            className="flex items-center overflow-x-auto overflow-y-hidden py-2"
+            // Scrolls sideways, fading out at its edges; the padding keeps
+            // the first and last sections clear of the fade.
+            className="flex items-center overflow-x-auto overflow-y-hidden py-2 px-3 [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_12px,black_calc(100%-12px),transparent)]"
           >
             {sections.map((section, index) => (
               <Draggable key={index} draggableId={`${index}`} index={index}>
@@ -111,7 +114,7 @@ export default function RoadmapDragDropContext({
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
-                    className="mr-2"
+                    className="flex items-center"
                     style={getItemStyle(
                       snapshot.isDragging,
                       provided.draggableProps.style
@@ -124,6 +127,13 @@ export default function RoadmapDragDropContext({
                       }
                       onDelete={() => handleDeleteSection(index)}
                     />
+                    {/* Then: a chevron to the next section. */}
+                    {index < sections.length - 1 && (
+                      <Icon
+                        name="chevron_right"
+                        className="w-4 h-4 mx-0.5 shrink-0 text-on-surface-variant"
+                      />
+                    )}
                   </div>
                 )}
               </Draggable>

@@ -15,7 +15,12 @@ type StyledDialogProps = {
   size?: DialogSize;
   showClose?: boolean;
   fullscreen?: boolean;
-  borderedTop?: boolean;
+  /** Keeps the title as the dialog's accessible name, but doesn't show it:
+      the header is just the close button (or gone, without one). */
+  hideTitle?: boolean;
+  /** 'low-in-dark': in dark mode the panel is surface-container-low, for
+      content on higher surfaces (lowest reads darker than the panel there). */
+  surface?: 'high' | 'low-in-dark';
   className?: string;
 };
 
@@ -27,7 +32,8 @@ export default function StyledDialog({
   size = 'md',
   showClose = true,
   fullscreen = true,
-  borderedTop = true,
+  hideTitle = false,
+  surface = 'high',
   className,
 }: StyledDialogProps) {
   const sizeClasses = fullscreen
@@ -83,6 +89,9 @@ export default function StyledDialog({
             <div
               className={
                 `inline-block ${sizeClasses} ${mobileStyleClasses} ` +
+                (surface === 'low-in-dark'
+                  ? ' dark:bg-surface-container-low dark:sm:bg-surface-container-low '
+                  : '') +
                 ` relative overflow-y-auto text-left align-middle font-plain text-on-surface `
               }
             >
@@ -99,27 +108,33 @@ export default function StyledDialog({
                   </Button>
                 </span>
               )}
-              <Dialog.Title
-                as="h3"
-                className={
-                  borderedTop ? ` border-b border-outline-variant ` : ''
-                }
-              >
-                <div
-                  className={classNames(
-                    // pre-wrap: keeps the title's line breaks, but wraps inside the
-                    // padding instead of running under the close button
-                    'px-4 py-6 text-headline-small text-on-surface whitespace-pre-wrap break-words sm:px-6',
-                    // Room for the close button
-                    showClose && 'pr-16 sm:pr-16'
-                  )}
-                >
-                  {title}
-                </div>
-              </Dialog.Title>
+              {hideTitle ? (
+                <>
+                  <Dialog.Title as="h3" className="sr-only">
+                    {title}
+                  </Dialog.Title>
+                  {/* The header without its title: room for the close
+                      button (16px above and below it). */}
+                  {showClose && <div aria-hidden="true" className="h-[72px]" />}
+                </>
+              ) : (
+                <Dialog.Title as="h3">
+                  <div
+                    className={classNames(
+                      // pre-wrap: keeps the title's line breaks, but wraps inside the
+                      // padding instead of running under the close button
+                      'px-4 py-6 text-headline-small text-on-surface whitespace-pre-wrap break-words sm:px-6',
+                      // Room for the close button
+                      showClose && 'pr-16 sm:pr-16'
+                    )}
+                  >
+                    {title}
+                  </div>
+                </Dialog.Title>
+              )}
               <div
                 className={`my-2 px-4 sm:px-6 ${
-                  borderedTop ? ' py-4 ' : ' pb-6 pt-0 '
+                  hideTitle && !showClose ? ' pt-4 pb-6 ' : ' pb-6 pt-0 '
                 }`}
               >
                 {children}

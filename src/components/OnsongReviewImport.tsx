@@ -1,5 +1,7 @@
 import Button from './Button';
-import Icon from './Icon';
+import ImportStepHeader from './ImportStepHeader';
+import { LIST_ITEM } from './lists/listItem';
+import { pluralize } from '../utils/StringUtils';
 import type { Binder, OnsongFile } from '../types';
 
 type OnsongReviewImportProps = {
@@ -9,42 +11,40 @@ type OnsongReviewImportProps = {
   onConfirm: () => void;
 };
 
+// Step 4: what's about to be imported and where, then the songs, and the
+// Import button.
 export default function OnsongReviewImport({
   selectedBinder,
   selectedSongs,
   onBackClick,
   onConfirm,
 }: OnsongReviewImportProps) {
+  const count = selectedSongs.length;
+  const songs = `${count} ${pluralize('song', count)}`;
+
   return (
     <>
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">
-          Importing {selectedSongs?.length} songs
-        </h2>
-        <div className="mb-4 max-h-96 overflow-y-auto bg-gray-50 dark:bg-dark-gray-800 shadow-inner">
-          {selectedSongs?.map(song => (
-            <div
-              key={song.id}
-              className="p-2 border-b dark:border-dark-gray-600 last:border-0"
-            >
-              {song.name}
-            </div>
-          ))}
-        </div>
-        {selectedBinder && (
-          <h2 className="mb-4 text-2xl font-semibold">
-            Into the &quot;{selectedBinder.name}&quot; binder
-          </h2>
-        )}
-      </div>
-      <div className="flex-between">
-        <Button variant="open" color="gray" bold onClick={onBackClick}>
-          <div className="flex-center">
-            <Icon name="arrow_back" className="w-5 h-5 mr-2" /> Back
+      <ImportStepHeader
+        step="Step 4 of 4"
+        title="Review"
+        subtitle={
+          selectedBinder
+            ? `Importing ${songs} into ${selectedBinder.name}`
+            : `Importing ${songs}, not into a folder`
+        }
+        onBack={onBackClick}
+        backLabel="Back to choosing a folder"
+      />
+      <div className="mb-6 overflow-y-auto list-segmented max-h-96">
+        {selectedSongs.map(song => (
+          <div key={song.id} className={LIST_ITEM}>
+            <span className="min-w-0 truncate">{song.name}</span>
           </div>
-        </Button>
-        <Button onClick={onConfirm}>
-          <div className="flex-center">Import!</div>
+        ))}
+      </div>
+      <div className="flex justify-end">
+        <Button size="md" className="w-full sm:w-auto" onClick={onConfirm}>
+          Import {songs}
         </Button>
       </div>
     </>

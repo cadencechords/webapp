@@ -1,47 +1,86 @@
-import React from 'react';
 import useSongEditor from '../hooks/useSongEditor';
 import type { SongFormat } from '../types';
 import FormatOption from './FormatOption';
-import FormatOptionLabel from './FormatOptionLabel';
-import Select from './Select';
+import Icon from './Icon';
+import MenuSelect from './MenuSelect';
 
+// The song's font, as a menu showing each font in itself, and its size, as a
+// stepper through FONT_SIZES.
 export default function FormatPanelGeneralOptions() {
   const { song, updateFormat } = useSongEditor();
   const { font_size: size, font }: SongFormat = song?.format || {};
+  const sizeIndex = FONT_SIZES.findIndex(option => option.value === `${size}`);
 
-  function handleUpdateFormat<Field extends keyof SongFormat>(
-    field: Field,
-    value: SongFormat[Field]
-  ) {
-    updateFormat({ [field]: value });
+  function stepSize(by: number) {
+    const next =
+      FONT_SIZES[
+        Math.min(
+          FONT_SIZES.length - 1,
+          Math.max(0, (sizeIndex < 0 ? DEFAULT_SIZE_INDEX : sizeIndex) + by)
+        )
+      ];
+    updateFormat({ font_size: next.value });
   }
 
   return (
-    <div>
-      <FormatOption>
-        <FormatOptionLabel>Font</FormatOptionLabel>
-        <div className="w-44">
-          <Select
-            style={{ fontFamily: font }}
-            options={FONT_OPTIONS}
-            selected={font}
-            onChange={newFont => handleUpdateFormat('font', newFont)}
-            className="h-6"
-          />
-        </div>
+    <div className="flex flex-col">
+      <FormatOption label="Font">
+        <MenuSelect
+          options={FONT_OPTIONS.map(option => ({
+            value: option.value,
+            display: (
+              <span style={{ fontFamily: option.value }}>{option.display}</span>
+            ),
+          }))}
+          selected={font}
+          onChange={newFont => updateFormat({ font: newFont })}
+        />
       </FormatOption>
-      <FormatOption>
-        <FormatOptionLabel>Size</FormatOptionLabel>
-        <div className="w-44">
-          <Select
-            options={FONT_SIZES}
-            selected={size}
-            className="h-6"
-            onChange={newSize => handleUpdateFormat('font_size', newSize)}
+      <FormatOption label="Size">
+        <div className="flex items-center gap-1">
+          <StepButton
+            label="Smaller"
+            icon="remove"
+            disabled={sizeIndex === 0}
+            onClick={() => stepSize(-1)}
+          />
+          <span className="w-8 text-center text-title-medium tabular-nums">
+            {size ?? '–'}
+          </span>
+          <StepButton
+            label="Larger"
+            icon="add"
+            disabled={sizeIndex === FONT_SIZES.length - 1}
+            onClick={() => stepSize(1)}
           />
         </div>
       </FormatOption>
     </div>
+  );
+}
+
+/** A 40dp tonal icon button on the neutral container. */
+function StepButton({
+  label,
+  icon,
+  disabled,
+  onClick,
+}: {
+  label: string;
+  icon: 'add' | 'remove';
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className="flex-center w-10 h-10 rounded-[20px] [--shape-morph-to:8px] bg-surface-container-highest text-on-surface-variant state-layer-flat focus-ring shape-morph disabled:opacity-38 disabled:cursor-default"
+    >
+      <Icon name={icon} className="w-5 h-5" />
+    </button>
   );
 }
 
@@ -70,3 +109,8 @@ export const FONT_SIZES = [
   { value: '28', display: '28' },
   { value: '30', display: '30' },
 ];
+
+/** Where the stepper starts for a song without a size: 16. */
+const DEFAULT_SIZE_INDEX = FONT_SIZES.findIndex(
+  option => option.value === '16'
+);

@@ -1,7 +1,7 @@
 import { createRef, type MouseEventHandler } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Button from './Button';
+import Button, { buttonClasses } from './Button';
 import AddCancelActions from './buttons/AddCancelActions';
 import MobileMenuButton from './buttons/MobileMenuButton';
 import TransposeOption from './TransposeOption';
@@ -258,5 +258,24 @@ test("an icon button leaves display to the caller's className", () => {
   );
   expect(screen.getByRole('button', { hidden: true }).className).not.toMatch(
     /\b(inline-flex|flex|inline-block|grid)\b/
+  );
+});
+
+test('buttonClasses matches the filled and tonal buttons, for links', () => {
+  render(
+    <>
+      <Button variant="filled" size="sm" className="gap-2">
+        Filled
+      </Button>
+      <Button variant="accent" color="gray" size="md" full>
+        Tonal
+      </Button>
+    </>
+  );
+  expect(screen.getByRole('button', { name: 'Filled' }).className).toBe(
+    buttonClasses({ size: 'sm', className: 'gap-2' })
+  );
+  expect(screen.getByRole('button', { name: 'Tonal' }).className).toBe(
+    buttonClasses({ variant: 'accent', color: 'gray', size: 'md', full: true })
   );
 });

@@ -14,7 +14,9 @@ import {
 } from '../hooks/api/annotations.hooks';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
 import Icon from './Icon';
-import type { ReactNode } from 'react';
+import PresenterTopAppBar, {
+  PRESENTER_ICON_BUTTON,
+} from './PresenterTopAppBar';
 import type { PresentedSong } from '../store/presenterSlice';
 import type { AnnotationPath } from '../types';
 
@@ -42,22 +44,16 @@ export default function SetPresenterTopBar({
   const { isAnnotating } = usePerformanceMode();
   if (!song) return null;
 
-  return (
-    <nav className="relative z-30 px-1 py-2 border-b dark:border-0 bg-gray-50 dark:bg-dark-gray-800">
-      <div className="max-w-3xl mx-auto flex-between">
-        {isAnnotating ? (
-          <AnnotationsTopBar song={song} onUpdateSong={onUpdateSong} />
-        ) : (
-          <DefaultTopBar
-            song={song}
-            onUpdateSong={onUpdateSong}
-            onAddNote={onAddNote}
-            onShowMarkingsModal={onShowMarkingsModal}
-            onShowDrawer={onShowDrawer}
-          />
-        )}
-      </div>
-    </nav>
+  return isAnnotating ? (
+    <AnnotationsTopBar song={song} onUpdateSong={onUpdateSong} />
+  ) : (
+    <DefaultTopBar
+      song={song}
+      onUpdateSong={onUpdateSong}
+      onAddNote={onAddNote}
+      onShowMarkingsModal={onShowMarkingsModal}
+      onShowDrawer={onShowDrawer}
+    />
   );
 }
 
@@ -85,32 +81,43 @@ function DefaultTopBar({
     });
   }
   return (
-    <>
-      <Link to={`/sets/${id}`}>
-        <Button variant="icon" size="md" color="gray">
-          <Icon name="close" className="w-5 h-5 sm:h-6 sm:w-6" />
-        </Button>
-      </Link>
-      <HeaderTitle>{song.name}</HeaderTitle>
-      <div className="flex items-center gap-2">
-        {hasAnyKeysSet(song) && (
-          <KeyOptionsPopover
-            song={song}
-            onUpdateSong={handleUpdateSong}
-            key={song.id}
-          />
-        )}
-        <Button variant="icon" size="md" color="gray" onClick={onShowDrawer}>
-          <Icon name="tune" className="w-5 h-5 sm:h-6 sm:w-6" />
-        </Button>
-        {currentSubscription.isPro && (
-          <MarkupPopover
-            onAddNote={onAddNote}
-            onShowMarkingsModal={onShowMarkingsModal}
-          />
-        )}
-      </div>
-    </>
+    <PresenterTopAppBar
+      leading={
+        <Link
+          to={`/sets/${id}`}
+          aria-label="Close set"
+          className={PRESENTER_ICON_BUTTON}
+        >
+          <Icon name="close" className="w-6 h-6" />
+        </Link>
+      }
+      title={song.name}
+      actions={
+        <>
+          {hasAnyKeysSet(song) && (
+            <KeyOptionsPopover
+              song={song}
+              onUpdateSong={handleUpdateSong}
+              key={song.id}
+            />
+          )}
+          <button
+            type="button"
+            aria-label="Adjust song"
+            onClick={onShowDrawer}
+            className={PRESENTER_ICON_BUTTON}
+          >
+            <Icon name="tune" className="w-6 h-6" />
+          </button>
+          {currentSubscription.isPro && (
+            <MarkupPopover
+              onAddNote={onAddNote}
+              onShowMarkingsModal={onShowMarkingsModal}
+            />
+          )}
+        </>
+      }
+    />
   );
 }
 
@@ -181,27 +188,32 @@ function AnnotationsTopBar({
   }
 
   return (
-    <>
-      <Button variant="open" className="ml-2" onClick={handleCancel}>
-        Cancel
-      </Button>
-      <HeaderTitle>Annotate</HeaderTitle>
-      <Button
-        className="w-20 mr-2"
-        onClick={handleSaveAnnotations}
-        loading={isCreating || isDeleting}
-      >
-        Save
-      </Button>
-    </>
-  );
-}
-
-function HeaderTitle({ children }: { children: ReactNode }) {
-  return (
-    <h1 className="w-1/3 overflow-hidden font-semibold text-center whitespace-pre text-ellipsis">
-      {children}
-    </h1>
+    <PresenterTopAppBar
+      contextual
+      leading={
+        <button
+          type="button"
+          aria-label="Cancel annotating"
+          onClick={handleCancel}
+          className={`${PRESENTER_ICON_BUTTON} text-on-secondary-container!`}
+        >
+          <Icon name="close" className="w-6 h-6" />
+        </button>
+      }
+      title="Annotate"
+      actions={
+        // Filled secondary, on the bar's secondary-container.
+        <Button
+          size="sm"
+          color="gray"
+          className="mr-2"
+          onClick={handleSaveAnnotations}
+          loading={isCreating || isDeleting}
+        >
+          Save
+        </Button>
+      }
+    />
   );
 }
 

@@ -30,8 +30,10 @@ export default function EventDetailDialog({
           <EventColorOption className="shrink-0" color={event?.color} />
         </div>
         <div className="col-span-9">
-          <div className="mb-1 text-2xl">{event?.title}</div>
-          <div className="text-on-surface-variant">
+          <div className="mb-1 font-plain text-headline-small text-on-surface">
+            {event?.title}
+          </div>
+          <div className="font-plain text-body-medium text-on-surface-variant">
             {format(event?.start_time, 'MMMM D, YYYY')}&nbsp;
             {startTime && '(' + startTime}
             {startTime && endTime && '-'}
@@ -49,7 +51,6 @@ export default function EventDetailDialog({
       open={open}
       onCloseDialog={onCloseDialog}
       title={constructTitle()}
-      borderedTop={false}
       size="2xl"
       fullscreen={false}
     >

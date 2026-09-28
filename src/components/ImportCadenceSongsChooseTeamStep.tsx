@@ -1,7 +1,7 @@
-import React from 'react';
 import useImportableCadenceTeams from '../hooks/api/useImportableCadenceTeams';
 import PageLoading from './PageLoading';
-import PageTitle from './PageTitle';
+import ImportStepHeader from './ImportStepHeader';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
 import FadeIn from './FadeIn';
 import Button from './Button';
 import classNames from 'classnames';
@@ -23,8 +23,12 @@ export default function ImportCadenceSongsChooseTeamStep({
   currentStep,
   onGoToStep,
 }: ImportCadenceSongsChooseTeamStepProps) {
-  const { isLoading: isLoadingTeams, data: teams } =
-    useImportableCadenceTeams();
+  // `data` is [] until the teams load, so the list waits for isSuccess.
+  const {
+    isLoading: isLoadingTeams,
+    isSuccess: hasTeams,
+    data: teams,
+  } = useImportableCadenceTeams();
 
   if (currentStep !== 0) {
     return null;
@@ -32,15 +36,18 @@ export default function ImportCadenceSongsChooseTeamStep({
 
   return (
     <FadeIn>
-      <PageTitle title="Which team would you like to import from?" />
-      <div className="px-2 text-sm subtext">Step 1 of 2</div>
+      <ImportStepHeader
+        step="Step 1 of 2"
+        title="Choose a team"
+        subtitle="Import songs from another Mezzo team you're on."
+      />
       {isLoadingTeams && <PageLoading />}
-      {teams &&
+      {hasTeams &&
         (teams.length === 0 ? (
           <NoDataMessage type="teams" />
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-4 mt-4 mb-8 sm:grid-cols-2">
+            <div role="radiogroup" className="mb-6 list-segmented">
               {teams.map(team => (
                 <TeamOption
                   selected={team === selectedTeam}
@@ -50,13 +57,12 @@ export default function ImportCadenceSongsChooseTeamStep({
                 />
               ))}
             </div>
-            <div className="flex-center">
+            <div className="flex justify-end">
               <Button
                 disabled={!selectedTeam}
-                className="max-w-md gap-3 flex-center"
+                className="w-full gap-2 flex-center sm:w-auto"
                 onClick={() => onGoToStep(1)}
-                size="medium"
-                full={true}
+                size="md"
               >
                 Choose songs
                 <Icon name="arrow_forward" className="w-5 h-5" />
@@ -74,31 +80,31 @@ type TeamOptionProps = {
   onChange: (team: ImportableTeam) => void;
 };
 
+/** A team as a selectable row: primary-container with a check when chosen.
+    The radio stays in the DOM (hidden), so the row is a real radio. */
 function TeamOption({ team, selected, onChange }: TeamOptionProps) {
   return (
     <label
       // React sets the attribute to the id as a string either way.
       id={String(team.id)}
       className={classNames(
-        'interactive-card flex items-center relative h-20 ring-offset-0 gap-4 p-2 cursor-pointer rounded-xl',
-        selected && 'ring-2 ring-blue-500 dark:ring-dark-blue'
+        LIST_ITEM,
+        LIST_ITEM_INTERACTIVE,
+        'cursor-pointer has-focus-visible:outline-3 has-focus-visible:outline-solid has-focus-visible:outline-secondary has-focus-visible:-outline-offset-3',
+        selected && 'bg-primary-container text-on-primary-container'
       )}
     >
-      <ProfilePicture url={team.image_url} name={team.name} size="xs" />
-      {team.name}
       <input
-        className="absolute w-0 h-0 opacity-0 cursor-pointer"
+        className="sr-only"
         type="radio"
         name="team"
         onChange={() => onChange(team)}
         checked={selected}
       />
+      <ProfilePicture url={team.image_url} name={team.name} size="md" />
+      <span className="flex-1 min-w-0 truncate">{team.name}</span>
       {selected && (
-        <Icon
-          name="check_circle"
-          filled
-          className="absolute w-5 h-5 text-blue-500 top-2 right-2 dark:text-dark-blue"
-        />
+        <Icon name="check_circle" filled className="w-6 h-6 shrink-0" />
       )}
     </label>
   );

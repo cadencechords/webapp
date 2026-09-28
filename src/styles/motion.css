@@ -122,6 +122,23 @@
   }
 }
 
+/* list-item-motion: an interactive list item's M3 Expressive motion. Its
+   state layer (state-layer-flat) fades in and out on the fast-effects curve,
+   and while pressed its corners spring to large (16px) on the fast-spatial
+   spring, and back. With reduced motion the corners change at once; the fade
+   stays. */
+@utility list-item-motion {
+  transition:
+    --state-layer-opacity var(--md-sys-motion-duration-fast-effects)
+      var(--md-sys-motion-easing-fast-effects),
+    border-radius var(--md-sys-motion-duration-fast-spatial)
+      var(--md-sys-motion-easing-fast-spatial);
+
+  &:active {
+    border-radius: var(--md-sys-shape-corner-large);
+  }
+}
+
 /* Dialogs entering and leaving (CAD-87): scale on the default-spatial
    spring and opacity on the default-effects curve; leaving is quicker, on
    fast-effects with no overshoot. Headless UI's Transition ends a phase on the
@@ -186,4 +203,17 @@
       var(--md-sys-motion-easing-fast-effects),
     opacity var(--md-sys-motion-duration-fast-effects)
       var(--md-sys-motion-easing-fast-effects);
+}
+
+/* animate-enter-rise: fades in while rising 24px, on the slow spatial
+   spring. Reduced motion zeroes the spatial duration, so it just appears. */
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    translate: 0 24px;
+  }
+}
+@utility animate-enter-rise {
+  animation: enter-rise var(--md-sys-motion-duration-slow-spatial)
+    var(--md-sys-motion-easing-slow-spatial) both;
 }

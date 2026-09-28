@@ -2,9 +2,8 @@ import { ADD_MEMBERS } from '../utils/constants';
 import Button from './Button';
 import InvitationApi from '../api/InvitationApi';
 import NoDataMessage from './NoDataMessage';
-import SectionTitle from './SectionTitle';
-import TableHead from './TableHead';
-import TableRow from './TableRow';
+import ProfilePicture from './ProfilePicture';
+import { LIST_ITEM_TWO_LINE, LIST_SUPPORTING_TEXT } from './lists/listItem';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
@@ -42,53 +41,58 @@ export default function PendingInvitationsList({
     }
   };
 
+  // An M3E segmented list: a two-line item per invitation, with the email's
+  // monogram, when it was sent, and (for members who can add members) a
+  // Resend text button and a cancel icon button.
+  if (invitations.length === 0)
+    return (
+      <NoDataMessage compact loading={loading}>
+        No pending invitations
+      </NoDataMessage>
+    );
+
   return (
-    <>
-      <SectionTitle title="Pending invitations" />
-      {invitations.length === 0 ? (
-        <NoDataMessage compact loading={loading}>
-          No pending invitations
-        </NoDataMessage>
-      ) : (
-        <table className="w-full">
-          <TableHead columns={['EMAIL', 'SENT', '']} />
-          <tbody>
-            {invitations?.map(invitation => {
-              const actions = currentMember.can(ADD_MEMBERS) && (
-                <div className="flex items-center">
-                  <span className="mr-2">
-                    <Button
-                      variant="open"
-                      size="xs"
-                      onClick={() => handleResendInvitation(invitation.id)}
-                    >
-                      Resend
-                    </Button>
-                  </span>
-                  <Button
-                    variant="icon"
-                    size="sm"
-                    color="gray"
-                    onClick={() => handleDeleteInvitation(invitation.id)}
-                  >
-                    <Icon name="close" className="h-4" />
-                  </Button>
-                </div>
-              );
-              return (
-                <TableRow
-                  columns={[
-                    invitation.email,
-                    new Date(invitation.created_at).toDateString(),
-                  ]}
-                  key={invitation.id}
-                  actions={actions}
-                />
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-    </>
+    <ul className="list-segmented">
+      {invitations.map(invitation => (
+        <li key={invitation.id} className={LIST_ITEM_TWO_LINE}>
+          <ProfilePicture name={invitation.email} size="md" />
+          <div className="flex-1 min-w-0">
+            <div className="truncate">{invitation.email}</div>
+            <div className={LIST_SUPPORTING_TEXT}>
+              Sent {formatSent(invitation.created_at)}
+            </div>
+          </div>
+          {currentMember.can(ADD_MEMBERS) && (
+            <div className="flex items-center gap-1 shrink-0 -mr-2">
+              <Button
+                variant="open"
+                size="sm"
+                onClick={() => handleResendInvitation(invitation.id)}
+              >
+                Resend
+              </Button>
+              <Button
+                variant="icon"
+                color="gray"
+                size="md"
+                name={`Cancel the invitation to ${invitation.email}`}
+                onClick={() => handleDeleteInvitation(invitation.id)}
+              >
+                <Icon name="close" className="w-5 h-5" />
+              </Button>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
   );
+}
+
+/** "Jul 2, 2022" */
+function formatSent(createdAt: string) {
+  return new Date(createdAt).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }

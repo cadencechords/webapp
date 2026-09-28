@@ -16,7 +16,7 @@ export default function BinderSongRow({ song, binderId }: BinderSongRowProps) {
   const router = useHistory();
   const { isLoading: isRemoving, run: removeSongFromBinder } =
     useRemoveSongFromBinder({
-      onSuccess: () => router.replace(`/binders/${binderId}`, null),
+      onSuccess: () => router.replace(`/folders/${binderId}`, null),
     });
 
   return (
@@ -31,14 +31,17 @@ export default function BinderSongRow({ song, binderId }: BinderSongRowProps) {
         <div className="min-w-0 truncate">{song.name} </div>
         <KeyBadge songKey={song.transposed_key || song.original_key} />
       </Link>
+      {/* M3 trailing icon button: 40px, with a 20px icon. */}
       <Button
         variant="icon"
         color="gray"
+        size="md"
+        name={`Remove ${song.name} from folder`}
         onClick={() => removeSongFromBinder({ binderId, songId: song.id })}
-        loading={isRemoving}
-        className="whitespace-nowrap"
+        disabled={isRemoving}
+        className="shrink-0"
       >
-        <Icon name="delete" className="w-4 h-4" />
+        <Icon name="delete" className="w-5 h-5" />
       </Button>
     </div>
   );

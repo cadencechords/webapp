@@ -1,11 +1,13 @@
-import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
 import MetronomeIcon from '../icons/MetronomeIcon';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import Icon from './Icon';
 import ScrollIcon from '../icons/ScrollIcon';
-import Toggle from './Toggle';
-import { noop } from '../utils/constants';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import { useSelector } from 'react-redux';
+import {
+  SettingsAction,
+  SettingsSection,
+  SettingsSwitch,
+} from './SettingsList';
 import type { Song, SongFormat } from '../types';
 
 type SongAdjustmentsDrawerMainSheetProps = {
@@ -27,65 +29,50 @@ export default function SongAdjustmentsDrawerMainSheet({
   onSongChange,
 }: SongAdjustmentsDrawerMainSheetProps) {
   const currentSubscription = useSelector(selectCurrentSubscription);
-  const iconClasses = 'w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue';
 
   return (
-    <div className="flex flex-col pt-5">
-      <MobileMenuButton
-        onClick={() => onFormatChange('autosize', !song?.format?.autosize)}
-        className="flex-between"
-      >
-        Resize lyrics{' '}
-        <Toggle enabled={song?.format?.autosize} onChange={noop} />
-      </MobileMenuButton>
-      <MobileMenuButton
-        className="flex-between"
-        onClick={() =>
-          onFormatChange('chords_hidden', !song.format.chords_hidden)
-        }
-      >
-        Show chords
-        <Toggle
-          enabled={!song.format.chords_hidden}
-          onChange={noop}
-          spacing="between"
+    <>
+      <SettingsSection title="Display">
+        <SettingsSwitch
+          label="Resize lyrics"
+          enabled={song?.format?.autosize}
+          onChange={enabled => onFormatChange('autosize', enabled)}
         />
-      </MobileMenuButton>
-      <MobileMenuButton
-        className="flex-between"
-        onClick={() => onSongChange('show_roadmap', !song.show_roadmap)}
-      >
-        Show roadmap
-        <Toggle enabled={song.show_roadmap} onChange={noop} spacing="between" />
-      </MobileMenuButton>
+        <SettingsSwitch
+          label="Show chords"
+          enabled={!song.format.chords_hidden}
+          onChange={enabled => onFormatChange('chords_hidden', !enabled)}
+        />
+        <SettingsSwitch
+          label="Show roadmap"
+          enabled={song.show_roadmap}
+          onChange={enabled => onSongChange('show_roadmap', enabled)}
+        />
+      </SettingsSection>
 
-      {/* SecuredRoutes renders pages once the team is set, and the
-          subscription is dispatched right after it, before this drawer can
-          be opened by a user action. */}
-      {currentSubscription!.isPro && (
-        <MobileMenuButton
-          className="hidden sm:flex sm:items-center"
-          onClick={onAddNote}
-        >
-          <AddStickyNoteIcon className={iconClasses} />
-          Add a note
-        </MobileMenuButton>
-      )}
-      <MobileMenuButton
-        className="flex items-center"
-        // The drawer passes it wherever it renders this sheet (see the prop).
-        onClick={() => onShowBottomSheet!('autoscroll')}
-        full
-      >
-        <ScrollIcon className={iconClasses} /> Auto scroll
-      </MobileMenuButton>
-      <MobileMenuButton
-        className="flex items-center"
-        // The drawer passes it wherever it renders this sheet (see the prop).
-        onClick={() => onShowBottomSheet!('metronome')}
-      >
-        <MetronomeIcon className={iconClasses} /> Metronome
-      </MobileMenuButton>
-    </div>
+      <SettingsSection title="Tools">
+        <SettingsAction
+          icon={<ScrollIcon />}
+          label="Auto scroll"
+          // The drawer passes it wherever it renders this sheet (see the prop).
+          onClick={() => onShowBottomSheet!('autoscroll')}
+        />
+        <SettingsAction
+          icon={<MetronomeIcon />}
+          label="Metronome"
+          onClick={() => onShowBottomSheet!('metronome')}
+        />
+        {/* SecuredRoutes renders pages once the team is set, and the
+            subscription is dispatched right after it, before this drawer can
+            be opened by a user action. */}
+        {currentSubscription!.isPro && (
+          <SettingsAction
+            icon={<Icon name="sticky_note_2" />}
+            label="Add a note"
+            onClick={onAddNote}
+          />
+        )}
+      </SettingsSection>
+    </>
   );
 }

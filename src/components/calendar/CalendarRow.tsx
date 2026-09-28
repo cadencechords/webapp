@@ -11,10 +11,12 @@ type CalendarRowProps = {
   onEventClick?: (event: CalendarEvent) => void;
 };
 
+// A week: seven cells, 1px apart so the grid's outline-variant shows through
+// as the lines between them.
 export default function CalendarRow({
   days,
   events,
-  className,
+  className = '',
   onEventClick,
 }: CalendarRowProps) {
   function findEventsForDay(day: CalendarDay | null) {
@@ -26,48 +28,15 @@ export default function CalendarRow({
   }
 
   return (
-    <div className={`grid grid-cols-7 ${className}`}>
-      <CalendarCell
-        date={days[0]}
-        className="border-r dark:border-dark-gray-600"
-        events={findEventsForDay(days[0])}
-        onEventClick={onEventClick}
-      />
-      <CalendarCell
-        date={days[1]}
-        className="border-r dark:border-dark-gray-600"
-        events={findEventsForDay(days[1])}
-        onEventClick={onEventClick}
-      />
-      <CalendarCell
-        date={days[2]}
-        className="border-r dark:border-dark-gray-600"
-        events={findEventsForDay(days[2])}
-        onEventClick={onEventClick}
-      />
-      <CalendarCell
-        date={days[3]}
-        className="border-r dark:border-dark-gray-600"
-        events={findEventsForDay(days[3])}
-        onEventClick={onEventClick}
-      />
-      <CalendarCell
-        date={days[4]}
-        className="border-r dark:border-dark-gray-600"
-        events={findEventsForDay(days[4])}
-        onEventClick={onEventClick}
-      />
-      <CalendarCell
-        date={days[5]}
-        className="border-r dark:border-dark-gray-600"
-        events={findEventsForDay(days[5])}
-        onEventClick={onEventClick}
-      />
-      <CalendarCell
-        date={days[6]}
-        events={findEventsForDay(days[6])}
-        onEventClick={onEventClick}
-      />
+    <div className={`grid grid-cols-7 gap-px ${className}`}>
+      {days.map((day, index) => (
+        <CalendarCell
+          key={index}
+          date={day}
+          events={findEventsForDay(day)}
+          onEventClick={onEventClick}
+        />
+      ))}
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default function useAddSongsToBinder({
     mutate: run,
   } = useMutation<Song[], Error, { binderId: Id; songIds: Id[] }>({
     mutationFn: async ({ binderId, songIds }) => {
-      // addSongs returns undefined only for no songIds, and SearchSongsDialog
+      // addSongs returns undefined only for no songIds, and AddSongsDialog
       // disables saving until a song is picked.
       const { data } = (await BinderApi.addSongs(binderId, songIds))!;
       return data;

@@ -1,15 +1,20 @@
-import React, { type ReactNode } from 'react';
-import Card from './Card';
-import Button from './Button';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import Icon from './Icon';
+import { SettingsRowText } from './settings/SettingsRow';
+import { LIST_ITEM_INTERACTIVE, LIST_ITEM_TWO_LINE } from './lists/listItem';
 
 type ImportSourceCardProps = {
   title: string;
+  /** What importing from it does. */
   children?: ReactNode;
+  /** The source's 40px logo. */
   image: ReactNode;
   to: string;
 };
 
+/** An import source as a two-line row in a segmented list: its logo, name
+    and what it imports; the whole row opens the import. */
 export default function ImportSourceCard({
   title,
   children,
@@ -17,19 +22,12 @@ export default function ImportSourceCard({
   to,
 }: ImportSourceCardProps) {
   return (
-    <Card className="flex flex-col justify-between">
-      <div>
-        <div className="flex items-center gap-4">
-          {image}
-          <span className="font-medium ">{title}</span>
-        </div>
-        <div className="my-4">{children}</div>
-      </div>
-      <Link to={to}>
-        <Button size="xs" variant="accent" full={true}>
-          Import
-        </Button>
-      </Link>
-    </Card>
+    <Link to={to} className={`${LIST_ITEM_TWO_LINE} ${LIST_ITEM_INTERACTIVE}`}>
+      <SettingsRowText leading={image} title={title} description={children} />
+      <Icon
+        name="chevron_right"
+        className="w-6 h-6 shrink-0 text-on-surface-variant"
+      />
+    </Link>
   );
 }

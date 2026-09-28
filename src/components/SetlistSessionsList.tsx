@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import SessionsApi from '../api/sessionsApi';
 import { reportError } from '../utils/error';
 import NoDataMessage from './NoDataMessage';
+import SectionTitle from './SectionTitle';
 import SessionCard from './SessionCard';
 import type { Session, Setlist } from '../types';
 
@@ -10,6 +11,8 @@ type SetlistSessionsListProps = {
   onSessionsChange: (sessions: Session[]) => void;
   sessions: Session[];
   onJoinSession: (session: Session) => void;
+  /** Tapping a session's row opens the set in the presenter. */
+  onOpenInPresenter?: () => void;
 };
 
 export default function SetlistSessionsList({
@@ -17,6 +20,7 @@ export default function SetlistSessionsList({
   onSessionsChange,
   sessions,
   onJoinSession,
+  onOpenInPresenter,
 }: SetlistSessionsListProps) {
   const [loading, setLoading] = useState(false);
 
@@ -44,27 +48,26 @@ export default function SetlistSessionsList({
   }
 
   return (
-    <div style={{ minHeight: '150px' }} className="mt-12">
-      <div className="pt-3 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Sessions
-      </div>
+    <section className="mt-12">
+      <SectionTitle title="Sessions" />
       {sessions.length === 0 ? (
         <NoDataMessage compact loading={loading}>
           No active sessions to show
         </NoDataMessage>
       ) : (
-        <div className="flex gap-4 my-4 overflow-x-auto flex-nowrap">
+        <div className="list-segmented">
           {sessions.map(session => (
-            <div key={session.id} className="shrink-0 w-72">
-              <SessionCard
-                session={session}
-                onSessionEnded={handleSessionEnded}
-                onJoin={onJoinSession}
-              />
-            </div>
+            <SessionCard
+              key={session.id}
+              session={session}
+              onSessionEnded={handleSessionEnded}
+              onJoin={onJoinSession}
+              onClick={onOpenInPresenter}
+              clickLabel="Perform set"
+            />
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

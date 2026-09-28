@@ -4,15 +4,16 @@ import {
   selectCurrentUser,
 } from '../store/authSlice';
 import { useEffect, useState } from 'react';
+import { Tab } from '@headlessui/react';
+import { PrimaryTab, PrimaryTabs } from '../components/tabs/PrimaryTabs';
 
 import { ADD_MEMBERS } from '../utils/constants';
-import Button from '../components/Button';
 import InvitationApi from '../api/InvitationApi';
 import MemberCard from '../components/MemberCard';
 import MemberMenu from '../components/mobile menus/MemberMenu';
 import PageTitle from '../components/PageTitle';
+import QuickAdd from '../components/QuickAdd';
 import PendingInvitationsList from '../components/PendingInvitationsList';
-import SectionTitle from '../components/SectionTitle';
 import SendInvitesDialog from '../components/SendInvitesDialog';
 import TeamApi from '../api/TeamApi';
 import { reportError } from '../utils/error';
@@ -110,33 +111,41 @@ export default function MembersIndexPage() {
       <>
         <div className="mb-10">
           <PageTitle title={currentTeam?.name} />
-
-          <div className="flex-between">
-            <SectionTitle title="Current members" />
+          {/* PageTitle pads its text 8px: the rest lines up with it. */}
+          <div className="px-2">
             {currentMember.can(ADD_MEMBERS) && (
-              <Button
-                onClick={() => setShowInvitationDialog(true)}
-                className="w-32"
-              >
-                Send an invite
-              </Button>
+              // Non-null: SecuredRoutes renders Content, and so this page, only
+              // once the current team loads.
+              <JoinLinkSection team={currentTeam!} />
             )}
+            <Tab.Group>
+              <PrimaryTabs className="mt-6 mb-5">
+                <PrimaryTab>Members ({members.length})</PrimaryTab>
+                <PrimaryTab>Pending invites ({invitations.length})</PrimaryTab>
+              </PrimaryTabs>
+              <Tab.Panels>
+                <Tab.Panel className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 outline-none">
+                  {memberCards}
+                </Tab.Panel>
+                <Tab.Panel className="outline-none">
+                  <PendingInvitationsList
+                    invitations={invitations}
+                    loading={loadingInvitations}
+                    onInvitationDeleted={handleInvitationDeleted}
+                  />
+                </Tab.Panel>
+              </Tab.Panels>
+            </Tab.Group>
           </div>
-          {currentMember.can(ADD_MEMBERS) && (
-            // Non-null: SecuredRoutes renders Content, and so this page, only
-            // once the current team loads.
-            <JoinLinkSection team={currentTeam!} />
-          )}
-          <div className="grid grid-cols-1 my-5 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-            {memberCards}
-          </div>
-
-          <PendingInvitationsList
-            invitations={invitations}
-            loading={loadingInvitations}
-            onInvitationDeleted={handleInvitationDeleted}
-          />
         </div>
+
+        {currentMember.can(ADD_MEMBERS) && (
+          <QuickAdd
+            onAdd={() => setShowInvitationDialog(true)}
+            label="Send an invite"
+            icon="person_add"
+          />
+        )}
 
         <SendInvitesDialog
           open={showInvitationDialog}

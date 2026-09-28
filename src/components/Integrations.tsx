@@ -5,13 +5,15 @@ import { reportError } from '../utils/error';
 import { setCurrentUser } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import Icon from './Icon';
+import { SettingsRow, SettingsRowText } from './settings/SettingsRow';
 import type { User } from '../types';
 
 type IntegrationsProps = {
   currentUser: User;
 };
 
+// The account's integrations, as a segmented list: each one says whether
+// it's connected, with Disconnect at its end when it is.
 export default function Integrations({ currentUser }: IntegrationsProps) {
   const [isDisconnectingPco, setIsDisconnectingPco] = useState(false);
   const dispatch = useDispatch();
@@ -29,33 +31,40 @@ export default function Integrations({ currentUser }: IntegrationsProps) {
   };
 
   return (
-    <div className="mb-8">
-      <SectionTitle title="Integrations" underline />
-      <div className="flex-between">
-        <div className="flex-center">
-          {currentUser.pco_connected ? (
-            <Icon
-              name="check_circle"
-              filled
-              className="w-4 h-4 mr-2 text-green-500 dark:text-dark-green"
-            />
-          ) : (
-            <Icon name="cancel" filled className="w-4 h-4 mr-2 text-gray-400" />
+    <section className="mb-8">
+      <SectionTitle title="Integrations" />
+      <div className="list-segmented">
+        <SettingsRow>
+          <SettingsRowText
+            leading={
+              // Planning Center Services' app icon, as on the import page.
+              <img
+                src="/services.png"
+                width="40"
+                height="40"
+                alt=""
+                className="w-10 h-10 shrink-0"
+              />
+            }
+            title="Planning Center"
+            description={
+              currentUser.pco_connected ? 'Connected' : 'Not connected'
+            }
+          />
+          {currentUser.pco_connected && (
+            <Button
+              size="sm"
+              variant="open"
+              color="blue"
+              onClick={handleDisconnectPco}
+              loading={isDisconnectingPco}
+              className="shrink-0 -mr-2"
+            >
+              Disconnect
+            </Button>
           )}
-          Planning Center
-        </div>
-        {currentUser.pco_connected && (
-          <Button
-            size="xs"
-            variant="open"
-            color="blue"
-            onClick={handleDisconnectPco}
-            loading={isDisconnectingPco}
-          >
-            Disconnect
-          </Button>
-        )}
+        </SettingsRow>
       </div>
-    </div>
+    </section>
   );
 }

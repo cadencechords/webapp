@@ -90,7 +90,9 @@ export function monogram(name?: string | null) {
 }
 
 const SIZES = {
+  xxs: '18px',
   xs: '30px',
+  md: '40px',
   sm: '50px',
   base: '70px',
   lg: '90px',

@@ -1,8 +1,7 @@
 import { getHalfStepHigher, getHalfStepLower } from '../utils/SongUtils';
 
 import Button from './Button';
-import DetailTitle from './DetailTitle';
-import EditableData from './inputs/EditableData';
+import { DetailPlaceholder, DetailTile } from './SongDetailParts';
 import KeyTransposerDialog from './KeyTransposerDialog';
 import { useState } from 'react';
 import Icon from './Icon';
@@ -41,32 +40,37 @@ export default function TransposedKeyField({
   };
 
   return (
-    <div className="flex flex-row items-center mb-1">
-      <DetailTitle>Transposed:</DetailTitle>
-      <EditableData
-        value={transposedKey ? transposedKey : ''}
-        onChange={() => null}
-        placeholder="Click to transpose"
-        onClick={() => setShowKeyTransposerDialog(true)}
-        editable={editable}
-      />
-      <Button
-        size="sm"
-        variant="icon"
-        disabled={!originalKey}
-        onClick={handleTransposeUpHalfKey}
-        className="mr-1"
+    <>
+      <DetailTile
+        label="Transposed"
+        onClick={editable ? () => setShowKeyTransposerDialog(true) : undefined}
+        actions={
+          editable && (
+            <>
+              <Button
+                size="sm"
+                variant="icon"
+                name="Transpose down a half step"
+                disabled={!originalKey}
+                onClick={handleTransposeDownHalfKey}
+              >
+                <Icon name="remove" className="w-5 h-5" />
+              </Button>
+              <Button
+                size="sm"
+                variant="icon"
+                name="Transpose up a half step"
+                disabled={!originalKey}
+                onClick={handleTransposeUpHalfKey}
+              >
+                <Icon name="add" className="w-5 h-5" />
+              </Button>
+            </>
+          )
+        }
       >
-        <Icon name="add" className="w-4 h-4" />
-      </Button>
-      <Button
-        size="sm"
-        variant="icon"
-        disabled={!originalKey}
-        onClick={handleTransposeDownHalfKey}
-      >
-        <Icon name="remove" className="w-4 h-4" />
-      </Button>
+        {transposedKey || <DetailPlaceholder tile>None</DetailPlaceholder>}
+      </DetailTile>
       <KeyTransposerDialog
         open={showKeyTransposerDialog}
         onCloseDialog={() => setShowKeyTransposerDialog(false)}
@@ -75,6 +79,6 @@ export default function TransposedKeyField({
         onChange={handleKeyChange}
         content={content}
       />
-    </div>
+    </>
   );
 }

@@ -1,11 +1,17 @@
+import classNames from 'classnames';
+import Icon from './Icon';
+import { noteColorClasses } from './Note';
+
 type NoteColorOptionProps = {
-  /** The option's Tailwind background classes. */
+  /** A note color: blue, pink, green or yellow. */
   color: string;
   selected: boolean;
   /** Called with `color`. */
   onClick: (color: string) => void;
 };
 
+// A note color as a 40dp round swatch in a radio group, like an event's or a
+// folder's: the picked one shows a check and a ring 2px outside it.
 export default function NoteColorOption({
   color,
   selected,
@@ -13,15 +19,20 @@ export default function NoteColorOption({
 }: NoteColorOptionProps) {
   return (
     <button
-      className={
-        `outline-hidden focus:outline-hidden h-10 w-10 mr-6 shadow-xs ${color} ` +
-        `${
-          selected
-            ? 'ring-offset-2 ring-blue-300 ring-2 dark:ring-dark-gray-400 dark:ring-offset-transparent'
-            : ''
-        }`
-      }
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      aria-label={color}
       onClick={() => onClick(color)}
-    ></button>
+      className={classNames(
+        'flex-center w-10 h-10 rounded-full focus-ring transition-fast-effects',
+        noteColorClasses(color).side,
+        selected
+          ? 'outline-2 outline-offset-2 outline-solid outline-on-surface'
+          : 'hover:scale-110'
+      )}
+    >
+      {selected && <Icon name="check" className="w-5 h-5" />}
+    </button>
   );
 }

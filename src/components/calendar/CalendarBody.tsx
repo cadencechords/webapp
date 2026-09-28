@@ -10,56 +10,28 @@ type CalendarBodyProps = {
   onEventClick: (event: CalendarEvent) => void;
 };
 
+// The month as a grid with large corners: cells 1px apart on outline-variant,
+// which shows through as the lines. The fifth and sixth weeks show only when
+// the month reaches them.
 export default function CalendarBody({
   weeks,
   events,
   onEventClick,
 }: CalendarBodyProps) {
-  if (weeks) {
-    return (
-      <div className="border dark:border-dark-gray-600 rounded-md text-center">
+  if (!weeks) return null;
+
+  const shownWeeks = weeks.filter((week, index) => index < 4 || week[0]);
+
+  return (
+    <div className="flex flex-col gap-px overflow-hidden border border-outline-variant rounded-large bg-outline-variant">
+      {shownWeeks.map((week, index) => (
         <CalendarRow
-          days={weeks[0]}
-          className="border-b dark:border-dark-gray-600"
+          key={index}
+          days={week}
           events={events}
           onEventClick={onEventClick}
         />
-        <CalendarRow
-          days={weeks[1]}
-          className="border-b dark:border-dark-gray-600"
-          events={events}
-          onEventClick={onEventClick}
-        />
-        <CalendarRow
-          days={weeks[2]}
-          className="border-b dark:border-dark-gray-600"
-          events={events}
-          onEventClick={onEventClick}
-        />
-        <CalendarRow
-          days={weeks[3]}
-          className="border-b dark:border-dark-gray-600"
-          events={events}
-          onEventClick={onEventClick}
-        />
-        {weeks[4][0] && (
-          <CalendarRow
-            days={weeks[4]}
-            events={events}
-            onEventClick={onEventClick}
-          />
-        )}
-        {weeks[5][0] && (
-          <CalendarRow
-            days={weeks[5]}
-            className="border-t dark:border-dark-gray-600"
-            events={events}
-            onEventClick={onEventClick}
-          />
-        )}
-      </div>
-    );
-  } else {
-    return null;
-  }
+      ))}
+    </div>
+  );
 }

@@ -35,17 +35,16 @@ export default function SongFileUpload({
   return (
     <>
       <div className="flex justify-end mb-4">
+        {/* An M3E small tonal button (tertiary) with a leading icon. */}
         <Button
-          variant="open"
-          color="black"
-          className="flex-center"
+          variant="accent"
+          color="purple"
+          size="sm"
+          className="flex-center gap-2"
           // Non-null: the input is always rendered.
           onClick={() => inputRef.current!.click()}
         >
-          <Icon
-            name="note_add"
-            className="w-4 h-4 mr-1.5 text-blue-600 dark:text-dark-blue"
-          />
+          <Icon name="note_add" className="w-5 h-5" />
           Add file
         </Button>
         <input

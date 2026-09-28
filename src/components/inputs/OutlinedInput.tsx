@@ -31,6 +31,10 @@ type OutlinedInputProps = {
   supportingText?: ReactNode;
   /** An error message under the field; shows the field in the error color. */
   error?: ReactNode;
+  /** The input's autocomplete; off unless a form wants autofill. */
+  autoComplete?: string;
+  /** Inside the field at its end, e.g. an icon button. */
+  trailing?: ReactNode;
 };
 
 // Types whose empty value still shows a format (mm/dd/yyyy, --:--), so the
@@ -59,6 +63,8 @@ const OutlinedInput = forwardRef<HTMLInputElement, OutlinedInputProps>(
       id,
       supportingText,
       error,
+      autoComplete = 'off',
+      trailing,
     },
     ref
   ) => {
@@ -112,7 +118,8 @@ const OutlinedInput = forwardRef<HTMLInputElement, OutlinedInputProps>(
             <input
               id={inputId}
               className={classNames(
-                'peer w-full min-w-0 self-stretch px-4 py-3 bg-transparent appearance-none outline-hidden focus:outline-hidden',
+                'peer w-full min-w-0 self-stretch pl-4 py-3 bg-transparent appearance-none outline-hidden focus:outline-hidden',
+                trailing ? 'pr-12' : 'pr-4',
                 'text-body-large text-on-surface placeholder:text-on-surface-variant dark:scheme-dark',
                 hasError ? 'caret-error' : 'caret-primary'
               )}
@@ -121,10 +128,12 @@ const OutlinedInput = forwardRef<HTMLInputElement, OutlinedInputProps>(
               onFocus={handleFocus}
               type={type}
               onChange={handleChange}
-              autoComplete="off"
+              autoComplete={autoComplete}
               value={value}
               autoCapitalize="off"
-              pattern={type.toLowerCase() === 'date' ? 'd{4}-d{2}-d{2}' : ''}
+              pattern={
+                type.toLowerCase() === 'date' ? 'd{4}-d{2}-d{2}' : undefined
+              }
               onKeyUp={handleOnKeyUp}
               aria-invalid={hasError || undefined}
               aria-describedby={helpText ? `${inputId}-help` : undefined}
@@ -171,6 +180,11 @@ const OutlinedInput = forwardRef<HTMLInputElement, OutlinedInputProps>(
               >
                 {label}
               </label>
+            )}
+            {trailing && (
+              <div className="absolute inset-y-0 right-1 flex items-center">
+                {trailing}
+              </div>
             )}
           </div>
 

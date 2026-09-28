@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import Checkbox from './Checkbox';
+import Toggle from './Toggle';
 import {
   LIST_ITEM_INTERACTIVE,
   LIST_ITEM_TWO_LINE,
@@ -15,6 +15,8 @@ type PermissionProps = {
   onChange: (checked: boolean) => void;
 };
 
+/** A permission as a two-line switch row: the whole row toggles it, when the
+    current member can. */
 export default function Permission({
   name,
   description,
@@ -22,27 +24,25 @@ export default function Permission({
   checked,
   onChange,
 }: PermissionProps) {
-  function handleChange(checkedValue: boolean) {
-    if (checkable) {
-      onChange(checkedValue);
-    }
-  }
-
   return (
-    <div
+    <Toggle
+      enabled={checked}
+      onChange={checkedValue => checkable && onChange(checkedValue)}
+      disabled={!checkable}
       className={classNames(
         LIST_ITEM_TWO_LINE,
         checkable && LIST_ITEM_INTERACTIVE
       )}
-    >
-      <Checkbox checked={checked} onChange={handleChange} />
-      <div
-        onClick={() => handleChange(!checked)}
-        className={`${checkable && 'cursor-pointer'} w-full`}
-      >
-        <div>{name}</div>
-        <div className={LIST_SUPPORTING_TEXT}>{description}</div>
-      </div>
-    </div>
+      labelClassName={classNames(
+        'flex-1 min-w-0',
+        checkable && 'cursor-pointer'
+      )}
+      label={
+        <>
+          <div>{name}</div>
+          <div className={LIST_SUPPORTING_TEXT}>{description}</div>
+        </>
+      }
+    />
   );
 }

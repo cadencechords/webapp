@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import type { AxiosResponse } from 'axios';
 
 import AddCancelActions from './buttons/AddCancelActions';
-import FixedBottomMobile from './FixedBottomMobile';
 import GenreApi from '../api/GenreApi';
 import GenreOptions from './GenreOptions';
 import NoDataMessage from './NoDataMessage';
@@ -138,14 +137,12 @@ export default function AddGenreDialog({
           onToggle={handleGenreToggled}
         />
       )}
-      <FixedBottomMobile>
-        <AddCancelActions
-          addDisabled={genresToAdd?.length === 0}
-          onCancel={handleCloseDialog}
-          onAdd={handleSaveGenres}
-          loadingAdd={saving}
-        />
-      </FixedBottomMobile>
+      <AddCancelActions
+        addDisabled={genresToAdd?.length === 0}
+        onCancel={handleCloseDialog}
+        onAdd={handleSaveGenres}
+        loadingAdd={saving}
+      />
     </StyledDialog>
   );
 }

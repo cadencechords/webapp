@@ -1,6 +1,6 @@
-import BinderColor from './BinderColor';
 import Button from './Button';
-import { COLORS } from '../utils/BinderUtils';
+import DialogActions from './DialogActions';
+import ColorSwatches from './ColorSwatches';
 import StyledDialog from './StyledDialog';
 import { useState } from 'react';
 
@@ -30,23 +30,19 @@ export default function ColorDialog({
     <StyledDialog
       open={open}
       onCloseDialog={onCloseDialog}
-      title="Choose a color for your binder"
+      title="Choose a color for your folder"
       fullscreen={false}
     >
-      <div className="grid grid-cols-5 gap-6 mb-4">
-        {COLORS.map((color, index) => (
-          <BinderColor color={color} onClick={setCurrentColor} key={index} />
-        ))}
-      </div>
+      <ColorSwatches color={currentColor} onChange={setCurrentColor} />
 
-      <div>Current color:</div>
-      <BinderColor color={currentColor} block />
-
-      <div className="mt-4">
-        <Button variant="open" color="blue" full onClick={handleUpdate}>
+      <DialogActions>
+        <Button variant="open" color="gray" size="sm" onClick={onCloseDialog}>
+          Cancel
+        </Button>
+        <Button variant="open" size="sm" onClick={handleUpdate}>
           Confirm
         </Button>
-      </div>
+      </DialogActions>
     </StyledDialog>
   );
 }

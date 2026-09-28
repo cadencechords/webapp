@@ -548,7 +548,7 @@ describe('NoDataMessage', () => {
     expect(screen.queryByText('Ignored')).not.toBeInTheDocument();
   });
 
-  test('compact: one body-medium line beside a small cookie', () => {
+  test('compact: one body-medium line beside a plain icon, no cookie', () => {
     const { container } = render(
       <NoDataMessage compact>No binders found</NoDataMessage>
     );
@@ -557,9 +557,10 @@ describe('NoDataMessage', () => {
       'text-on-surface-variant'
     );
     expect(container.querySelector('.text-headline-small')).toBeNull();
+    expect(container.querySelector('svg.fill-primary-container')).toBeNull();
     expect(
-      container.querySelector('svg.fill-primary-container')?.parentElement
-    ).toHaveClass('w-10', 'h-10');
+      screen.getByText('No binders found').previousElementSibling
+    ).toHaveClass('w-6', 'h-6');
   });
 
   test('shows the loading indicator while loading', () => {

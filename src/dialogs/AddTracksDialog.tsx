@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import TracksApi from '../api/tracksApi';
 import AppleMusicSearchResults from '../components/AppleMusicSearchResults';
 import AddCancelActions from '../components/buttons/AddCancelActions';
-import WellInput from '../components/inputs/WellInput';
+import SearchField from '../components/inputs/SearchField';
 import SpotifySearchResults from '../components/SpotifySearchResults';
 import StyledDialog from '../components/StyledDialog';
 import TrackSourceButton from '../components/TrackSourceButton';
@@ -95,7 +95,6 @@ export default function AddTracksDialog({
 
   return (
     <StyledDialog
-      borderedTop={false}
       open={open}
       size="3xl"
       onCloseDialog={onCloseDialog}
@@ -121,7 +120,7 @@ export default function AddTracksDialog({
           onClick={setSelectedSource}
         />
       </div>
-      <WellInput
+      <SearchField
         onChange={setQuery}
         value={query}
         placeholder="Search for a song"
@@ -130,18 +129,16 @@ export default function AddTracksDialog({
       <div className="max-h-80 h-80 overflow-y-auto my-4">
         {getSearchResultsComponent()}
       </div>
-      <div className="pt-4">
-        <AddCancelActions
-          addDisabled={selectedTracks?.length === 0}
-          addText={`Add ${selectedTracks.length} ${pluralize(
-            'track',
-            selectedTracks.length
-          )}`}
-          onCancel={handleCancel}
-          loadingAdd={saving}
-          onAdd={handleSave}
-        />
-      </div>
+      <AddCancelActions
+        addDisabled={selectedTracks?.length === 0}
+        addText={`Add ${selectedTracks.length} ${pluralize(
+          'track',
+          selectedTracks.length
+        )}`}
+        onCancel={handleCancel}
+        loadingAdd={saving}
+        onAdd={handleSave}
+      />
     </StyledDialog>
   );
 }

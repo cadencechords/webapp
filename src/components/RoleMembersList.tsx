@@ -1,11 +1,12 @@
 import { ASSIGN_ROLES } from '../utils/constants';
 import AddMembersToRoleDialog from '../dialogs/AddMembersToRoleDialog';
 import Button from './Button';
+import Icon from './Icon';
 import NoDataMessage from './NoDataMessage';
+import SectionTitle from './SectionTitle';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
-import List from './List';
 import RoleMemberRow from './RoleMemberRow';
 import type { Membership, Role } from '../types';
 
@@ -15,6 +16,8 @@ type RoleMembersListProps = {
   members?: Membership[];
 };
 
+/** Who's in the role, as a segmented list, with a tonal Add members button
+    beside the title for members who can assign roles. */
 export default function RoleMembersList({
   role,
   members,
@@ -25,31 +28,38 @@ export default function RoleMembersList({
   const [showAddMembersDialog, setShowAddMembersDialog] = useState(false);
 
   return (
-    <div className="mb-4">
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        <div>Who&apos;s in this group </div>
+    <section>
+      <div className="flex items-center justify-between gap-4">
+        <SectionTitle title="Members" />
         {currentMember.can(ASSIGN_ROLES) && (
-          <Button variant="open" onClick={() => setShowAddMembersDialog(true)}>
+          <Button
+            variant="accent"
+            color="gray"
+            size="sm"
+            className="flex-center gap-2 shrink-0"
+            onClick={() => setShowAddMembersDialog(true)}
+          >
+            <Icon name="person_add" className="w-5 h-5" />
             Add members
           </Button>
         )}
       </div>
-      <List
-        data={members}
-        renderItem={member => (
-          <RoleMemberRow key={member.id} member={member} role={role} />
-        )}
-        ListEmpty={
-          <NoDataMessage compact>
-            There are no members in this role yet
-          </NoDataMessage>
-        }
-      />
+      {members && members.length > 0 ? (
+        <div className="list-segmented">
+          {members.map(member => (
+            <RoleMemberRow key={member.id} member={member} role={role} />
+          ))}
+        </div>
+      ) : (
+        <NoDataMessage compact>
+          There are no members in this role yet
+        </NoDataMessage>
+      )}
       <AddMembersToRoleDialog
         open={showAddMembersDialog}
         onCloseDialog={() => setShowAddMembersDialog(false)}
         membersInRole={members}
       />
-    </div>
+    </section>
   );
 }

@@ -113,29 +113,36 @@ export default function Note({
         onStop={handleDragStop}
         onStart={onDragStart}
       >
-        <div className="absolute z-20 flex w-56 shadow-md">
+        {/* A sticky note in its user color: the text on the container
+            tone, and a strip in the color itself holding the edit button
+            over the drag handle. */}
+        <div className="absolute z-20 flex w-56 overflow-hidden rounded-medium">
           <textarea
             className={
-              `w-full p-2 rounded-none resize-none h-full outline-hidden focus:outline-hidden text-base md:text-sm text-black dark:text-black` +
-              ` ${NOTE_COLORS[color].main}`
+              `w-full h-full p-3 bg-transparent resize-none outline-hidden focus:outline-hidden font-plain text-body-large md:text-body-medium` +
+              ` ${noteColorClasses(color).main}`
             }
             value={content}
             onChange={e => handleContentChange(e.target.value)}
             rows={numberOfLines < 2 ? 2 : numberOfLines}
             placeholder="Type here"
           ></textarea>
-          <div className={`w-9 ${NOTE_COLORS[color].side}`}>
+          <div className={`flex flex-col w-9 ${noteColorClasses(color).side}`}>
             <button
-              className="w-full py-1 outline-hidden focus:outline-hidden flex-center"
+              type="button"
+              aria-label="Edit note"
+              className="w-full py-1.5 flex-center state-layer-flat focus-ring"
               onClick={() => setShowDialog(true)}
             >
-              <Icon
-                name="settings"
-                className={`w-5 h-5 ${NOTE_COLORS[color].icon}`}
-              />
+              <Icon name="edit" className="w-5 h-5" />
             </button>
 
-            <div className="w-full h-full handle"></div>
+            <div
+              className="flex-1 w-full pt-1 flex justify-center cursor-grab handle"
+              title="Drag to move"
+            >
+              <Icon name="drag_indicator" className="w-5 h-5 opacity-70" />
+            </div>
           </div>
         </div>
       </Draggable>
@@ -151,28 +158,30 @@ export default function Note({
   );
 }
 
-type NoteColorClasses = { main: string; side: string; icon: string };
+type NoteColorClasses = { main: string; side: string };
 
-// Looked up by the note's color; one of these four in practice.
+/** A note color's classes: the text on its container tone, and the strip in
+    the color itself. One of these four in practice; blue without one. */
+export function noteColorClasses(color: string | undefined): NoteColorClasses {
+  return NOTE_COLORS[color || ''] ?? NOTE_COLORS.blue!;
+}
+
+// The note colors, as the user colors (src/utils/userColors.ts).
 const NOTE_COLORS: Record<string, NoteColorClasses> = {
   blue: {
-    main: 'bg-blue-200 dark:bg-blue-300 placeholder-blue-700',
-    side: 'bg-blue-300 dark:bg-blue-400',
-    icon: 'text-blue-900',
+    main: 'bg-user-blue-container text-on-user-blue-container placeholder:text-on-user-blue-container/60',
+    side: 'bg-user-blue text-on-user-blue',
   },
   green: {
-    main: 'bg-green-200 dark:bg-green-300 placeholder-green-700',
-    side: 'bg-green-300 dark:bg-green-400',
-    icon: 'text-green-900',
+    main: 'bg-user-green-container text-on-user-green-container placeholder:text-on-user-green-container/60',
+    side: 'bg-user-green text-on-user-green',
   },
   yellow: {
-    main: 'bg-yellow-200 dark:bg-yellow-200 placeholder-yellow-700',
-    side: 'bg-yellow-300',
-    icon: 'text-yellow-900',
+    main: 'bg-user-yellow-container text-on-user-yellow-container placeholder:text-on-user-yellow-container/60',
+    side: 'bg-user-yellow text-on-user-yellow',
   },
   pink: {
-    main: 'bg-pink-200 dark:bg-pink-300 placeholder-pink-700',
-    side: 'bg-pink-300 dark:bg-pink-400',
-    icon: 'text-pink-900',
+    main: 'bg-user-pink-container text-on-user-pink-container placeholder:text-on-user-pink-container/60',
+    side: 'bg-user-pink text-on-user-pink',
   },
 };

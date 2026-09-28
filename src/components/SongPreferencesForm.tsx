@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import Checkbox from './Checkbox';
-import FormatOptionLabel from './FormatOptionLabel';
+import { useState } from 'react';
+import Toggle from './Toggle';
+import { SettingsRowText } from './settings/SettingsRow';
+import { LIST_ITEM_INTERACTIVE, LIST_ITEM_TWO_LINE } from './lists/listItem';
 import type { FormatPreferences } from '../types';
 
 type SongPreferencesFormProps = {
@@ -8,6 +9,8 @@ type SongPreferencesFormProps = {
   onChange: (field: keyof FormatPreferences, value: boolean) => void;
 };
 
+// How songs look when they open, as a segmented list of switch rows: the
+// whole row toggles its switch.
 export default function SongPreferencesForm({
   songPreferences,
   onChange,
@@ -22,17 +25,20 @@ export default function SongPreferencesForm({
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-start gap-4">
-        <Checkbox
-          checked={!hide_chords}
-          id="hide-chords"
-          onChange={newValue => handleChange('hide_chords', !newValue)}
-        />
-        <FormatOptionLabel htmlFor="hide-chords">
-          Show chords in songs
-        </FormatOptionLabel>
-      </div>
+    <div className="list-segmented">
+      <Toggle
+        enabled={!hide_chords}
+        onChange={shown => handleChange('hide_chords', !shown)}
+        className={`${LIST_ITEM_TWO_LINE} ${LIST_ITEM_INTERACTIVE}`}
+        labelClassName="flex items-center flex-1 min-w-0 gap-4 cursor-pointer"
+        label={
+          <SettingsRowText
+            icon="music_note"
+            title="Show chords"
+            description="Chords above the lyrics when you open a song"
+          />
+        }
+      />
     </div>
   );
 }

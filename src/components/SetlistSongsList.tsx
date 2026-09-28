@@ -2,6 +2,7 @@ import { useHistory, useParams } from 'react-router';
 
 import AddSongsToSetDialog from './AddSongsToSetDialog';
 import Button from './Button';
+import Icon from './Icon';
 import DragAndDropTable from './DragAndDropTable';
 import { EDIT_SETLISTS } from '../utils/constants';
 import NoDataMessage from './NoDataMessage';
@@ -68,15 +69,19 @@ export default function SetlistSongsList({
 
   return (
     <>
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Songs
+      {/* The section heading, with an M3E small tonal (tertiary) button. */}
+      <div className="mt-8 mb-3 flex-between">
+        <h2 className="font-plain text-title-large text-on-surface">Songs</h2>
         {currentMember.can(EDIT_SETLISTS) && (
           <Button
-            size="xs"
-            variant="open"
+            variant="accent"
+            color="purple"
+            size="sm"
+            className="flex-center gap-2"
             onClick={() => setShowSongsDialog(true)}
           >
-            Add Songs
+            <Icon name="add" className="w-5 h-5" />
+            Add songs
           </Button>
         )}
       </div>

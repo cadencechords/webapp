@@ -42,7 +42,7 @@ export default function SetlistOptionsPopover({
         position="bottom-start"
         button={
           <Button variant="icon" color="gray" size="md">
-            <Icon name="more_vert" className="w-5 h-5" />
+            <Icon name="more_vert" className="w-6 h-6" />
           </Button>
         }
       >

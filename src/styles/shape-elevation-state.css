@@ -129,11 +129,20 @@
   }
 }
 
+/* Registered, so a transition can animate it (list-item-motion fades the
+   layer); it's set on the element itself, so it needn't inherit. */
+@property --state-layer-opacity {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
 /* state-layer-flat: the same overlay as state-layer, painted as a background
    image over the background color instead of a ::before. It doesn't set
    `position`, so it works on elements that are `fixed` or `absolute`. It
-   replaces any background image, and doesn't animate. data-dragging on the
-   element shows the dragged layer. */
+   replaces any background image, and animates only with a transition on
+   --state-layer-opacity (list-item-motion). data-dragging on the element
+   shows the dragged layer. */
 @utility state-layer-flat {
   --state-layer-opacity: 0;
 
@@ -179,4 +188,15 @@
       var(--md-sys-color-secondary);
     outline-offset: var(--md-sys-state-focus-indicator-outer-offset);
   }
+}
+
+/* A button whose menu or popover is open (aria-expanded) keeps its hover
+   state layer while it's open. */
+[aria-expanded='true'] .state-layer::before,
+[aria-expanded='true'].state-layer::before {
+  opacity: var(--md-sys-state-hover-state-layer-opacity);
+}
+[aria-expanded='true'] .state-layer-flat,
+[aria-expanded='true'].state-layer-flat {
+  --state-layer-opacity: var(--md-sys-state-hover-state-layer-opacity);
 }

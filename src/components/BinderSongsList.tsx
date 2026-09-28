@@ -1,7 +1,8 @@
 import Button from './Button';
+import Icon from './Icon';
 import { EDIT_BINDERS } from '../utils/constants';
 import NoDataMessage from './NoDataMessage';
-import SearchSongsDialog from './SearchSongsDialog';
+import AddSongsToFolderDialog from './AddSongsToFolderDialog';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import useDialog from '../hooks/useDialog';
@@ -10,7 +11,7 @@ import BinderSongRow from './BinderSongRow';
 import { useState } from 'react';
 import { useMemo } from 'react';
 import { useCallback } from 'react';
-import WellInput from './inputs/WellInput';
+import SearchField from './inputs/SearchField';
 import type { Binder } from '../types';
 
 type BinderSongsListProps = {
@@ -41,21 +42,31 @@ export default function BinderSongsList({ binder }: BinderSongsListProps) {
 
   return (
     <>
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Songs
+      {/* The section heading, with an M3E small tonal (tertiary) button. */}
+      <div className="mt-8 mb-3 flex-between">
+        <h2 className="font-plain text-title-large text-on-surface">Songs</h2>
         {currentMember.can(EDIT_BINDERS) && (
-          <Button size="xs" variant="open" onClick={showSearch}>
-            Add Songs
+          <Button
+            variant="accent"
+            color="purple"
+            size="sm"
+            className="flex-center gap-2"
+            onClick={showSearch}
+          >
+            <Icon name="add" className="w-5 h-5" />
+            Add songs
           </Button>
         )}
       </div>
 
-      <div className="mb-2 text-sm">{binder.songs?.length} total</div>
-      <WellInput
-        placeholder="Search songs in binder"
+      <div className="mb-2 font-plain text-body-medium text-on-surface-variant">
+        {binder.songs?.length} total
+      </div>
+      <SearchField
+        placeholder="Search songs in folder"
         value={query}
         onChange={setQuery}
-        className="mb-4 lg:text-sm"
+        className="mb-4"
       />
       <List
         ListEmpty={<NoDataMessage>No songs to show</NoDataMessage>}
@@ -71,10 +82,10 @@ export default function BinderSongsList({ binder }: BinderSongsListProps) {
         )}
       />
 
-      <SearchSongsDialog
+      <AddSongsToFolderDialog
         open={isSearchOpen}
         onCloseDialog={hideSearch}
-        // The dialog opens only from Add Songs, once the binder has loaded.
+        // The dialog opens only from Add songs, once the binder has loaded.
         binder={binder as Binder}
       />
     </>

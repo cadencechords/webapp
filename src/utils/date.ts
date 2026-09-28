@@ -51,7 +51,11 @@ export function getCalendarDates(
     });
   }
 
-  calendarWeeks[4] = padRight(calendarWeeks[4], month, year);
+  calendarWeeks[calendarWeekNumber] = padRight(
+    calendarWeeks[calendarWeekNumber],
+    month,
+    year
+  );
   return calendarWeeks;
 }
 

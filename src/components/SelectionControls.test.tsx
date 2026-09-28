@@ -70,14 +70,14 @@ test('Toggle switches with the keyboard and its thumb grows when on', () => {
   );
   const toggle = screen.getByRole('switch', { name: 'Dark theme' });
   expect(toggle).toHaveAttribute('aria-checked', 'false');
-  expect(toggle.firstElementChild).toHaveClass('w-4', 'bg-outline');
+  expect(toggle.firstElementChild).toHaveClass('w-3.5', 'bg-outline');
   toggle.focus();
   fireEvent.keyUp(toggle, { key: ' ' });
   expect(onChange).toHaveBeenCalledWith(true);
 
   rerender(<Toggle enabled onChange={onChange} label="Dark theme" />);
   expect(toggle).toHaveAttribute('aria-checked', 'true');
-  expect(toggle.firstElementChild).toHaveClass('w-6', 'bg-current');
+  expect(toggle.firstElementChild).toHaveClass('w-5', 'bg-current');
 });
 
 test('Range paints the track from where its value is, and shows the value', () => {

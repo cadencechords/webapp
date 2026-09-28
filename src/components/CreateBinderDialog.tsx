@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Button from './Button';
-import ColorsList from './ColorsList';
+import DialogActions from './DialogActions';
+import ColorSwatches from './ColorSwatches';
 import OutlinedInput from './inputs/OutlinedInput';
 import StyledDialog from './StyledDialog';
 import { useHistory } from 'react-router';
@@ -31,7 +32,7 @@ export default function CreateBinderDialog({
   const { run: createBinder, isLoading: isCreating } = useCreateBinder({
     onSuccess: createdBinder => {
       handleCloseDialog();
-      router.push(`/binders/${createdBinder.id}`, createdBinder);
+      router.push(`/folders/${createdBinder.id}`, createdBinder);
     },
   });
 
@@ -49,35 +50,42 @@ export default function CreateBinderDialog({
 
   return (
     <StyledDialog
-      title="Create a new binder"
+      title="Create a new folder"
       open={open}
       onCloseDialog={handleCloseDialog}
     >
-      <div className="pt-2 mb-4">
-        <div className="mb-2">Name</div>
-        <OutlinedInput
-          placeholder="ex: Hymns"
-          onChange={setName}
-          ref={inputRef}
-        />
+      {/* M3 outlined fields: the labels rest inside them and float into the
+          outline on focus or once typed in. */}
+      <div className="flex flex-col gap-4 pt-2 mb-6">
+        <OutlinedInput label="Name" onChange={setName} ref={inputRef} />
+        <OutlinedInput label="Description" onChange={setDescription} />
       </div>
 
-      <div className="mb-4">
-        <div className="mb-2">Description</div>
-        <OutlinedInput
-          placeholder="ex: Common hymns"
-          onChange={setDescription}
-        />
+      <div>
+        <div className="mb-2 text-body-medium text-on-surface-variant">
+          Color
+        </div>
+        <ColorSwatches onChange={setColor} color={color} />
       </div>
 
-      <div className="mb-6">
-        <div className="mb-2">Color</div>
-        <ColorsList onChange={setColor} color={color} />
-      </div>
-
-      <Button full loading={isCreating} onClick={handleCreateBinder}>
-        Create
-      </Button>
+      <DialogActions>
+        <Button
+          variant="open"
+          color="gray"
+          size="sm"
+          onClick={handleCloseDialog}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="open"
+          size="sm"
+          loading={isCreating}
+          onClick={handleCreateBinder}
+        >
+          Create
+        </Button>
+      </DialogActions>
     </StyledDialog>
   );
 }

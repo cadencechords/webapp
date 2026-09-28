@@ -1,4 +1,5 @@
 import Button from '../components/Button';
+import DialogActions from '../components/DialogActions';
 import OutlinedInput from '../components/inputs/OutlinedInput';
 import RolesApi, { type RoleUpdates } from '../api/rolesApi';
 import StyledDialog from '../components/StyledDialog';
@@ -43,7 +44,6 @@ export default function CreateRoleDialog({
   return (
     <StyledDialog
       open={open}
-      borderedTop={false}
       onCloseDialog={handleClose}
       title="New role"
       fullscreen={false}
@@ -66,19 +66,20 @@ export default function CreateRoleDialog({
         />
       </div>
 
-      <div className="flex-center gap-4">
-        <Button onClick={handleClose} variant="open" color="gray" full>
+      <DialogActions>
+        <Button onClick={handleClose} variant="open" color="gray" size="sm">
           Cancel
         </Button>
         <Button
+          variant="open"
+          size="sm"
           onClick={handleCreate}
-          full
           disabled={!role.name}
           loading={creating}
         >
           Create
         </Button>
-      </div>
+      </DialogActions>
     </StyledDialog>
   );
 }

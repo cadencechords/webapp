@@ -1,5 +1,6 @@
 import type { MouseEventHandler, ReactNode } from 'react';
 import Button from '../Button';
+import DialogActions from '../DialogActions';
 
 type AddCancelActionsProps = {
   onAdd?: MouseEventHandler<HTMLButtonElement>;
@@ -9,6 +10,8 @@ type AddCancelActionsProps = {
   addText?: ReactNode;
 };
 
+// A dialog's Cancel and Add: M3 text buttons in DialogActions, Cancel
+// neutral.
 export default function AddCancelActions({
   onAdd,
   onCancel,
@@ -17,23 +20,19 @@ export default function AddCancelActions({
   addText = 'Add',
 }: AddCancelActionsProps) {
   return (
-    <div className="flex-center gap-3">
-      <Button
-        className="grow w-1/2"
-        variant="open"
-        color="gray"
-        onClick={onCancel}
-      >
+    <DialogActions>
+      <Button variant="open" color="gray" size="sm" onClick={onCancel}>
         Cancel
       </Button>
       <Button
-        className="grow w-1/2"
+        variant="open"
+        size="sm"
         onClick={onAdd}
         loading={loadingAdd}
         disabled={addDisabled}
       >
         {addText}
       </Button>
-    </div>
+    </DialogActions>
   );
 }

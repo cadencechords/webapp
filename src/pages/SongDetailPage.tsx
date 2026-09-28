@@ -5,10 +5,9 @@ import { useHistory, useParams } from 'react-router';
 import AddGenreDialog from '../components/AddGenreDialog';
 import AddThemeDialog from '../components/AddThemeDialog';
 import ArtistField from '../components/ArtistField';
-import BinderColor from '../components/BinderColor';
 import BpmField from '../components/BpmField';
-import Button from '../components/Button';
-import DetailSection from '../components/DetailSection';
+import Button, { buttonClasses } from '../components/Button';
+import SongTags from '../components/SongTags';
 import { EDIT_SONGS } from '../utils/constants';
 import { Link } from 'react-router-dom';
 import MeterField from '../components/MeterField';
@@ -28,13 +27,14 @@ import LastScheduledField from '../components/LastScheduledField';
 import { isPast, sortDates } from '../utils/date';
 import dayjs from 'dayjs';
 import { useCurrentUser } from '../hooks/api/currentUser.hooks';
-import Select from '../components/Select';
+import DisplayedKeyMenu from '../components/DisplayedKeyMenu';
+import UnsavedChangesBar from '../components/UnsavedChangesBar';
 import { hasAnyKeysSet } from '../utils/SongUtils';
-import FormatOptionLabel from '../components/FormatOptionLabel';
 import { determineCapoNumber } from '../utils/capo';
 import Icon from '../components/Icon';
 import type { Song, Tag, Track, User } from '../types';
 import LoadingIndicator from '../components/feedback/LoadingIndicator';
+import { useRecordRecentlyViewed } from '../hooks/useRecentlyViewed';
 
 export default function SongDetailPage() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
@@ -55,6 +55,8 @@ export default function SongDetailPage() {
   useEffect(() => {
     document.title = song ? song.name : 'Songs';
   }, [song]);
+
+  useRecordRecentlyViewed('song', song);
 
   const router = useHistory();
   const { id } = useParams<{ id: string }>();
@@ -252,18 +254,6 @@ export default function SongDetailPage() {
     }
   };
 
-  const bindersTags = song?.binders?.map(binder => ({
-    id: binder.id,
-    name: (
-      <Link to={`/binders/${binder.id}`}>
-        <div className="flex items-center">
-          <BinderColor color={binder.color} size={3} />
-          <span className="ml-2">{binder.name}</span>
-        </div>
-      </Link>
-    ),
-  }));
-
   function findLatestSetlistDate() {
     const pastSetlists = song?.setlists?.filter(setlist =>
       isPast(setlist.scheduled_date)
@@ -309,6 +299,13 @@ export default function SongDetailPage() {
   return (
     <div className="grid grid-cols-4">
       <div className="col-span-4 lg:border-r lg:dark:border-dark-gray-700 lg:pr-4 lg:col-span-3">
+        {currentMember.can(EDIT_SONGS) && !isEmpty(pendingUpdates) && (
+          <UnsavedChangesBar
+            changes={pendingUpdates}
+            onSave={handleSaveChanges}
+            isSaving={saving}
+          />
+        )}
         <div className="mb-2 flex-between">
           <PageTitle
             title={song.name}
@@ -322,7 +319,7 @@ export default function SongDetailPage() {
             onClick={() => setShowPrintDialog(true)}
             className="hidden mr-2 sm:block"
           >
-            <Icon name="print" className="w-5 h-5" />
+            <Icon name="print" className="w-6 h-6" />
           </Button>
           <SongOptionsPopover onPrintClick={() => setShowPrintDialog(true)} />
         </div>
@@ -333,72 +330,75 @@ export default function SongDetailPage() {
           onCloseDialog={() => setShowPrintDialog(false)}
         />
         <div className="items-center justify-between hidden mb-3 sm:flex">
-          <span className="flex-center">
-            <Button variant="filled" size="xs" onClick={handlePresentSong}>
-              <div className="flex-center">
-                <Icon name="play_circle" filled className="w-4 h-4 mr-1.5" />
-                Perform
-              </div>
+          {/* M3E small buttons (40px), like the key menu beside them:
+              Perform filled, Edit tonal. */}
+          <span className="flex items-center gap-2">
+            <Button
+              variant="filled"
+              size="sm"
+              onClick={handlePresentSong}
+              className="flex-center gap-2"
+            >
+              <Icon name="play_arrow" filled className="w-5 h-5" />
+              Perform
             </Button>
             {currentMember.can(EDIT_SONGS) && (
-              <Link to={{ pathname: `/songs/${id}/edit`, state: song }}>
-                <Button variant="accent" size="xs" className="mx-3">
-                  <div className="flex-center">
-                    <Icon name="edit" filled className="w-4 h-4 mr-1.5" />
-                    Edit
-                  </div>
-                </Button>
+              <Link
+                to={{ pathname: `/songs/${id}/edit`, state: song }}
+                className={buttonClasses({
+                  variant: 'accent',
+                  color: 'gray',
+                  size: 'sm',
+                  className: 'flex-center gap-2',
+                })}
+              >
+                <Icon name="edit" filled className="w-5 h-5" />
+                Edit
               </Link>
             )}
           </span>
           {hasAnyKeysSet(song) && (
-            <div className="flex-center">
-              <FormatOptionLabel htmlFor="song-key-type">
-                Displayed key:{' '}
-              </FormatOptionLabel>
-              <div className="w-40">
-                <Select
-                  id="song-key-type"
-                  options={getKeyTypeOptions()}
-                  selected={keyType}
-                  onChange={handleKeyTypeChange}
-                />
-              </div>
-            </div>
+            <DisplayedKeyMenu
+              options={getKeyTypeOptions()}
+              selected={keyType}
+              onChange={handleKeyTypeChange}
+            />
           )}
         </div>
-        <div className="flex justify-between gap-3 mx-auto mb-4 sm:hidden">
-          {currentMember.can(EDIT_SONGS) && (
-            <Link
-              to={{ pathname: `/songs/${id}/edit`, state: song }}
-              className="w-full"
-            >
-              <Button
-                variant="accent"
-                size="medium"
-                className="gap-3 flex-center"
-                full
-              >
-                <Icon name="edit" filled className="w-5 h-5" />
-                Edit
-              </Button>
-            </Link>
-          )}
+        {/* M3E medium buttons (56px), side by side: Perform filled, Edit
+            tonal. */}
+        <div className="flex gap-2 mb-4 sm:hidden">
           <Button
-            variant="accent"
-            size="medium"
-            className="gap-3 flex-center"
+            variant="filled"
+            size="md"
+            className="flex-center gap-2"
             onClick={handlePresentSong}
             full
           >
-            <Icon name="play_circle" filled className="w-5 h-5" />
+            <Icon name="play_arrow" filled className="w-6 h-6" />
             Perform
           </Button>
+          {currentMember.can(EDIT_SONGS) && (
+            <Link
+              to={{ pathname: `/songs/${id}/edit`, state: song }}
+              className={buttonClasses({
+                variant: 'accent',
+                color: 'gray',
+                size: 'md',
+                full: true,
+                className: 'flex-center gap-2',
+              })}
+            >
+              <Icon name="edit" filled className="w-6 h-6" />
+              Edit
+            </Link>
+          )}
         </div>
         <SongPreview song={song} />
       </div>
-      <div className="col-span-4 pl-2 lg:col-span-1 lg:pl-5">
-        <div className="py-6 mt-1 border-b dark:border-dark-gray-700">
+      {/* The details, a tile each. */}
+      <div className="col-span-4 py-6 lg:col-span-1 lg:pl-5">
+        <div className="flex flex-col gap-2">
           <SongKeyField
             songKey={song.original_key}
             onChange={(editedKey: string) =>
@@ -415,13 +415,6 @@ export default function SongDetailPage() {
             content={song.content}
             editable={currentMember.can(EDIT_SONGS)}
           />
-          <ArtistField
-            artist={song.artist}
-            onChange={(editedArtist: string) =>
-              handleUpdate('artist', editedArtist)
-            }
-            editable={currentMember.can(EDIT_SONGS)}
-          />
           <BpmField
             bpm={song.bpm}
             onChange={(editedBpm: string) => handleUpdate('bpm', editedBpm)}
@@ -434,33 +427,32 @@ export default function SongDetailPage() {
             }
             editable={currentMember.can(EDIT_SONGS)}
           />
+          <ArtistField
+            artist={song.artist}
+            onChange={(editedArtist: string) =>
+              handleUpdate('artist', editedArtist)
+            }
+            editable={currentMember.can(EDIT_SONGS)}
+          />
           <LastScheduledField latestSetlist={findLatestSetlistDate()} />
         </div>
-        <div className="py-6">
-          <DetailSection title="Binders" items={bindersTags} />
-          <DetailSection
-            title="Genres"
-            items={song.genres}
-            onAdd={() => setShowGenreDialog(true)}
-            onDelete={handleRemoveGenre}
-            canEdit={currentMember.can(EDIT_SONGS)}
-          />
-          <DetailSection
-            title="Themes"
-            items={song.themes}
-            onAdd={() => setShowAddThemeDialog(true)}
-            onDelete={handleRemoveTheme}
-            canEdit={currentMember.can(EDIT_SONGS)}
-          />
-        </div>
       </div>
-      {currentMember.can(EDIT_SONGS) && !isEmpty(pendingUpdates) && (
-        <SaveButton onSave={handleSaveChanges} isSaving={saving} />
-      )}
       <SongTabs
         song={song}
         onTrackDeleted={handleTrackDeleted}
         onTracksAdded={handleTracksAdded}
+        tags={
+          <SongTags
+            binders={song.binders}
+            genres={song.genres}
+            themes={song.themes}
+            canEdit={currentMember.can(EDIT_SONGS)}
+            onAddGenre={() => setShowGenreDialog(true)}
+            onAddTheme={() => setShowAddThemeDialog(true)}
+            onRemoveGenre={handleRemoveGenre}
+            onRemoveTheme={handleRemoveTheme}
+          />
+        }
       />
       <AddGenreDialog
         open={showAddGenreDialog}
@@ -475,33 +467,5 @@ export default function SongDetailPage() {
         onThemesAdded={handleThemesAdded}
       />
     </div>
-  );
-}
-
-type SaveButtonProps = {
-  isSaving: boolean;
-  onSave: () => void;
-};
-
-function SaveButton({ isSaving, onSave }: SaveButtonProps) {
-  return (
-    <>
-      <Button
-        className="fixed left-0 right-0 z-30 md:hidden bottom-14"
-        style={{ borderRadius: 0 }}
-        loading={isSaving}
-        onClick={onSave}
-      >
-        Save Changes
-      </Button>
-      <Button
-        className="fixed hidden w-36 bottom-8 right-8 md:inline-block whitespace-nowrap"
-        loading={isSaving}
-        onClick={onSave}
-        size="sm"
-      >
-        Save Changes
-      </Button>
-    </>
   );
 }

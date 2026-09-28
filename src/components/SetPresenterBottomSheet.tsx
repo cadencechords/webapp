@@ -28,7 +28,7 @@ export default function SetPresenterBottomSheet({
   }
 
   return (
-    <BottomSheet open={open} onClose={onClose} className="p-2">
+    <BottomSheet open={open} onClose={onClose}>
       {song && (
         <>
           <AutoscrollSheet
@@ -36,7 +36,8 @@ export default function SetPresenterBottomSheet({
             onSongChange={onSongUpdate}
             className={isHidden('autoscroll')}
             bottomSheetOpen={open}
-            shortcutClasses="bottom-16 right-4"
+            // Above the floating set toolbar.
+            shortcutClasses="bottom-24 right-4"
           />
           <SessionsSheet className={isHidden('sessions')} onClose={onClose} />
         </>

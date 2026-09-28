@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import SetlistApi from '../../api/SetlistApi';
 import { reportError } from '../../utils/error';
+import { getTeamId } from '../../utils/AuthUtils';
+import { removeRecentlyViewed } from '../../utils/recentlyViewed';
 import type { Id } from '../../types';
 
 export default function useDeleteSetlist({
@@ -17,7 +19,8 @@ export default function useDeleteSetlist({
     mutationFn: async id => {
       await SetlistApi.deleteOne(id);
     },
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
+      removeRecentlyViewed(getTeamId(), 'set', id);
       queryClient.invalidateQueries(['setlists']);
       onSuccess?.();
     },

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import StyledPopover from './StyledPopover';
 import { RgbaStringColorPicker } from 'react-colorful';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
@@ -8,10 +8,15 @@ import classNames from 'classnames';
 
 type StrokeWidthPopoverProps = {
   button: ReactNode;
+  /** Classes for the trigger, which is the button (see StyledPopover). */
+  buttonClassName?: string;
+  buttonProps?: ComponentProps<typeof StyledPopover>['buttonProps'];
 };
 
 export default function StrokeWidthPopover({
   button,
+  buttonClassName,
+  buttonProps,
 }: StrokeWidthPopoverProps) {
   const {
     color: defaultColor,
@@ -35,7 +40,12 @@ export default function StrokeWidthPopover({
   }, [debounced, setAnnotationColor]);
 
   return (
-    <StyledPopover button={button} position="top">
+    <StyledPopover
+      button={button}
+      position="top"
+      buttonClassName={buttonClassName}
+      buttonProps={buttonProps}
+    >
       <div className="p-3 stroke-width">
         <div className="flex gap-4 mb-3">
           {WIDTHS.map(width => (

@@ -1,5 +1,7 @@
+import classNames from 'classnames';
 import Button from './Button';
 import Checkbox from './Checkbox';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
 import type { OnsongFile } from '../types';
 
 type OnsongsSongsListProps = {
@@ -11,6 +13,8 @@ type OnsongsSongsListProps = {
   onUnselectAll: () => void;
 };
 
+// The backup's songs: Select all and Clear text buttons, then a segmented
+// list of checkable rows (a click anywhere on a row toggles it).
 export default function OnsongsSongsList({
   songs,
   selectedSongs,
@@ -18,46 +22,45 @@ export default function OnsongsSongsList({
   onSelectAll,
   onUnselectAll,
 }: OnsongsSongsListProps) {
-  const isSelected = (songInQuestion: OnsongFile) => {
-    return selectedSongs.includes(songInQuestion);
-  };
+  if (!songs) return null;
 
-  if (songs) {
-    return (
-      <>
-        <div className="mt-4 font-semibold text-lg">
-          {songs?.length} songs in backup
-        </div>
-        <div className="flex-between">
-          <div className="my-4 flex gap-4">
-            <Button size="xs" variant="open" onClick={onSelectAll}>
-              Check all
-            </Button>
-            <Button size="xs" variant="open" onClick={onUnselectAll}>
-              Uncheck all
-            </Button>
-          </div>
-          {selectedSongs?.length} selected
-        </div>
-        <div className="max-h-96 overflow-y-auto mb-8 bg-gray-50 dark:bg-dark-gray-800 shadow-inner">
-          {songs.map(song => (
-            <div
-              className="flex items-center cursor-pointer p-2 border-b dark:border-dark-gray-600 last:border-0 select-none"
+  return (
+    <>
+      <div className="flex items-center justify-end gap-1 mb-2">
+        <Button size="sm" variant="open" onClick={onSelectAll}>
+          Select all
+        </Button>
+        <Button
+          size="sm"
+          variant="open"
+          onClick={onUnselectAll}
+          disabled={selectedSongs.length === 0}
+        >
+          Clear
+        </Button>
+      </div>
+      <div className="list-segmented">
+        {songs.map(song => {
+          const selected = selectedSongs.includes(song);
+          return (
+            <label
               key={song.id}
-              onClick={() => onToggleSong(!isSelected(song), song)}
+              className={classNames(
+                LIST_ITEM,
+                LIST_ITEM_INTERACTIVE,
+                'cursor-pointer select-none'
+              )}
             >
               <Checkbox
-                className="mr-2"
-                onChange={() => {}}
-                checked={isSelected(song)}
+                checked={selected}
+                onChange={checked => onToggleSong(checked, song)}
+                standAlone={false}
               />
-              {song.name}
-            </div>
-          ))}
-        </div>
-      </>
-    );
-  } else {
-    return null;
-  }
+              <span className="min-w-0 truncate">{song.name}</span>
+            </label>
+          );
+        })}
+      </div>
+    </>
+  );
 }

@@ -1,4 +1,11 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import type { ComponentProps, ReactElement } from 'react';
 import { renderWithProvider } from '../utils/test';
@@ -16,6 +23,7 @@ import FilesInput from './FilesInput';
 import KeyChooserDialog from './KeyChooserDialog';
 import KeyTransposerDialog from './KeyTransposerDialog';
 import KeyOptionsPopover from './KeyOptionsPopover';
+import KeyOptionsSheet from './KeyOptionsSheet';
 import TransposeKeySheet from './TransposeKeySheet';
 import SongFilesTab from './SongFilesTab';
 import SongDetailPage from '../pages/SongDetailPage';
@@ -233,12 +241,7 @@ test('KeyChooserDialog builds the key from the note and the quality', () => {
   expect(onChange).toHaveBeenCalledWith('C');
 });
 
-function tonesTransposed() {
-  // The semitone count sits beside the arrow icon.
-  return screen.getByText('Original').parentElement!.nextElementSibling;
-}
-
-test('KeyTransposerDialog counts the semitones and can clear the transposed key', () => {
+test('KeyTransposerDialog counts the semitones and can remove the transposition', () => {
   const onChange =
     vi.fn<ComponentProps<typeof KeyTransposerDialog>['onChange']>();
   render(
@@ -251,13 +254,15 @@ test('KeyTransposerDialog counts the semitones and can clear the transposed key'
     />
   );
 
-  expect(tonesTransposed()).toHaveTextContent(/^\+2$/);
+  expect(screen.getByText('+2')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Bb' }));
-  expect(tonesTransposed()).toHaveTextContent(/^-2$/);
+  expect(screen.getByText('-2')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Bb' })).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
 
-  const transposed = screen.getByText('Transposed')
-    .parentElement as HTMLElement;
-  fireEvent.click(within(transposed).getAllByRole('button')[0]);
+  fireEvent.click(screen.getByRole('button', { name: 'Remove transposition' }));
   expect(screen.queryByText('Transposed')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
   expect(onChange).toHaveBeenCalledWith(null);
@@ -274,7 +279,31 @@ test('KeyOptionsPopover shows the capo key and its fret', () => {
   } as Song;
   render(<KeyOptionsPopover song={song} onUpdateSong={() => {}} />);
 
-  expect(screen.getAllByRole('button')[0]).toHaveTextContent(/^G2$/);
+  const button = screen.getByRole('button', { name: 'Key G, capo 2' });
+  expect(button).toHaveTextContent(/^GCapo 2$/);
+  expect(button).toHaveClass('bg-primary', 'h-10');
+});
+
+test('KeyOptionsPopover stays open to show the chosen sheet', async () => {
+  const song = {
+    id: 1,
+    name: 'Song',
+    format: {},
+    original_key: 'G',
+    transposed_key: 'A',
+  } as Song;
+  renderWithProvider(<KeyOptionsPopover song={song} onUpdateSong={() => {}} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Key G' }));
+  const [transpose] =
+    document.querySelectorAll<HTMLElement>('[data-menu-item]');
+  fireEvent.click(transpose);
+  // Still open, on the transpose sheet, not closed by choosing the item.
+  await waitFor(() => expect(transpose.closest('.hidden')).not.toBeNull());
+  expect(transpose).toBeInTheDocument();
+  // The transpose sheet's title is the one "Transpose" still showing.
+  expect(
+    screen.getAllByText('Transpose').filter(title => !title.closest('.hidden'))
+  ).toHaveLength(1);
 });
 
 test('TransposeKeySheet steps the key a half step, passing an unset key through', () => {
@@ -375,24 +404,71 @@ test('SongDetailPage shows the key options and saves an edited name', async () =
   const title = await screen.findByDisplayValue('Holy');
   expect(document.title).toBe('Holy');
   expect(SongApi.getOneById).toHaveBeenCalledWith('5');
-  const select = screen.getByLabelText(/Displayed key/) as HTMLSelectElement;
-  expect([...select.options].map(option => option.textContent)).toEqual([
+  // Edit (desktop and mobile) is a link styled as a button, not a button
+  // inside a link.
+  const editLinks = screen.getAllByRole('link', { name: 'Edit' });
+  expect(editLinks).toHaveLength(2);
+  for (const link of editLinks) {
+    expect(link).toHaveAttribute('href', '/songs/5/edit');
+    expect(link).toHaveClass('bg-surface-container-highest', 'shape-morph');
+    expect(link.querySelector('button')).toBeNull();
+  }
+  const keyMenu = screen.getByRole('button', { name: /Key/ });
+  expect(keyMenu).toHaveTextContent('Capo 2 (G)');
+  fireEvent.click(keyMenu);
+  const items = document.querySelectorAll('[data-menu-item]');
+  expect([...items].map(item => item.textContent)).toEqual([
     'Original (A)',
     'Capo 2 (G)',
     'Hide chords',
   ]);
-  expect(select.value).toBe('capo');
+  expect(items[1]).toHaveClass('bg-tertiary-container');
+  fireEvent.click(items[0]);
+  expect(keyMenu).toHaveTextContent('Original (A)');
 
-  expect(screen.queryByText('Save Changes')).not.toBeInTheDocument();
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
   fireEvent.change(title, { target: { value: 'Holy Holy' } });
   expect(screen.getByDisplayValue('Holy Holy')).toBeInTheDocument();
+  // The unsaved changes bar sits above the title.
+  const bar = screen.getByRole('status');
+  expect(bar).toHaveTextContent('You have unsaved changes');
+  expect(
+    bar.compareDocumentPosition(screen.getByDisplayValue('Holy Holy'))
+  ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   await act(async () => {
-    fireEvent.click(screen.getAllByText('Save Changes')[0]);
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
   });
   expect(SongApi.updateOneById).toHaveBeenCalledWith('5', {
     name: 'Holy Holy',
   });
-  expect(screen.queryByText('Save Changes')).not.toBeInTheDocument();
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+});
+
+test('SongDetailPage hides the unsaved changes bar until the next edit', async () => {
+  vi.mocked(SongApi.getOneById).mockResolvedValue({
+    data: structuredClone(detailSong),
+  } as Awaited<ReturnType<typeof SongApi.getOneById>>);
+  vi.mocked(UserApi.getCurrentUser).mockResolvedValue({
+    data: { id: 1, email: 'me@example.com', format_preferences: {} } as User,
+  } as Awaited<ReturnType<typeof UserApi.getCurrentUser>>);
+  vi.mocked(SongApi.updateOneById).mockClear();
+
+  renderWithProvider(atSong(<SongDetailPage />), {
+    preloadedState: member(['Edit songs']),
+  });
+  const title = await screen.findByDisplayValue('Holy');
+  fireEvent.change(title, { target: { value: 'Holy Holy' } });
+
+  fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+  // Hidden, but the edit stays and nothing is saved.
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  expect(screen.getByDisplayValue('Holy Holy')).toBeInTheDocument();
+  expect(SongApi.updateOneById).not.toHaveBeenCalled();
+
+  fireEvent.change(screen.getByDisplayValue('Holy Holy'), {
+    target: { value: 'Holy Holy Holy' },
+  });
+  expect(screen.getByRole('status')).toBeInTheDocument();
 });
 
 test('SongsIndexPage filters the songs once the query is three letters', async () => {
@@ -428,4 +504,34 @@ test('SongsIndexPage filters the songs once the query is three letters', async (
   expect(screen.getAllByRole('link').map(link => link.textContent)).toEqual([
     'Amazing Grace G',
   ]);
+});
+
+test('KeyOptionsSheet selects the key shown, like the song page’s key menu', () => {
+  const song = {
+    id: 1,
+    name: 'Song',
+    format: {},
+    original_key: 'G',
+    transposed_key: 'A',
+    show_transposed: true,
+    capo: { id: 2, capo_key: 'G' },
+  } as Song;
+  const { rerender } = render(
+    <KeyOptionsSheet song={song} onChangeSheet={() => {}} />
+  );
+  const [transpose, capo] = document.querySelectorAll('[data-menu-item]');
+  expect(transpose).toHaveClass('bg-tertiary-container');
+  expect(transpose.querySelectorAll('svg')).toHaveLength(1);
+  expect(capo).not.toHaveClass('bg-tertiary-container');
+  expect(capo.querySelector('svg')).toBeNull();
+
+  rerender(
+    <KeyOptionsSheet
+      song={{ ...song, show_transposed: false, show_capo: true }}
+      onChangeSheet={() => {}}
+    />
+  );
+  expect(transpose).not.toHaveClass('bg-tertiary-container');
+  expect(capo).toHaveClass('bg-tertiary-container');
+  expect(capo.querySelectorAll('svg')).toHaveLength(1);
 });

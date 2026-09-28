@@ -2,7 +2,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import axios from 'axios';
 import type { ComponentProps } from 'react';
 import Button from './Button';
-import DetailSection from './DetailSection';
 import EventColorOption from './EventColorOption';
 import MarkingOptionsPopover from './MarkingOptionsPopover';
 import ShapeMarking from './ShapeMarking';
@@ -63,18 +62,6 @@ test("an accent Button gets its size's padding", () => {
   );
   expect(screen.getByRole('button')).toHaveClass('px-6', 'h-14');
   expect(screen.getByRole('button').className).not.toContain('undefined');
-});
-
-test('DetailSection shows its empty message without items', () => {
-  const { rerender } = render(<DetailSection title="Genres" />);
-  expect(screen.getByText('No genres to show')).toBeInTheDocument();
-
-  rerender(<DetailSection title="Genres" items={[]} />);
-  expect(screen.getByText('No genres to show')).toBeInTheDocument();
-
-  rerender(<DetailSection title="Genres" items={[{ id: 1, name: 'Rock' }]} />);
-  expect(screen.queryByText('No genres to show')).toBeNull();
-  expect(screen.getByText('Rock')).toBeInTheDocument();
 });
 
 test('MarkingOptionsPopover closes on a click outside it', () => {

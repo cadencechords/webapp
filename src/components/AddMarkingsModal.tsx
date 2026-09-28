@@ -67,7 +67,7 @@ export default function AddMarkingsModal({
 
 function DynamicOptionsPanel({ onAddMarking }: OptionsPanelProps) {
   return (
-    <Tab.Panel className="grid grid-cols-3 sm:grid-cols-4">
+    <Tab.Panel className="grid grid-cols-3 gap-1 sm:grid-cols-4 outline-hidden">
       {dynamicOptions.map(option => (
         <button
           className={classNames(
@@ -100,7 +100,7 @@ function DynamicOptionsPanel({ onAddMarking }: OptionsPanelProps) {
 
 function RoadmapOptionsPanel({ onAddMarking }: OptionsPanelProps) {
   return (
-    <Tab.Panel className="grid grid-cols-3 sm:grid-cols-4">
+    <Tab.Panel className="grid grid-cols-3 gap-1 sm:grid-cols-4 outline-hidden">
       {roadmapOptions.map(option => (
         <button
           className={classNames(defaultOptionClasses, 'text-lg')}
@@ -118,7 +118,7 @@ function RoadmapOptionsPanel({ onAddMarking }: OptionsPanelProps) {
 
 function SingerOptionsPanel({ onAddMarking }: OptionsPanelProps) {
   return (
-    <Tab.Panel className="grid grid-cols-3 sm:grid-cols-4">
+    <Tab.Panel className="grid grid-cols-3 gap-1 sm:grid-cols-4 outline-hidden">
       {singerOptions.map(option => (
         <button
           className={classNames(defaultOptionClasses, 'text-lg')}
@@ -136,14 +136,14 @@ function SingerOptionsPanel({ onAddMarking }: OptionsPanelProps) {
 
 function ShapeOptionsPanel({ onAddMarking }: OptionsPanelProps) {
   return (
-    <Tab.Panel className="grid grid-cols-3 sm:grid-cols-4">
+    <Tab.Panel className="grid grid-cols-3 gap-1 sm:grid-cols-4 outline-hidden">
       {Object.entries(shapeOptions).map(([name, ShapeSvg]) => (
         <button
           className={classNames(defaultOptionClasses, 'text-lg flex-center')}
           key={name}
           onClick={() => onAddMarking({ content: name, markingType: 'shapes' })}
         >
-          <ShapeSvg className="w-12 h-12 text-black dark:text-white" />
+          <ShapeSvg className="w-12 h-12 text-on-surface" />
         </button>
       ))}
       {symbolOptions.map(option => (
@@ -207,5 +207,7 @@ const singerOptions = ['UNISON', 'HARMONY', 'SOLO', 'LEAD SINGER', 'EVERYONE'];
 
 const symbolOptions = ['{', '}', '[', ']', '(', ')'];
 
+// Each option is a tile: on-surface on the sheet, with a state layer and
+// corners that morph while pressed.
 const defaultOptionClasses =
-  'h-24 overflow-hidden text-lg whitespace-nowrap text-ellipsis dark:hover:bg-dark-gray-600 hover:bg-gray-100 rounded-lg focus:bg-gray-100 dark:focus:bg-dark-gray-600 p-2';
+  'h-24 p-2 overflow-hidden whitespace-nowrap text-ellipsis rounded-large [--shape-morph-to:28px] text-on-surface state-layer-flat focus-ring shape-morph';

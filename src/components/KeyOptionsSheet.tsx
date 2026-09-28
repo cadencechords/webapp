@@ -17,7 +17,11 @@ export default function KeyOptionsSheet({
   className,
   song,
 }: KeyOptionsSheetProps) {
-  const iconClasses = 'h-5 w-5 text-primary';
+  // The same selected state as the song page's key menu: a tonal pill and a
+  // check, in the pill's content color.
+  const transposed = !!(song.show_transposed && song.transposed_key);
+  const capo = !!(song.capo?.capo_key && song.show_capo);
+  const check = <Icon name="check" className="w-5 h-5" />;
   const currentNonCapoKey =
     (song.show_transposed && song.transposed_key) || song.original_key;
 
@@ -25,15 +29,18 @@ export default function KeyOptionsSheet({
     <MenuList className={classNames(className)}>
       <MenuItem
         onClick={() => onChangeSheet('transpose')}
-        trailing={
-          song.show_transposed &&
-          song.transposed_key && <Icon name="check" className={iconClasses} />
-        }
+        selected={transposed}
+        trailing={transposed && check}
       >
         <span className="flex items-center">
           Transpose
           {song.transposed_key && (
-            <span className="ml-1 text-body-small text-on-surface-variant">
+            <span
+              className={classNames(
+                'ml-1 text-body-small',
+                !transposed && 'text-on-surface-variant'
+              )}
+            >
               ({song.transposed_key})
             </span>
           )}
@@ -41,10 +48,8 @@ export default function KeyOptionsSheet({
       </MenuItem>
       <MenuItem
         onClick={() => onChangeSheet('capo')}
-        trailing={
-          song.capo?.capo_key &&
-          song.show_capo && <Icon name="check" className={iconClasses} />
-        }
+        selected={capo}
+        trailing={capo && check}
       >
         <span className="flex items-center">
           Capo
@@ -56,7 +61,12 @@ export default function KeyOptionsSheet({
                 currentNonCapoKey as string,
                 song.capo.capo_key
               )}
-              <span className="ml-2 text-body-small text-on-surface-variant">
+              <span
+                className={classNames(
+                  'ml-2 text-body-small',
+                  !capo && 'text-on-surface-variant'
+                )}
+              >
                 ({song.capo.capo_key})
               </span>
             </span>

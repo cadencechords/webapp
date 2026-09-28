@@ -8,7 +8,8 @@ import StyledPopover from './StyledPopover';
 import { reportError } from '../utils/error';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentMember } from '../store/authSlice';
+import { selectCurrentMember, selectTeamId } from '../store/authSlice';
+import { removeRecentlyViewed } from '../utils/recentlyViewed';
 import { DELETE_BINDERS } from '../utils/constants';
 import Icon from './Icon';
 
@@ -21,6 +22,7 @@ export default function BinderOptionsPopover({
 }: BinderOptionsPopoverProps) {
   // Non-null: kept as before, this throws if the membership hasn't loaded.
   const currentMember = useSelector(selectCurrentMember)!;
+  const teamId = useSelector(selectTeamId);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useHistory();
   // The route's path declares :id, which useParams can't see.
@@ -28,14 +30,15 @@ export default function BinderOptionsPopover({
 
   const button = (
     <Button variant="icon" color="gray" size="md">
-      <Icon name="more_vert" className="w-5 h-5" />
+      <Icon name="more_vert" className="w-6 h-6" />
     </Button>
   );
 
   const handleDelete = async () => {
     try {
       await BinderApi.deleteOneById(id);
-      router.push('/binders');
+      removeRecentlyViewed(teamId, 'folder', id);
+      router.push('/folders');
     } catch (error) {
       reportError(error);
     }
@@ -49,7 +52,7 @@ export default function BinderOptionsPopover({
         onCancel={() => setShowDeleteDialog(false)}
         onConfirm={handleDelete}
       >
-        Deleting this binder will NOT delete any songs in the binder. Deleting
+        Deleting this folder will NOT delete any songs in the folder. Deleting
         is irreversible.
       </ConfirmDeleteDialog>
       <StyledPopover button={button} position="bottom-start">

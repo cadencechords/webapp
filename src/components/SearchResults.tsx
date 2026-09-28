@@ -1,7 +1,9 @@
-import KeyBadge from './KeyBadge';
+import type { ReactNode } from 'react';
+import Highlighter from 'react-highlight-words';
 import { Link } from 'react-router-dom';
-import NoDataMessage from './NoDataMessage';
-import SearchResult from './SearchResult';
+import KeyBadge from './KeyBadge';
+import { Cookie } from './NoDataMessage';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import type { Binder, Setlist, Song } from '../types';
 
@@ -10,88 +12,132 @@ type SearchResultsProps = {
   results?: { binders: Binder[]; songs: Song[]; setlists: Setlist[] } | null;
   onCloseDialog?: () => void;
   searchQuery: string;
+  /** Spacing for the prompt shown before the first search. */
+  emptyClassName?: string;
 };
 
+type Result = { id: number | string; name: string; to: string; key?: string };
+
+// Search results as an M3 sectioned list: a subheader per kind (folders,
+// songs, sets) over a segmented group of one-line items, with the query
+// picked out in each name.
 export default function SearchResults({
   results,
   onCloseDialog,
   searchQuery,
+  emptyClassName = 'mt-10',
 }: SearchResultsProps) {
-  if (results) {
-    const binders = results.binders?.map(binder => (
-      <Link to={`/binders/${binder.id}`} key={binder.id}>
-        <SearchResult
-          onClick={onCloseDialog}
-          query={searchQuery}
-          name={binder.name}
-        />
-      </Link>
-    ));
-    const songs = results.songs?.map(song => (
-      <Link
-        to={`/songs/${song.id}`}
-        className="border-b last:border-0"
-        key={song.id}
-      >
-        <SearchResult
-          onClick={onCloseDialog}
-          query={searchQuery}
-          name={song.name}
-        >
-          {hasAnyKeysSet(song) && (
-            <KeyBadge songKey={song.transposed_key || song.original_key} />
-          )}
-        </SearchResult>
-      </Link>
-    ));
-    const setlists = results.setlists?.map(setlist => (
-      <Link
-        to={`/sets/${setlist.id}`}
-        className="border-b last:border-0"
-        key={setlist.id}
-      >
-        <SearchResult
-          onClick={onCloseDialog}
-          query={searchQuery}
-          name={setlist.name}
-        />
-      </Link>
-    ));
+  if (!results) {
     return (
-      <div className="px-2 mt-4 overflow-y-auto max-h-96">
-        <section className="mb-4">
-          <h3 className="mb-1 font-semibold dark:text-dark-gray-100">
-            Binders
-          </h3>
-          {binders.length === 0 ? (
-            <NoDataMessage compact>No binders found</NoDataMessage>
-          ) : (
-            binders
-          )}
-        </section>
-        <section className="mb-4">
-          <h3 className="mb-1 font-semibold dark:text-dark-gray-100">Songs</h3>
-          {songs.length === 0 ? (
-            <NoDataMessage compact>No songs found</NoDataMessage>
-          ) : (
-            songs
-          )}
-        </section>
-        <section>
-          <h3 className="mb-1 font-semibold dark:text-dark-gray-100">Sets</h3>
-          {setlists.length === 0 ? (
-            <NoDataMessage compact>No sets found</NoDataMessage>
-          ) : (
-            setlists
-          )}
-        </section>
-      </div>
-    );
-  } else {
-    return (
-      <div className="px-4 mt-10 text-center text-gray-600 dark:text-dark-gray-200">
+      <div
+        className={`flex flex-col items-center gap-3 px-4 text-center text-body-medium text-on-surface-variant ${emptyClassName}`}
+      >
+        <Cookie
+          filled
+          className="w-16 h-16"
+          iconClassName="w-8 h-8"
+          icon="search"
+        />
         Try typing in the search bar to find something in your library
       </div>
     );
   }
+
+  return (
+    <div className="flex flex-col gap-6 mt-6">
+      <ResultSection
+        title="Folders"
+        empty="No folders found"
+        query={searchQuery}
+        onSelect={onCloseDialog}
+        results={results.binders.map(binder => ({
+          id: binder.id,
+          name: binder.name,
+          to: `/folders/${binder.id}`,
+        }))}
+      />
+      <ResultSection
+        title="Songs"
+        empty="No songs found"
+        query={searchQuery}
+        onSelect={onCloseDialog}
+        results={results.songs.map(song => ({
+          id: song.id,
+          name: song.name,
+          to: `/songs/${song.id}`,
+          key: hasAnyKeysSet(song)
+            ? song.transposed_key || song.original_key
+            : undefined,
+        }))}
+      />
+      <ResultSection
+        title="Sets"
+        empty="No sets found"
+        query={searchQuery}
+        onSelect={onCloseDialog}
+        results={results.setlists.map(setlist => ({
+          id: setlist.id,
+          name: setlist.name,
+          to: `/sets/${setlist.id}`,
+        }))}
+      />
+    </div>
+  );
+}
+
+function ResultSection({
+  title,
+  empty,
+  query,
+  onSelect,
+  results,
+}: {
+  title: string;
+  empty: string;
+  query: string;
+  onSelect?: () => void;
+  results: Result[];
+}) {
+  return (
+    <section aria-label={title}>
+      <h3 className="px-4 pb-2 font-plain text-title-small text-on-surface">
+        {title}
+      </h3>
+      {results.length === 0 ? (
+        <NoResults>{empty}</NoResults>
+      ) : (
+        <div className="list-segmented">
+          {results.map(result => (
+            <Link
+              key={result.id}
+              to={result.to}
+              onClick={onSelect}
+              className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE}`}
+            >
+              {/* Grouped so the row's gap doesn't widen the space before the key. */}
+              <span className="flex items-center min-w-0">
+                <span className="min-w-0 truncate">
+                  <Highlighter
+                    searchWords={[query]}
+                    textToHighlight={result.name}
+                    highlightClassName="bg-transparent text-primary font-semibold"
+                  />
+                </span>
+                <KeyBadge songKey={result.key} />
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+// A section with no matches: one plain line, no icon.
+function NoResults({ children }: { children: ReactNode }) {
+  return (
+    <p className="px-4 py-2 text-body-medium text-on-surface-variant">
+      {children}
+    </p>
+  );
 }

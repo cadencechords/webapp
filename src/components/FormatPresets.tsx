@@ -32,11 +32,13 @@ export default function FormatPresets({
   if (formatPresets) {
     return (
       <div className="w-full">
-        <div className="text-title-large font-plain text-on-surface section-border">
-          Format presets
+        <div className="flex items-center justify-between gap-4 mb-2">
+          <h2 className="text-title-large font-plain text-on-surface">
+            Format presets
+          </h2>
           {selectedFormatPreset?.id !== defaultFormatPreset?.id && (
             <Button
-              size="xs"
+              size="sm"
               loading={isSaving}
               onClick={() => setDefaultFormat(selectedFormatPreset)}
             >
@@ -47,7 +49,7 @@ export default function FormatPresets({
         {formatPresets.length === 0 ? (
           <NoDataMessage compact type="format presets" />
         ) : (
-          <div className="flex gap-4 p-4 overflow-x-auto flex-nowrap">
+          <div className="flex gap-4 py-2 overflow-x-auto flex-nowrap">
             {formatPresets.map(formatPreset => (
               <FormatPreview
                 key={formatPreset.id}

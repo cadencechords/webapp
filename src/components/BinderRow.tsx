@@ -12,7 +12,7 @@ import type { Binder } from '../types';
 export default function BinderRow({ binder }: { binder: Binder }) {
   return (
     <Link
-      to={{ pathname: `/binders/${binder.id}`, state: binder }}
+      to={{ pathname: `/folders/${binder.id}`, state: binder }}
       className={`${LIST_ITEM_TWO_LINE} ${LIST_ITEM_INTERACTIVE}`}
     >
       <BinderColor color={binder.color} />

@@ -14,8 +14,11 @@ export default function SongRow({ song }: SongRowProps) {
       to={{ pathname: `/songs/${song.id}`, state: song }}
       className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE}`}
     >
-      <div className="min-w-0 truncate">{song.name} </div>
-      <KeyBadge songKey={song.transposed_key || song.original_key} />
+      {/* Grouped so the row's gap doesn't widen the space before the key. */}
+      <span className="flex items-center min-w-0">
+        <span className="min-w-0 truncate">{song.name} </span>
+        <KeyBadge songKey={song.transposed_key || song.original_key} />
+      </span>
     </Link>
   );
 }

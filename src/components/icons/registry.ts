@@ -22,27 +22,34 @@ import ChevronLeft from '@material-symbols/svg-400/rounded/chevron_left.svg?reac
 import ChevronRight from '@material-symbols/svg-400/rounded/chevron_right.svg?react';
 import Close from '@material-symbols/svg-400/rounded/close.svg?react';
 import CloseFilled from '@material-symbols/svg-400/rounded/close-fill.svg?react';
+import ContentCopy from '@material-symbols/svg-400/rounded/content_copy.svg?react';
 import CreditCard from '@material-symbols/svg-400/rounded/credit_card.svg?react';
 import CreditCardFilled from '@material-symbols/svg-400/rounded/credit_card-fill.svg?react';
-import Dashboard from '@material-symbols/svg-400/rounded/dashboard.svg?react';
 import DashboardFilled from '@material-symbols/svg-400/rounded/dashboard-fill.svg?react';
 import Delete from '@material-symbols/svg-400/rounded/delete.svg?react';
 import Description from '@material-symbols/svg-400/rounded/description.svg?react';
 import DesktopWindows from '@material-symbols/svg-400/rounded/desktop_windows.svg?react';
 import Download from '@material-symbols/svg-400/rounded/download.svg?react';
+import DragIndicator from '@material-symbols/svg-400/rounded/drag_indicator.svg?react';
+import Draw from '@material-symbols/svg-400/rounded/draw.svg?react';
 import Edit from '@material-symbols/svg-400/rounded/edit.svg?react';
 import EditFilled from '@material-symbols/svg-400/rounded/edit-fill.svg?react';
+import EditNote from '@material-symbols/svg-400/rounded/edit_note.svg?react';
 import ErrorIcon from '@material-symbols/svg-400/rounded/error.svg?react';
 import GroupFilled from '@material-symbols/svg-400/rounded/group-fill.svg?react';
 import Image from '@material-symbols/svg-400/rounded/image.svg?react';
 import Inbox from '@material-symbols/svg-400/rounded/inbox.svg?react';
 import Info from '@material-symbols/svg-400/rounded/info.svg?react';
+import InkEraser from '@material-symbols/svg-400/rounded/ink_eraser.svg?react';
+import InkHighlighter from '@material-symbols/svg-400/rounded/ink_highlighter.svg?react';
 import KeyboardArrowDown from '@material-symbols/svg-400/rounded/keyboard_arrow_down.svg?react';
 import KeyboardArrowDownFilled from '@material-symbols/svg-400/rounded/keyboard_arrow_down-fill.svg?react';
+import Link from '@material-symbols/svg-400/rounded/link.svg?react';
 import Lock from '@material-symbols/svg-400/rounded/lock.svg?react';
 import LockFilled from '@material-symbols/svg-400/rounded/lock-fill.svg?react';
 import Logout from '@material-symbols/svg-400/rounded/logout.svg?react';
 import Mail from '@material-symbols/svg-400/rounded/mail.svg?react';
+import ManageAccounts from '@material-symbols/svg-400/rounded/manage_accounts.svg?react';
 import MenuFilled from '@material-symbols/svg-400/rounded/menu-fill.svg?react';
 import Mobile from '@material-symbols/svg-400/rounded/mobile.svg?react';
 import MoodFilled from '@material-symbols/svg-400/rounded/mood-fill.svg?react';
@@ -56,25 +63,36 @@ import NotesFilled from '@material-symbols/svg-400/rounded/notes-fill.svg?react'
 import Notifications from '@material-symbols/svg-400/rounded/notifications.svg?react';
 import NotificationsFilled from '@material-symbols/svg-400/rounded/notifications-fill.svg?react';
 import Palette from '@material-symbols/svg-400/rounded/palette.svg?react';
+import PauseFilled from '@material-symbols/svg-400/rounded/pause-fill.svg?react';
 import PauseCircleFilled from '@material-symbols/svg-400/rounded/pause_circle-fill.svg?react';
-import Person from '@material-symbols/svg-400/rounded/person.svg?react';
 import PersonFilled from '@material-symbols/svg-400/rounded/person-fill.svg?react';
+import PersonAdd from '@material-symbols/svg-400/rounded/person_add.svg?react';
 import PersonRemove from '@material-symbols/svg-400/rounded/person_remove.svg?react';
+import PhotoCamera from '@material-symbols/svg-400/rounded/photo_camera.svg?react';
 import PlayArrow from '@material-symbols/svg-400/rounded/play_arrow.svg?react';
+import PlayArrowFilled from '@material-symbols/svg-400/rounded/play_arrow-fill.svg?react';
 import PlayCircleFilled from '@material-symbols/svg-400/rounded/play_circle-fill.svg?react';
 import Print from '@material-symbols/svg-400/rounded/print.svg?react';
-import QueueMusic from '@material-symbols/svg-400/rounded/queue_music.svg?react';
 import QueueMusicFilled from '@material-symbols/svg-400/rounded/queue_music-fill.svg?react';
 import Remove from '@material-symbols/svg-400/rounded/remove.svg?react';
+import Route from '@material-symbols/svg-400/rounded/route.svg?react';
 import Search from '@material-symbols/svg-400/rounded/search.svg?react';
 import SearchFilled from '@material-symbols/svg-400/rounded/search-fill.svg?react';
 import Settings from '@material-symbols/svg-400/rounded/settings.svg?react';
+import StickyNote2 from '@material-symbols/svg-400/rounded/sticky_note_2.svg?react';
+import StopFilled from '@material-symbols/svg-400/rounded/stop-fill.svg?react';
 import StopCircleFilled from '@material-symbols/svg-400/rounded/stop_circle-fill.svg?react';
+import Stylus from '@material-symbols/svg-400/rounded/stylus.svg?react';
 import SwapHoriz from '@material-symbols/svg-400/rounded/swap_horiz.svg?react';
 import SwapHorizFilled from '@material-symbols/svg-400/rounded/swap_horiz-fill.svg?react';
+import SwipeVertical from '@material-symbols/svg-400/rounded/swipe_vertical.svg?react';
 import Tune from '@material-symbols/svg-400/rounded/tune.svg?react';
 import UnfoldMoreFilled from '@material-symbols/svg-400/rounded/unfold_more-fill.svg?react';
+import UploadFile from '@material-symbols/svg-400/rounded/upload_file.svg?react';
+import Visibility from '@material-symbols/svg-400/rounded/visibility.svg?react';
+import VisibilityOff from '@material-symbols/svg-400/rounded/visibility_off.svg?react';
 import Warning from '@material-symbols/svg-400/rounded/warning.svg?react';
+import Work from '@material-symbols/svg-400/rounded/work.svg?react';
 
 // '<name>' is the outlined icon, '<name>-fill' the filled one.
 export const ICONS = {
@@ -98,27 +116,34 @@ export const ICONS = {
   chevron_right: ChevronRight,
   close: Close,
   'close-fill': CloseFilled,
+  content_copy: ContentCopy,
   credit_card: CreditCard,
   'credit_card-fill': CreditCardFilled,
-  dashboard: Dashboard,
   'dashboard-fill': DashboardFilled,
   delete: Delete,
   description: Description,
   desktop_windows: DesktopWindows,
   download: Download,
+  drag_indicator: DragIndicator,
+  draw: Draw,
   edit: Edit,
   'edit-fill': EditFilled,
+  edit_note: EditNote,
   error: ErrorIcon,
   'group-fill': GroupFilled,
   image: Image,
   inbox: Inbox,
   info: Info,
+  ink_eraser: InkEraser,
+  ink_highlighter: InkHighlighter,
   keyboard_arrow_down: KeyboardArrowDown,
   'keyboard_arrow_down-fill': KeyboardArrowDownFilled,
+  link: Link,
   lock: Lock,
   'lock-fill': LockFilled,
   logout: Logout,
   mail: Mail,
+  manage_accounts: ManageAccounts,
   'menu-fill': MenuFilled,
   mobile: Mobile,
   'mood-fill': MoodFilled,
@@ -132,25 +157,36 @@ export const ICONS = {
   notifications: Notifications,
   'notifications-fill': NotificationsFilled,
   palette: Palette,
+  'pause-fill': PauseFilled,
   'pause_circle-fill': PauseCircleFilled,
-  person: Person,
   'person-fill': PersonFilled,
+  person_add: PersonAdd,
   person_remove: PersonRemove,
+  photo_camera: PhotoCamera,
   play_arrow: PlayArrow,
+  'play_arrow-fill': PlayArrowFilled,
   'play_circle-fill': PlayCircleFilled,
   print: Print,
-  queue_music: QueueMusic,
   'queue_music-fill': QueueMusicFilled,
   remove: Remove,
+  route: Route,
   search: Search,
   'search-fill': SearchFilled,
   settings: Settings,
+  sticky_note_2: StickyNote2,
+  'stop-fill': StopFilled,
   'stop_circle-fill': StopCircleFilled,
+  stylus: Stylus,
   swap_horiz: SwapHoriz,
   'swap_horiz-fill': SwapHorizFilled,
+  swipe_vertical: SwipeVertical,
   tune: Tune,
   'unfold_more-fill': UnfoldMoreFilled,
+  upload_file: UploadFile,
+  visibility: Visibility,
+  visibility_off: VisibilityOff,
   warning: Warning,
+  work: Work,
 };
 
 /** A registered icon, e.g. 'delete' or 'check_circle-fill'. */

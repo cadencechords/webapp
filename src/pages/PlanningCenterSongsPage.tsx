@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 import usePlanningCenterSongs from '../hooks/api/usePlanningCenterSongs';
 import Alert from '../components/Alert';
 import PageLoading from '../components/PageLoading';
-import WellInput from '../components/inputs/WellInput';
+import SearchField from '../components/inputs/SearchField';
 import { Fragment, useState, type ReactNode } from 'react';
 import MobileMenuButton from '../components/buttons/MobileMenuButton';
 import Checkbox from '../components/Checkbox';
@@ -83,11 +83,11 @@ export default function PlanningCenterSongsPage() {
           </Button>
         )}
       </div>
-      <WellInput
+      <SearchField
         placeholder="Search your songs"
         value={query}
         onChange={setQuery}
-        className="mb-4 lg:text-sm"
+        className="mb-4"
       />
       {songPages && (
         <div>
@@ -165,7 +165,7 @@ function SaveButton({ children, loading, onClick }: SaveButtonProps) {
   return (
     <>
       <Button
-        className="fixed left-0 right-0 md:hidden bottom-14"
+        className="fixed left-0 right-0 md:hidden bottom-[calc(4rem+env(safe-area-inset-bottom))]"
         style={{ borderRadius: 0 }}
         loading={loading}
         onClick={onClick}

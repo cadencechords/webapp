@@ -1,6 +1,9 @@
 import BinderApi from '../api/BinderApi';
 import Button from './Button';
-import Checkbox from './Checkbox';
+import BinderIcon from '../icons/BinderIcon';
+import ImportStepHeader from './ImportStepHeader';
+import classNames from 'classnames';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
 import PageLoading from './PageLoading';
 import { reportError } from '../utils/error';
 import { useEffect, type ReactNode } from 'react';
@@ -48,47 +51,70 @@ export default function OnsongChooseBinderForSongs({
   let content: ReactNode = null;
 
   if (loadingBinders) {
-    content = <PageLoading>Hang on while we pull up your binders</PageLoading>;
-  } else if (!loadingBinders && binders?.length === 0) {
-    content =
-      "Looks like you don't have any binders created yet. You can just hit continue.";
+    content = <PageLoading>Opening your folders</PageLoading>;
+  } else if (binders?.length === 0) {
+    content = (
+      <p className="px-4 py-3 text-body-medium text-on-surface-variant">
+        Looks like you don&apos;t have any folders yet. You can just continue.
+      </p>
+    );
   } else {
     content = (
-      <div className="flex flex-col gap-3 my-4">
-        {binders?.map(binder => (
-          <div
-            key={binder.id}
-            className={`rounded-md cursor-pointer flex items-center w-full text-left focus:outline-hidden outline-hidden py-2 px-3 ${
-              selectedBinder === binder ? 'ring-inset ring-2 ring-blue-400' : ''
-            }`}
-            onClick={() => onSelectBinder(binder)}
-          >
-            <Checkbox onChange={() => {}} checked={selectedBinder === binder} />
-            <span className="ml-4 flex items-center">{binder.name}</span>
-          </div>
-        ))}
+      <div role="radiogroup" className="list-segmented">
+        {binders?.map(binder => {
+          const selected = selectedBinder === binder;
+          return (
+            // A folder row: primary-container with a check when chosen;
+            // choosing it again unchooses it.
+            <button
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              key={binder.id}
+              onClick={() => onSelectBinder(binder)}
+              className={classNames(
+                LIST_ITEM,
+                LIST_ITEM_INTERACTIVE,
+                'w-full text-left',
+                selected && 'bg-primary-container text-on-primary-container'
+              )}
+            >
+              <BinderIcon
+                className={classNames(
+                  'w-6 h-6 shrink-0',
+                  !selected && 'text-on-surface-variant'
+                )}
+              />
+              <span className="flex-1 min-w-0 truncate">{binder.name}</span>
+              {selected && (
+                <Icon name="check_circle" filled className="w-6 h-6 shrink-0" />
+              )}
+            </button>
+          );
+        })}
       </div>
     );
   }
 
+  // Step 3: an optional folder for the songs.
   return (
     <>
-      <p className="text-lg">
-        Choose a binder you&apos;d like to add these songs to, or continue to
-        the next page to import the songs without adding them to a binder.
-      </p>
+      <ImportStepHeader
+        step="Step 3 of 4"
+        title="Choose a folder"
+        subtitle="Optional: add the songs to a folder, or continue without one."
+        onBack={onBackClick}
+        backLabel="Back to choosing songs"
+      />
       {content}
-      <div className="flex-between">
-        <Button variant="open" color="gray" bold onClick={onBackClick}>
-          <div className="flex-center">
-            <Icon name="arrow_back" className="w-5 h-5 mr-2" /> Back
-          </div>
-        </Button>
-        <Button onClick={onNextClick}>
-          <div className="flex-center">
-            Review
-            <Icon name="arrow_forward" className="w-5 h-5 ml-2" />
-          </div>
+      <div className="flex justify-end mt-6">
+        <Button
+          size="md"
+          className="w-full gap-2 flex-center sm:w-auto"
+          onClick={onNextClick}
+        >
+          Review
+          <Icon name="arrow_forward" className="w-5 h-5" />
         </Button>
       </div>
     </>

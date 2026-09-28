@@ -5,7 +5,8 @@ import { selectCurrentUser } from '../store/authSlice';
 import { reportError } from '../utils/error';
 import { hasName } from '../utils/model';
 import Button from './Button';
-import Card from './Card';
+import classNames from 'classnames';
+import { LIST_ITEM_TWO_LINE, LIST_SUPPORTING_TEXT } from './lists/listItem';
 import ProfilePicture from './ProfilePicture';
 import type { Session } from '../types';
 import { getNameOrEmail } from '../utils/model';
@@ -21,6 +22,10 @@ type SessionCardProps = {
   onJoin: (session: Session) => void;
   /** Only called when isActive. */
   onLeave?: (session: Session) => void;
+  /** Makes the whole row tappable, apart from its button. */
+  onClick?: () => void;
+  /** The row's accessible name when it has onClick. */
+  clickLabel?: string;
   className?: string;
 };
 
@@ -30,6 +35,8 @@ export default function SessionCard({
   onSessionEnded,
   onJoin,
   onLeave,
+  onClick,
+  clickLabel,
   className,
 }: SessionCardProps) {
   // Non-null: rendered under SecuredRoutes, which renders only once the
@@ -52,15 +59,15 @@ export default function SessionCard({
   }
 
   function renderButton() {
+    // M3E small buttons: tonal error to end or leave, filled to join.
     if (isUserSessionHost) {
       return (
         <Button
           variant="accent"
           color="red"
-          size="xs"
+          size="sm"
           loading={ending}
           onClick={handleEndSession}
-          full={true}
         >
           End session
         </Button>
@@ -70,50 +77,67 @@ export default function SessionCard({
         <Button
           variant="accent"
           color="red"
-          size="xs"
+          size="sm"
           loading={ending}
           // Passed wherever isActive is (SessionsSheet).
           onClick={() => onLeave!(session)}
-          full={true}
         >
           Leave session
         </Button>
       );
     } else {
       return (
-        <Button
-          variant="accent"
-          size="xs"
-          full={true}
-          onClick={() => onJoin(session)}
-        >
+        <Button variant="filled" size="sm" onClick={() => onJoin(session)}>
           Join session
         </Button>
       );
     }
   }
 
+  // An M3E two-line list item, for a list-segmented container: the host's
+  // avatar and name, and the action at the end. With onClick, a button
+  // stretched over the row takes the tap, under the action button.
   return (
-    <Card className={className}>
-      <div className="flex mb-8">
-        <div className="pt-1">
-          <ProfilePicture
-            url={session.user?.image_url}
-            name={session.user && getNameOrEmail(session.user)}
-            size="xs"
-          />
+    <div
+      className={classNames(
+        LIST_ITEM_TWO_LINE,
+        onClick && 'relative state-layer-flat list-item-motion',
+        className
+      )}
+    >
+      <ProfilePicture
+        // The session's host can come without their picture: when it's you,
+        // use your own.
+        url={
+          (isUserSessionHost && currentUser.image_url) ||
+          session.user?.image_url
+        }
+        name={session.user && getNameOrEmail(session.user)}
+        size="md"
+      />
+      <div className="flex-1 min-w-0">
+        <div className="truncate">
+          {hasName(session.user)
+            ? `${session.user.first_name} ${session.user.last_name}`
+            : session.user.email}
         </div>
-        <div className="ml-4 text-left">
-          <div className="font-semibold">
-            {hasName(session.user)
-              ? `${session.user.first_name} ${session.user.last_name}`
-              : session.user.email}
-          </div>
-          <div className="text-body-medium text-on-surface-variant">Host</div>
+        <div className={LIST_SUPPORTING_TEXT}>
+          {isUserSessionHost
+            ? 'Host · You'
+            : isActive
+              ? 'Host · Following'
+              : 'Host'}
         </div>
       </div>
-
-      {renderButton()}
-    </Card>
+      {onClick && (
+        <button
+          type="button"
+          aria-label={clickLabel}
+          onClick={onClick}
+          className="absolute inset-0 rounded-[inherit] outline-none focus-visible:outline-3 focus-visible:outline-solid focus-visible:outline-secondary focus-visible:-outline-offset-3"
+        />
+      )}
+      <div className="relative shrink-0">{renderButton()}</div>
+    </div>
   );
 }

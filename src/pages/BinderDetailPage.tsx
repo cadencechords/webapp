@@ -2,11 +2,11 @@ import { useHistory, useLocation, useParams } from 'react-router';
 import BinderColor from '../components/BinderColor';
 import BinderOptionsPopover from '../components/BinderOptionsPopover';
 import BinderSongsList from '../components/BinderSongsList';
-import Button from '../components/Button';
 import ColorDialog from '../components/ColorDialog';
 import { EDIT_BINDERS } from '../utils/constants';
 import EditableData from '../components/inputs/EditableData';
 import PageTitle from '../components/PageTitle';
+import UnsavedChangesBar from '../components/UnsavedChangesBar';
 import { isEmpty } from '../utils/ObjectUtils';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ import useUpdateBinder from '../hooks/api/useUpdateBinder';
 import Alert from '../components/Alert';
 import useDialog from '../hooks/useDialog';
 import type { Binder } from '../types';
+import { useRecordRecentlyViewed } from '../hooks/useRecentlyViewed';
 
 export default function BinderDetailPage() {
   const [isColorPickerOpen, showColorPicker, hideColorPicker] = useDialog();
@@ -32,6 +33,8 @@ export default function BinderDetailPage() {
     isError,
   } = useBinder(id, { placeholderData: state });
 
+  useRecordRecentlyViewed('folder', originalBinder);
+
   const {
     updates,
     updatedValue: binder,
@@ -45,7 +48,7 @@ export default function BinderDetailPage() {
   const { isLoading: isSaving, run: updateBinder } = useUpdateBinder({
     onSuccess: () => {
       clearUpdates();
-      router.replace(`/binders/${id}`, null);
+      router.replace(`/folders/${id}`, null);
     },
   });
 
@@ -55,11 +58,18 @@ export default function BinderDetailPage() {
 
   if (isError)
     return (
-      <Alert>There was an issue loading this binder. Please try again.</Alert>
+      <Alert>There was an issue loading this folder. Please try again.</Alert>
     );
 
   return (
     <div className="mb-10">
+      {currentMember.can(EDIT_BINDERS) && !isEmpty(updates) && (
+        <UnsavedChangesBar
+          changes={updates}
+          onSave={() => updateBinder({ id, updates })}
+          isSaving={isSaving}
+        />
+      )}
       <div className="flex-center">
         <span className="mr-2 cursor-pointer">
           <BinderColor
@@ -87,7 +97,7 @@ export default function BinderDetailPage() {
       </div>
       <div className="mb-6">
         <EditableData
-          placeholder="Add a description for this binder"
+          placeholder="Add a description for this folder"
           value={binder.description || ''}
           onChange={editedDescription =>
             onChange('description', editedDescription)
@@ -96,43 +106,6 @@ export default function BinderDetailPage() {
         />
       </div>
       <BinderSongsList binder={binder} />
-
-      {currentMember.can(EDIT_BINDERS) && !isEmpty(updates) && (
-        <div className="fixed shadow-md bottom-8 right-8">
-          <SaveButton
-            onSave={() => updateBinder({ id, updates })}
-            isSaving={isSaving}
-          />
-        </div>
-      )}
     </div>
-  );
-}
-
-type SaveButtonProps = {
-  isSaving: boolean;
-  onSave: () => void;
-};
-
-function SaveButton({ isSaving, onSave }: SaveButtonProps) {
-  return (
-    <>
-      <Button
-        className="fixed left-0 right-0 md:hidden bottom-14"
-        style={{ borderRadius: 0 }}
-        loading={isSaving}
-        onClick={onSave}
-      >
-        Save Changes
-      </Button>
-      <Button
-        className="fixed hidden w-36 bottom-8 right-8 md:inline-block whitespace-nowrap"
-        loading={isSaving}
-        onClick={onSave}
-        size="sm"
-      >
-        Save Changes
-      </Button>
-    </>
   );
 }

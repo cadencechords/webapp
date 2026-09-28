@@ -2,6 +2,11 @@ import AnnouncementIcon from '../icons/AnnouncementIcon';
 import Button from './Button';
 import FeedbackApi from '../api/FeedbackApi';
 import StyledPopover from './StyledPopover';
+import {
+  RAIL_ACTION,
+  RAIL_ACTION_LABEL,
+  RAIL_ACTION_ROW,
+} from './NavigationRailItem';
 import { reportError } from '../utils/error';
 import { selectCurrentUser, selectTeamId } from '../store/authSlice';
 import { useSelector } from 'react-redux';
@@ -17,7 +22,12 @@ export default function FeedbackPopover() {
   const currentUser = useSelector(selectCurrentUser)!;
 
   const button = (
-    <AnnouncementIcon className="mr-8 text-gray-600 transform w-7 h-7 -rotate-3 dark:text-dark-gray-200" />
+    <div className={RAIL_ACTION_ROW}>
+      <div className={RAIL_ACTION}>
+        <AnnouncementIcon className="w-6 h-6 shrink-0 -rotate-3" />
+        <span className={RAIL_ACTION_LABEL}>Feedback</span>
+      </div>
+    </div>
   );
 
   const handleSubmit = async () => {
@@ -43,7 +53,7 @@ export default function FeedbackPopover() {
 
   return (
     <>
-      <StyledPopover position="bottom-start" button={button}>
+      <StyledPopover position="right-end" button={button}>
         <textarea
           className="block p-4 w-72 min-h-24 bg-transparent resize-y outline-hidden focus:outline-hidden font-plain text-body-large text-on-surface placeholder:text-on-surface-variant caret-primary"
           placeholder="Submit feedback"

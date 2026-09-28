@@ -55,6 +55,11 @@ export default function Calendar({
     setYear(newMonth.get('year'));
   };
 
+  const handleToday = () => {
+    setMonth(dayjs().month());
+    setYear(dayjs().year());
+  };
+
   const handleEventUpdated = (updatedEvent: CalendarEvent) => {
     setEventToShow(updatedEvent);
     onEventUpdated(updatedEvent);
@@ -66,6 +71,7 @@ export default function Calendar({
         title={`${MONTHS[month]} ${year}`}
         onNextMonth={() => handleChangeMonth(1)}
         onPreviousMonth={() => handleChangeMonth(-1)}
+        onToday={handleToday}
         canCreate={canCreateEvents}
       />
       <CalendarBody

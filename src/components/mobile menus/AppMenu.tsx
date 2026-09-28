@@ -39,8 +39,8 @@ export default function AppMenu({ onCloseDialog, open }: AppMenuProps) {
           Dashboard
         </MenuItem>
 
-        <MenuItem to="/binders" onClick={onCloseDialog} icon={<BinderIcon />}>
-          Binders
+        <MenuItem to="/folders" onClick={onCloseDialog} icon={<BinderIcon />}>
+          Folders
         </MenuItem>
 
         <MenuItem

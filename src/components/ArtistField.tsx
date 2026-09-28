@@ -1,5 +1,8 @@
-import DetailTitle from './DetailTitle';
-import EditableData from './inputs/EditableData';
+import {
+  DetailPlaceholder,
+  DetailTile,
+  TILE_TEXTAREA,
+} from './SongDetailParts';
 
 type ArtistFieldProps = {
   onChange: (artist: string) => void;
@@ -13,14 +16,22 @@ export default function ArtistField({
   editable,
 }: ArtistFieldProps) {
   return (
-    <div className="flex flex-row items-center mb-1">
-      <DetailTitle>Artist:</DetailTitle>
-      <EditableData
-        value={artist ? artist : ''}
-        onChange={onChange}
-        placeholder="Add an artist"
-        editable={editable}
-      />
-    </div>
+    <DetailTile label="Artist" input={editable} wrap>
+      {editable ? (
+        // A one-line textarea, so a long name wraps; Enter doesn't add a line.
+        <textarea
+          rows={1}
+          className={TILE_TEXTAREA}
+          value={artist ?? ''}
+          onChange={e => onChange(e.target.value.replace(/\n/g, ' '))}
+          onKeyDown={e => {
+            if (e.key === 'Enter') e.preventDefault();
+          }}
+          placeholder="Add"
+        />
+      ) : (
+        artist || <DetailPlaceholder tile>None</DetailPlaceholder>
+      )}
+    </DetailTile>
   );
 }

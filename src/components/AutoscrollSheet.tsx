@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 
-import Button from './Button';
 import { EDIT_SONGS } from '../utils/constants';
 import Range from './Range';
-import SectionTitle from './SectionTitle';
+import SheetHeader from './SheetHeader';
+import { SliderEnds, STEP_BUTTON } from './Metronome';
 import SongApi from '../api/SongApi';
 import { reportError } from '../utils/error';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import Icon from './Icon';
+import PlayToggleButton from './buttons/PlayToggleButton';
 import type { Song } from '../types';
 
 type AutoscrollSheetProps = {
@@ -27,13 +28,13 @@ export default function AutoscrollSheet({
   bottomSheetOpen,
   shortcutClasses = '',
 }: AutoscrollSheetProps) {
-  const iconClasses = 'w-14 h-14 text-blue-600 dark:text-dark-blue';
   const [isScrolling, setIsScrolling] = useState(false);
   const [showShortcut, setShowShortcut] = useState(false);
   const [updates, setUpdates] = useState<{ scroll_speed: number } | null>();
   const currentMember = useSelector(selectCurrentMember);
   const [loading, setLoading] = useState(false);
   const [animationFrameId, setAnimationFrameId] = useState<number | null>();
+  const speed = song.scroll_speed || 1;
 
   // Another song stops scrolling and drops unsaved speed changes. Clearing
   // the frame id cancels the running frame, through the cleanup below.
@@ -146,73 +147,80 @@ export default function AutoscrollSheet({
   return (
     <>
       <div className={` ${className}`}>
-        <SectionTitle
-          title={
-            <>
-              Auto scroll
-              {/* Non-null: updates are set only once can() passed above. */}
-              {updates && currentMember!.can(EDIT_SONGS) && (
-                <Button
-                  variant="open"
-                  size="xs"
-                  onClick={handleSaveChanges}
-                  className="ml-4"
-                  loading={loading}
-                >
-                  Save changes
-                </Button>
-              )}
-            </>
+        <SheetHeader
+          title="Auto scroll"
+          // Non-null: updates are set only once can() passed above.
+          onSave={
+            updates && currentMember!.can(EDIT_SONGS)
+              ? handleSaveChanges
+              : undefined
           }
+          saving={loading}
         />
-        <div className="flex-center mb-4">
+        <div className="flex-center gap-4">
           <button
-            className="outline-hidden focus:outline-hidden"
-            onClick={handleToggleScroll}
+            type="button"
+            aria-label="Slower"
+            disabled={speed <= MIN_SPEED}
+            className={`${STEP_BUTTON} disabled:opacity-38 disabled:pointer-events-none`}
+            onClick={() => handleSpeedChange(speed - 1)}
           >
-            {isScrolling ? (
-              <Icon name="pause_circle" filled className={iconClasses} />
-            ) : (
-              <Icon name="play_circle" filled className={iconClasses} />
-            )}
+            <Icon name="remove" className="w-6 h-6" />
+          </button>
+          <div className="flex flex-col items-center w-28 font-plain">
+            <span className="text-display-large-emphasized text-on-surface">
+              {speed}
+            </span>
+            <span className="text-label-large text-on-surface-variant">
+              Speed
+            </span>
+          </div>
+          <button
+            type="button"
+            aria-label="Faster"
+            disabled={speed >= MAX_SPEED}
+            className={`${STEP_BUTTON} disabled:opacity-38 disabled:pointer-events-none`}
+            onClick={() => handleSpeedChange(speed + 1)}
+          >
+            <Icon name="add" className="w-6 h-6" />
           </button>
         </div>
-        <div className="pb-2">
-          Current speed is
-          <span className="font-semibold text-lg ml-2">
-            {song.scroll_speed || 1}
-          </span>
+        <div className="px-2 mt-10 mb-6">
+          <Range
+            value={speed}
+            max={MAX_SPEED}
+            min={MIN_SPEED}
+            step={1}
+            onChange={handleSpeedChange}
+          />
+          <SliderEnds start="Slower" end="Faster" />
         </div>
-        <Range
-          value={song.scroll_speed || 1}
-          max={10}
-          min={1}
-          step={1}
-          onChange={handleSpeedChange}
-        />
+        <div className="flex-center">
+          <PlayToggleButton
+            playing={isScrolling}
+            label={isScrolling ? 'Pause auto scroll' : 'Start auto scroll'}
+            onClick={handleToggleScroll}
+          />
+        </div>
       </div>
       {showShortcut && !bottomSheetOpen && (
         <div className={`fixed flex-center flex-col z-10 ${shortcutClasses}`}>
-          <button
+          <PlayToggleButton
+            size="medium"
+            playing={isScrolling}
+            label={isScrolling ? 'Pause auto scroll' : 'Resume auto scroll'}
             onClick={() =>
               isScrolling ? handlePauseScrolling() : handleStartScrolling()
             }
-            className="focus:outline-hidden outline-hidden"
-          >
-            {isScrolling ? (
-              <Icon name="pause_circle" filled className={iconClasses} />
-            ) : (
-              <Icon name="play_circle" filled className={iconClasses} />
-            )}
-          </button>
+          />
+          {/* M3E medium tonal icon button */}
           <button
-            className="focus:outline-hidden outline-hidden"
+            type="button"
+            aria-label="Stop auto scroll"
+            className="flex-center mt-2 w-14 h-14 rounded-[28px] [--shape-morph-to:16px] bg-surface-container-highest text-on-surface-variant state-layer-flat focus-ring shape-morph"
             onClick={handleStopScrolling}
           >
-            <Icon
-              name="cancel"
-              className="w-10 h-10 text-gray-500 dark:text-dark-gray-200"
-            />
+            <Icon name="close" className="w-6 h-6" />
           </button>
         </div>
       )}
@@ -225,6 +233,9 @@ export default function AutoscrollSheet({
 function cancelFrame(id: number | null | undefined) {
   if (id != null) cancelAnimationFrame(id);
 }
+
+const MIN_SPEED = 1;
+const MAX_SPEED = 10;
 
 const SPEEDS: Record<number, { px: number; interval: number }> = {
   1: { px: 1, interval: 15 },

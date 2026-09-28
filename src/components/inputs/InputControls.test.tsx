@@ -30,7 +30,7 @@ test('Checkbox defaults to blue and toggles through its hidden input', () => {
 test('Toggle defaults to blue with no spacing', () => {
   const { container } = render(<Toggle enabled label="On" />);
   expect(screen.getByRole('switch')).toHaveClass('bg-primary');
-  expect(container.firstElementChild?.className).toBe('flex items-center ');
+  expect(container.firstElementChild?.className).toBe('flex items-center');
 });
 
 test('Range has no stray class and reports numbers', () => {
@@ -85,7 +85,9 @@ test('OutlinedInput defaults to type text and calls onEnter', () => {
   render(<OutlinedInput value="" onChange={() => {}} onEnter={onEnter} />);
   const input = screen.getByRole('textbox');
   expect(input).toHaveAttribute('type', 'text');
-  expect(input).toHaveAttribute('pattern', '');
+  // An empty pattern only matches an empty value, so it would block a form's
+  // submit once anything's typed.
+  expect(input).not.toHaveAttribute('pattern');
   userEvent.type(input, '{enter}');
   expect(onEnter).toHaveBeenCalledTimes(1);
 });
@@ -105,7 +107,7 @@ test('BinderColor defaults to a white, size 4, editable swatch', () => {
     vi.fn<NonNullable<ComponentProps<typeof BinderColor>['onClick']>>();
   const { container } = render(<BinderColor onClick={onClick} />);
   const swatch = container.firstElementChild as HTMLElement;
-  expect(swatch).toHaveClass('h-4', 'w-4', 'cursor-pointer');
+  expect(swatch).toHaveClass('h-4.5', 'w-4.5', 'cursor-pointer');
   userEvent.click(swatch);
   expect(onClick).toHaveBeenCalledWith('white');
 });

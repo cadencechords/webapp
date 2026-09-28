@@ -6,7 +6,7 @@ import PageTitle from './PageTitle';
 import SearchResults from './SearchResults';
 import SetlistApi from '../api/SetlistApi';
 import SongApi from '../api/SongApi';
-import WellInput from './inputs/WellInput';
+import SearchField from './inputs/SearchField';
 import useDebouncedCallback from '../hooks/useDebouncedCallback';
 import { reportError } from '../utils/error';
 import type { Binder, Setlist, Song } from '../types';
@@ -67,11 +67,11 @@ export default function SearchPage() {
   return (
     <>
       <PageTitle title="Search" />
-      <div className="fixed left-0 w-full bottom-14 md:bottom-0">
+      <div className="fixed left-0 w-full bottom-[calc(4rem+env(safe-area-inset-bottom))] md:bottom-0">
         {searching && <LinearProgress />}
       </div>
-      <WellInput
-        placeholder="Search for binders, sets, songs..."
+      <SearchField
+        placeholder="Search for folders, sets, songs..."
         value={searchQuery}
         onChange={handleSearchQueryChange}
         autoFocus

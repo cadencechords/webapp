@@ -92,16 +92,12 @@ test('primary tabs: title-small, primary when selected, with state layers', () =
   expect(tabs[0]).toHaveClass('text-primary', 'text-title-small', 'h-12');
   expect(tabs[1]).toHaveClass('text-on-surface-variant', 'state-layer-flat');
   // relative: the indicator and the labels' offsets are measured from it.
-  expect(screen.getByRole('tablist')).toHaveClass(
-    'relative',
-    'border-b',
-    'border-outline-variant',
-    'overflow-x-auto'
-  );
-  expect(tabs[0]).toHaveClass(
-    'focus-visible:outline-3',
-    'focus-visible:-outline-offset-3'
-  );
+  const tablist = screen.getByRole('tablist');
+  expect(tablist).toHaveClass('relative', 'overflow-x-auto');
+  // No divider stretching under the row.
+  expect(tablist).not.toHaveClass('border-b');
+  // No focus ring: the focus state layer shows keyboard focus.
+  expect(tabs[0].className).not.toContain('focus-visible:outline');
 });
 
 test('arrow keys still move between tabs and show their panels', () => {
@@ -308,16 +304,20 @@ describe('SongTabs', () => {
     auth: { currentUser: { id: 1, role: { permissions: [] } } },
   });
 
-  test('is left out without Pro: no empty tab bar', () => {
+  test('shows only Tags without Pro', () => {
     renderWithProvider(
       <SongTabs
         song={song}
         onTrackDeleted={() => {}}
         onTracksAdded={() => {}}
+        tags={<p>Tags panel</p>}
       />,
       { preloadedState: state(false) }
     );
-    expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual([
+      'Tags',
+    ]);
+    expect(screen.getByText('Tags panel')).toBeInTheDocument();
   });
 
   test('shows Files, selected, then Tracks to Pro members who can view files', () => {
@@ -326,6 +326,7 @@ describe('SongTabs', () => {
         song={song}
         onTrackDeleted={() => {}}
         onTracksAdded={() => {}}
+        tags={<p>Tags panel</p>}
       />,
       {
         preloadedState: {
@@ -340,22 +341,28 @@ describe('SongTabs', () => {
       }
     );
     const tabs = screen.getAllByRole('tab');
-    expect(tabs.map(tab => tab.textContent)).toEqual(['Files', 'Tracks']);
+    expect(tabs.map(tab => tab.textContent)).toEqual([
+      'Files',
+      'Tracks',
+      'Tags',
+    ]);
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByText('Files panel')).toBeInTheDocument();
   });
 
-  test('shows Tracks alone to Pro members who cannot view files', () => {
+  test('shows Tracks and Tags to Pro members who cannot view files', () => {
     renderWithProvider(
       <SongTabs
         song={song}
         onTrackDeleted={() => {}}
         onTracksAdded={() => {}}
+        tags={<p>Tags panel</p>}
       />,
       { preloadedState: state(true) }
     );
     expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual([
       'Tracks',
+      'Tags',
     ]);
     // Each tab keeps its own panel: Files' panel isn't shown under Tracks.
     expect(screen.getByText('Add track')).toBeInTheDocument();

@@ -29,7 +29,6 @@ export default function Modal({
     <>
       {isSm && (
         <StyledDialog
-          borderedTop={false}
           onCloseDialog={onClose}
           open={open}
           size={dialogSize}

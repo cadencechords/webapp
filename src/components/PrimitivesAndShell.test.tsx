@@ -120,17 +120,21 @@ test('KeyBadge renders nothing without a key', () => {
   expect(render(<KeyBadge songKey="G" />).container).toHaveTextContent('G');
 });
 
-test('SongKeyButton disables the blank key', () => {
+test('SongKeyButton is a toggle, and a blank key is an empty cell', () => {
   const onClick = vi.fn<ComponentProps<typeof SongKeyButton>['onClick']>();
   render(
     <>
       <SongKeyButton songKey="" onClick={onClick} selected={false} />
       <SongKeyButton songKey="A" onClick={onClick} selected />
+      <SongKeyButton songKey="B" onClick={onClick} selected={false} />
     </>
   );
-  const [blank, a] = screen.getAllByRole('button');
-  expect(blank).toBeDisabled();
-  expect(a).toHaveClass('ring-4');
+  const [a, b] = screen.getAllByRole('button');
+  expect(a).toHaveTextContent('A');
+  expect(a).toHaveAttribute('aria-pressed', 'true');
+  expect(a).toHaveClass('bg-primary', 'rounded-[12px]');
+  expect(b).toHaveAttribute('aria-pressed', 'false');
+  expect(b).toHaveClass('bg-surface-container-highest', 'rounded-[24px]');
   fireEvent.click(a);
   expect(onClick).toHaveBeenCalledTimes(1);
 });
@@ -147,7 +151,8 @@ test('NumberBadge and CalendarDateButton style their states', () => {
     </>
   );
   expect(screen.getByText('3')).toHaveClass('bg-on-surface/12', 'mr-2');
-  expect(screen.getByText('14')).toHaveClass('bg-blue-600', 'mb-2');
+  expect(screen.getByText('14')).toHaveClass('bg-primary', 'mb-2');
+  expect(screen.getByText('14')).toHaveAttribute('aria-current', 'date');
 });
 
 test('TextAutosize sets the font size in px unless autosizing', () => {
@@ -173,17 +178,73 @@ test('Drawer closes from its backdrop and slides in when open', () => {
       Adjustments
     </Drawer>
   );
-  expect(screen.getByText('Adjustments')).toHaveClass('translate-x-0');
+  expect(screen.getByRole('dialog')).toHaveClass(
+    'translate-y-0',
+    'sm:translate-x-0'
+  );
+  expect(screen.getByText('Adjustments')).toBeInTheDocument();
   // Non-null: the backdrop is the first element; the drawer is the <aside>.
   fireEvent.click(container.firstElementChild!);
   expect(onClose).toHaveBeenCalled();
 });
 
-test('QuickAdd calls onAdd', () => {
+test('QuickAdd is an M3 extended FAB labelled with what it adds, and calls onAdd', () => {
   const onAdd = vi.fn<ComponentProps<typeof QuickAdd>['onAdd']>();
-  render(<QuickAdd onAdd={onAdd} />);
-  fireEvent.click(screen.getByRole('button'));
+  render(<QuickAdd onAdd={onAdd} label="New song" />);
+  const fab = screen.getByRole('button', { name: 'New song' });
+  expect(fab).toHaveTextContent('New song');
+  expect(fab).toHaveClass(
+    'h-16',
+    'rounded-large-increased',
+    'bg-tertiary-container',
+    'text-on-tertiary-container'
+  );
+  fireEvent.click(fab);
   expect(onAdd).toHaveBeenCalled();
+
+  // Scrolling down collapses it to the icon; back near the top, it extends.
+  const label = screen.getByText('New song');
+  expect(label).toHaveClass('opacity-100');
+  Object.defineProperty(window, 'scrollY', { value: 400, configurable: true });
+  fireEvent.scroll(document);
+  expect(label).toHaveClass('max-w-0', 'opacity-0');
+  // Still names the button while collapsed.
+  expect(screen.getByRole('button', { name: 'New song' })).toBe(fab);
+  Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+  fireEvent.scroll(document);
+  expect(label).toHaveClass('opacity-100');
+});
+
+test('QuickAdd takes another icon in place of add', () => {
+  const { container, rerender } = render(
+    <QuickAdd onAdd={() => {}} label="New song" />
+  );
+  const add = container.querySelector('svg')!.innerHTML;
+  rerender(
+    <QuickAdd onAdd={() => {}} label="Send an invite" icon="person_add" />
+  );
+  expect(container.querySelector('svg')!.innerHTML).not.toBe(add);
+});
+
+test('QuickAdd follows only the page scrolling, not a list in a dialog', () => {
+  render(
+    <>
+      <div data-testid="sheet" data-page-scroller />
+      <div data-testid="dialog-list" />
+      <QuickAdd onAdd={() => {}} label="New folder" />
+    </>
+  );
+  const label = screen.getByText('New folder');
+  const scrollTo = (element: HTMLElement, top: number) => {
+    element.scrollTop = top;
+    fireEvent.scroll(element);
+  };
+
+  scrollTo(screen.getByTestId('dialog-list'), 400);
+  expect(label).toHaveClass('opacity-100');
+
+  scrollTo(screen.getByTestId('sheet'), 400);
+  expect(label).toHaveClass('max-w-0', 'opacity-0');
 });
 
 test('AppFallback and NoTeamYet keep their apostrophes', () => {

@@ -16,14 +16,25 @@ export default function ImportSongsPage() {
     router.push('/songs');
     return null;
   } else {
+    const logo = 'w-10 h-10 shrink-0 rounded-[12px]';
+    // M3E: the sources as a segmented list of rows, each opening its import.
     return (
-      <div className="container max-w-5xl mx-auto">
+      <div className="max-w-2xl mx-auto font-plain">
         <PageHeader title="Import songs" headerRightVisible={false} />
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <p className="mb-4 text-body-medium text-on-surface-variant">
+          Bring songs in from another app, another team or your own files.
+        </p>
+        <div className="list-segmented">
           <ImportSourceCard
-            title="Services"
+            title="Planning Center Services"
             image={
-              <img src="/services.png" width="48" height="48" alt="Services" />
+              <img
+                src="/services.png"
+                width="40"
+                height="40"
+                alt=""
+                className={logo}
+              />
             }
             to="/import/planning-center"
           >
@@ -32,7 +43,13 @@ export default function ImportSongsPage() {
           <ImportSourceCard
             title="OnSong"
             image={
-              <img src="/onsong.webp" width="48" height="48" alt="OnSong" />
+              <img
+                src="/onsong.webp"
+                width="40"
+                height="40"
+                alt=""
+                className={logo}
+              />
             }
             to="/import/onsong"
           >
@@ -45,22 +62,24 @@ export default function ImportSongsPage() {
             image={
               <img
                 src="/apple-touch-icon.png"
-                width="48"
-                height="48"
-                alt="Mezzo"
-                className="shadow-xs rounded-xl"
+                width="40"
+                height="40"
+                alt=""
+                className={logo}
               />
             }
           >
             Import songs from other teams you&apos;re on in Mezzo
           </ImportSourceCard>
           <ImportSourceCard
-            title="File"
+            title="Files"
             to="/import/files"
             image={
-              <div className="self-start w-12 h-12 bg-white shadow-xs rounded-xl flex-center">
-                <Icon name="description" className="w-6 h-6 text-blue-600" />
-              </div>
+              <span
+                className={`${logo} flex-center bg-secondary-container text-on-secondary-container`}
+              >
+                <Icon name="description" className="w-6 h-6" />
+              </span>
             }
           >
             Import PDF, Word or text files.

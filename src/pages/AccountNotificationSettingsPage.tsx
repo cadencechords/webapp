@@ -1,13 +1,10 @@
-import Button from '../components/Button';
-import { Link } from 'react-router-dom';
 import NotificationSettingsList from '../components/NotificationSettingsList';
 import PageLoading from '../components/PageLoading';
-import PageTitle from '../components/PageTitle';
+import AccountPageHeader from '../components/settings/AccountPageHeader';
 import { reportError } from '../utils/error';
 import settingsApi from '../api/settingsApi';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import Icon from '../components/Icon';
 import type { NotificationSetting } from '../types';
 
 export default function AccountNotificationSettingsPage() {
@@ -42,21 +39,11 @@ export default function AccountNotificationSettingsPage() {
   if (loading) return <PageLoading />;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <Link to="/account">
-        <Button variant="open" color="gray">
-          <div className="flex-center">
-            <Icon name="arrow_back" className="w-4 h-4 mr-4" />
-            Menu
-          </div>
-        </Button>
-      </Link>
-      <PageTitle title="Notification settings" />
-      <p className="mb-4 leading-relaxed lg:px-2">
-        You can configure the way you receive notifications below. Each type of
-        notification can be customized, meaning you can opt to receive event
-        reminders through text messages while receiving other notifications
-        through email.
+    <div className="max-w-2xl mx-auto font-plain">
+      <AccountPageHeader title="Notifications" />
+      <p className="mb-2 text-body-medium text-on-surface-variant">
+        Choose how you get each kind of notification: by email, in the app, or
+        both.
       </p>
       <NotificationSettingsList
         settings={settings}

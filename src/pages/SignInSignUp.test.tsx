@@ -121,10 +121,8 @@ function renderAt(
   );
 }
 
-function type(placeholder: string, value: string) {
-  fireEvent.change(screen.getByPlaceholderText(placeholder), {
-    target: { value },
-  });
+function typeInto(label: string, value: string) {
+  fireEvent.change(screen.getByLabelText(label), { target: { value } });
 }
 
 test('TeamLoginOption logs in to its team by id', () => {
@@ -147,9 +145,9 @@ test('LoginPage stores the credentials and goes to the target url', async () => 
     <LoginPage />
   );
 
-  type('email', 'someone@example.com');
-  type('password', 'hunter22');
-  fireEvent.click(screen.getByText('Login'));
+  typeInto('Email', 'someone@example.com');
+  typeInto('Password', 'hunter22');
+  fireEvent.click(screen.getByText('Sign in'));
 
   expect(await screen.findByTestId('location')).toHaveTextContent('/join/abc');
   expect(AuthApi.login).toHaveBeenCalledWith('someone@example.com', 'hunter22');
@@ -163,19 +161,34 @@ test('LoginPage stores the credentials and goes to the target url', async () => 
   expect(localStorage.getItem('client')).toBe('CLIENT');
 });
 
-test('LoginPage shows the API errors in a red alert', async () => {
+test('LoginPage shows the API errors under the password field', async () => {
   vi.mocked(AuthApi.login).mockRejectedValue({
     response: { data: { errors: ['Invalid login credentials.'] } },
   });
   renderAt('/login', '/login', <LoginPage />);
 
-  type('email', 'someone@example.com');
-  type('password', 'wrong');
-  fireEvent.click(screen.getByText('Login'));
+  typeInto('Email', 'someone@example.com');
+  typeInto('Password', 'wrong');
+  fireEvent.click(screen.getByText('Sign in'));
 
   const message = await screen.findByText('Invalid login credentials.');
-  expect(message.parentElement).toHaveClass('bg-error-container');
-  expect(screen.getByPlaceholderText('password')).toHaveValue('');
+  expect(message).toHaveClass('text-error');
+  const password = screen.getByLabelText('Password');
+  expect(password).toHaveValue('');
+  expect(password).toHaveAttribute('aria-invalid', 'true');
+  expect(password).toHaveAccessibleDescription('Invalid login credentials.');
+});
+
+test('LoginPage shows and hides the password', () => {
+  renderAt('/login', '/login', <LoginPage />);
+  const password = screen.getByLabelText('Password');
+  expect(password).toHaveAttribute('type', 'password');
+  expect(password).toHaveAttribute('autocomplete', 'current-password');
+
+  fireEvent.click(screen.getByRole('button', { name: 'Show password' }));
+  expect(password).toHaveAttribute('type', 'text');
+  fireEvent.click(screen.getByRole('button', { name: 'Hide password' }));
+  expect(password).toHaveAttribute('type', 'password');
 });
 
 test('SignUpPage shows success in blue and the API errors in red', async () => {
@@ -183,14 +196,14 @@ test('SignUpPage shows success in blue and the API errors in red', async () => {
   renderAt('/signup?email=a@b.co', '/signup', <SignUpPage />);
 
   function fillIn() {
-    type('first name', 'Ada');
-    type('last name', 'Lovelace');
-    type('password', 'correct horse');
-    type('enter your password again', 'correct horse');
+    typeInto('First name', 'Ada');
+    typeInto('Last name', 'Lovelace');
+    typeInto('Password', 'correct horse');
+    typeInto('Confirm password', 'correct horse');
   }
-  expect(screen.getByPlaceholderText('email')).toHaveValue('a@b.co');
+  expect(screen.getByLabelText('Email')).toHaveValue('a@b.co');
   fillIn();
-  fireEvent.click(screen.getByText('Sign Up'));
+  fireEvent.click(screen.getByText('Create account'));
 
   const thanks = await screen.findByText(/thanks for signing up/i);
   expect(thanks.parentElement).toHaveClass('bg-secondary-container');
@@ -202,18 +215,29 @@ test('SignUpPage shows success in blue and the API errors in red', async () => {
     lastName: 'Lovelace',
   });
   // The fields are cleared either way.
-  expect(screen.getByPlaceholderText('email')).toHaveValue('');
+  expect(screen.getByLabelText('Email')).toHaveValue('');
 
   vi.mocked(AuthApi.signUp).mockRejectedValueOnce({
     response: { data: { errors: { full_messages: ['Email is taken'] } } },
   });
-  type('email', 'a@b.co');
+  typeInto('Email', 'a@b.co');
   fillIn();
-  fireEvent.click(screen.getByText('Sign Up'));
+  fireEvent.click(screen.getByText('Create account'));
 
   expect((await screen.findByText('Email is taken')).parentElement).toHaveClass(
     'bg-error-container'
   );
+});
+
+test("SignUpPage flags a confirmation that doesn't match", () => {
+  renderAt('/signup', '/signup', <SignUpPage />);
+  typeInto('Password', 'correct horse');
+  typeInto('Confirm password', 'correct hors');
+
+  expect(screen.getByLabelText('Confirm password')).toHaveAccessibleDescription(
+    "Passwords don't match"
+  );
+  expect(screen.getByText('Create account').closest('button')).toBeDisabled();
 });
 
 test('ForgotPasswordPage sends the typed email', async () => {
@@ -225,7 +249,7 @@ test('ForgotPasswordPage sends the typed email', async () => {
   expect(
     screen.getByText('Send instructions').closest('button')
   ).toBeDisabled();
-  type('Email address', 'someone@example.com');
+  typeInto('Email', 'someone@example.com');
   fireEvent.click(screen.getByText('Send instructions'));
 
   await screen.findByText(/you should receive an email soon/i);
@@ -242,8 +266,8 @@ test('ResetPasswordPage sends the link params with the new password', async () =
     <ResetPasswordPage />
   );
 
-  type('password', 'correct horse');
-  type('enter your password again', 'correct horse');
+  typeInto('New password', 'correct horse');
+  typeInto('Confirm password', 'correct horse');
   fireEvent.click(screen.getByText('Set password'));
 
   expect(await screen.findByTestId('location')).toHaveTextContent('/login');
@@ -266,8 +290,8 @@ test('ResetPasswordPage shows the API errors, or rejects a link without its para
     '/reset_password',
     <ResetPasswordPage />
   );
-  type('password', 'correct horse');
-  type('enter your password again', 'correct horse');
+  typeInto('New password', 'correct horse');
+  typeInto('Confirm password', 'correct horse');
   fireEvent.click(screen.getByText('Set password'));
   expect((await screen.findByText('Link expired')).parentElement).toHaveClass(
     'bg-error-container'
@@ -279,7 +303,11 @@ test('ResetPasswordPage shows the API errors, or rejects a link without its para
     '/reset_password',
     <ResetPasswordPage />
   );
-  expect(screen.getByText('Invalid reset password link')).toBeInTheDocument();
+  expect(screen.getByText(/invalid reset password link/i)).toBeInTheDocument();
+  expect(screen.getByText('Send a new link')).toHaveAttribute(
+    'href',
+    '/forgot_password'
+  );
 });
 
 test('ClaimInvitationPage signs in with the claimed invitation', async () => {
@@ -310,8 +338,10 @@ test('ClaimInvitationPage shows a 404 and sends a 400 to sign up', async () => {
     <ClaimInvitationPage />
   );
   expect(
-    (await screen.findByText('Invitation not found')).parentElement
-  ).toHaveClass('bg-error-container');
+    await screen.findByText(
+      'Invitation not found. Ask whoever invited you to send a new one.'
+    )
+  ).toBeInTheDocument();
   unmount();
 
   vi.mocked(InvitationApi.claimOne).mockRejectedValueOnce({
@@ -333,11 +363,11 @@ test('InvitationSignUpPage signs up with the token and shows the API message', a
     <InvitationSignUpPage />
   );
 
-  type('first name', 'Ada');
-  type('last name', 'Lovelace');
-  type('password', 'correct horse');
-  type('enter your password again', 'correct horse');
-  fireEvent.click(screen.getByText('Sign Up'));
+  typeInto('First name', 'Ada');
+  typeInto('Last name', 'Lovelace');
+  typeInto('Password', 'correct horse');
+  typeInto('Confirm password', 'correct horse');
+  fireEvent.click(screen.getByText('Create account'));
 
   expect((await screen.findByText('Token expired')).parentElement).toHaveClass(
     'bg-error-container'
@@ -349,6 +379,17 @@ test('InvitationSignUpPage signs up with the token and shows the API message', a
     firstName: 'Ada',
     lastName: 'Lovelace',
   });
+});
+
+test('InvitationSignUpPage rejects a link without a token', () => {
+  renderAt(
+    '/invitations/signup',
+    '/invitations/signup',
+    <InvitationSignUpPage />
+  );
+
+  expect(screen.getByText(/invalid invitation link/i)).toBeInTheDocument();
+  expect(screen.queryByLabelText('Password')).toBeNull();
 });
 
 test('JoinLinkPage joins the team and switches to it', async () => {
@@ -365,6 +406,24 @@ test('JoinLinkPage joins the team and switches to it', async () => {
   expect(JoinLinkApi.join).toHaveBeenCalledWith('abc');
   expect(localStorage.getItem('teamId')).toBe('12');
   expect(store.getState().auth.teamId).toBe(12);
+});
+
+test('JoinLinkPage sends a member of the team straight to it', async () => {
+  vi.mocked(JoinLinkApi.getByJoinLinkCode).mockResolvedValue(
+    response({ ...team, users: [{ id: 3 }] } as Team)
+  );
+  const { store } = renderAt('/join/abc', '/join/:code', <JoinLinkPage />, {
+    auth: { currentUser: { id: 3, email: 'someone@example.com' } },
+  });
+
+  expect(
+    await screen.findByText("You're already on Worship Team")
+  ).toBeInTheDocument();
+  fireEvent.click(screen.getByText('Go to team'));
+
+  expect(screen.getByTestId('location')).toHaveTextContent(/^\/$/);
+  expect(store.getState().auth.teamId).toBe(12);
+  expect(JoinLinkApi.join).not.toHaveBeenCalled();
 });
 
 test('JoinLinkPage shows the API message when the link fails', async () => {

@@ -1,15 +1,18 @@
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 type TeamPlanOptionProps = {
   selected: boolean;
   onClick: (name: string) => void;
   name: string;
-  // Required: an omitted one would add the class "undefined".
-  className: string;
+  className?: string;
   trialMessage: ReactNode;
   pricing: ReactNode;
 };
 
+// A plan as a selectable card in a radiogroup: surface-container, or
+// primary-container once picked, with a primary outline set 3px out from
+// the card.
 export default function TeamPlanOption({
   selected,
   onClick,
@@ -19,35 +22,24 @@ export default function TeamPlanOption({
   pricing,
 }: TeamPlanOptionProps) {
   return (
-    <div
-      className={
-        `rounded-md p-4 border-2 transition-colors dark:bg-dark-gray-800 ` +
-        `${
-          selected
-            ? 'border-blue-500 dark:border-dark-blue'
-            : 'border-gray-300 dark:border-dark-gray-400 '
-        } ${className}`
-      }
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
       onClick={() => onClick(name)}
+      className={classNames(
+        'block w-full px-5 py-4 text-left rounded-extra-large font-plain outline-2 outline-offset-3 state-layer-flat focus-ring transition-fast-effects',
+        selected
+          ? 'bg-primary-container text-on-primary-container outline-solid outline-primary'
+          : 'bg-surface-container text-on-surface outline-transparent',
+        className
+      )}
     >
-      <div className="flex-between">
-        <div>
-          <div className="uppercase font-semibold text-gray-600 dark:text-dark-gray-200 tracking-widest mb-2">
-            {name}
-          </div>
-          <div className="font-semibold text-2xl mb-2">{pricing}</div>
-          <span className="bg-green-100 dark:bg-dark-green text-green-700 dark:text-dark-gray-100 font-medium p-1 rounded-md text-sm">
-            {trialMessage}
-          </span>
-        </div>
-        <div className="flex-center">
-          {selected ? (
-            <span className="w-5 h-5 rounded-full border-blue-500 dark:border-dark-blue border-8"></span>
-          ) : (
-            <span className="w-5 h-5 rounded-full border-2"></span>
-          )}
-        </div>
-      </div>
-    </div>
+      <div className="text-title-medium">{name}</div>
+      <div className="mt-1 text-headline-small">{pricing}</div>
+      <span className="inline-block mt-2 px-2 py-0.5 rounded-small border border-current text-label-medium">
+        {trialMessage}
+      </span>
+    </button>
   );
 }

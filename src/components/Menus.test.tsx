@@ -62,9 +62,9 @@ test('StyledPopover opens an M3 menu surface and closes from its button', async 
 
   const panel = screen.getByText('Print').closest('[id^=headlessui-popover]');
   expect(panel).toHaveClass(
-    'bg-surface-container',
+    'bg-surface-container-high',
     'rounded-large',
-    'shadow-(--md-sys-elevation-level2)',
+    'shadow-(--md-sys-elevation-level1)',
     'z-50',
     'w-60'
   );
@@ -121,7 +121,7 @@ test('MenuItem colors: on-surface, error when destructive, 38% when disabled', (
     </>
   );
   const print = screen.getByRole('button', { name: /Print/ });
-  expect(print).toHaveClass('text-on-surface', 'h-12', 'state-layer-flat');
+  expect(print).toHaveClass('text-on-surface', 'h-11', 'state-layer-flat');
   expect(screen.getByTestId('icon').parentElement).toHaveClass(
     'text-on-surface-variant'
   );
@@ -138,9 +138,54 @@ test('MenuItem colors: on-surface, error when destructive, 38% when disabled', (
   expect(onClick).not.toHaveBeenCalled();
 });
 
-test('MenuDivider is an outline-variant rule', () => {
-  const { container } = render(<MenuDivider />);
-  expect(container.firstElementChild).toHaveClass('border-outline-variant');
+test('MenuDivider splits a MenuList into separate surfaces, even inside a fragment', () => {
+  const { container, rerender } = render(
+    <MenuList>
+      <MenuItem>Print</MenuItem>
+      <>
+        <MenuDivider />
+        <MenuItem>Delete</MenuItem>
+      </>
+    </MenuList>
+  );
+  // The groups sit 2px apart.
+  expect(container.querySelector('[data-menu-groups]')).toHaveClass('gap-0.5');
+  const groups = container.querySelectorAll('[data-menu-groups] > div');
+  expect(groups).toHaveLength(2);
+  expect(groups[0]).toHaveTextContent('Print');
+  expect(groups[0]).toHaveClass(
+    'bg-surface-container-high',
+    'rounded-b-extra-small'
+  );
+  expect(groups[1]).toHaveTextContent('Delete');
+  expect(groups[1]).toHaveClass('rounded-t-extra-small');
+
+  // A divider with nothing before it leaves one plain list.
+  rerender(
+    <MenuList>
+      <MenuDivider />
+      <MenuItem>Delete</MenuItem>
+    </MenuList>
+  );
+  expect(container.querySelector('[data-menu-groups]')).toBeNull();
+  expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+});
+
+test('choosing a menu item closes the menu, a link included', async () => {
+  render(
+    <MemoryRouter>
+      <StyledPopover button="Open">
+        <MenuList>
+          <MenuItem to="/account">Account</MenuItem>
+        </MenuList>
+      </StyledPopover>
+    </MemoryRouter>
+  );
+  userEvent.click(screen.getByRole('button', { name: 'Open' }));
+  userEvent.click(screen.getByRole('link', { name: 'Account' }));
+  await waitFor(() =>
+    expect(screen.queryByText('Account')).not.toBeInTheDocument()
+  );
 });
 
 const file = { id: 1, name: 'chart.pdf', url: 'https://example.com/chart.pdf' };
@@ -156,7 +201,9 @@ test('SongFileOptionsPopover keeps its items and order, with Delete in its own g
   );
   userEvent.click(screen.getAllByRole('button')[0]);
 
-  const menu = screen.getByText('Download').closest('.py-2') as HTMLElement;
+  const menu = screen
+    .getByText('Download')
+    .closest('[data-menu-groups]') as HTMLElement;
   const items = within(menu).getAllByRole(/button|link/);
   expect(items.map(item => item.textContent)).toEqual([
     'Download',
@@ -165,9 +212,10 @@ test('SongFileOptionsPopover keeps its items and order, with Delete in its own g
   ]);
   expect(items[0]).toHaveAttribute('href', file.url);
   expect(items[2]).toHaveClass('text-error');
-  // The divider sits right before Delete.
-  expect(items[2].previousElementSibling?.tagName).toBe('HR');
-  expect(menu.querySelectorAll('hr')).toHaveLength(1);
+  // Delete is its own group.
+  const groups = menu.querySelectorAll(':scope > div');
+  expect(groups).toHaveLength(2);
+  expect(groups[1]).toHaveTextContent(/^Delete$/);
 });
 
 test('SongFileOptionsPopover without delete has no divider', () => {
@@ -181,9 +229,8 @@ test('SongFileOptionsPopover without delete has no divider', () => {
   );
   userEvent.click(screen.getAllByRole('button')[0]);
 
-  const menu = screen.getByText('Download').closest('.py-2') as HTMLElement;
-  expect(within(menu).queryByText('Delete')).not.toBeInTheDocument();
-  expect(menu.querySelector('hr')).toBeNull();
+  expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+  expect(screen.getByText('Download').closest('[data-menu-groups]')).toBeNull();
 });
 
 test('SetlistOptionsPopover with no songs shows only Delete, without a divider', () => {
@@ -200,7 +247,7 @@ test('SetlistOptionsPopover with no songs shows only Delete, without a divider',
 
   expect(screen.queryByText('Perform')).not.toBeInTheDocument();
   const remove = screen.getByRole('button', { name: 'Delete' });
-  expect(remove.parentElement?.querySelector('hr')).toBeNull();
+  expect(remove.closest('[data-menu-groups]')).toBeNull();
 });
 
 test('SetlistOptionsPopover puts Delete in its own group after Perform', () => {
@@ -216,11 +263,10 @@ test('SetlistOptionsPopover puts Delete in its own group after Perform', () => {
   userEvent.click(screen.getAllByRole('button')[0]);
 
   const perform = screen.getByRole('button', { name: 'Perform' });
-  const divider = perform.nextElementSibling;
-  expect(divider?.tagName).toBe('HR');
-  expect(divider?.nextElementSibling).toBe(
-    screen.getByRole('button', { name: 'Delete' })
-  );
+  const remove = screen.getByRole('button', { name: 'Delete' });
+  // Separate surfaces, Delete's after Perform's.
+  expect(perform.parentElement).not.toBe(remove.parentElement);
+  expect(perform.parentElement?.nextElementSibling).toBe(remove.parentElement);
 });
 
 test('MarkingOptionsPopover shows its menu while isOpen', async () => {
@@ -233,7 +279,7 @@ test('MarkingOptionsPopover shows its menu while isOpen', async () => {
   const remove = screen.getByRole('button', { name: 'Delete' });
   expect(remove).toHaveClass('text-error');
   // Once popper has placed it, it's placed with top/left, not a transform.
-  const surface = remove.closest('.bg-surface-container') as HTMLElement;
+  const surface = remove.closest('.bg-surface-container-high') as HTMLElement;
   await waitFor(() => expect(surface).toHaveAttribute('data-popper-placement'));
   expect(surface.style.transform).toBe('');
 

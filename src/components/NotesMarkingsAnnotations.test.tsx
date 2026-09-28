@@ -89,9 +89,11 @@ function Providers({
   );
 }
 
-/** A utensil's button label (the icons' svg titles hold the same words). */
+/** A utensil's toggle button in the annotation toolbar. */
 function utensilLabel(name: string) {
-  return screen.getByText(name, { selector: 'span' });
+  return screen.getByRole('button', {
+    name: name[0]!.toUpperCase() + name.slice(1),
+  });
 }
 
 /** Shows the annotations toolbar's state as text. */
@@ -117,7 +119,13 @@ describe('Note', () => {
 
     const textarea = screen.getByPlaceholderText('Type here');
     expect(textarea).toHaveValue('Slow down');
-    expect(textarea.className).toContain('bg-blue-200');
+    expect(textarea).toHaveClass(
+      'bg-user-blue-container',
+      'text-on-user-blue-container'
+    );
+    expect(
+      screen.getByRole('button', { name: 'Edit note' })
+    ).toBeInTheDocument();
     expect(textarea).toHaveAttribute('rows', '2');
 
     fireEvent.change(textarea, { target: { value: 'a\nb\nc' } });
@@ -159,13 +167,27 @@ describe('Note', () => {
     expect(NotesApi.update).toHaveBeenCalledTimes(1);
   });
 
-  test('NoteColorOption passes its color to onClick', () => {
+  test('NoteColorOption is a swatch radio that passes its color to onClick', () => {
     const onClick = vi.fn<ComponentProps<typeof NoteColorOption>['onClick']>();
-    render(<NoteColorOption color="bg-pink-200" selected onClick={onClick} />);
-    const button = screen.getByRole('button');
-    expect(button.className).toContain('ring-2');
-    fireEvent.click(button);
-    expect(onClick).toHaveBeenCalledWith('bg-pink-200');
+    render(<NoteColorOption color="pink" selected onClick={onClick} />);
+    const swatch = screen.getByRole('radio', { name: 'pink' });
+    expect(swatch).toHaveAttribute('aria-checked', 'true');
+    expect(swatch).toHaveClass('bg-user-pink', 'outline-2');
+    fireEvent.click(swatch);
+    expect(onClick).toHaveBeenCalledWith('pink');
+  });
+
+  test('a note without a known color is blue', () => {
+    render(
+      <Note
+        songId={3}
+        note={{ ...note, color: '' }}
+        onDelete={vi.fn<ComponentProps<typeof Note>['onDelete']>()}
+      />
+    );
+    expect(screen.getByPlaceholderText('Type here')).toHaveClass(
+      'bg-user-blue-container'
+    );
   });
 });
 
@@ -315,6 +337,11 @@ describe('AnnotationsToolbar', () => {
 
     fireEvent.click(utensilLabel('eraser'));
     expect(state).toHaveTextContent('eraser 2 rgba(0,0,0,1)');
+    expect(utensilLabel('eraser')).toHaveAttribute('aria-pressed', 'true');
+    expect(utensilLabel('pen')).toHaveAttribute('aria-pressed', 'false');
+    expect(
+      screen.getByRole('toolbar', { name: 'Annotation tools' })
+    ).toBeInTheDocument();
   });
 
   test('MarkupPopover starts annotating', () => {
@@ -336,7 +363,8 @@ describe('AnnotationsToolbar', () => {
     fireEvent.click(screen.getByText('Sticky note'));
     expect(onAddNote).toHaveBeenCalled();
 
-    // The menu stays open.
+    // Choosing an item closes the menu; reopen it for the next one.
+    fireEvent.click(screen.getAllByRole('button')[0]);
     fireEvent.click(screen.getByText('Annotate'));
     expect(setMode).toHaveBeenCalledWith('annotate');
   });
@@ -435,10 +463,13 @@ describe('colour pickers', () => {
         onChange={onChange}
       />
     );
-    // The swatches are divs with the color's background class.
-    const green = document.querySelector('.grid .bg-green-400');
-    if (!green) throw new Error('No green swatch');
+    const green = screen.getByRole('radio', { name: 'green' });
     fireEvent.click(green);
+    expect(green).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('radio', { name: 'blue' })).toHaveAttribute(
+      'aria-checked',
+      'false'
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
     expect(onChange).toHaveBeenLastCalledWith('green');
   });

@@ -1,13 +1,15 @@
 import { setAuth, setTeamId } from '../store/authSlice';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 
 import Alert from '../components/Alert';
+import AuthPage, { TEXT_LINK } from '../components/AuthPage';
 import Button from '../components/Button';
-import CenteredPage from '../components/CenteredPage';
 import InvitationApi from '../api/InvitationApi';
 import OutlinedInput from '../components/inputs/OutlinedInput';
+import PasswordInput from '../components/inputs/PasswordInput';
 import PasswordRequirements from '../components/PasswordRequirements';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import { useQuery } from './ClaimInvitationPage';
 import type { AxiosError } from 'axios';
@@ -32,6 +34,10 @@ export default function InvitationSignUpPage() {
 
   const MIN_PASSWORD_LENGTH = 8;
   const token = useQuery().get('token');
+
+  // Only once they've started confirming, so the field isn't red up front.
+  const passwordsDiffer =
+    passwordConfirmation !== '' && passwordConfirmation !== password;
 
   const canSignUp =
     isUncommon &&
@@ -65,11 +71,13 @@ export default function InvitationSignUpPage() {
     setIsUncommon(score >= 3);
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!canSignUp) return;
     setLoading(true);
     try {
       const result = await InvitationApi.signUpThroughToken({
-        // Non-null: the button is disabled without a token (canSignUp).
+        // Non-null: canSignUp checked there's a token.
         token: token!,
         password,
         passwordConfirmation,
@@ -91,89 +99,89 @@ export default function InvitationSignUpPage() {
     }
   };
 
-  if (token) {
+  const signInFooter = (
+    <>
+      Already have an account?
+      <Link to="/login" className={TEXT_LINK}>
+        Sign in
+      </Link>
+    </>
+  );
+
+  if (!token) {
     return (
-      <CenteredPage>
-        <h1 className="mb-8 text-3xl font-bold text-center">
-          You&apos;re almost there! <br /> Create a password for your new
-          account
-        </h1>
-
-        <div className="flex items-center mb-4">
-          <div className="w-full pr-2">
-            <div className="mb-2">First name</div>
-            <OutlinedInput
-              value={firstName}
-              onChange={setFirstName}
-              placeholder="first name"
-            />
-          </div>
-          <div className="w-full pl-2">
-            <div className="mb-2">Last name</div>
-            <OutlinedInput
-              value={lastName}
-              onChange={setLastName}
-              placeholder="last name"
-            />
-          </div>
-        </div>
-        <div className="mb-2">Password</div>
-        <div className="mb-4">
-          <OutlinedInput
-            value={password}
-            placeholder="password"
-            type="password"
-            onFocus={() => setIsPasswordFocused(true)}
-            onChange={handlePasswordChange}
-          />
-
-          {isPasswordFocused && (
-            <div className="mt-4">
-              <PasswordRequirements
-                isUncommon={isUncommon}
-                isLongEnough={isLongEnough}
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="mb-2">Confirm Password</div>
-        <div className="mb-4">
-          <OutlinedInput
-            value={passwordConfirmation}
-            placeholder="enter your password again"
-            type="password"
-            onChange={setPasswordConfirmation}
-          />
-        </div>
-
-        {alertMessage && (
-          <div className="mb-6">
-            <Alert
-              color="red"
-              dismissable
-              onDismiss={() => setAlertMessage(null)}
-            >
-              {alertMessage}
-            </Alert>
-          </div>
-        )}
-
-        <Button
-          full
-          disabled={!canSignUp}
-          loading={loading}
-          onClick={handleSignUp}
-        >
-          Sign Up
-        </Button>
-      </CenteredPage>
-    );
-  } else {
-    return (
-      <CenteredPage>
-        <Alert color="red">Invalid invitation</Alert>
-      </CenteredPage>
+      <AuthPage
+        title="This invitation doesn't work"
+        description="Invalid invitation link. Ask whoever invited you to send a new one."
+        footer={signInFooter}
+      />
     );
   }
+
+  return (
+    <AuthPage
+      title="You're almost there"
+      description="Add your name and choose a password to finish setting up your Mezzo account."
+      footer={signInFooter}
+    >
+      <form onSubmit={handleSignUp} className="flex flex-col gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <OutlinedInput
+            label="First name"
+            autoComplete="given-name"
+            value={firstName}
+            onChange={setFirstName}
+          />
+          <OutlinedInput
+            label="Last name"
+            autoComplete="family-name"
+            value={lastName}
+            onChange={setLastName}
+          />
+        </div>
+        <PasswordInput
+          label="Password"
+          autoComplete="new-password"
+          value={password}
+          onFocus={() => setIsPasswordFocused(true)}
+          onChange={handlePasswordChange}
+        />
+        {isPasswordFocused && (
+          // Tucked under the field, like its supporting text.
+          <div className="-mt-2">
+            <PasswordRequirements
+              isUncommon={isUncommon}
+              isLongEnough={isLongEnough}
+            />
+          </div>
+        )}
+        <PasswordInput
+          label="Confirm password"
+          autoComplete="new-password"
+          value={passwordConfirmation}
+          onChange={setPasswordConfirmation}
+          error={passwordsDiffer ? "Passwords don't match" : undefined}
+        />
+        {alertMessage && (
+          <Alert
+            color="red"
+            dismissable
+            onDismiss={() => setAlertMessage(null)}
+          >
+            {alertMessage}
+          </Alert>
+        )}
+        <Button
+          full
+          size="md"
+          disabled={!canSignUp}
+          loading={loading}
+          type="submit"
+          className="mt-2"
+        >
+          Create account
+        </Button>
+      </form>
+    </AuthPage>
+  );
 }

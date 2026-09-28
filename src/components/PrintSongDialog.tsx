@@ -2,12 +2,11 @@ import StyledDialog from './StyledDialog';
 import { usePDF } from '@react-pdf/renderer';
 import { toPdf } from '../utils/PdfUtils';
 import { useCallback, useEffect, useState } from 'react';
-import Button from './Button';
-import Checkbox from './Checkbox';
+import Button, { buttonClasses } from './Button';
+import DialogActions from './DialogActions';
 import ColorPicker from './ColorPicker';
-import Select from './Select';
-import FormatOption from './FormatOption';
-import FormatOptionLabel from './FormatOptionLabel';
+import Toggle from './Toggle';
+import OutlinedSelect from './inputs/OutlinedSelect';
 import { FONT_OPTIONS, FONT_SIZES } from './FormatPanelGeneralOptions';
 import { determineCapoNumber } from '../utils/capo';
 import type { Song, SongFormat } from '../types';
@@ -126,87 +125,71 @@ export default function PrintSongDialog({
     >
       <div className="grid grid-cols-8 gap-8 mb-4">
         <div className="col-span-8 md:col-span-2">
-          <FormatOption>
-            <FormatOptionLabel htmlFor="font">Font</FormatOptionLabel>
-            <div className="w-40">
-              <Select
-                id="font"
-                options={FONT_OPTIONS}
-                selected={song.format.font}
-                onChange={newValue => handleChange('font', newValue)}
-                className="h-6"
-                style={{ fontFamily: song.format.font }}
-              />
-            </div>
-          </FormatOption>
-          <FormatOption>
-            <FormatOptionLabel>Size</FormatOptionLabel>
-            <div className="w-40">
-              <Select
-                options={FONT_SIZES}
-                selected={song.format.font_size}
-                className="h-6"
-                onChange={newValue => handleChange('font_size', newValue)}
-              />
-            </div>
-          </FormatOption>
-          <FormatOption>
-            <FormatOptionLabel htmlFor="key-type">Key</FormatOptionLabel>
-            <div className="w-40">
-              <Select
-                id="key-type"
-                options={keyOptions}
-                selected={keyType}
-                onChange={setKeyType}
-                className="h-6"
-              />
-            </div>
-          </FormatOption>
+          <div className="flex flex-col gap-5 pt-2">
+            <OutlinedSelect
+              id="font"
+              label="Font"
+              options={FONT_OPTIONS}
+              selected={song.format.font}
+              onChange={newValue => handleChange('font', newValue)}
+              style={{ fontFamily: song.format.font }}
+            />
+            <OutlinedSelect
+              label="Size"
+              options={FONT_SIZES}
+              selected={song.format.font_size}
+              onChange={newValue => handleChange('font_size', newValue)}
+            />
+            <OutlinedSelect
+              id="key-type"
+              label="Key"
+              options={keyOptions}
+              selected={keyType}
+              onChange={setKeyType}
+            />
+          </div>
 
-          <div className="pt-4 mt-8 border-t border-outline-variant">
-            <FormatOption>
-              <FormatOptionLabel>Bold chords</FormatOptionLabel>
-              <Checkbox
-                checked={song.format.bold_chords}
+          {/* M3 list rows: the label, then its control at the end. */}
+          <div className="flex flex-col pt-3 mt-6 border-t border-outline-variant font-plain text-body-large text-on-surface">
+            <div className="py-2">
+              <Toggle
+                label="Bold chords"
+                spacing="between"
+                enabled={song.format.bold_chords}
                 onChange={newValue => handleChange('bold_chords', newValue)}
               />
-            </FormatOption>
+            </div>
+            <div className="py-2">
+              <Toggle
+                label="Italic chords"
+                spacing="between"
+                enabled={song.format.italic_chords}
+                onChange={newValue => handleChange('italic_chords', newValue)}
+              />
+            </div>
+            <div className="flex items-center justify-between py-2">
+              Highlight color
+              <ColorPicker
+                large
+                label="Highlight color"
+                color={song.format.highlight_color}
+                onChange={(newColor: string) =>
+                  handleChange('highlight_color', newColor)
+                }
+              />
+            </div>
+            <div className="flex items-center justify-between py-2">
+              Chord color
+              <ColorPicker
+                large
+                label="Chord color"
+                color={song.format.chord_color}
+                onChange={(newColor: string) =>
+                  handleChange('chord_color', newColor)
+                }
+              />
+            </div>
           </div>
-          <FormatOption>
-            <FormatOptionLabel>Italic chords</FormatOptionLabel>
-            <Checkbox
-              checked={song.format.italic_chords}
-              onChange={newValue => handleChange('italic_chords', newValue)}
-            />
-          </FormatOption>
-          <FormatOption>
-            <FormatOptionLabel>Highlight color</FormatOptionLabel>
-            <ColorPicker
-              color={song.format.highlight_color}
-              onChange={(newColor: string) =>
-                handleChange('highlight_color', newColor)
-              }
-            />
-          </FormatOption>
-          <FormatOption>
-            <FormatOptionLabel>Chord color</FormatOptionLabel>
-            <ColorPicker
-              color={song.format.chord_color}
-              onChange={(newColor: string) =>
-                handleChange('chord_color', newColor)
-              }
-            />
-          </FormatOption>
-          <a
-            // The url is null until the PDF renders; React leaves out an href
-            // of null, as it does undefined.
-            href={instance.url as string | undefined}
-            download={`${song.name}.pdf`}
-          >
-            <Button full className="mt-4">
-              Download
-            </Button>
-          </a>
         </div>
         <div className="col-span-8 md:col-span-6">
           <embed
@@ -217,11 +200,30 @@ export default function PrintSongDialog({
           />
         </div>
       </div>
-      <div className="flex justify-end">
-        <Button variant="open" color="blue" onClick={handleCloseDialog}>
+      <DialogActions>
+        <Button
+          variant="open"
+          color="gray"
+          size="sm"
+          onClick={handleCloseDialog}
+        >
           Cancel
         </Button>
-      </div>
+        {/* A link styled as a text button: it downloads the rendered PDF. */}
+        <a
+          // The url is null until the PDF renders; React leaves out an href
+          // of null, as it does undefined.
+          href={instance.url as string | undefined}
+          download={`${song.name}.pdf`}
+          className={buttonClasses({
+            variant: 'open',
+            size: 'sm',
+            className: 'flex-center',
+          })}
+        >
+          Download
+        </a>
+      </DialogActions>
     </StyledDialog>
   );
 }

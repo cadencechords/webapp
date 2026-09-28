@@ -22,16 +22,15 @@ export default function SongTracksTab({
   return (
     <>
       <div className="flex justify-end mb-4">
+        {/* An M3E small tonal button (tertiary) with a leading icon. */}
         <Button
-          variant="open"
-          color="black"
-          className="flex-center"
+          variant="accent"
+          color="purple"
+          size="sm"
+          className="flex-center gap-2"
           onClick={() => setShowAddTracks(true)}
         >
-          <Icon
-            name="add"
-            className="w-4 h-4 text-blue-600 dark:text-dark-blue mr-2"
-          />
+          <Icon name="add" className="w-5 h-5" />
           Add track
         </Button>
       </div>
