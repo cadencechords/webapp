@@ -125,3 +125,29 @@ test('assigns a role from the member’s role menu', () => {
   fireEvent.click(items[1]);
   expect(assignRole).toHaveBeenCalledWith({ memberId: 10, roleName: 'Member' });
 });
+
+test('names a member’s role that isn’t among the roles, like one just deleted', () => {
+  members.push({
+    id: 12,
+    user: { id: 7, email: 'old@example.com' },
+    role: { id: 3, name: 'Guest', memberships: [] },
+  });
+  try {
+    renderPage(['Assign roles']);
+    const row = screen
+      .getByText('old@example.com')
+      .closest('.list-segmented > *')!;
+    const menuButton = within(row as HTMLElement).getByRole('button', {
+      name: /Guest/,
+    });
+    fireEvent.click(menuButton);
+    const items = document.querySelectorAll('[data-menu-item]');
+    expect([...items].map(item => item.textContent)).toEqual([
+      'Admin',
+      'Member',
+      'Guest',
+    ]);
+  } finally {
+    members.pop();
+  }
+});

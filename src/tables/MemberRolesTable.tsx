@@ -61,13 +61,7 @@ export default function MemberRolesTable({
             {currentMember!.can(ASSIGN_ROLES) ? (
               <div className="shrink-0">
                 <MenuSelect
-                  // The member's own role until the roles load, so the
-                  // button isn't blank.
-                  options={
-                    roleOptions ?? [
-                      { value: member.role.name, display: member.role.name },
-                    ]
-                  }
+                  options={withOwnRole(roleOptions ?? [], member.role.name)}
                   selected={member.role.name}
                   onChange={roleName =>
                     assignRoleToMember({ memberId: member.id, roleName })
@@ -85,4 +79,15 @@ export default function MemberRolesTable({
       </div>
     </section>
   );
+}
+
+/** The roles, plus the member's own when it isn't among them (a role just
+    deleted, before the members refetch), so their button still names it. */
+function withOwnRole(
+  options: { value: string; display: string }[],
+  ownRole: string
+) {
+  return options.some(option => option.value === ownRole)
+    ? options
+    : [...options, { value: ownRole, display: ownRole }];
 }
