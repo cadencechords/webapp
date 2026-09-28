@@ -8,8 +8,6 @@ type OnsongChooseBackupFileProps = {
   onReset: () => void;
   backup?: File | null;
   onChooseSongs: () => void;
-  /** Not called: the header's back button leads to the import sources. */
-  onCancel?: () => void;
 };
 
 // Step 1: how to export a backup from OnSong, as numbered steps on a card,

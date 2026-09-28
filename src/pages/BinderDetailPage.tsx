@@ -65,7 +65,6 @@ export default function BinderDetailPage() {
     <div className="mb-10">
       {currentMember.can(EDIT_BINDERS) && !isEmpty(updates) && (
         <UnsavedChangesBar
-          changes={updates}
           onSave={() => updateBinder({ id, updates })}
           isSaving={isSaving}
         />

@@ -56,7 +56,8 @@ export default function SongDetailPage() {
     document.title = song ? song.name : 'Songs';
   }, [song]);
 
-  useRecordRecentlyViewed('song', song);
+  // Not while the name has an unsaved edit: only the saved name is recorded.
+  useRecordRecentlyViewed('song', 'name' in pendingUpdates ? undefined : song);
 
   const router = useHistory();
   const { id } = useParams<{ id: string }>();
@@ -300,11 +301,7 @@ export default function SongDetailPage() {
     <div className="grid grid-cols-4">
       <div className="col-span-4 lg:border-r lg:dark:border-dark-gray-700 lg:pr-4 lg:col-span-3">
         {currentMember.can(EDIT_SONGS) && !isEmpty(pendingUpdates) && (
-          <UnsavedChangesBar
-            changes={pendingUpdates}
-            onSave={handleSaveChanges}
-            isSaving={saving}
-          />
+          <UnsavedChangesBar onSave={handleSaveChanges} isSaving={saving} />
         )}
         <div className="mb-2 flex-between">
           <PageTitle

@@ -119,6 +119,8 @@ function ResultSection({
                 <span className="min-w-0 truncate">
                   <Highlighter
                     searchWords={[query]}
+                    // The query is plain text: "(" or "[" isn't a pattern.
+                    autoEscape
                     textToHighlight={result.name}
                     highlightClassName="bg-transparent text-primary font-semibold"
                   />

@@ -5,7 +5,8 @@ import StyledPopover from './StyledPopover';
 
 type MenuSelectProps<T extends string> = {
   options: { value: T; display: ReactNode }[];
-  /** Unset shows no current choice. */
+  /** Unset shows no current choice; one missing from `options` (still
+      loading, say) shows as its value. */
   selected?: T;
   onChange: (value: T) => void;
   /** Shown before the current choice, like "Key:". */
@@ -37,7 +38,9 @@ export default function MenuSelect<T extends string>({
               {label}
             </span>
           )}
-          <span className="text-label-large">{current?.display}</span>
+          <span className="text-label-large">
+            {current ? current.display : selected}
+          </span>
           <Icon
             name="keyboard_arrow_down"
             className="w-5 h-5 text-on-surface-variant transition-transform group-aria-expanded:rotate-180"

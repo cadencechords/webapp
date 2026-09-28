@@ -123,7 +123,6 @@ export default function OnsongImportPage() {
             onReset={handleReset}
             backup={backup}
             onChooseSongs={handleNextStep}
-            onCancel={handleBackStep}
           />
         );
       case 1:
@@ -177,7 +176,6 @@ export default function OnsongImportPage() {
             onReset={handleReset}
             backup={backup}
             onChooseSongs={handleNextStep}
-            onCancel={handleBackStep}
           />
         );
     }

@@ -444,31 +444,26 @@ test('SongDetailPage shows the key options and saves an edited name', async () =
   expect(screen.queryByRole('status')).not.toBeInTheDocument();
 });
 
-test('SongDetailPage hides the unsaved changes bar until the next edit', async () => {
+test('SongDetailPage records only the saved name as recently viewed', async () => {
   vi.mocked(SongApi.getOneById).mockResolvedValue({
     data: structuredClone(detailSong),
   } as Awaited<ReturnType<typeof SongApi.getOneById>>);
   vi.mocked(UserApi.getCurrentUser).mockResolvedValue({
     data: { id: 1, email: 'me@example.com', format_preferences: {} } as User,
   } as Awaited<ReturnType<typeof UserApi.getCurrentUser>>);
-  vi.mocked(SongApi.updateOneById).mockClear();
+  localStorage.clear();
 
+  const state = member(['Edit songs']);
   renderWithProvider(atSong(<SongDetailPage />), {
-    preloadedState: member(['Edit songs']),
+    preloadedState: { ...state, auth: { ...state.auth, teamId: 7 } },
   });
   const title = await screen.findByDisplayValue('Holy');
   fireEvent.change(title, { target: { value: 'Holy Holy' } });
 
-  fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
-  // Hidden, but the edit stays and nothing is saved.
-  expect(screen.queryByRole('status')).not.toBeInTheDocument();
-  expect(screen.getByDisplayValue('Holy Holy')).toBeInTheDocument();
-  expect(SongApi.updateOneById).not.toHaveBeenCalled();
-
-  fireEvent.change(screen.getByDisplayValue('Holy Holy'), {
-    target: { value: 'Holy Holy Holy' },
-  });
-  expect(screen.getByRole('status')).toBeInTheDocument();
+  // An unsaved rename leaves the recorded name as it was.
+  const stored = localStorage.getItem('recentlyViewed:7');
+  expect(stored).toContain('"Holy"');
+  expect(stored).not.toContain('Holy Holy');
 });
 
 test('SongsIndexPage filters the songs once the query is three letters', async () => {

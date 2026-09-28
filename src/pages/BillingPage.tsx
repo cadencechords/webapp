@@ -75,7 +75,7 @@ export default function BillingPage() {
               }
             </Detail>
             <Detail label="Status">
-              <StatusPill trial={!!isTrialing} />
+              <StatusPill status={status} />
             </Detail>
             {isTrialing && (
               <Detail label="Trial ends">
@@ -120,21 +120,35 @@ const PRO_ONLY = [
   'Spotify, Apple Music and YouTube tracks',
 ];
 
-/** Active on primary-container, or Trial on tertiary-container, with a dot. */
-function StatusPill({ trial }: { trial: boolean }) {
+/** Active on primary-container, Trial on tertiary-container, or any other
+    status (past due, canceled…) as is on error-container, with a dot. */
+function StatusPill({ status }: { status?: string | null }) {
+  const label =
+    status === 'active'
+      ? 'Active'
+      : status === 'trialing'
+        ? 'Trial'
+        : capitalize((status ?? 'unknown').replace(/_/g, ' '));
+
   return (
     <span
       className={classNames(
         'inline-flex items-center gap-2 h-7 px-3 rounded-full text-label-large',
-        trial
-          ? 'bg-tertiary-container text-on-tertiary-container'
-          : 'bg-primary-container text-on-primary-container'
+        status === 'active'
+          ? 'bg-primary-container text-on-primary-container'
+          : status === 'trialing'
+            ? 'bg-tertiary-container text-on-tertiary-container'
+            : 'bg-error-container text-on-error-container'
       )}
     >
       <span className="w-2 h-2 rounded-full bg-current" aria-hidden="true" />
-      {trial ? 'Trial' : 'Active'}
+      {label}
     </span>
   );
+}
+
+function capitalize(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 function Detail({ label, children }: { label: string; children: ReactNode }) {
