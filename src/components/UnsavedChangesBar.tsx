@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Button from './Button';
 import Icon from './Icon';
 
@@ -8,17 +9,21 @@ type UnsavedChangesBarProps = {
 
 // A detail page's pending edits, above its title: a tonal banner on
 // primary-container saying there are unsaved changes, with a filled Save
-// button at its end. It's the page's only save control, so it can't be
-// dismissed, and it sticks to the top while the page scrolls, so it stays in
-// view while editing fields further down.
+// button and a dismiss button at its end. Dismissing only hides the bar: the
+// edits stay pending and it shows again the next time the page has any. It
+// sticks to the top while the page scrolls, so it stays in view while editing
+// fields further down. Above the song's chords, which are positioned at z-10.
 export default function UnsavedChangesBar({
   isSaving,
   onSave,
 }: UnsavedChangesBarProps) {
+  const [dismissed, setDismissed] = useState(false);
+  if (dismissed) return null;
+
   return (
     <div
       role="status"
-      className="sticky top-3 z-10 flex items-center gap-3 py-2 pl-4 pr-4 mb-3 rounded-extra-large bg-primary-container text-on-primary-container font-plain animate-enter-rise"
+      className="sticky top-3 z-20 flex items-center gap-3 py-2 pl-4 pr-4 mb-3 rounded-extra-large bg-primary-container text-on-primary-container font-plain animate-enter-rise"
     >
       <Icon name="edit" className="w-5 h-5 shrink-0" />
       <span className="flex-1 min-w-0 text-body-medium">
@@ -32,6 +37,16 @@ export default function UnsavedChangesBar({
         className="shrink-0"
       >
         Save changes
+      </Button>
+      <Button
+        variant="icon"
+        color="gray"
+        size="md"
+        name="Dismiss"
+        onClick={() => setDismissed(true)}
+        className="shrink-0 -mr-2"
+      >
+        <Icon name="close" className="w-6 h-6" />
       </Button>
     </div>
   );

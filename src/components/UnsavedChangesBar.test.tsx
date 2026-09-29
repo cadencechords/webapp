@@ -11,11 +11,17 @@ test('UnsavedChangesBar saves the edits', () => {
     'bg-primary-container',
     'sticky'
   );
-  // The only save control: nothing hides it while there are edits.
-  expect(
-    screen.queryByRole('button', { name: 'Dismiss' })
-  ).not.toBeInTheDocument();
+  // Above the song's chords (z-10).
+  expect(bar).toHaveClass('z-20');
 
   fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
   expect(onSave).toHaveBeenCalledTimes(1);
+});
+
+test('UnsavedChangesBar can be dismissed without saving', () => {
+  const onSave = vi.fn<() => void>();
+  render(<UnsavedChangesBar isSaving={false} onSave={onSave} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+  expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  expect(onSave).not.toHaveBeenCalled();
 });
