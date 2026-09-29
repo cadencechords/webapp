@@ -45,8 +45,11 @@ test('StyledDialog is an M3 basic dialog that still closes on escape and its clo
   expect(panel).toHaveClass(
     'bg-surface-container-high',
     'rounded-extra-large',
-    'my-8'
+    // Auto margins center it and leave a tall one scrollable from its top.
+    'my-auto',
+    'mx-auto'
   );
+  expect(panel.parentElement).toHaveClass('flex', 'min-h-full');
   expect(dialog.querySelector('.bg-scrim\\/32')).toBeInTheDocument();
 
   fireEvent.keyDown(dialog, { key: 'Escape' });
