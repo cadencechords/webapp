@@ -16,8 +16,10 @@ export default function WellInput({
   id = '',
 }: WellInputProps) {
   return (
+    // M3 filled text field: the active indicator is an inset shadow, so the
+    // field stays a single <input> and className still reaches it.
     <input
-      className={`appearance-none bg-gray-100 dark:bg-dark-gray-800 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700 rounded-lg outline-hidden focus:outline-hidden w-full px-3 py-2 hover:bg-gray-200 transition-all focus:bg-gray-200 ${className}`}
+      className={`appearance-none font-plain text-body-large bg-surface-container-highest text-on-surface placeholder:text-on-surface-variant caret-primary rounded-t-extra-small state-layer-flat outline-hidden focus:outline-hidden w-full px-4 py-3 shadow-[inset_0_-1px_0_var(--color-on-surface-variant)] hover:shadow-[inset_0_-1px_0_var(--color-on-surface)] focus:shadow-[inset_0_-2px_0_var(--color-primary)] transition-fast-effects ${className}`}
       placeholder={placeholder}
       value={value}
       onChange={e => onChange(e.target.value)}

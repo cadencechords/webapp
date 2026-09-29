@@ -62,6 +62,114 @@ export const ROLES = [
   ['shadow', 'shadow'],
 ] as const;
 
+type RoleKey = (typeof ROLES)[number][1];
+
+// The mobile app's palette (app/src/constants/Colors.ts, MATERIAL_LIGHT_COLORS
+// and MATERIAL_DARK_COLORS), so web and mobile share one set of colors. It's
+// hand-tuned rather than generated, and wins over the scheme from SEED.
+const APP_LIGHT: Partial<Record<RoleKey, string>> = {
+  primary: '#009bd4',
+  surfaceTint: '#009bd4',
+  onPrimary: '#ffffff',
+  primaryContainer: '#c6e7ff',
+  onPrimaryContainer: '#003e57',
+  secondary: '#7b43ad',
+  onSecondary: '#ffffff',
+  secondaryContainer: '#deb7ff',
+  onSecondaryContainer: '#541886',
+  tertiary: '#5755a5',
+  onTertiary: '#ffffff',
+  tertiaryContainer: '#aaa8ff',
+  onTertiaryContainer: '#3c3988',
+  error: '#ba1a1a',
+  onError: '#ffffff',
+  errorContainer: '#ffdad6',
+  onErrorContainer: '#93000a',
+  background: '#ffffff',
+  onBackground: '#171c20',
+  surface: '#fbf9f9',
+  onSurface: '#1b1b1c',
+  surfaceVariant: '#d9e4ed',
+  onSurfaceVariant: '#3e4850',
+  outline: '#6e7881',
+  outlineVariant: '#bdc8d1',
+  shadow: '#000000',
+  scrim: '#000000',
+  inverseSurface: '#303031',
+  inverseOnSurface: '#f3f0f0',
+  inversePrimary: '#81cfff',
+  primaryFixed: '#c6e7ff',
+  onPrimaryFixed: '#001e2d',
+  primaryFixedDim: '#81cfff',
+  onPrimaryFixedVariant: '#004c6b',
+  secondaryFixed: '#f1dbff',
+  onSecondaryFixed: '#2d0050',
+  secondaryFixedDim: '#deb7ff',
+  onSecondaryFixedVariant: '#612993',
+  tertiaryFixed: '#e2dfff',
+  onTertiaryFixed: '#110860',
+  tertiaryFixedDim: '#c3c0ff',
+  onTertiaryFixedVariant: '#3f3d8c',
+  surfaceDim: '#dcd9da',
+  surfaceBright: '#fbf9f9',
+  surfaceContainerLowest: '#f5f9fc',
+  surfaceContainerLow: '#eef3f7',
+  surfaceContainer: '#e7edf2',
+  surfaceContainerHigh: '#dde5eb',
+  surfaceContainerHighest: '#d2dce3',
+};
+const APP_DARK: Partial<Record<RoleKey, string>> = {
+  primary: '#81cfff',
+  surfaceTint: '#81cfff',
+  onPrimary: '#00344b',
+  primaryContainer: '#00aeee',
+  onPrimaryContainer: '#003e57',
+  secondary: '#deb7ff',
+  onSecondary: '#49067b',
+  secondaryContainer: '#e08be8',
+  onSecondaryContainer: '#72006b',
+  tertiary: '#bebbff',
+  onTertiary: '#232070',
+  tertiaryContainer: '#9c99ff',
+  onTertiaryContainer: '#322f90',
+  error: '#ffb4ab',
+  onError: '#690005',
+  errorContainer: '#93000a',
+  onErrorContainer: '#ffdad6',
+  background: '#0f1418',
+  onBackground: '#dee3e8',
+  surface: '#131314',
+  onSurface: '#e4e2e2',
+  surfaceVariant: '#3e4850',
+  onSurfaceVariant: '#bdc8d1',
+  outline: '#87929b',
+  outlineVariant: '#3e4850',
+  shadow: '#000000',
+  scrim: '#000000',
+  inverseSurface: '#e4e2e2',
+  inverseOnSurface: '#303031',
+  inversePrimary: '#00658c',
+  primaryFixed: '#c6e7ff',
+  onPrimaryFixed: '#001e2d',
+  primaryFixedDim: '#81cfff',
+  onPrimaryFixedVariant: '#004c6b',
+  secondaryFixed: '#f1dbff',
+  onSecondaryFixed: '#2d0050',
+  secondaryFixedDim: '#deb7ff',
+  onSecondaryFixedVariant: '#612993',
+  tertiaryFixed: '#e2dfff',
+  onTertiaryFixed: '#110860',
+  tertiaryFixedDim: '#c3c0ff',
+  onTertiaryFixedVariant: '#3f3d8c',
+  surfaceDim: '#11121a',
+  surfaceBright: '#353a46',
+  surfaceContainerLowest: '#0b0c12',
+  surfaceContainerLow: '#171a22',
+  surfaceContainer: '#1b1e27',
+  surfaceContainerHigh: '#252933',
+  surfaceContainerHighest: '#303542',
+};
+
 export function generateScheme(isDark: boolean): Record<string, string> {
   // SchemeTonalSpot extends DynamicScheme, but its .d.ts imports that without
   // a file extension, which NodeNext resolution (tsconfig.node.json) can't
@@ -72,10 +180,11 @@ export function generateScheme(isDark: boolean): Record<string, string> {
     CONTRAST_LEVEL,
     SPEC_VERSION
   ) as DynamicScheme;
+  const app = isDark ? APP_DARK : APP_LIGHT;
   return Object.fromEntries(
     ROLES.map(([name, key]) => [
       name,
-      hexFromArgb(MaterialDynamicColors[key].getArgb(scheme)),
+      app[key] ?? hexFromArgb(MaterialDynamicColors[key].getArgb(scheme)),
     ])
   );
 }

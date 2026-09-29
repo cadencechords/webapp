@@ -28,7 +28,7 @@ test('SearchResults links each result and keys the links', () => {
   const hrefs = screen
     .getAllByRole('link')
     .map(link => link.getAttribute('href'));
-  expect(hrefs).toEqual(['/binders/1', '/songs/2', '/songs/3']);
+  expect(hrefs).toEqual(['/folders/1', '/songs/2', '/songs/3']);
   expect(screen.getByText('No sets found')).toBeInTheDocument();
 
   fireEvent.click(screen.getByText('Worship'));
@@ -72,4 +72,15 @@ test('SearchResults keys binders by id, so same-named binders both render', () =
   );
   expect(keyWarnings).toEqual([]);
   consoleError.mockRestore();
+});
+
+test('SearchResults takes the query as text, not a pattern', () => {
+  // The results of an earlier search stay while the query changes: "(" used
+  // to become an invalid regular expression and throw.
+  render(
+    <MemoryRouter>
+      <SearchResults results={results} searchQuery="grace (" />
+    </MemoryRouter>
+  );
+  expect(screen.getByText('Amazing Grace')).toBeInTheDocument();
 });

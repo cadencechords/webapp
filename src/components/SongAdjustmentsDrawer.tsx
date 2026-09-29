@@ -67,7 +67,7 @@ export default function SongAdjustmentsDrawer({
   }
   return (
     <>
-      <Drawer open={open} onClose={onClose}>
+      <Drawer open={open} onClose={onClose} title="Song settings">
         {getSheet()}
       </Drawer>
     </>

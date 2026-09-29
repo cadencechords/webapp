@@ -14,7 +14,7 @@ import Alert from '../components/Alert';
 import useDialog from '../hooks/useDialog';
 import List from '../components/List';
 import SetlistRow from '../components/SetlistRow';
-import WellInput from '../components/inputs/WellInput';
+import SearchField from '../components/inputs/SearchField';
 import FadeIn from '../components/FadeIn';
 import SetlistsTabs, { type SetlistsTab } from '../components/SetlistsTabs';
 import type { Setlist } from '../types';
@@ -78,11 +78,11 @@ export default function SetlistsIndexPage() {
         <>
           <div className="mb-2">{setlists.length} total</div>
           <FadeIn>
-            <WellInput
+            <SearchField
               placeholder="Search your sets"
               value={query}
               onChange={setQuery}
-              className="mb-4 lg:text-sm"
+              className="mb-4"
             />
             <SetlistsTabs selectedTab={selectedTab} onChange={setSelectedTab} />
           </FadeIn>
@@ -104,7 +104,7 @@ export default function SetlistsIndexPage() {
             open={isCreateOpen}
             onCloseDialog={hideCreateDialog}
           />
-          <QuickAdd onAdd={showCreateDialog} />
+          <QuickAdd onAdd={showCreateDialog} label="New set" />
         </>
       )}
     </div>

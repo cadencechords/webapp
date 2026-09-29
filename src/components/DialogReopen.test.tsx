@@ -1,10 +1,4 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import type { AxiosResponse } from 'axios';
@@ -17,6 +11,7 @@ import PrintSongDialog from './PrintSongDialog';
 import EventDetailDialog from '../dialogs/EventDetailDialog';
 import NoteDialog, { type NoteUpdates } from '../dialogs/NoteDialog';
 import SongApi from '../api/SongApi';
+import { renderWithProvider } from '../utils/test';
 import type { CalendarEvent, Song } from '../types';
 
 // Pins how the dialogs fixed in CAD-143 start when they open and reopen, now
@@ -152,9 +147,7 @@ test('ChangeSetlistDateDialog reopens on the scheduled date', async () => {
     </MemoryRouter>
   );
   const { rerender } = render(dialog(true));
-  // OutlinedInput's label isn't tied to its input. Non-null: the dialog is
-  // open whenever this is called.
-  const input = () => document.getElementById('date-picker')!;
+  const input = () => screen.getByLabelText('Scheduled date');
   expect(input()).toHaveValue('2026-09-26');
   fireEvent.change(input(), { target: { value: '2026-10-01' } });
   expect(input()).toHaveValue('2026-10-01');
@@ -182,12 +175,11 @@ test('NoteDialog reopens on the note, not an unconfirmed edit', async () => {
   const textarea = () => screen.getByPlaceholderText('Type here');
   expect(textarea()).toHaveValue('Slow down');
   fireEvent.change(textarea(), { target: { value: 'Speed up' } });
-  // The color options have no text; pink is the one with a pink background.
-  fireEvent.click(document.querySelector('button.bg-pink-200')!);
+  fireEvent.click(screen.getByRole('radio', { name: 'pink' }));
 
   await reopen(dialog, rerender);
   expect(textarea()).toHaveValue('Slow down');
-  fireEvent.click(screen.getByText('Confirm'));
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(onUpdate).toHaveBeenLastCalledWith({ content: 'Slow down' });
 
   await reopen(
@@ -195,7 +187,7 @@ test('NoteDialog reopens on the note, not an unconfirmed edit', async () => {
     rerender
   );
   expect(textarea()).toHaveValue('Build');
-  fireEvent.click(screen.getByText('Confirm'));
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   expect(onUpdate).toHaveBeenCalledWith({ content: 'Build' });
 });
 
@@ -212,10 +204,7 @@ test('PrintSongDialog keeps its settings when reopened, until the song changes',
     <PrintSongDialog open={open} onCloseDialog={() => {}} song={song} />
   );
   const { rerender } = render(dialog(true));
-  const boldChords = () =>
-    within(
-      screen.getByText('Bold chords').parentElement as HTMLElement
-    ).getByRole('checkbox');
+  const boldChords = () => screen.getByRole('switch', { name: 'Bold chords' });
   fireEvent.click(boldChords());
   expect(boldChords()).toBeChecked();
 
@@ -259,7 +248,7 @@ test('AddSongsToSetDialog filters the unbound songs by the query', async () => {
   vi.spyOn(SongApi, 'getAll').mockResolvedValue({
     data: [song(1, 'Bound'), song(2, 'Amazing Grace'), song(3, 'Holy')],
   } as AxiosResponse<Song[]>);
-  render(
+  renderWithProvider(
     <MemoryRouter initialEntries={['/sets/7']}>
       <Route path="/sets/:id">
         <AddSongsToSetDialog
@@ -275,7 +264,7 @@ test('AddSongsToSetDialog filters the unbound songs by the query', async () => {
   expect(screen.getByText('Holy')).toBeInTheDocument();
   expect(screen.queryByText('Bound')).not.toBeInTheDocument();
 
-  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'hol' } });
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'hol' } });
   expect(screen.getByText('Holy')).toBeInTheDocument();
   expect(screen.queryByText('Amazing Grace')).not.toBeInTheDocument();
 });

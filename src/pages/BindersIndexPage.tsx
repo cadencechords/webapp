@@ -11,13 +11,13 @@ import Alert from '../components/Alert';
 import List from '../components/List';
 import NoDataMessage from '../components/NoDataMessage';
 import BinderRow from '../components/BinderRow';
-import WellInput from '../components/inputs/WellInput';
+import SearchField from '../components/inputs/SearchField';
 import useDialog from '../hooks/useDialog';
 import FadeIn from '../components/FadeIn';
 
 export default function BindersIndexPage() {
   useEffect(() => {
-    document.title = 'Binders';
+    document.title = 'Folders';
   });
 
   const [isOpen, showDialog, hideDialog] = useDialog();
@@ -41,27 +41,27 @@ export default function BindersIndexPage() {
 
   return (
     <div className="mb-10">
-      <PageHeader title="Binders" headerRightVisible={false} />
+      <PageHeader title="Folders" headerRightVisible={false} />
       {isLoading && <PageLoading />}
       {isError && (
-        <Alert color="red">There was an issue retrieving your binders.</Alert>
+        <Alert color="red">There was an issue retrieving your folders.</Alert>
       )}
 
       {isSuccess && (
         <>
           <FadeIn>
             <div className="mb-2">{binders.length} total</div>
-            <WellInput
-              placeholder="Search your binders"
+            <SearchField
+              placeholder="Search your folders"
               value={query}
               onChange={setQuery}
-              className="mb-4 lg:text-sm"
+              className="mb-4"
             />
           </FadeIn>
           <FadeIn className="delay-100">
             <List
               data={queriedBinders}
-              ListEmpty={<NoDataMessage type={'binders'} />}
+              ListEmpty={<NoDataMessage type={'folders'} />}
               className="delay-100"
               renderItem={binder => (
                 <BinderRow binder={binder} key={binder.id} />
@@ -74,7 +74,7 @@ export default function BindersIndexPage() {
       {currentMember.can(ADD_BINDERS) && (
         <>
           <CreateBinderDialog open={isOpen} onCloseDialog={hideDialog} />
-          <QuickAdd onAdd={showDialog} />
+          <QuickAdd onAdd={showDialog} label="New folder" />
         </>
       )}
     </div>

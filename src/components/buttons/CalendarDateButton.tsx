@@ -1,24 +1,30 @@
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 type CalendarDateButtonProps = {
+  /** Today: filled with primary. */
   selected: boolean;
   children: ReactNode;
   className: string;
 };
 
+// A day's number in a calendar cell, in a 28dp circle; today's is filled
+// with primary. Not interactive: the cell's events are.
 export default function CalendarDateButton({
   selected,
   children,
   className,
 }: CalendarDateButtonProps) {
-  const colorClasses = selected
-    ? 'bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 text-white'
-    : 'focus:bg-gray-200 hover:bg-gray-200 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700';
   return (
-    <button
-      className={`focus:outline-hidden outline-hidden rounded-full w-7 h-7 text-sm transition-colors ${colorClasses} ${className}`}
+    <span
+      aria-current={selected ? 'date' : undefined}
+      className={classNames(
+        'inline-flex items-center justify-center w-7 h-7 rounded-full font-plain text-label-large',
+        selected ? 'bg-primary text-on-primary' : 'text-on-surface',
+        className
+      )}
     >
       {children}
-    </button>
+    </span>
   );
 }

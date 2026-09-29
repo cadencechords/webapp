@@ -1,6 +1,6 @@
 import { useSessionsContext } from '../contexts/SessionsProvider';
 import NoDataMessage from './NoDataMessage';
-import SectionTitle from './SectionTitle';
+import SheetHeader from './SheetHeader';
 import SessionCard from './SessionCard';
 import type { Session } from '../types';
 
@@ -34,20 +34,38 @@ export default function SessionsSheet({
 
   return (
     <div className={` ${className}`}>
-      <SectionTitle title="Sessions" />
+      <SheetHeader title="Sessions" />
+      <p className="-mt-4 mb-4 font-plain text-body-medium text-on-surface-variant">
+        Join a session to follow its host through the set, song by song.
+      </p>
       {sessions?.length > 0 ? (
-        sessions?.map(session => (
-          <SessionCard
-            className="mb-4"
-            session={session}
-            key={session.id}
-            onJoin={handleJoin}
-            isActive={activeSession?.id === session.id}
-            onLeave={handleLeave}
-          />
-        ))
+        <div className="list-segmented">
+          {sessions.map(session => {
+            const isActive = activeSession?.id === session.id;
+            return (
+              <SessionCard
+                session={session}
+                key={session.id}
+                onJoin={handleJoin}
+                isActive={isActive}
+                onLeave={handleLeave}
+                // The session you follow, on secondary-container.
+                className={
+                  isActive
+                    ? 'bg-secondary-container text-on-secondary-container'
+                    : undefined
+                }
+              />
+            );
+          })}
+        </div>
       ) : (
-        <NoDataMessage>No available sessions to join</NoDataMessage>
+        <NoDataMessage
+          compact
+          description="When someone starts one for this set, it shows here."
+        >
+          No sessions to join
+        </NoDataMessage>
       )}
     </div>
   );

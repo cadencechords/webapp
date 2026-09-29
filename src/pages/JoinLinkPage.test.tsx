@@ -14,13 +14,17 @@ test('it should display join details if join link is valid', async () => {
   expect(await screen.findByText(/pro plan/i)).toBeInTheDocument();
 });
 
-test('it should ask a logged-out user to log in first', async () => {
+test('it should ask a signed-out user to sign in first', async () => {
   mockSuccessfulAxiosResponse();
   renderWithRouter(<JoinLinkPage />);
 
   expect(
-    await screen.findByText(/you need to be logged in first/i)
+    await screen.findByText(/you need to be signed in to join this team/i)
   ).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Sign in now' })).toHaveAttribute(
+    'href',
+    expect.stringMatching(/^\/login\?target_url=/)
+  );
 });
 
 test('it should display an alert if the join link is invalid', async () => {

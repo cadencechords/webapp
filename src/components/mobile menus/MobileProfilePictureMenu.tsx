@@ -1,4 +1,4 @@
-import MobileMenuButton from '../buttons/MobileMenuButton';
+import { MenuItem, MenuList } from '../Menu';
 import StyledDialog from '../StyledDialog';
 import Icon from '../Icon';
 
@@ -27,18 +27,21 @@ export default function MobileProfilePictureMenu({
       title="Profile Picture"
       fullscreen={false}
     >
-      <MobileMenuButton full onClick={onOpenFileDialog}>
-        <div className="flex items-center">
-          <Icon name="desktop_windows" className="mr-4 h-5" />
+      <MenuList className="-mx-3 *:rounded-medium">
+        <MenuItem
+          onClick={onOpenFileDialog}
+          icon={<Icon name="desktop_windows" />}
+        >
           Upload from device
-        </div>
-      </MobileMenuButton>
-      <MobileMenuButton full color="red" onClick={handleDeleteImage}>
-        <div className="flex items-center">
-          <Icon name="delete" className="mr-4 h-5" />
+        </MenuItem>
+        <MenuItem
+          destructive
+          onClick={handleDeleteImage}
+          icon={<Icon name="delete" />}
+        >
           Remove photo
-        </div>
-      </MobileMenuButton>
+        </MenuItem>
+      </MenuList>
     </StyledDialog>
   );
 }

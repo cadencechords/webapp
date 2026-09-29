@@ -5,11 +5,11 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
+import { setSetlistBeingPresented } from '../store/presenterSlice';
 import type { AxiosResponse } from 'axios';
 import type { ComponentProps } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { renderWithProvider } from '../utils/test';
-import BinderApi from '../api/BinderApi';
 import SetlistApi from '../api/SetlistApi';
 import SongApi from '../api/SongApi';
 import {
@@ -23,7 +23,7 @@ import BinderRow from './BinderRow';
 import BinderSongsList from './BinderSongsList';
 import CreateSetlistDialog from './CreateSetlistDialog';
 import Dashboard from './Dashboard';
-import SearchDialog from './SearchDialog';
+import PublicSetlistSection from './PublicSetlistSection';
 import SetlistOptionsPopover from './SetlistOptionsPopover';
 import SetlistRow from './SetlistRow';
 import SetlistSongsList from './SetlistSongsList';
@@ -77,26 +77,33 @@ function state(permissions: string[], { isPro = false } = {}) {
   };
 }
 
-test('Dashboard lists today’s sets, offering Present only for sets with songs', () => {
+test('Dashboard lists today’s sets as rows opening each set, offering Perform only for sets with songs', () => {
   const { container } = renderWithProvider(
     <MemoryRouter>
       <Dashboard
         data={{
           todays_setlists: [
             { id: 1, name: 'Sunday AM', scheduled_songs: [{}, {}] },
-            { id: 2, name: 'Sunday PM', scheduled_songs: [] },
+            { id: 2, name: 'Sunday PM', scheduled_songs: [{}] },
             { id: 3, name: 'Rehearsal' },
           ],
         }}
       />
     </MemoryRouter>
   );
-  expect(screen.getAllByText('Present')).toHaveLength(1);
-  expect(screen.getByText('Present').closest('a')).toHaveAttribute(
+  const perform = screen.getAllByRole('link', { name: 'Perform' });
+  expect(perform.map(link => link.getAttribute('href'))).toEqual([
+    '/sets/1/present',
+    '/sets/2/present',
+  ]);
+  expect(screen.getByRole('link', { name: 'Rehearsal' })).toHaveAttribute(
     'href',
-    '/sets/1/present'
+    '/sets/3'
   );
-  expect(screen.getAllByText('Details')).toHaveLength(3);
+  expect(screen.getByText('2 songs')).toBeInTheDocument();
+  expect(screen.getByText('1 song')).toBeInTheDocument();
+  expect(screen.getByText('0 songs')).toBeInTheDocument();
+  expect(container.querySelector('.list-segmented')?.children).toHaveLength(3);
   expect(container).not.toHaveTextContent('No sets are scheduled for today');
 });
 
@@ -132,7 +139,7 @@ test('SetlistRow and BinderRow count songs, plural unless exactly one', () => {
   expect(easter).toHaveTextContent('1 song·Sun Apr 21, 2030');
   expect(screen.getByText('Empty').closest('a')).toHaveTextContent('0 songs');
   const hymns = screen.getByRole('link', { name: /Hymns/ });
-  expect(hymns).toHaveAttribute('href', '/binders/6');
+  expect(hymns).toHaveAttribute('href', '/folders/6');
   expect(hymns).toHaveTextContent(/1 song$/);
   // No songs loaded: the count is blank and the word plural.
   expect(screen.getByText('Loading').closest('a')).toHaveTextContent(
@@ -146,8 +153,16 @@ test('SetlistsTabs maps the tab index to upcoming and past', () => {
   renderWithProvider(
     <SetlistsTabs selectedTab="upcoming" onChange={onChange} />
   );
-  expect(screen.getByText('Upcoming')).toHaveClass('bg-blue-600');
-  expect(screen.getByText('Past')).not.toHaveClass('bg-blue-600');
+  expect(screen.getByRole('tab', { name: 'Upcoming' })).toHaveAttribute(
+    'aria-selected',
+    'true'
+  );
+  expect(screen.getByRole('tab', { name: 'Upcoming' })).toHaveClass(
+    'text-primary'
+  );
+  expect(screen.getByRole('tab', { name: 'Past' })).toHaveClass(
+    'text-on-surface-variant'
+  );
   fireEvent.click(screen.getByText('Past'));
   expect(onChange).toHaveBeenLastCalledWith('past');
 });
@@ -229,7 +244,7 @@ test('SetlistSongsList shows a message for no songs or unloaded songs', () => {
 });
 
 test('BinderSongsList filters by more than one letter and shows a still-empty binder', () => {
-  // SearchSongsDialog loads the team's songs as it mounts.
+  // AddSongsDialog loads the team's songs as it mounts.
   vi.spyOn(SongApi, 'getAll').mockResolvedValue(response([]));
   const binder: Binder = {
     id: 3,
@@ -243,8 +258,8 @@ test('BinderSongsList filters by more than one letter and shows a still-empty bi
     { preloadedState: state([EDIT_BINDERS]) }
   );
   expect(screen.getByText('2 total')).toBeInTheDocument();
-  expect(screen.getByText('Add Songs')).toBeInTheDocument();
-  const search = screen.getByPlaceholderText('Search songs in binder');
+  expect(screen.getByRole('button', { name: 'Add songs' })).toBeInTheDocument();
+  const search = screen.getByPlaceholderText('Search songs in folder');
   fireEvent.change(search, { target: { value: 'g' } });
   expect(screen.getByText('Be Thou My Vision')).toBeInTheDocument();
   fireEvent.change(search, { target: { value: 'GR' } });
@@ -311,7 +326,7 @@ test('CreateSetlistDialog asks to add a calendar event only for pro teams that c
       </MemoryRouter>,
       { preloadedState: state(permissions, { isPro }) }
     );
-    fireEvent.change(screen.getByPlaceholderText('Give your set a name'), {
+    fireEvent.change(screen.getByLabelText('Name'), {
       target: { value: 'New' },
     });
     fireEvent.change(
@@ -341,67 +356,6 @@ test('CreateSetlistDialog asks to add a calendar event only for pro teams that c
   expect(await create([], true)).not.toHaveProperty('shouldAddToCalendar');
 });
 
-test('SearchDialog searches binders, songs and sets once typing pauses', async () => {
-  const binderSearch = vi
-    .spyOn(BinderApi, 'search')
-    .mockResolvedValue(response([{ id: 1, name: 'Grace binder' }]));
-  const songSearch = vi
-    .spyOn(SongApi, 'search')
-    .mockResolvedValue(response([song(2, 'Grace song')]));
-  const setlistSearch = vi
-    .spyOn(SetlistApi, 'search')
-    .mockResolvedValue(response([{ id: 3, name: 'Grace set' }]));
-  renderWithProvider(
-    <MemoryRouter>
-      <SearchDialog
-        open
-        onCloseDialog={vi.fn<
-          ComponentProps<typeof SearchDialog>['onCloseDialog']
-        >()}
-      />
-    </MemoryRouter>
-  );
-  const input = screen.getByPlaceholderText(
-    'Search for binders, songs or sets'
-  );
-  fireEvent.change(input, { target: { value: 'gr' } });
-  fireEvent.change(input, { target: { value: 'grace' } });
-  // Each result's name is split around the highlighted query, so check the
-  // links.
-  await waitFor(() =>
-    expect(
-      screen.getAllByRole('link').map(link => link.getAttribute('href'))
-    ).toEqual(['/binders/1', '/songs/2', '/sets/3'])
-  );
-  // Debounced: only the last query is searched.
-  expect(binderSearch.mock.calls).toEqual([['grace']]);
-  expect(songSearch.mock.calls).toEqual([['grace']]);
-  expect(setlistSearch.mock.calls).toEqual([['grace']]);
-});
-
-test('SearchDialog drops a search still waiting when it closes', async () => {
-  const binderSearch = vi.spyOn(BinderApi, 'search');
-  const onCloseDialog =
-    vi.fn<ComponentProps<typeof SearchDialog>['onCloseDialog']>();
-  renderWithProvider(
-    <MemoryRouter>
-      <SearchDialog open onCloseDialog={onCloseDialog} />
-    </MemoryRouter>
-  );
-  fireEvent.change(
-    screen.getByPlaceholderText('Search for binders, songs or sets'),
-    { target: { value: 'grace' } }
-  );
-  fireEvent.keyDown(document.activeElement ?? document.body, {
-    key: 'Escape',
-  });
-  expect(onCloseDialog).toHaveBeenCalled();
-
-  // Past the 300ms wait.
-  await act(() => new Promise(resolve => setTimeout(resolve, 400)));
-  expect(binderSearch).not.toHaveBeenCalled();
-});
-
 test('SetlistsIndexPage splits sets into upcoming (soonest first) and past (latest first)', async () => {
   vi.spyOn(SetlistApi, 'getAll').mockResolvedValue(
     response<Setlist[]>([
@@ -419,7 +373,10 @@ test('SetlistsIndexPage splits sets into upcoming (soonest first) and past (late
   );
   expect(await screen.findByText('4 total')).toBeInTheDocument();
   const names = () =>
-    screen.getAllByRole('link').map(link => link.firstChild?.textContent);
+    // A row's headline is the first line of its text.
+    screen
+      .getAllByRole('link')
+      .map(link => link.firstChild?.firstChild?.textContent);
   expect(names()).toEqual(['Sooner', 'Later']);
   fireEvent.click(screen.getByText('Past'));
   expect(names()).toEqual(['Old', 'Older']);
@@ -442,7 +399,7 @@ test('SetlistDetailPage offers Perform with songs and toggles the public link', 
   const updateOne = vi
     .spyOn(SetlistApi, 'updateOne')
     .mockResolvedValue(response({ id: 9, name: 'Sunday' }));
-  renderWithProvider(
+  const { store } = renderWithProvider(
     <MemoryRouter initialEntries={['/sets/9']}>
       <Route path="/sets/:id">
         <SetlistDetailPage />
@@ -453,10 +410,25 @@ test('SetlistDetailPage offers Perform with songs and toggles the public link', 
   expect(await screen.findByText('Holy')).toBeInTheDocument();
   expect(document.title).toBe('Sunday | Sets');
   expect(screen.getByText('Sun Mar 3')).toBeInTheDocument();
-  expect(screen.getAllByText('Perform')).toHaveLength(2);
+  // Filled M3E buttons: medium on phones, small from md up.
+  const perform = screen.getAllByRole('button', { name: 'Perform' });
+  expect(perform).toHaveLength(2);
+  expect(perform[0]).toHaveClass('bg-primary', 'h-14', 'md:hidden');
+  expect(perform[1]).toHaveClass('bg-primary', 'h-10', 'md:flex');
 
-  fireEvent.click(screen.getByText('Enable'));
-  expect(await screen.findByText('Disable')).toBeInTheDocument();
+  // The public link, on the same card as the team's join link.
+  const toggle = screen.getByRole('switch', { name: 'Public link' });
+  expect(toggle).toHaveAttribute('aria-checked', 'false');
+  expect(screen.getByRole('button', { name: 'Copy' })).toBeDisabled();
+  fireEvent.click(toggle);
+  await waitFor(() => expect(toggle).toHaveAttribute('aria-checked', 'true'));
+  // Other store updates don't fetch the set again: the member it once
+  // depended on was a new object on each one.
+  act(() => {
+    store.dispatch(setSetlistBeingPresented({}));
+  });
+  expect(SetlistApi.getOne).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole('button', { name: 'Copy' })).toBeEnabled();
   expect(updateOne).toHaveBeenCalledWith({ publicLinkEnabled: true }, 9);
 });
 
@@ -475,4 +447,31 @@ test('SetlistDetailPage offers no Perform for a set without songs', async () => 
   const songsHeading = await screen.findByText('No songs to show');
   expect(within(document.body).queryByText('Perform')).not.toBeInTheDocument();
   expect(songsHeading).toBeInTheDocument();
+});
+
+test('PublicSetlistSection lets members without Publish sets copy the link, not turn it off', () => {
+  const writeText = vi.fn<(text: string) => Promise<void>>();
+  Object.defineProperty(navigator, 'clipboard', {
+    value: { writeText },
+    configurable: true,
+  });
+  renderWithProvider(
+    <PublicSetlistSection
+      setlist={{
+        id: 9,
+        name: 'Sunday',
+        public_link: 'xyz',
+        public_link_enabled: true,
+      }}
+      onChange={() => {}}
+    />,
+    { preloadedState: state([]) }
+  );
+  expect(screen.getByText('Public link')).toBeInTheDocument();
+  expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
+  expect(writeText).toHaveBeenCalledWith(
+    expect.stringMatching(/\/setlists\/xyz$/)
+  );
+  expect(screen.getByRole('button', { name: 'Copied' })).toBeDisabled();
 });

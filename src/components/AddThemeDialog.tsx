@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import type { AxiosResponse } from 'axios';
 
 import AddCancelActions from './buttons/AddCancelActions';
-import FixedBottomMobile from './FixedBottomMobile';
 import Label from './Label';
 import NoDataMessage from './NoDataMessage';
 import OrDivider from './OrDivider';
@@ -144,7 +143,7 @@ export default function AddThemeDialog({
       />
       {availableThemes.length === 0 ? (
         <div className="py-4">
-          <NoDataMessage loading={loading}>
+          <NoDataMessage compact loading={loading}>
             You haven&apos;t created any themes yet
           </NoDataMessage>
         </div>
@@ -169,14 +168,12 @@ export default function AddThemeDialog({
         />
       </div>
 
-      <FixedBottomMobile>
-        <AddCancelActions
-          onCancel={handleClose}
-          onAdd={handleSaveThemes}
-          loadingAdd={savingAdditions}
-          addDisabled={themesToAdd?.length === 0}
-        />
-      </FixedBottomMobile>
+      <AddCancelActions
+        onCancel={handleClose}
+        onAdd={handleSaveThemes}
+        loadingAdd={savingAdditions}
+        addDisabled={themesToAdd?.length === 0}
+      />
     </StyledDialog>
   );
 }

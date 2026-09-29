@@ -15,15 +15,16 @@ export default function Badge({
 }: BadgeProps) {
   return (
     <span
-      className={`rounded-md px-1 py-0.5 text-xs ${COLORS[color]} ${className}`}
+      className={`inline-flex items-center h-6 px-2 rounded-small font-plain text-label-medium ${COLORS[color]} ${className}`}
     >
       {children}
     </span>
   );
 }
 
+// A small M3 label chip. Blue is the primary container; green comes from the
+// user color palette.
 const COLORS = {
-  blue: 'bg-blue-100 text-blue-700 dark:bg-dark-blue dark:text-white',
-  green:
-    'bg-green-100 text-green-700 dark:bg-dark-green dark:text-dark-gray-100',
+  blue: 'bg-primary-container text-on-primary-container',
+  green: 'bg-user-green-container text-on-user-green-container',
 };

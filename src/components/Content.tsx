@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect, useRef } from 'react';
 
 import AccountDetailPage from '../pages/AccountDetailPage';
 import AccountGeneralSettingsPage from '../pages/AccountGeneralSettingsPage';
@@ -11,15 +11,15 @@ import ImportFilesPage from '../pages/ImportFilesPage';
 import MemberDetailPage from '../pages/MemberDetailPage';
 import MembersIndexPage from '../pages/MembersIndexPage';
 import MobileNav from './MobileNav';
-import Navbar from './Navbar';
 import OnsongImportPage from '../pages/OnsongImportPage';
 import PageLoading from './PageLoading';
 import PcoRedirectPage from '../pages/PcoRedirectPage';
-import { Route } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
+import type { RouteComponentProps } from 'react-router-dom';
 import SearchPage from './SearchPage';
 import SetlistDetailPage from '../pages/SetlistDetailPage';
 import SetlistsIndexPage from '../pages/SetlistsIndexPage';
-import Sidenav from './Sidenav';
+import NavigationRail from './NavigationRail';
 import SongDetailPage from '../pages/SongDetailPage';
 import ImportSongsPage from '../pages/ImportSongsPage';
 import SongsIndexPage from '../pages/SongsIndexPage';
@@ -52,26 +52,59 @@ export default function Content() {
   const currentMember = useSelector(selectCurrentMember);
   const location = useLocation();
   const isChat = location.pathname?.startsWith('/chat');
+  const sheet = useRef<HTMLDivElement>(null);
+
+  // From md the sheet scrolls, not the window, so a new page starts at its
+  // top rather than wherever the last one was scrolled to.
+  useEffect(() => {
+    sheet.current?.scrollTo?.({ top: 0 });
+  }, [location.pathname]);
 
   if (!currentMember) return null;
 
   return (
     <>
-      <Sidenav />
-      <Navbar />
+      {/* From md: the screen on surface-container-low (the rail sits on it)
+          and the page in a rounded sheet on surface-container-lowest, 12dp in
+          from the edges. The sheet scrolls itself, so its corners stay put.
+          It's sized by margins and height, not fixed: a fixed sheet would be
+          its own stacking context and cover the rail's menus. */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 hidden -z-10 md:block bg-surface-container-low"
+      />
+      <NavigationRail />
       <MobileNav />
       <div
-        className={classNames(!isChat && 'p-3 md:px-10', 'md:ml-14 lg:ml-56')}
+        ref={sheet}
+        // The page's scroller from md, which the quick-add FAB follows.
+        data-page-scroller
+        className={classNames(
+          !isChat && 'p-3 md:px-10 md:py-8',
+          'md:ml-24 lg:ml-[220px] md:my-3 md:mr-3 md:h-[calc(100vh-24px)] md:overflow-y-auto md:rounded-extra-large md:bg-surface-container-lowest'
+        )}
       >
         <div className={classNames(!isChat && 'container', 'mx-auto')}>
           <Route path="/" exact>
             <DashboardPage />
           </Route>
-          <Route path="/binders/:id" exact>
+          {/* Binders are called folders in the UI. Old /binders links
+              redirect. */}
+          <Route path="/folders/:id" exact>
             <BinderDetailPage />
           </Route>
-          <Route path="/binders" exact>
+          <Route path="/folders" exact>
             <BindersIndexPage />
+          </Route>
+          <Route
+            path="/binders/:id"
+            exact
+            render={({ match }: RouteComponentProps<{ id: string }>) => (
+              <Redirect to={`/folders/${match.params.id}`} />
+            )}
+          />
+          <Route path="/binders" exact>
+            <Redirect to="/folders" />
           </Route>
           <Route path="/import/files" exact>
             <ImportFilesPage />
@@ -166,7 +199,8 @@ export default function Content() {
             <Route path="/chat" exact component={ChatPage} />
           </Suspense>
         </div>
-        <div className="h-12 md:h-0"></div>
+        {/* Room for the mobile navigation bar. */}
+        <div className="h-[calc(4rem+env(safe-area-inset-bottom))] md:h-0"></div>
       </div>
     </>
   );

@@ -43,7 +43,8 @@ export default function RoadmapSection({
       ref={ref}
       value={section || ''}
       onChange={e => onChange?.(e.target.value)}
-      className={`bg-white dark:bg-dark-gray-800 focus:outline-hidden outline-hidden border dark:border-dark-gray-400 rounded-md px-1.5 text-sm h-9`}
+      // The chip being edited: on the surface, outlined in primary.
+      className="h-8 px-3 bg-surface border-2 rounded-small border-primary outline-hidden font-plain text-label-large text-on-surface caret-primary"
       style={{ width: determineWidth() }}
       onBlur={() => setIsEditing(false)}
       onKeyDown={e => handleKeyDown(e.key)}
@@ -51,7 +52,8 @@ export default function RoadmapSection({
   ) : (
     <div
       onClick={handleClick}
-      className={`px-2 bg-white whitespace-nowrap dark:bg-dark-gray-900 focus:outline-hidden outline-hidden border dark:border-dark-gray-400 rounded-md text-sm h-9 flex-center`}
+      // A tonal chip: secondary-container, small corners, label-large.
+      className="h-8 px-3 flex-center whitespace-nowrap rounded-small bg-secondary-container text-on-secondary-container font-plain text-label-large cursor-pointer state-layer-flat"
     >
       {section}
     </div>

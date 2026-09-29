@@ -6,7 +6,7 @@ import {
   type MouseEventHandler,
   type ReactNode,
 } from 'react';
-import PulseLoader from 'react-spinners/PulseLoader';
+import LoadingIndicator from './feedback/LoadingIndicator';
 
 export type ButtonColor =
   | 'red'
@@ -100,31 +100,27 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     if (variant === 'icon') {
       return <IconButton {...props} ref={ref} />;
     }
-    const defaultClasses = ` outline-hidden focus:outline-hidden transition-colors text-sm ${
-      className ? className : ''
-    } `;
-    let colorClasses = '';
-    let disabledClasses = ' cursor-default ';
-    const roundedClasses = ' rounded-full ';
-    const sizeClasses = ` ${sizePaddings[size]} ${full ? ' w-full ' : ''}`;
-    const fontClasses = ` ${bold ? ' font-semibold ' : ''} `;
-    let loadingColor: string = color;
 
-    if (color === 'blue' || color === 'black') loadingColor = '#1f6feb';
-
-    if (variant === 'open') {
-      colorClasses += ` ${TEXT_COLORS[color]}`;
-      disabledClasses += ` text-gray-500 `;
-    } else if (variant === 'outlined') {
-      colorClasses += `  border-gray-300 dark:border-dark-gray-400 ${TEXT_COLORS[color]} bg-gray-100 focus:bg-gray-100 dark:bg-dark-gray-700 `;
-      disabledClasses += `  border-gray-300 text-gray-500 dark:border-dark-gray-400 dark:text-dark-gray-200 `;
-    }
-
+    // open → M3 text button, outlined → M3 outlined button
     return (
       <button
-        className={`
-            ${disabled ? disabledClasses : colorClasses}
-            ${sizeClasses} ${fontClasses} ${roundedClasses} ${defaultClasses}`}
+        className={classNames(
+          baseClasses,
+          sizeClasses[size],
+          !bold && 'font-normal',
+          variant === 'outlined' && 'border',
+          disabled
+            ? classNames(
+                disabledContentClasses,
+                variant === 'outlined' && 'border-on-surface/12'
+              )
+            : classNames(
+                BUTTON_COLORS[color].text,
+                variant === 'outlined' && 'border-outline-variant'
+              ),
+          full && 'w-full',
+          className
+        )}
         onClick={loading ? undefined : onClick}
         disabled={disabled}
         onKeyUp={onKeyUp}
@@ -134,7 +130,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         type={type}
         ref={ref}
       >
-        {loading ? <PulseLoader color={loadingColor} size={6} /> : children}
+        {loading ? <LoadingIndicator size={24} color="inherit" /> : children}
       </button>
     );
   }
@@ -142,22 +138,33 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 export default Button;
 
+// M3E standard icon button
 const IconButton = forwardRef<HTMLButtonElement, VariantProps>(
   (
-    { size = 'md', className, children, disabled, color = 'gray', ...props },
+    {
+      size = 'md',
+      className,
+      children,
+      disabled,
+      color = 'gray',
+      name,
+      ...props
+    },
     ref
   ) => {
     return (
       <button
         disabled={disabled}
+        // name is the accessible name, as on the other variants.
+        aria-label={name}
         className={classNames(
-          defaultClasses,
+          // No display class: callers hide these with `hidden sm:block`.
+          // Icons are display:block (preflight), so center them in the
+          // minimum size with margins instead.
+          baseClasses,
+          '[&>svg]:mx-auto',
           iconSizes[size],
-          'rounded-full',
-          !disabled && iconColors[color],
-          disabled
-            ? 'text-gray-500 dark:text-dark-gray-200 cursor-default'
-            : 'hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600',
+          disabled ? disabledContentClasses : ICON_COLORS[color],
           className
         )}
         {...props}
@@ -168,6 +175,7 @@ const IconButton = forwardRef<HTMLButtonElement, VariantProps>(
   }
 );
 
+// M3E filled button
 const PrimaryButton = forwardRef<HTMLButtonElement, VariantProps>(
   (
     {
@@ -186,24 +194,22 @@ const PrimaryButton = forwardRef<HTMLButtonElement, VariantProps>(
       <button
         disabled={disabled || loading}
         className={classNames(
-          defaultClasses,
-          sizePaddings[size],
-          'text-white',
-          disabled
-            ? 'bg-gray-100 text-gray-500 dark:bg-dark-gray-400 dark:text-dark-gray-200 cursor-default'
-            : BACKGROUND_COLORS[color],
+          baseClasses,
+          sizeClasses[size],
+          disabled ? disabledContainerClasses : BUTTON_COLORS[color].filled,
           full && 'w-full',
 
           className
         )}
         {...props}
       >
-        {loading ? <PulseLoader color="white" size={6} /> : children}
+        {loading ? <LoadingIndicator size={24} color="inherit" /> : children}
       </button>
     );
   }
 );
 
+// M3E tonal button
 const AccentButton = forwardRef<HTMLButtonElement, VariantProps>(
   (
     {
@@ -223,75 +229,159 @@ const AccentButton = forwardRef<HTMLButtonElement, VariantProps>(
         ref={ref}
         disabled={disabled || loading}
         className={classNames(
-          defaultClasses,
-          size && sizePaddings[size],
-          accentColors[color],
-          disabled
-            ? 'bg-gray-100 text-gray-500 dark:bg-dark-gray-400 dark:text-dark-gray-200 cursor-default'
-            : 'bg-gray-100 focus:bg-gray-200 hover:bg-gray-200 dark:bg-dark-gray-700 dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600',
+          baseClasses,
+          size ? sizeClasses[size] : FALLBACK_SIZE,
+          disabled ? disabledContainerClasses : BUTTON_COLORS[color].tonal,
           full && 'w-full',
 
           className
         )}
         {...props}
       >
-        {loading ? <PulseLoader color="currentColor" size={6} /> : children}
+        {loading ? <LoadingIndicator size={24} color="inherit" /> : children}
       </button>
     );
   }
 );
 
-const sizePaddings: Partial<Record<ButtonSize, string>> = {
-  square: '',
-  xs: ' px-4 min-h-7 h-7',
-  sm: ' px-3 h-9 ',
-  small: ' px-4 h-9 ',
-  md: ' px-10 h-14 ',
-  medium: ' w-20 h-14 ',
+/**
+ * A filled, tonal (accent) or text (open) button's classes, for a link that
+ * looks like one: a <button> inside a link isn't valid, and adds a second tab
+ * stop. Pass `flex-center` in `className`: a link doesn't center its content
+ * the way a <button> does.
+ */
+export function buttonClasses({
+  variant = 'filled',
+  color = 'blue',
+  size = 'md',
+  full = false,
+  className,
+}: {
+  variant?: 'filled' | 'accent' | 'open';
+  color?: ButtonColor;
+  size?: ButtonSize;
+  full?: boolean;
+  className?: string;
+} = {}) {
+  return classNames(
+    baseClasses,
+    sizeClasses[size],
+    BUTTON_COLORS[color][
+      variant === 'filled' ? 'filled' : variant === 'accent' ? 'tonal' : 'text'
+    ],
+    full && 'w-full',
+    className
+  );
+}
+
+/** Classes for one `color`, by the kind of button it's used on. */
+export type ButtonColorClasses = {
+  /** Filled container and the content on it. */
+  filled: string;
+  /** Tonal container and the content on it. */
+  tonal: string;
+  /** Content color on no container (text, outlined and icon buttons). */
+  text: string;
 };
 
-export const TEXT_COLORS: Record<ButtonColor, string> = {
-  red: 'text-red-600 dark:text-dark-red',
-  blue: 'text-blue-600 dark:text-dark-blue',
-  green: 'text-green-600',
-  yellow: 'text-yellow-600',
-  indigo: 'text-indigo-600',
-  purple: 'text-purple-600 dark:text-purple-500',
-  pink: 'text-pink-600',
-  gray: 'text-gray-600 dark:text-dark-gray-200',
-  black: 'text-black dark:text-dark-gray-200',
-  white: 'text-white',
+// Colors that have an M3 role use it: blue is primary, red is error and
+// purple is tertiary. Gray, black and white are neutral surfaces. The other
+// hues have no role, so they use the user colors (src/utils/userColors.ts).
+// Class names are spelled out so Tailwind can find them.
+export const BUTTON_COLORS: Record<ButtonColor, ButtonColorClasses> = {
+  blue: {
+    filled: 'bg-primary text-on-primary',
+    tonal: 'bg-secondary-container text-on-secondary-container',
+    text: 'text-primary',
+  },
+  red: {
+    filled: 'bg-error text-on-error',
+    tonal: 'bg-error-container text-on-error-container',
+    text: 'text-error',
+  },
+  purple: {
+    filled: 'bg-tertiary text-on-tertiary',
+    tonal: 'bg-tertiary-container text-on-tertiary-container',
+    text: 'text-tertiary',
+  },
+  gray: {
+    filled: 'bg-secondary text-on-secondary',
+    tonal: 'bg-surface-container-highest text-on-surface-variant',
+    text: 'text-on-surface-variant',
+  },
+  black: {
+    filled: 'bg-inverse-surface text-inverse-on-surface',
+    tonal: 'bg-surface-container-highest text-on-surface',
+    text: 'text-on-surface',
+  },
+  white: {
+    filled: 'bg-surface-container-lowest text-on-surface',
+    tonal: 'bg-surface-container-lowest text-on-surface',
+    text: 'text-surface-container-lowest',
+  },
+  green: {
+    filled: 'bg-user-green text-on-user-green',
+    tonal: 'bg-user-green-container text-on-user-green-container',
+    text: 'text-user-green',
+  },
+  yellow: {
+    filled: 'bg-user-yellow text-on-user-yellow',
+    tonal: 'bg-user-yellow-container text-on-user-yellow-container',
+    text: 'text-user-yellow',
+  },
+  indigo: {
+    filled: 'bg-user-indigo text-on-user-indigo',
+    tonal: 'bg-user-indigo-container text-on-user-indigo-container',
+    text: 'text-user-indigo',
+  },
+  pink: {
+    filled: 'bg-user-pink text-on-user-pink',
+    tonal: 'bg-user-pink-container text-on-user-pink-container',
+    text: 'text-user-pink',
+  },
 };
 
-export const BACKGROUND_COLORS: Record<ButtonColor, string> = {
-  red: 'bg-red-500 hover:bg-red-700 focus:bg-red-700',
-  blue: 'bg-blue-600 hover:bg-blue-800 focus:bg-blue-800 dark:bg-dark-blue dark:hover:bg-blue-600 dark:focus:bg-blue-600',
-  green:
-    'bg-green-500 hover:bg-green-700 focus:bg-green-700 dark:bg-dark-green',
-  yellow: 'bg-yellow-400 hover:bg-yellow-600 focus:bg-yellow-600',
-  indigo: 'bg-indigo-600 hover:bg-indigo-800 focus:bg-indigo-800',
-  purple: 'bg-purple-600 hover:bg-purple-800 focus:bg-purple-800',
-  pink: 'bg-pink-500 hover:bg-pink-700 focus:bg-pink-700',
-  gray: 'bg-gray-600 hover:bg-gray-800 focus:bg-gray-800',
-  black: 'bg-black',
-  white: 'bg-white dark:bg-dark-gray-800',
+// Round, squaring toward --shape-morph-to while pressed; the state layer
+// tints with the content color.
+const baseClasses =
+  'font-plain state-layer-flat focus-ring shape-morph disabled:cursor-default';
+
+/** On-surface at 38% (content) and 12% (container): the M3 disabled look. */
+const disabledContentClasses = 'text-on-surface/38';
+const disabledContainerClasses = 'bg-on-surface/12 text-on-surface/38';
+
+// M3E sizes XS (32), S (40) and M (56). The corners are half the height, in
+// pixels rather than rounded-full, so the press morph animates smoothly.
+const XS = 'h-8 px-3 text-label-large rounded-[16px] [--shape-morph-to:8px]';
+const S = 'h-10 px-4 text-label-large rounded-[20px] [--shape-morph-to:8px]';
+const M = 'text-title-medium rounded-[28px] [--shape-morph-to:12px]';
+
+// Sizes without their own classes (square, and lg outside icon buttons)
+const FALLBACK_SIZE = 'text-label-large rounded-full';
+
+const sizeClasses: Record<ButtonSize, string> = {
+  square: FALLBACK_SIZE,
+  xs: XS,
+  sm: S,
+  small: S,
+  md: `h-14 px-6 ${M}`,
+  medium: `w-20 h-14 ${M}`,
+  lg: FALLBACK_SIZE,
 };
 
-const defaultClasses =
-  'outline-hidden focus:outline-hidden transition-colors text-sm rounded-full font-semibold tracking-wide';
-
-const iconColors: Partial<Record<ButtonColor, string>> = {
-  gray: 'text-gray-700 dark:text-dark-gray-200',
-  blue: 'text-blue-600 dark:text-dark-blue',
+// Standard icon buttons use on-surface-variant; blue is primary.
+const ICON_COLORS: Partial<Record<ButtonColor, string>> = {
+  gray: 'text-on-surface-variant',
+  blue: 'text-primary',
 };
 
-const accentColors: Partial<Record<ButtonColor, string>> = {
-  blue: 'text-blue-600 dark:text-dark-blue',
-  red: 'text-red-600 dark:text-dark-red',
-  purple: 'text-purple-600 dark:text-purple-500',
-};
-const iconSizes: Partial<Record<ButtonSize, string>> = {
-  sm: 'p-1',
-  md: 'p-2',
-  lg: 'p-3',
+// text-label-large keeps the old text-sm, which icons sized in em inherit.
+const iconSizes: Record<ButtonSize, string> = {
+  square: FALLBACK_SIZE,
+  xs: FALLBACK_SIZE,
+  small: FALLBACK_SIZE,
+  medium: FALLBACK_SIZE,
+  sm: 'text-label-large min-w-8 min-h-8 p-1 rounded-[16px] [--shape-morph-to:8px]',
+  md: 'text-label-large min-w-10 min-h-10 p-2 rounded-[20px] [--shape-morph-to:8px]',
+  lg: 'text-label-large min-w-14 min-h-14 p-3 rounded-[28px] [--shape-morph-to:12px]',
 };

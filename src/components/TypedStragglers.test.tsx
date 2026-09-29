@@ -4,7 +4,6 @@ import type { ComponentProps, ReactElement } from 'react';
 import { renderWithProvider } from '../utils/test';
 import { Crescendo, Decrescendo, NarrowArrow } from '../icons/markings';
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog';
-import DetailSection from './DetailSection';
 import IconButton from './buttons/IconButton';
 import MobileNavLink from './MobileNavLink';
 import NotesList from './NotesList';
@@ -123,26 +122,6 @@ test('ConfirmDeleteDialog has a default message', () => {
     screen.getByText('Deleting this item is irreversible.')
   ).toBeInTheDocument();
   vi.unstubAllGlobals();
-});
-
-test('DetailSection shows edit controls only when editable', () => {
-  const items = [{ id: 3, name: 'Rock' }];
-  const onDelete =
-    vi.fn<NonNullable<ComponentProps<typeof DetailSection>['onDelete']>>();
-  const { container, rerender } = render(
-    <DetailSection title="Genres" items={items} onDelete={onDelete} />
-  );
-  expect(screen.getByText('Rock')).toBeInTheDocument();
-  expect(container.querySelector('svg')).toBeNull();
-
-  rerender(
-    <DetailSection title="Genres" items={items} onDelete={onDelete} canEdit />
-  );
-  fireEvent.click(container.querySelector('svg') as Element);
-  expect(onDelete).toHaveBeenCalledWith(3);
-
-  rerender(<DetailSection title="Binders" />);
-  expect(screen.getByText('No binders to show')).toBeInTheDocument();
 });
 
 test('MobileNavLink renders a link for a route and a button otherwise', () => {

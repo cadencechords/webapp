@@ -23,9 +23,11 @@ export default function TapTempo({ onBpmChange, onTap }: TapTempoProps) {
   };
 
   return (
+    // M3E medium tonal button, on the neutral container.
     <button
+      type="button"
       onClick={handleTap}
-      className="border-2 border-blue-500 dark:border-dark-blue rounded-md flex-center h-12 w-14 absolute right-2  focus:outline-hidden text-blue-600 dark:text-dark-blue font-medium"
+      className="absolute right-2 h-14 px-6 rounded-[28px] [--shape-morph-to:12px] bg-surface-container-highest text-on-surface-variant text-title-medium font-plain state-layer-flat focus-ring shape-morph"
     >
       Tap
     </button>

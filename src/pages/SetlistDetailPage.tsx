@@ -21,6 +21,7 @@ import PublicSetlistSection from '../components/PublicSetlistSection';
 import SetlistOptionsPopover from '../components/SetlistOptionsPopover';
 import Icon from '../components/Icon';
 import type { Session, Setlist, Song } from '../types';
+import { useRecordRecentlyViewed } from '../hooks/useRecentlyViewed';
 
 export default function SetlistDetailPage() {
   const [setlist, setSetlist] = useState<Setlist | undefined>(undefined);
@@ -40,6 +41,8 @@ export default function SetlistDetailPage() {
     document.title = setlist ? setlist.name + ' | Sets' : 'Set';
   }, [setlist]);
 
+  useRecordRecentlyViewed('set', setlist);
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -54,7 +57,8 @@ export default function SetlistDetailPage() {
     }
 
     fetchData();
-  }, [id, currentMember]);
+    // Just the id: the request doesn't depend on the member.
+  }, [id]);
 
   // Non-null (setlist! and setlist!.songs! below): kept as before. The
   // handlers run only from the page rendered once fetchData has set the
@@ -148,23 +152,25 @@ export default function SetlistDetailPage() {
         <div className="flex w-full">
           {setlist?.songs && setlist.songs.length > 0 && (
             <>
+              {/* M3E filled buttons, as on a song: medium (56px) and full
+                  width on phones, small (40px) from md up. */}
               <Button
-                variant="accent"
+                variant="filled"
                 onClick={handleOpenInPresenter}
-                className="mb-2 flex-center md:hidden"
+                className="mb-2 flex-center gap-2 md:hidden"
                 size="md"
                 full
               >
-                <Icon name="play_circle" filled className="w-5 h-5 mr-4" />
+                <Icon name="play_arrow" filled className="w-6 h-6" />
                 Perform
               </Button>
               <Button
                 variant="filled"
                 onClick={handleOpenInPresenter}
-                className="items-center justify-center hidden mb-2 md:flex"
-                size="xs"
+                className="items-center justify-center gap-2 hidden mb-2 md:flex"
+                size="sm"
               >
-                <Icon name="play_circle" filled className="w-4 h-4 mr-1.5" />
+                <Icon name="play_arrow" filled className="w-5 h-5" />
                 Perform
               </Button>
             </>
@@ -185,6 +191,10 @@ export default function SetlistDetailPage() {
             sessions={sessions}
             onSessionsChange={handleSessionsChanged}
             onJoinSession={handleJoinSession}
+            // As the Perform button: only for a set with songs.
+            onOpenInPresenter={
+              setlist?.songs?.length ? handleOpenInPresenter : undefined
+            }
           />
         )}
         <PublicSetlistSection

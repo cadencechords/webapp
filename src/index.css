@@ -118,6 +118,9 @@
 @import './styles/type-tokens.css';
 @import './styles/shape-elevation-state.css';
 @import './styles/motion.css';
+@import './styles/slider.css';
+@import './styles/lists.css';
+@import './styles/snackbar.css';
 
 /* Utilities the /dev/tokens page builds dynamically (the scanner can't see them). */
 @source inline('text-{display,headline,title,body,label}-{large,medium,small}{,-emphasized}');
@@ -130,11 +133,23 @@
   transition-duration: var(--default-transition-duration);
 }
 
-/* react-spring-bottom-sheet colors, on the color tokens. :root:root beats the
-   library's own :root defaults regardless of stylesheet order. */
+/* react-spring-bottom-sheet as an M3 bottom sheet: surface-container-low,
+   extra-large top corners, a 32x4 drag handle in on-surface-variant at 40%
+   and a 32% scrim. :root:root beats the library's own :root defaults
+   regardless of stylesheet order. */
 :root:root {
   --rsbs-bg: var(--md-sys-color-surface-container-low);
   --rsbs-handle-bg: --alpha(var(--md-sys-color-on-surface-variant) / 40%);
+  /* The scrim role is #000 in both themes; spelled out so browsers without
+     color-mix don't fall back to an opaque scrim. */
+  --rsbs-backdrop-bg: rgb(0 0 0 / 32%);
+  --rsbs-overlay-rounded: var(--md-sys-shape-corner-extra-large);
+}
+[data-rsbs-header]:before {
+  width: 32px !important;
+  height: 4px !important;
+  /* The library squashes it to 75% on 2x screens; keep it 4px. */
+  transform: translateX(-50%) !important;
 }
 
 /* v2 defaults that v4 changed. */
@@ -219,15 +234,28 @@ input[type='number'] {
   line-height: 1.5 !important;
 }
 
+/* react-colorful pickers (ColorPicker, ColorPickerPopover, StrokeWidthPopover)
+   on M3 shape tokens: a medium-corner saturation box and full-round bars. */
 .react-colorful {
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-
   width: 100% !important;
 }
 
-.react-colorful__last-control {
-  border-radius: 0 !important;
+.react-colorful__saturation {
+  border-radius: var(--md-sys-shape-corner-medium) !important;
+}
+
+.react-colorful__hue,
+.react-colorful__alpha {
+  border-radius: var(--md-sys-shape-corner-full) !important;
+  height: 16px !important;
+  margin-top: 12px;
+}
+
+.react-colorful__pointer {
+  width: 20px !important;
+  height: 20px !important;
+  border-width: 3px !important;
+  box-shadow: var(--md-sys-elevation-level1) !important;
 }
 button {
   -webkit-tap-highlight-color: transparent;
@@ -242,16 +270,19 @@ button {
 }
 
 @layer components {
+  /* A clickable filled card (M3), with a state layer. */
   .interactive-card {
-    @apply transition-colors bg-gray-50 hover:bg-gray-100 focus:bg-gray-100 dark:bg-dark-gray-800 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700;
+    @apply bg-surface-container-highest text-on-surface state-layer-flat;
   }
 
+  /* Secondary text beside a heading or label. */
   .subtext {
-    @apply text-gray-600 dark:text-dark-gray-200;
+    @apply text-on-surface-variant;
   }
 
+  /* A section's top divider. */
   .section-border {
-    @apply pt-3 mt-8 mb-3 border-t flex-between dark:border-dark-gray-600;
+    @apply pt-3 mt-8 mb-3 border-t border-outline-variant flex-between;
   }
 }
 
@@ -291,19 +322,6 @@ button {
   font-style: italic;
 }
 
-.stroke-width .react-colorful__alpha,
-.color-picker .react-colorful__alpha,
-.color-picker .react-colorful__hue {
-  border-radius: 5px !important;
-  height: 18px;
-  margin-top: 10px;
-}
-
-.color-picker .react-colorful__saturation {
-  border-radius: 5px !important;
-  margin-top: 10px;
-}
-
 .stroke-width .react-colorful__hue,
 .stroke-width .react-colorful__saturation {
   display: none;
@@ -313,8 +331,7 @@ button {
   height: auto;
 }
 
-.stroke-width .react-colorful__pointer,
-.color-picker .react-colorful__pointer {
-  width: 20px;
-  height: 20px;
+/* The stroke-width picker is only its alpha bar. */
+.stroke-width .react-colorful__alpha {
+  margin-top: 0;
 }

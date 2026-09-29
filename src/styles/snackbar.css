@@ -1,0 +1,96 @@
+/* react-toastify's toasts as M3 snackbars: inverse-surface with
+   inverse-on-surface text, extra-small corners and level 3, bottom-centered
+   (App's ToastContainer places them). Toastify's own CSS is unlayered and
+   loads after this file, so every rule here is scoped under .Toastify (the
+   container's root) to outrank it. Only the container is themed; the toast
+   calls, their timing and their role="alert" are toastify's. */
+.Toastify {
+  --toastify-toast-width: min(37.5rem, calc(100vw - 2rem));
+  --toastify-toast-min-height: 3rem;
+  --toastify-font-family: var(--md-sys-typescale-body-medium-font);
+  --toastify-color-light: var(--md-sys-color-inverse-surface);
+  --toastify-color-dark: var(--md-sys-color-inverse-surface);
+  --toastify-text-color-light: var(--md-sys-color-inverse-on-surface);
+  --toastify-text-color-dark: var(--md-sys-color-inverse-on-surface);
+  /* toast.loading's spinner, in the action color. */
+  --toastify-spinner-color: var(--md-sys-color-inverse-primary);
+  --toastify-spinner-color-empty-area: color-mix(
+    in srgb,
+    var(--md-sys-color-inverse-on-surface) 24%,
+    transparent
+  );
+}
+
+.Toastify .Toastify__toast-container {
+  padding: 0;
+}
+
+.Toastify .Toastify__toast {
+  min-height: var(--toastify-toast-min-height);
+  margin-bottom: 1rem;
+  padding: 0.25rem 0.5rem 0.25rem 1rem;
+  border-radius: var(--md-sys-shape-corner-extra-small);
+  box-shadow: var(--md-sys-elevation-level3);
+  align-items: center;
+}
+
+.Toastify .Toastify__toast-body {
+  padding: 0.625rem 0;
+  font-size: var(--md-sys-typescale-body-medium-size);
+  line-height: var(--md-sys-typescale-body-medium-line-height);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+  font-weight: var(--md-sys-typescale-body-medium-weight);
+}
+
+/* Snackbars have no status icons; toast.loading keeps its spinner. */
+.Toastify .Toastify__toast-icon:not(:has(.Toastify__spinner)) {
+  display: none;
+}
+
+/* The close affordance: an icon button in inverse-on-surface. */
+.Toastify .Toastify__close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  align-self: center;
+  border-radius: 9999px;
+  color: var(--md-sys-color-inverse-on-surface);
+  opacity: 1;
+}
+
+.Toastify .Toastify__close-button:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--md-sys-color-inverse-on-surface) 8%,
+    transparent
+  );
+}
+
+.Toastify .Toastify__close-button:focus-visible {
+  outline: 3px solid var(--md-sys-color-inverse-primary);
+  outline-offset: -3px;
+}
+
+/* Above the bottom bars: the mobile nav below md, and the set presenter's
+   navigation at every width (it's 45px; a toast over it would take its
+   clicks). */
+.Toastify .Toastify__toast-container--bottom-center {
+  bottom: 3.5rem;
+}
+
+/* On phones toastify stretches toasts edge to edge and squares them. */
+@media only screen and (max-width: 480px) {
+  .Toastify .Toastify__toast-container {
+    width: auto;
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .Toastify .Toastify__toast {
+    margin-bottom: 1rem;
+    border-radius: var(--md-sys-shape-corner-extra-small);
+  }
+}

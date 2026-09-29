@@ -2,6 +2,7 @@ import { parseNote, parseQuality } from '../utils/SongUtils';
 import { useState } from 'react';
 
 import Button from './Button';
+import DialogActions from './DialogActions';
 import ButtonSwitch from './buttons/ButtonSwitch';
 import SongKeyButton from './buttons/SongKeyButton';
 import StyledDialog from './StyledDialog';
@@ -22,12 +23,11 @@ export default function KeyChooserDialog({
 }: KeyChooserDialogProps) {
   return (
     <StyledDialog
-      borderedTop={false}
       open={open}
       onCloseDialog={onCloseDialog}
       title={
         currentSongKey
-          ? 'Original key:  ' + currentSongKey
+          ? 'Original key: ' + currentSongKey
           : 'Original key: none'
       }
       fullscreen={false}
@@ -75,11 +75,18 @@ function KeyChooser({
 
   return (
     <>
-      <h1 className="text-center text-3xl font-bold mb-4">
+      {/* The key being picked; the title keeps the key it has now. */}
+      <h1 className="mb-6 font-plain text-display-medium text-primary text-center">
         {keyNote + keyQuality}
       </h1>
-      <h4>Choose a new key</h4>
-      <div className="grid grid-cols-3 gap-2 my-4">
+      <ButtonSwitch
+        size="s"
+        buttonLabels={['Major', 'Minor']}
+        activeButtonLabel={isMajor() ? 'Major' : 'Minor'}
+        onClick={handleQualityChange}
+      />
+      {/* Flats, naturals and sharps in three columns. */}
+      <div className="grid grid-cols-3 gap-2 mt-4">
         {NOTE_NAMES.map((noteName, index) => (
           <SongKeyButton
             key={index}
@@ -89,22 +96,18 @@ function KeyChooser({
           />
         ))}
       </div>
-      <div className="mb-10">
-        <h4 className="mb-3">Choose major or minor</h4>
-        <ButtonSwitch
-          buttonLabels={['Major', 'Minor']}
-          activeButtonLabel={isMajor() ? 'Major' : 'Minor'}
-          onClick={handleQualityChange}
-        />
-      </div>
-      <div className="flex gap-2">
-        <Button full variant="open" onClick={onCloseDialog}>
+      <DialogActions>
+        <Button variant="open" color="gray" size="sm" onClick={onCloseDialog}>
           Cancel
         </Button>
-        <Button full onClick={() => onChange(keyNote + keyQuality)}>
+        <Button
+          variant="open"
+          size="sm"
+          onClick={() => onChange(keyNote + keyQuality)}
+        >
           Confirm
         </Button>
-      </div>
+      </DialogActions>
     </>
   );
 }

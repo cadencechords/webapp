@@ -1,42 +1,55 @@
-import Button from '../components/Button';
-import Integrations from '../components/Integrations';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Integrations from '../components/Integrations';
 import ProfilePicture from '../components/ProfilePicture';
 import SignOutOptions from '../components/SignOutOptions';
-import { selectCurrentUser } from '../store/authSlice';
-import { useSelector } from 'react-redux';
 import Icon from '../components/Icon';
+import AccountPageHeader from '../components/settings/AccountPageHeader';
+import { selectCurrentUser } from '../store/authSlice';
+import { getNameOrEmail } from '../utils/model';
+import {
+  LIST_ITEM_INTERACTIVE,
+  LIST_ITEM_TWO_LINE,
+  LIST_SUPPORTING_TEXT,
+} from '../components/lists/listItem';
 
+// The account's general settings, in M3E: a back button and title, who's
+// signed in (a row that opens their profile), then integrations and the
+// account's sign-out options as segmented lists.
 export default function AccountGeneralSettingsPage() {
   const currentUser = useSelector(selectCurrentUser);
   if (!currentUser) return <>Loading...</>;
+  const hasName = !!currentUser.first_name;
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <Link to="/account">
-        <Button variant="open" color="gray">
-          <div className="flex-center">
-            <Icon name="arrow_back" className="w-4 h-4 mr-4" />
-            Menu
+    <div className="max-w-2xl mx-auto font-plain">
+      <AccountPageHeader title="General" />
+
+      <div className="mb-8 list-segmented">
+        <Link
+          to="/account/profile"
+          className={`${LIST_ITEM_TWO_LINE} ${LIST_ITEM_INTERACTIVE}`}
+        >
+          <ProfilePicture
+            url={currentUser.image_url}
+            name={getNameOrEmail(currentUser)}
+            size="md"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="truncate text-title-medium">
+              {hasName
+                ? `${currentUser.first_name} ${currentUser.last_name}`
+                : 'Add your name'}
+            </div>
+            <div className={`truncate ${LIST_SUPPORTING_TEXT}`}>
+              {currentUser.email}
+            </div>
           </div>
-        </Button>
-      </Link>
-      <div className="text-gray-500">
-        <div className="w-24 m-auto my-2 flex-center">
-          <ProfilePicture url={currentUser.image_url} />
-        </div>
-        <div className="mb-1 text-sm font-semibold text-center">
-          {currentUser.email}
-        </div>
-        {currentUser.first_name ? (
-          <div className="text-xl font-semibold text-center text-black dark:text-dark-gray-100">
-            {currentUser.first_name} {currentUser.last_name}
-          </div>
-        ) : (
-          <div className="text-center">
-            You haven&apos;t provided your name yet. You can do that
-            <Link to="/account/profile"> here</Link>
-          </div>
-        )}
+          <Icon
+            name="chevron_right"
+            className="w-6 h-6 shrink-0 text-on-surface-variant"
+          />
+        </Link>
       </div>
 
       <Integrations currentUser={currentUser} />

@@ -1,5 +1,4 @@
-import DetailTitle from './DetailTitle';
-import EditableData from './inputs/EditableData';
+import { DetailPlaceholder, DetailTile } from './SongDetailParts';
 import MeterDialog from './MeterDialog';
 import { useState } from 'react';
 
@@ -19,15 +18,16 @@ export default function MeterField({
 
   return (
     <>
-      <div className="flex flex-row items-center mb-1">
-        <DetailTitle>Meter:</DetailTitle>
-        <EditableData
-          value={meter ? meter : ''}
-          onClick={() => setShowDialog(true)}
-          placeholder="ex: 4/4"
-          editable={editable}
-        />
-      </div>
+      <DetailTile
+        label="Meter"
+        onClick={editable ? () => setShowDialog(true) : undefined}
+      >
+        {meter || (
+          <DetailPlaceholder tile>
+            {editable ? 'Add' : 'None'}
+          </DetailPlaceholder>
+        )}
+      </DetailTile>
       <MeterDialog
         open={showDialog}
         onCloseDialog={() => setShowDialog(false)}

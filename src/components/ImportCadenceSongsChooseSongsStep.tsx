@@ -1,4 +1,4 @@
-import React, { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 import Checkbox from './Checkbox';
 import { hasAnyKeysSet } from '../utils/SongUtils';
 import KeyBadge from './KeyBadge';
@@ -6,13 +6,13 @@ import { pluralize } from '../utils/StringUtils';
 import Button from './Button';
 import FadeIn from './FadeIn';
 import PageLoading from './PageLoading';
-import PageTitle from './PageTitle';
-import WellInput from './inputs/WellInput';
+import ImportStepHeader from './ImportStepHeader';
+import SearchField from './inputs/SearchField';
 import useImportSongsFromTeam from '../hooks/api/useImportSongsFromTeam';
 import useImportableCadenceSongs from '../hooks/api/useImportableCadenceSongs';
 import NoDataMessage from './NoDataMessage';
-import Icon from './Icon';
 import type { Id, ImportableTeam, Song } from '../types';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from './lists/listItem';
 
 type ImportCadenceSongsChooseSongsStepProps = {
   selectedTeam?: ImportableTeam | null;
@@ -33,7 +33,12 @@ export default function ImportCadenceSongsChooseSongsStep({
     onSuccess: () => onGoToStep(2),
   });
   const [query, setQuery] = useState('');
-  const { isLoading: isLoadingSongs, data: songs } = useImportableCadenceSongs(
+  // `data` is [] until the songs load, so the list waits for isSuccess.
+  const {
+    isLoading: isLoadingSongs,
+    isSuccess: hasSongs,
+    data: songs,
+  } = useImportableCadenceSongs(
     // The query is disabled until a team is chosen, so it only fetches with a
     // team's id.
     selectedTeam?.id as Id,
@@ -65,56 +70,59 @@ export default function ImportCadenceSongsChooseSongsStep({
   }
 
   return (
-    <>
-      <FadeIn>
+    <FadeIn>
+      <ImportStepHeader
+        step="Step 2 of 2"
+        title="Choose songs"
+        subtitle={selectedTeam ? `From ${selectedTeam.name}` : undefined}
+        onBack={() => onGoToStep(0)}
+        backLabel="Back to choosing a team"
+      />
+      {isLoadingSongs && <PageLoading />}
+      {hasSongs && (
+        <>
+          <SearchField
+            placeholder={`Search ${songs.length} ${pluralize(
+              'song',
+              songs.length
+            )}`}
+            value={query}
+            onChange={setQuery}
+            className="mb-4"
+          />
+          {filteredSongs.length === 0 ? (
+            <NoDataMessage type="songs" />
+          ) : (
+            <div className="list-segmented">
+              {filteredSongs.map(song => (
+                <SongOption
+                  key={song.id}
+                  song={song}
+                  selected={selectedSongs.includes(song)}
+                  onToggleSong={onToggleSong}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+      {/* The import action, stuck to the bottom of the page while the list
+          scrolls: a surface bar with the count and the button. */}
+      <div className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-4 z-10 flex items-center justify-between gap-4 p-2 pl-5 mt-6 rounded-full bg-surface-container-high shadow-(--md-sys-elevation-level2) font-plain">
+        <span className="text-label-large text-on-surface-variant">
+          {selectedSongs.length} selected
+        </span>
         <Button
-          variant="open"
-          color="gray"
-          className="flex-center"
-          onClick={() => onGoToStep(0)}
+          size="sm"
+          loading={isImporting}
+          onClick={handleImport}
+          disabled={selectedSongs.length === 0}
         >
-          <Icon name="arrow_back" className="w-4 h-4 mr-4" />
-          Choose team
+          Import {selectedSongs.length}{' '}
+          {pluralize('song', selectedSongs.length)}
         </Button>
-        <PageTitle title="Which songs would you like to import?" />
-        <div className="px-2 text-sm subtext">Step 2 of 2</div>
-        {isLoadingSongs && <PageLoading />}
-        {songs && (
-          <>
-            <WellInput
-              placeholder={`Search your ${songs.length} ${pluralize(
-                'song',
-                songs.length
-              )}`}
-              value={query}
-              onChange={setQuery}
-              className="my-4 lg:text-sm"
-            />
-            {filteredSongs.length === 0 ? (
-              <NoDataMessage type="songs" />
-            ) : (
-              <div className="mb-10">
-                {filteredSongs.map(song => (
-                  <SongOption
-                    key={song.id}
-                    song={song}
-                    selected={selectedSongs.includes(song)}
-                    onToggleSong={onToggleSong}
-                  />
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </FadeIn>
-      <SaveButton
-        disabled={selectedSongs.length === 0}
-        loading={isImporting}
-        onClick={handleImport}
-      >
-        Import {selectedSongs.length} {pluralize('song', selectedSongs.length)}
-      </SaveButton>
-    </>
+      </div>
+    </FadeIn>
   );
 }
 
@@ -128,51 +136,19 @@ function SongOption({ song, selected, onToggleSong }: SongOptionProps) {
   return (
     <label
       key={song.id}
-      className="flex items-center h-12 gap-4 px-3 border-b sm:rounded-lg sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0"
+      className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE} cursor-pointer`}
     >
       <Checkbox
         checked={selected}
         onChange={isChecked => onToggleSong(isChecked, song)}
         standAlone={false}
       />
-      <span className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
-        {song.name}{' '}
+      <span className="flex items-center min-w-0">
+        <span className="min-w-0 truncate">{song.name} </span>
+        {hasAnyKeysSet(song) && (
+          <KeyBadge songKey={song.transposed_key || song.original_key} />
+        )}
       </span>
-      {hasAnyKeysSet(song) && (
-        <KeyBadge songKey={song.transposed_key || song.original_key} />
-      )}
     </label>
-  );
-}
-
-type SaveButtonProps = {
-  onClick: () => void;
-  children?: ReactNode;
-  loading: boolean;
-  disabled: boolean;
-};
-
-function SaveButton({ onClick, children, loading, disabled }: SaveButtonProps) {
-  return (
-    <>
-      <Button
-        className="fixed left-0 right-0 md:hidden bottom-14"
-        style={{ borderRadius: 0 }}
-        loading={loading}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        {children}
-      </Button>
-      <Button
-        className="fixed hidden w-44 bottom-8 right-8 md:inline-block whitespace-nowrap"
-        loading={loading}
-        onClick={onClick}
-        disabled={disabled}
-        size="medium"
-      >
-        {children}
-      </Button>
-    </>
   );
 }

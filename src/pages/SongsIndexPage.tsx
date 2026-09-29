@@ -5,7 +5,7 @@ import { ADD_SONGS } from '../utils/constants';
 import CreateSongDialog from '../components/CreateSongDialog';
 import NoDataMessage from '../components/NoDataMessage';
 import QuickAdd from '../components/QuickAdd';
-import WellInput from '../components/inputs/WellInput';
+import SearchField from '../components/inputs/SearchField';
 
 import { selectCurrentMember } from '../store/authSlice';
 import useSongs from '../hooks/api/useSongs';
@@ -53,11 +53,11 @@ export default function SongsIndexPage() {
         <>
           <div className="mb-2">{songs.length} total</div>
           <FadeIn>
-            <WellInput
+            <SearchField
               placeholder="Search your songs"
               value={query}
               onChange={setQuery}
-              className="mb-4 lg:text-sm"
+              className="mb-4"
             />
           </FadeIn>
           <FadeIn className="delay-100">
@@ -72,7 +72,7 @@ export default function SongsIndexPage() {
       )}
       {currentMember.can(ADD_SONGS) && (
         <>
-          <QuickAdd onAdd={showCreateDialog} />
+          <QuickAdd onAdd={showCreateDialog} label="New song" />
           <CreateSongDialog
             open={isCreateOpen}
             onCloseDialog={closeCreateDialog}

@@ -1,5 +1,4 @@
-import DetailTitle from './DetailTitle';
-import EditableData from './inputs/EditableData';
+import { DetailPlaceholder, DetailTile } from './SongDetailParts';
 import KeyChooserDialog from './KeyChooserDialog';
 import { useState } from 'react';
 
@@ -22,22 +21,23 @@ export default function SongKeyField({
   };
 
   return (
-    <div className="flex flex-row items-center mb-1">
-      <DetailTitle>Key:</DetailTitle>
-      <EditableData
-        value={songKey || ''}
-        onChange={() => null}
-        placeholder="Add the key"
-        onClick={() => setShowKeyChooserDialog(true)}
-        editable={editable}
-      />
-
+    <>
+      <DetailTile
+        label="Key"
+        onClick={editable ? () => setShowKeyChooserDialog(true) : undefined}
+      >
+        {songKey || (
+          <DetailPlaceholder tile>
+            {editable ? 'Add' : 'None'}
+          </DetailPlaceholder>
+        )}
+      </DetailTile>
       <KeyChooserDialog
         open={showKeyChooserDialog}
         onCloseDialog={() => setShowKeyChooserDialog(false)}
         currentSongKey={songKey}
         onChange={handleKeyChange}
       />
-    </div>
+    </>
   );
 }

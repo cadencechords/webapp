@@ -1,5 +1,5 @@
 import Button from '../components/Button';
-import Label from '../components/Label';
+import DialogActions from '../components/DialogActions';
 import NoteColorOption from '../components/NoteColorOption';
 import StyledDialog from '../components/StyledDialog';
 import { useState } from 'react';
@@ -25,12 +25,7 @@ export default function NoteDialog({
   onDelete,
 }: NoteDialogProps) {
   return (
-    <StyledDialog
-      open={open}
-      onCloseDialog={onCloseDialog}
-      borderedTop={false}
-      title="Edit note"
-    >
+    <StyledDialog open={open} onCloseDialog={onCloseDialog} title="Edit note">
       {/* StyledDialog unmounts its contents while closed, so each opening
           starts from the note as it is now. */}
       <NoteForm
@@ -77,49 +72,48 @@ function NoteForm({
 
   return (
     <>
-      <Label>Note</Label>
       <textarea
+        aria-label="Note"
         placeholder="Type here"
+        rows={3}
         onChange={e => handleUpdate('content', e.target.value)}
         value={updates.content || ''}
-        className="w-full p-2 mb-4 text-base transition-colors border rounded-md outline-hidden resize-none border-dark-gray-600 focus:outline-hidden focus:border-blue-400 dark:focus:border-dark-blue dark:bg-dark-gray-900 "
+        className="w-full px-4 py-3 mb-6 text-body-large text-on-surface placeholder:text-on-surface-variant caret-primary bg-transparent transition-fast-effects border rounded-extra-small outline-hidden resize-none border-outline hover:border-on-surface focus:outline-hidden focus:border-primary focus:shadow-[inset_0_0_0_1px_var(--color-primary)]"
       ></textarea>
-      <Label>Note color</Label>
-      <NoteColorOption
-        color={NOTE_COLOR_OPTIONS.blue}
-        selected={isSelectedColor('blue')}
-        onClick={() => handleUpdate('color', 'blue')}
-      />
-      <NoteColorOption
-        color={NOTE_COLOR_OPTIONS.pink}
-        selected={isSelectedColor('pink')}
-        onClick={() => handleUpdate('color', 'pink')}
-      />
-      <NoteColorOption
-        color={NOTE_COLOR_OPTIONS.green}
-        selected={isSelectedColor('green')}
-        onClick={() => handleUpdate('color', 'green')}
-      />
-      <NoteColorOption
-        color={NOTE_COLOR_OPTIONS.yellow}
-        selected={isSelectedColor('yellow')}
-        onClick={() => handleUpdate('color', 'yellow')}
-      />
-      <div className="items-center gap-4 mt-8 flex-between">
-        <Button full onClick={handleConfirmUpdates}>
-          Confirm
-        </Button>
-        <Button variant="icon" size="md" color="gray" onClick={handleDelete}>
-          <Icon name="delete" className="w-5 h-5" />
-        </Button>
+      <div className="mb-3 font-plain text-title-small text-on-surface-variant">
+        Color
       </div>
+      <div role="radiogroup" aria-label="Color" className="flex gap-3">
+        {NOTE_COLORS.map(color => (
+          <NoteColorOption
+            key={color}
+            color={color}
+            selected={isSelectedColor(color)}
+            onClick={() => handleUpdate('color', color)}
+          />
+        ))}
+      </div>
+      {/* Delete at the start, apart from Cancel and Save at the end. */}
+      <DialogActions>
+        <Button
+          variant="open"
+          color="red"
+          size="sm"
+          onClick={handleDelete}
+          className="flex-center gap-2 mr-auto"
+        >
+          <Icon name="delete" className="w-5 h-5" />
+          Delete
+        </Button>
+        <Button variant="open" color="gray" size="sm" onClick={onCloseDialog}>
+          Cancel
+        </Button>
+        <Button size="sm" onClick={handleConfirmUpdates}>
+          Save
+        </Button>
+      </DialogActions>
     </>
   );
 }
 
-const NOTE_COLOR_OPTIONS = {
-  blue: 'bg-blue-200 dark:bg-blue-300',
-  pink: 'bg-pink-200 dark:bg-pink-300',
-  green: 'bg-green-200 bg-green-300',
-  yellow: 'bg-yellow-200 bg-yellow-300',
-};
+const NOTE_COLORS = ['blue', 'pink', 'green', 'yellow'];

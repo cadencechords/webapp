@@ -6,7 +6,7 @@ type StackedListItemProps = {
 
 export default function StackedListItem({ children }: StackedListItemProps) {
   return (
-    <div className="border-b dark:border-dark-gray-400 py-3 last:border-0">
+    <div className="px-3 py-3 font-plain text-body-large text-on-surface">
       {children}
     </div>
   );

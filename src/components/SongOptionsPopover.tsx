@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import Button from './Button';
 import ConfirmDeleteDialog from '../dialogs/ConfirmDeleteDialog';
 import { DELETE_SONGS } from '../utils/constants';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuDivider, MenuItem, MenuList } from './Menu';
 import StyledPopover from './StyledPopover';
 import { selectCurrentMember } from '../store/authSlice';
 import { useState } from 'react';
@@ -31,7 +31,7 @@ export default function SongOptionsPopover({
 
   const button = (
     <Button variant="icon" color="gray" size="md">
-      <Icon name="more_vert" className="w-5 h-5" />
+      <Icon name="more_vert" className="w-6 h-6" />
     </Button>
   );
 
@@ -48,28 +48,23 @@ export default function SongOptionsPopover({
         onConfirm={handleDelete}
       />
       <StyledPopover button={button} position="bottom-end">
-        <div className="overflow-hidden rounded-lg w-60">
-          <MobileMenuButton
-            onClick={onPrintClick}
-            full
-            color="black"
-            className="border-b flex-between last:border-0 dark:border-dark-gray-400"
-          >
+        <MenuList className="w-60">
+          <MenuItem onClick={onPrintClick} icon={<Icon name="print" />}>
             Print
-            <Icon name="print" className="w-5 h-5" />
-          </MobileMenuButton>
+          </MenuItem>
           {currentMember.can(DELETE_SONGS) && (
-            <MobileMenuButton
-              full
-              color="red"
-              className="border-b flex-between last:border-0 dark:border-dark-gray-400"
-              onClick={() => setShowDeleteDialog(true)}
-            >
-              Delete
-              <Icon name="delete" className="w-5 h-5" />
-            </MobileMenuButton>
+            <>
+              <MenuDivider />
+              <MenuItem
+                destructive
+                onClick={() => setShowDeleteDialog(true)}
+                icon={<Icon name="delete" />}
+              >
+                Delete
+              </MenuItem>
+            </>
           )}
-        </div>
+        </MenuList>
       </StyledPopover>
     </>
   );

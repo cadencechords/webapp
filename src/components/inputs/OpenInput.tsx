@@ -20,7 +20,7 @@ export default function OpenInput({
 }: OpenInputProps) {
   return (
     <input
-      className={`appearance-none outline-hidden w-full focus:outline-hidden bg-transparent ${className} dark:text-dark-gray-100`}
+      className={`appearance-none outline-hidden w-full focus:outline-hidden bg-transparent text-on-surface placeholder:text-on-surface-variant caret-primary focus:shadow-[inset_0_-2px_0_var(--color-primary)] ${className}`}
       placeholder={placeholder}
       value={value}
       onChange={e => onChange(e.target.value)}

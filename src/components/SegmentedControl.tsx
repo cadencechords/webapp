@@ -1,4 +1,9 @@
 import React from 'react';
+import classNames from 'classnames';
+import {
+  connectedButtonClasses,
+  connectedGroupClasses,
+} from './buttons/connectedButtonGroup';
 
 type SegmentedControlProps = {
   options: string[];
@@ -19,12 +24,9 @@ export default function SegmentedControl({
   size = 'md',
 }: SegmentedControlProps) {
   return (
-    <fieldset
-      id={name}
-      className={`flex items-center w-full ${SIZES[size].container} bg-gray-100 rounded-full dark:bg-dark-gray-600`}
-    >
+    <fieldset id={name} className={classNames(connectedGroupClasses, 'w-full')}>
       {options.map((option, index) => (
-        <span key={index} className="flex-1 p-1 flex-center">
+        <span key={index} className="flex flex-1">
           <input
             type="radio"
             name={name}
@@ -35,13 +37,16 @@ export default function SegmentedControl({
             onChange={e => onChange(e.target.value)}
           />
           <label
-            className={`flex-center w-full text-center inline-block ${
+            className={classNames(
+              connectedButtonClasses({
+                index,
+                count: options.length,
+                selected: selected === option,
+                size: SIZES[size].button,
+              }),
+              'w-full text-center select-none',
               SIZES[size].label
-            } select-none font-medium ${
-              selected === option
-                ? 'bg-white dark:bg-dark-gray-700 rounded-full shadow-xs'
-                : ''
-            }`}
+            )}
             htmlFor={`${name}-segmented-control-${option}`}
           >
             {option}
@@ -54,11 +59,11 @@ export default function SegmentedControl({
 
 const SIZES = {
   sm: {
-    container: 'h-7',
-    label: 'text-xs h-5',
+    button: 'xs',
+    label: 'text-label-medium',
   },
   md: {
-    container: 'h-8',
-    label: 'text-sm h-6',
+    button: 's',
+    label: 'text-label-large',
   },
-};
+} as const;

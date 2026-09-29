@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
-import PageTitle from '../components/PageTitle';
-import EventForm from '../components/EventForm';
-import Button from '../components/Button';
+import EventFormPage from '../components/EventFormPage';
+import { useState } from 'react';
 import useEventForm from '../hooks/forms/useEventForm';
-import { Link, useHistory, useParams } from 'react-router-dom';
-import Alert from '../components/Alert';
+import { useHistory, useParams } from 'react-router-dom';
 import useClearForm from '../hooks/useClearForm';
 import useCalendarEvent from '../hooks/api/useCalendarEvent';
 import PageLoading from '../components/PageLoading';
@@ -17,7 +14,6 @@ import {
 } from '../utils/event.utils';
 import { getModifiedFields } from '../utils/ObjectUtils';
 import useUpdateCalendarEvent from '../hooks/api/useUpdateCalendarEvent';
-import Icon from '../components/Icon';
 
 export default function EditCalendarEventPage() {
   const { form, setForm, clearForm, isValid } = useEventForm();
@@ -58,45 +54,12 @@ export default function EditCalendarEventPage() {
   if (isLoading) return <PageLoading />;
 
   return (
-    <div className="container max-w-3xl">
-      <Link to="/calendar" className="inline-block mb-4">
-        <Button variant="open" color="gray">
-          <div className="flex-center">
-            <Icon name="arrow_back" className="w-4 h-4 mr-4" />
-            Calendar
-          </div>
-        </Button>
-      </Link>
-      {isError && (
-        <div className="hidden mb-4 lg:block">
-          <Alert color="red">An error occurred. Please try again later</Alert>
-        </div>
-      )}
-      <div className="flex-between">
-        <PageTitle title="Edit Event" />
-        <Button
-          className="hidden w-32 lg:block"
-          disabled={!isValid}
-          onClick={handleSave}
-          loading={isSaving}
-        >
-          Save event
-        </Button>
-      </div>
-      <EventForm />
-      <Button
-        className="w-full lg:hidden"
-        disabled={!isValid}
-        onClick={handleSave}
-        loading={isSaving}
-      >
-        Save event
-      </Button>
-      {isError && (
-        <div className="mt-6 lg:hidden">
-          <Alert color="red">An error occurred. Please try again later.</Alert>
-        </div>
-      )}
-    </div>
+    <EventFormPage
+      title="Edit event"
+      canSave={isValid}
+      saving={isSaving}
+      saveFailed={isError}
+      onSave={handleSave}
+    />
   );
 }

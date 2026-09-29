@@ -64,6 +64,7 @@ function SetPresenter() {
   const [bottomSheet, setBottomSheet] = useState<SetPresenterSheet | ''>('');
   const [showDrawer, setShowDrawer] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [isAddMarkingsVisible, setIsAddMarkingsVisible] = useState(false);
   // Non-null: kept as before. SecuredRoutes renders pages once the team is
   // set, and the subscription is dispatched right after it.
@@ -75,7 +76,7 @@ function SetPresenter() {
     activeSessionDetails,
     onTryToJoinAsMember,
   } = useSessionsContext();
-  const { data: currentUser } = useCurrentUser({
+  const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser({
     onSuccess: ({ format_preferences }) => {
       setSongs(previousSongs =>
         previousSongs.map(song => ({
@@ -123,6 +124,7 @@ function SetPresenter() {
         dispatch(setSetlistBeingPresented(data));
       } catch (e) {
         reportError(e);
+        setFailed(true);
         // `as` and non-null: kept as before, this reads the axios error's
         // response, and throws for an error without one (a network error).
         if ((e as AxiosError).response!.status === 404) {
@@ -252,8 +254,27 @@ function SetPresenter() {
     [songBeingViewedIndex]
   );
 
-  if (loading) {
+  // Still loading, not empty: the set's fetch (which starts in an effect,
+  // after the first render, while the store holds `{}`) or the current user,
+  // whose format preferences the songs wait for.
+  const hasSongs = !!setlist?.songs && setlist.songs.length > 0;
+  if (loading || (isEmpty(setlist) && !failed) || (hasSongs && isLoadingUser)) {
     return <PageLoading />;
+  }
+  if (failed && isEmpty(setlist)) {
+    return (
+      <CenteredPage>
+        <NoDataMessage
+          description={
+            <Link to="/sets">
+              <Button>Go to sets</Button>
+            </Link>
+          }
+        >
+          This set couldn&apos;t be loaded
+        </NoDataMessage>
+      </CenteredPage>
+    );
   }
 
   // `setlist?.songs &&`: the same as before, `undefined > 0` is false.
@@ -269,7 +290,8 @@ function SetPresenter() {
         />
         <div
           className={classNames(
-            'max-w-4xl p-3 mx-auto mb-12 whitespace-pre-wrap',
+            // pb-28 keeps the song's end clear of the floating set toolbar.
+            'max-w-4xl p-3 pb-28 mx-auto whitespace-pre-wrap',
             isAnnotating && 'select-none'
           )}
         >
@@ -319,11 +341,14 @@ function SetPresenter() {
   } else {
     return (
       <CenteredPage>
-        <NoDataMessage>
-          <div className="mb-2">This set has no songs</div>
-          <Link to={`/sets/${id}`}>
-            <Button>Go back</Button>
-          </Link>
+        <NoDataMessage
+          description={
+            <Link to={`/sets/${id}`}>
+              <Button>Go back</Button>
+            </Link>
+          }
+        >
+          This set has no songs
         </NoDataMessage>
       </CenteredPage>
     );

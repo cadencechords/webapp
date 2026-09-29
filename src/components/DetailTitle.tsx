@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 type DetailTitleProps = {
@@ -5,10 +6,15 @@ type DetailTitleProps = {
   className?: string;
 };
 
+// A detail's label (a song's artist, key, genres...): M3 title-small on
+// surface.
 export default function DetailTitle({ children, className }: DetailTitleProps) {
   return (
     <div
-      className={`text-gray-600 dark:text-dark-gray-200 text-sm mr-3 ${className}`}
+      className={classNames(
+        'mr-3 font-plain text-title-small text-on-surface',
+        className
+      )}
     >
       {children}
     </div>

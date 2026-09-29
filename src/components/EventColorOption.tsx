@@ -1,4 +1,5 @@
-import { BACKGROUND_COLORS, type ButtonColor } from './Button';
+import type { ButtonColor } from './Button';
+import { userColorClasses } from '../utils/userColors';
 
 type EventColorOptionProps = {
   disabled?: boolean;
@@ -18,7 +19,7 @@ export default function EventColorOption({
     <button
       // Without a color (undefined, null or "") this gets the class "undefined",
       // as before.
-      className={`focus:outline-hidden outline-hidden h-5 w-5 rounded-full transition-colors ${color ? BACKGROUND_COLORS[color] : undefined} ${className}`}
+      className={`focus:outline-hidden outline-hidden h-5 w-5 rounded-full transition-colors ${color ? userColorClasses(color).color : undefined} ${className}`}
       disabled={disabled}
       onClick={() => onClick?.(color)}
     ></button>

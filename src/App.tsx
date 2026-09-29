@@ -11,7 +11,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import PageLoading from './components/PageLoading';
 import SecuredRoutes from './components/SecuredRoutes';
 import SignUpPage from './pages/SignUpPage';
-import { ToastContainer } from 'react-toastify';
+import Snackbars from './components/feedback/Snackbars';
 import JoinLinkPage from './pages/JoinLinkPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ThemeProvider from './contexts/ThemeProvider';
@@ -19,6 +19,7 @@ import ThemeProvider from './contexts/ThemeProvider';
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const TeamLoginPage = lazy(() => import('./pages/TeamLoginPage'));
 const TokensPage = lazy(() => import('./pages/dev/TokensPage'));
+const ComponentsPage = lazy(() => import('./pages/dev/ComponentsPage'));
 const EmailConfirmedPage = lazy(() => import('./pages/EmailConfirmedPage'));
 const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
@@ -37,7 +38,7 @@ function App() {
             </CenteredPage>
           }
         >
-          <ToastContainer />
+          <Snackbars />
           <Sentry.ErrorBoundary
             showDialog
             fallback={({ error }) => <AppFallback error={error} />}
@@ -70,8 +71,13 @@ function App() {
                 <Route path="/reset_password" exact>
                   <ResetPasswordPage />
                 </Route>
-                {/* Design token fixture, not linked from the nav */}
+                {/* Design token and component fixtures, not linked from the nav */}
                 <Route path="/dev/tokens" exact component={TokensPage} />
+                <Route
+                  path="/dev/components"
+                  exact
+                  component={ComponentsPage}
+                />
                 <SecuredRoutes />
               </Switch>
             </Router>

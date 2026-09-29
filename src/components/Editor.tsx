@@ -14,9 +14,10 @@ export default function Editor({ song = {}, onContentChange }: EditorProps) {
   };
 
   return (
-    <div className="my-3 overflow-x-auto overflow-y-hidden">
+    <div className="overflow-x-auto overflow-y-hidden">
       <textarea
-        className="w-full p-2 overflow-y-hidden transition-colors bg-transparent outline-hidden resize-none hover:bg-gray-100 focus:outline-hidden dark:hover:bg-dark-gray-700"
+        aria-label="Song content"
+        className="w-full p-2 overflow-y-hidden bg-transparent rounded-large outline-hidden resize-none text-on-surface placeholder:text-on-surface-variant caret-primary focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-primary"
         value={content}
         onChange={e => onContentChange(e.target.value)}
         style={styles}

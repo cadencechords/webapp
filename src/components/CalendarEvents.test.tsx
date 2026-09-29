@@ -1,11 +1,4 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { useEffect, type ComponentProps, type ReactNode } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import type { AxiosResponse } from 'axios';
@@ -284,16 +277,17 @@ describe('EventFormSetlistPanel', () => {
     );
     const { result } = renderEventForm(<EventFormSetlistPanel />);
 
-    expect(await screen.findByText("Your team's sets")).toBeInTheDocument();
-    const names = screen
-      .getAllByText(/set$/)
-      .map(element => element.textContent?.trim());
-    expect(names).toEqual(['Newer set', 'Older set']);
+    const radios = await screen.findAllByRole('radio');
+    expect(radios.map(radio => radio.textContent)).toEqual([
+      'Newer setThu Feb 1, 2024',
+      'Older setMon Jan 1, 2024',
+    ]);
 
-    fireEvent.click(screen.getByText('Older set'));
+    fireEvent.click(screen.getByRole('radio', { name: /Older set/ }));
     expect(result.current?.form.setlist?.id).toBe(1);
+    expect(screen.getByRole('radio', { name: /Older set/ })).toBeChecked();
 
-    fireEvent.click(screen.getByText('Older set'));
+    fireEvent.click(screen.getByRole('radio', { name: /Older set/ }));
     expect(result.current?.form.setlist).toBeNull();
   });
 });
@@ -341,7 +335,7 @@ describe('EventMembers', () => {
     fireEvent.click(screen.getByText('Ana Li'));
     expect(onChange).toHaveBeenLastCalledWith([]);
 
-    fireEvent.click(screen.getByText('Check all'));
+    fireEvent.click(screen.getByText('Select all'));
     expect(onChange).toHaveBeenLastCalledWith([ana, bo]);
   });
 });
@@ -485,20 +479,23 @@ describe('calendar', () => {
     render(<CalendarEventEntry event={event} onClick={onClick} />);
     const button = screen.getByRole('button');
     expect(button).toHaveTextContent('7:30pm Practice');
-    expect(button.className).toContain('bg-red-500');
+    expect(button).toHaveClass('bg-user-red', 'text-on-user-red');
 
     fireEvent.click(button);
     expect(onClick).toHaveBeenCalledWith(event);
   });
 
-  test('CalendarEventEntry is black text without a color', () => {
+  test('CalendarEventEntry is on surface-container-highest without a color', () => {
     render(
       <CalendarEventEntry
         event={{ ...event, color: undefined }}
         onClick={vi.fn<(event: CalendarEvent) => void>()}
       />
     );
-    expect(screen.getByRole('button').className).toContain('text-black');
+    expect(screen.getByRole('button')).toHaveClass(
+      'bg-surface-container-highest',
+      'text-on-surface'
+    );
   });
 
   test('CalendarEventEntry follows its event color, including to none', () => {
@@ -515,8 +512,8 @@ describe('calendar', () => {
       />
     );
     const button = screen.getByRole('button');
-    expect(button.className).toContain('text-black');
-    expect(button.className).not.toContain('bg-red-500');
+    expect(button).toHaveClass('bg-surface-container-highest');
+    expect(button).not.toHaveClass('bg-user-red');
   });
 
   test('Calendar opens the clicked event', () => {
@@ -577,8 +574,7 @@ describe('calendar', () => {
     expect(screen.getByText('September 2026')).toBeInTheDocument();
     expect(screen.getByText(/Practice/)).toBeInTheDocument();
 
-    // The header's buttons are previous, then next.
-    fireEvent.click(screen.getAllByRole('button')[1]);
+    fireEvent.click(screen.getByRole('button', { name: 'Next month' }));
     expect(screen.getByText('October 2026')).toBeInTheDocument();
     expect(screen.queryByText(/Practice/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Retreat/)).not.toBeInTheDocument();
@@ -586,9 +582,15 @@ describe('calendar', () => {
     rerender(calendar([september, october]));
     expect(screen.getByText(/Retreat/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getAllByRole('button')[0]);
+    fireEvent.click(screen.getByRole('button', { name: 'Previous month' }));
     expect(screen.getByText('September 2026')).toBeInTheDocument();
     expect(screen.getByText(/Practice/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next month' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Next month' }));
+    expect(screen.getByText('November 2026')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Today' }));
+    expect(screen.getByText('September 2026')).toBeInTheDocument();
   });
 
   test.each([
@@ -644,11 +646,13 @@ describe('calendar', () => {
     expect(screen.getByText('May 2024')).toBeInTheDocument();
     expect(screen.queryByText('New event')).not.toBeInTheDocument();
 
-    const [previous, next] = screen.getAllByRole('button');
-    fireEvent.click(previous);
+    fireEvent.click(screen.getByRole('button', { name: 'Previous month' }));
     expect(onPreviousMonth).toHaveBeenCalledTimes(1);
-    fireEvent.click(next);
+    fireEvent.click(screen.getByRole('button', { name: 'Next month' }));
     expect(onNextMonth).toHaveBeenCalledTimes(1);
+    expect(
+      screen.queryByRole('button', { name: 'Today' })
+    ).not.toBeInTheDocument();
 
     rerender(
       <MemoryRouter>
@@ -677,22 +681,25 @@ describe('ReminderTimesListBox', () => {
         onChange={vi.fn<ReminderTimesListBoxProps['onChange']>()}
       />
     );
-    expect(screen.getByRole('button')).toHaveTextContent('1 day before');
+    expect(screen.getByRole('combobox', { name: 'Send reminder' })).toHaveValue(
+      '24'
+    );
 
     rerender(
       <ReminderTimesListBox
         onChange={vi.fn<ReminderTimesListBoxProps['onChange']>()}
       />
     );
-    expect(screen.getByRole('button')).toHaveTextContent('1 hour before');
+    expect(screen.getByRole('combobox')).toHaveValue('1');
   });
 
   test('reports the hours of the chosen time', async () => {
     const onChange = vi.fn<ReminderTimesListBoxProps['onChange']>();
     render(<ReminderTimesListBox selectedTime={1} onChange={onChange} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(await screen.findByText('1 week before'));
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith(168));
+    fireEvent.change(screen.getByRole('combobox'), {
+      target: { value: '168' },
+    });
+    expect(onChange).toHaveBeenCalledWith(168);
   });
 });
 

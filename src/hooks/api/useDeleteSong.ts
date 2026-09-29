@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import SongApi from '../../api/SongApi';
 import { reportError } from '../../utils/error';
+import { getTeamId } from '../../utils/AuthUtils';
+import { removeRecentlyViewed } from '../../utils/recentlyViewed';
 import type { Id } from '../../types';
 
 export default function useDeleteSong({
@@ -18,7 +20,8 @@ export default function useDeleteSong({
       const { data } = await SongApi.deleteOneById(id);
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
+      removeRecentlyViewed(getTeamId(), 'song', id);
       queryClient.invalidateQueries(['songs']);
       onSuccess?.();
     },

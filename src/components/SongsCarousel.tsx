@@ -4,6 +4,7 @@ import AliceCarousel from 'react-alice-carousel';
 import SongsCarouselSlide from './SongsCarouselSlide';
 import { useState } from 'react';
 import usePerformanceMode from '../hooks/usePerformanceMode';
+import { prefersReducedMotion } from '../utils/spring';
 import type { ComponentProps } from 'react';
 import type { PresentedSong } from '../store/presenterSlice';
 
@@ -48,7 +49,11 @@ export default function SongsCarousel({
         activeIndex={index}
         swipeDelta={100}
         autoHeight
-        animationDuration={400}
+        // The M3 default-spatial spring's curve and duration (motion.css),
+        // so the next song slides in with a slight overshoot; none with
+        // reduced motion.
+        animationDuration={prefersReducedMotion() ? 0 : 500}
+        animationEasingFunction="var(--md-sys-motion-easing-default-spatial)"
       />
     </>
   );

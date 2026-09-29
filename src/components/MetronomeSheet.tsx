@@ -1,9 +1,8 @@
 import { useState } from 'react';
 
-import Button from './Button';
 import { EDIT_SONGS } from '../utils/constants';
 import Metronome from './Metronome';
-import SectionTitle from './SectionTitle';
+import SheetHeader from './SheetHeader';
 import SongApi from '../api/SongApi';
 import type { Song } from '../types';
 import { reportError } from '../utils/error';
@@ -56,25 +55,15 @@ export default function MetronomeSheet({
 
   return (
     <div className={className}>
-      <SectionTitle
-        title={
-          <>
-            Metronome
-            {/* Non-null: updates are set only once can() passed above. */}
-            {updates && currentMember!.can(EDIT_SONGS) && (
-              <Button
-                variant="open"
-                size="xs"
-                onClick={handleSaveChanges}
-                className="ml-4"
-                loading={loading}
-              >
-                Save changes
-              </Button>
-            )}
-          </>
+      <SheetHeader
+        title="Metronome"
+        // Non-null: updates are set only once can() passed above.
+        onSave={
+          updates && currentMember!.can(EDIT_SONGS)
+            ? handleSaveChanges
+            : undefined
         }
-        className="pb-2 pl-2"
+        saving={loading}
       />
       <Metronome bpm={song?.bpm} onBpmChange={handleBpmChange} />
     </div>

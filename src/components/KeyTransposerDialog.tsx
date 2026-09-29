@@ -2,6 +2,7 @@ import { isMinor, parseNote } from '../utils/SongUtils';
 import { useState } from 'react';
 
 import Button from './Button';
+import DialogActions from './DialogActions';
 import SongKeyButton from './buttons/SongKeyButton';
 import StyledDialog from './StyledDialog';
 import Icon from './Icon';
@@ -27,12 +28,9 @@ export default function KeyTransposerDialog({
 }: KeyTransposerDialogProps) {
   return (
     <StyledDialog
-      borderedTop={false}
       open={open}
       onCloseDialog={onCloseDialog}
-      title={
-        originalKey ? 'Original key:  ' + originalKey : 'None selected yet'
-      }
+      title="Transpose"
       fullscreen={false}
     >
       {/* StyledDialog unmounts its contents while closed, so each opening
@@ -89,43 +87,34 @@ function KeyTransposer({
     }
   };
 
+  const isTransposed =
+    !!workingTransposedKey && workingTransposedKey !== originalKey;
+
   return (
     <>
-      <div className="gap-8 mb-4 flex-center">
-        <div className="flex-col flex-center">
-          <h1 className="mb-2 text-3xl font-bold text-center">{originalKey}</h1>
-          <div className="text-sm">Original</div>
-        </div>
-        {workingTransposedKey && workingTransposedKey !== originalKey && (
+      {/* The original key, and the key it's transposed to with the
+          semitones between them. */}
+      <div className="flex items-center justify-center gap-6 mb-6 font-plain">
+        <KeySummary label="Original" songKey={originalKey ?? 'None'} />
+        {isTransposed && (
           <>
-            <div className="flex-col text-xs flex-center">
-              {calculateTonesTransposed()}
-              <Icon
-                name="arrow_forward"
-                className="w-6 h-6 mt-1 transform -translate-y-2"
-              />
+            <div className="flex flex-col items-center text-on-surface-variant">
+              <span className="text-label-large">
+                {calculateTonesTransposed()}
+              </span>
+              <Icon name="arrow_forward" className="w-6 h-6" />
             </div>
-            <div className="relative flex-col flex-center">
-              <button
-                className="absolute outline-hidden -top-1 -right-1 focus:outline-hidden"
-                onClick={() => handleKeyChange(null)}
-              >
-                <Icon
-                  name="delete"
-                  className="w-4 h-4 text-red-600 dark:text-dark-red"
-                />
-              </button>
-              <h1 className="mb-2 text-3xl font-bold text-center">
-                {workingTransposedKey}
-              </h1>
-              <div className="text-sm">Transposed</div>
-            </div>
+            <KeySummary
+              label="Transposed"
+              songKey={workingTransposedKey}
+              primary
+            />
           </>
         )}
       </div>
 
-      <h4>Choose a key</h4>
-      <div className="grid grid-cols-3 gap-2 my-4">
+      {/* Flats, naturals and sharps in three columns. */}
+      <div className="grid grid-cols-3 gap-2">
         {keys.map((noteName, index) => (
           <SongKeyButton
             key={index}
@@ -136,15 +125,57 @@ function KeyTransposer({
         ))}
       </div>
 
-      <div className="flex gap-2">
-        <Button full variant="open" onClick={onCloseDialog}>
+      <DialogActions>
+        {workingTransposedKey && (
+          // Back to the original key, at the start apart from the others.
+          <Button
+            variant="open"
+            color="gray"
+            size="sm"
+            className="mr-auto"
+            onClick={() => handleKeyChange(null)}
+          >
+            Remove transposition
+          </Button>
+        )}
+        <Button variant="open" color="gray" size="sm" onClick={onCloseDialog}>
           Cancel
         </Button>
-        <Button full onClick={() => onChange(workingTransposedKey)}>
+        <Button
+          variant="open"
+          size="sm"
+          onClick={() => onChange(workingTransposedKey)}
+        >
           Confirm
         </Button>
-      </div>
+      </DialogActions>
     </>
+  );
+}
+
+// A key over its label: display-small, primary for the transposed one.
+function KeySummary({
+  label,
+  songKey,
+  primary = false,
+}: {
+  label: string;
+  songKey: string;
+  primary?: boolean;
+}) {
+  return (
+    <div className="flex flex-col items-center">
+      <span
+        className={
+          primary
+            ? 'text-display-small text-primary'
+            : 'text-display-small text-on-surface'
+        }
+      >
+        {songKey}
+      </span>
+      <span className="text-label-medium text-on-surface-variant">{label}</span>
+    </div>
   );
 }
 

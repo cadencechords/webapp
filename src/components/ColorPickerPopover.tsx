@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import StyledPopover from './StyledPopover';
 import { RgbaStringColorPicker } from 'react-colorful';
 import useAnnotationsToolbar from '../hooks/useAnnotationsToolbar';
@@ -7,10 +7,15 @@ import { useDebounce } from 'usehooks-ts';
 
 type ColorPickerPopoverProps = {
   button: ReactNode;
+  /** Classes for the trigger, which is the button (see StyledPopover). */
+  buttonClassName?: string;
+  buttonProps?: ComponentProps<typeof StyledPopover>['buttonProps'];
 };
 
 export default function ColorPickerPopover({
   button,
+  buttonClassName,
+  buttonProps,
 }: ColorPickerPopoverProps) {
   const { color: defaultColor, setColor: setAnnotationColor } =
     useAnnotationsToolbar();
@@ -30,8 +35,13 @@ export default function ColorPickerPopover({
   }, [debounced, setAnnotationColor]);
 
   return (
-    <StyledPopover button={button} position="top">
-      <div className="px-3 py-2 overflow-hidden rounded-lg color-picker sm:w-72 w-80">
+    <StyledPopover
+      button={button}
+      position="top"
+      buttonClassName={buttonClassName}
+      buttonProps={buttonProps}
+    >
+      <div className="p-3 color-picker sm:w-72 w-80">
         <RgbaStringColorPicker color={color} onChange={setColor} />
       </div>
     </StyledPopover>

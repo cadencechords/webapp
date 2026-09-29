@@ -9,6 +9,7 @@ import {
   parsePeriod,
 } from '../../utils/date';
 
+import classNames from 'classnames';
 import Button from '../Button';
 
 type TimeInputProps = {
@@ -17,12 +18,15 @@ type TimeInputProps = {
   className?: string;
   /** A time such as `'7:30 PM'`, or null (the event form's cleared time). */
   defaultValue?: string | null;
+  /** Floats in the outline's notch, like OutlinedSelect's. */
+  label?: string;
 };
 
 export default function TimeInput({
   onChange,
   className,
   defaultValue,
+  label,
 }: TimeInputProps) {
   // A number once typed; a string when parsed from defaultValue or cleared.
   const [hour, setHour] = useState<number | string>(() =>
@@ -39,7 +43,7 @@ export default function TimeInput({
   const [isFocused, setIsFocused] = useState(false);
 
   const [inputClasses] = useState(
-    'appearance-none focus:outline-hidden outline-hidden w-10 text-center dark:bg-transparent '
+    'appearance-none focus:outline-hidden outline-hidden w-10 text-center bg-transparent text-on-surface placeholder:text-on-surface-variant caret-primary '
   );
 
   const handleHourChange = (typedHour: string) => {
@@ -113,18 +117,17 @@ export default function TimeInput({
 
   return (
     <div
-      className={
-        `border transition-all border-gray-300 dark:border-dark-gray-400 dark:bg-dark-gray-700 rounded-md py-2 flex-center h-10 shadow-xs px-2` +
-        ` ${
-          isFocused &&
-          'ring-offset-2 ring-2 ring-blue-400 ring-offset-dark-gray-700'
-        } ${className}`
-      }
+      className={classNames(
+        'group relative flex-center min-h-12 px-2 font-plain text-body-large',
+        className
+      )}
     >
       <input
         onChange={e => handleHourChange(e.target.value)}
         className={`${inputClasses}`}
         placeholder="00"
+        aria-label={label ? `${label} hour` : 'Hour'}
+        inputMode="numeric"
         value={hour}
         ref={hourInput}
         onFocus={() => setIsFocused(true)}
@@ -135,6 +138,8 @@ export default function TimeInput({
         onChange={e => handleMinuteChange(e.target.value)}
         className={`${inputClasses}`}
         placeholder="00"
+        aria-label={label ? `${label} minute` : 'Minute'}
+        inputMode="numeric"
         value={minute}
         ref={minuteInput}
         onFocus={() => setIsFocused(true)}
@@ -145,10 +150,41 @@ export default function TimeInput({
         variant="open"
         color="gray"
         onClick={handleTogglePeriod}
-        className="w-11"
+        className="relative w-11"
       >
         {period}
       </Button>
+      {/* The outline, as on OutlinedInput: a fieldset whose legend cuts the
+          notch the label sits in. */}
+      <fieldset
+        aria-hidden="true"
+        className={classNames(
+          'absolute inset-x-0 bottom-0 -top-[5px] m-0 px-3 min-w-0 text-left rounded-extra-small pointer-events-none transition-fast-effects',
+          isFocused
+            ? 'border-2 border-primary'
+            : 'border border-outline group-hover:border-on-surface'
+        )}
+      >
+        <legend
+          className={classNames(
+            'invisible h-[11px] p-0 text-body-small whitespace-nowrap overflow-hidden',
+            label ? 'max-w-full' : 'max-w-[0.01px]'
+          )}
+        >
+          {label && <span className="px-1">{label}</span>}
+        </legend>
+      </fieldset>
+      {label && (
+        <span
+          aria-hidden="true"
+          className={classNames(
+            'absolute left-4 top-0 max-w-[calc(100%-2rem)] truncate origin-top-left -translate-y-[9px] scale-75 pointer-events-none',
+            isFocused ? 'text-primary' : 'text-on-surface-variant'
+          )}
+        >
+          {label}
+        </span>
+      )}
     </div>
   );
 }

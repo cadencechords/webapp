@@ -2,7 +2,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import axios from 'axios';
 import type { ComponentProps } from 'react';
 import Button from './Button';
-import DetailSection from './DetailSection';
 import EventColorOption from './EventColorOption';
 import MarkingOptionsPopover from './MarkingOptionsPopover';
 import ShapeMarking from './ShapeMarking';
@@ -54,27 +53,15 @@ test('EventColorOption without a color keeps its "undefined" class', () => {
 
 test("an accent Button gets its size's padding", () => {
   const { rerender } = render(<Button variant="accent">Save</Button>);
-  expect(screen.getByRole('button')).toHaveClass('px-3', 'h-9');
+  expect(screen.getByRole('button')).toHaveClass('px-4', 'h-10');
 
   rerender(
     <Button variant="accent" size="md">
       Save
     </Button>
   );
-  expect(screen.getByRole('button')).toHaveClass('px-10', 'h-14');
+  expect(screen.getByRole('button')).toHaveClass('px-6', 'h-14');
   expect(screen.getByRole('button').className).not.toContain('undefined');
-});
-
-test('DetailSection shows its empty message without items', () => {
-  const { rerender } = render(<DetailSection title="Genres" />);
-  expect(screen.getByText('No genres to show')).toBeInTheDocument();
-
-  rerender(<DetailSection title="Genres" items={[]} />);
-  expect(screen.getByText('No genres to show')).toBeInTheDocument();
-
-  rerender(<DetailSection title="Genres" items={[{ id: 1, name: 'Rock' }]} />);
-  expect(screen.queryByText('No genres to show')).toBeNull();
-  expect(screen.getByText('Rock')).toBeInTheDocument();
 });
 
 test('MarkingOptionsPopover closes on a click outside it', () => {

@@ -1,6 +1,7 @@
 import { basename, extension } from '../utils/StringUtils';
 
 import Button from '../components/Button';
+import DialogActions from '../components/DialogActions';
 import FilesApi from '../api/filesApi';
 import OutlinedInput from '../components/inputs/OutlinedInput';
 import StyledDialog from '../components/StyledDialog';
@@ -50,22 +51,27 @@ export default function EditSongFileDialog({
   }
 
   return (
-    <StyledDialog
-      open={open}
-      onCloseDialog={handleClose}
-      title={file?.name}
-      borderedTop={false}
-    >
+    <StyledDialog open={open} onCloseDialog={handleClose} title={file?.name}>
       <OutlinedInput
         value={name || ''}
         onChange={handleNameChange}
-        className="mb-4"
         onEnter={handleSave}
         label="File name"
       />
-      <Button full disabled={!dirty} onClick={handleSave} loading={loading}>
-        Save changes
-      </Button>
+      <DialogActions>
+        <Button variant="open" color="gray" size="sm" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button
+          variant="open"
+          size="sm"
+          disabled={!dirty}
+          onClick={handleSave}
+          loading={loading}
+        >
+          Save changes
+        </Button>
+      </DialogActions>
     </StyledDialog>
   );
 }

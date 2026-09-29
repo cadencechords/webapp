@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Button from './Button';
+import classNames from 'classnames';
 import AddCancelActions from './buttons/AddCancelActions';
-import EditableData from './inputs/EditableData';
+import OutlinedInput from './inputs/OutlinedInput';
 import StyledDialog from './StyledDialog';
 
 type MeterDialogProps = {
@@ -23,7 +23,6 @@ export default function MeterDialog({
       open={open}
       onCloseDialog={onCloseDialog}
       title="Choose the meter"
-      borderedTop={false}
       fullscreen={false}
     >
       {/* StyledDialog unmounts its contents while closed, so each opening
@@ -42,22 +41,12 @@ function MeterChooser({
   meter,
   onMeterChange,
 }: Omit<MeterDialogProps, 'open'>) {
-  // With no meter, `undefined >= 3` is false and 4/4 is used.
-  // TypeScript doesn't narrow `meter` from the length check, hence the `!`s:
-  // the check passing means meter is set.
-  const hasMeter = (meter?.length as number) >= 3;
-  // EditableData hands back strings, so these hold strings after an edit.
-  const [numerator, setNumerator] = useState<number | string>(() =>
-    hasMeter ? meter!.substring(0, meter!.indexOf('/')) : 4
-  );
-  const [denominator, setDenominator] = useState<number | string>(() =>
-    hasMeter ? meter!.charAt(meter!.length - 1) : 4
-  );
-
-  const handleChooseCommonMeter = (num: number, denom: number) => {
-    setNumerator(num);
-    setDenominator(denom);
-  };
+  // '6/8' → ['6', '8']; without a meter (or a malformed one), 4/4.
+  const [initialNumerator, initialDenominator] = meter?.includes('/')
+    ? meter.split('/')
+    : ['4', '4'];
+  const [numerator, setNumerator] = useState(initialNumerator);
+  const [denominator, setDenominator] = useState(initialDenominator);
 
   const handleConfirm = () => {
     onMeterChange(numerator + '/' + denominator);
@@ -66,49 +55,63 @@ function MeterChooser({
 
   return (
     <>
-      <div>
-        <h4 className="mb-2">Common meters:</h4>
-        <div className="flex-between">
-          {COMMON_METERS.map((meter, index) => {
-            return (
-              <Button
-                variant="open"
-                color="black"
-                key={index}
-                size="sm"
-                className="flex-col leading-tight flex-center"
-                style={{ borderRadius: '10px' }}
-                onClick={() =>
-                  handleChooseCommonMeter(meter.numerator, meter.denominator)
-                }
-              >
-                <span>{meter.numerator}</span>
-                <span>{meter.denominator}</span>
-              </Button>
-            );
-          })}
-        </div>
+      {/* The meter being picked, as a time signature. */}
+      <div className="flex flex-col items-center mb-6 font-plain text-display-small text-primary leading-none">
+        <span>{numerator || '–'}</span>
+        <span>{denominator || '–'}</span>
       </div>
-      <h2 className="w-16 mx-auto mt-4 mb-8 text-center">
-        <EditableData
+
+      {/* The common meters as M3E toggle buttons, stacked like the meter. */}
+      <div className="grid grid-cols-5 gap-2 mb-6">
+        {COMMON_METERS.map(common => {
+          const selected =
+            `${common.numerator}` === numerator &&
+            `${common.denominator}` === denominator;
+          return (
+            <button
+              key={`${common.numerator}/${common.denominator}`}
+              type="button"
+              aria-pressed={selected}
+              aria-label={`${common.numerator}/${common.denominator}`}
+              onClick={() => {
+                setNumerator(`${common.numerator}`);
+                setDenominator(`${common.denominator}`);
+              }}
+              className={classNames(
+                'flex flex-col items-center justify-center h-16 font-plain text-title-medium leading-tight state-layer-flat focus-ring transition-fast-spatial',
+                selected
+                  ? 'rounded-[12px] bg-primary text-on-primary'
+                  : 'rounded-[32px] bg-surface-container-highest text-on-surface'
+              )}
+            >
+              <span>{common.numerator}</span>
+              <span>{common.denominator}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Or any meter. */}
+      <div className="grid grid-cols-2 gap-3">
+        <OutlinedInput
+          label="Beats"
+          type="number"
           value={numerator}
-          className="py-0 font-bold sm:text-5xl"
-          centered
-          onChange={newNumerator => setNumerator(newNumerator)}
-          type="number"
+          onChange={setNumerator}
         />
-        <EditableData
+        <OutlinedInput
+          label="Beat unit"
+          type="number"
           value={denominator}
-          className="py-0 font-bold sm:text-5xl"
-          centered
-          onChange={newDenominator => setDenominator(newDenominator)}
-          type="number"
+          onChange={setDenominator}
         />
-      </h2>
+      </div>
+
       <AddCancelActions
         addText="Confirm"
         onCancel={onCloseDialog}
         onAdd={handleConfirm}
+        addDisabled={!numerator || !denominator}
       />
     </>
   );

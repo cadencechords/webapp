@@ -1,5 +1,5 @@
 import type { CSSProperties, MouseEventHandler, ReactNode } from 'react';
-import { TEXT_COLORS, type ButtonColor } from '../Button';
+import { BUTTON_COLORS, type ButtonColor } from '../Button';
 
 type MobileMenuButtonProps = {
   children?: ReactNode;
@@ -23,11 +23,11 @@ export default function MobileMenuButton({
   style,
 }: MobileMenuButtonProps) {
   let classes =
-    ' font-semibold outline-hidden focus:outline-hidden text-sm transition-colors whitespace-nowrap overflow-hidden text-ellipsis';
+    ' font-plain text-label-large outline-hidden focus:outline-hidden state-layer-flat whitespace-nowrap overflow-hidden text-ellipsis';
   const widthClasses = full ? ' w-full ' : '';
   const colorClasses = disabled
-    ? ' text-gray-600 dark:text-dark-gray-200 cursor-default '
-    : ` ${TEXT_COLORS[color]} hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-dark-gray-600 dark:focus:bg-dark-gray-600 `;
+    ? ' text-on-surface/38 cursor-default '
+    : ` ${BUTTON_COLORS[color].text} `;
 
   classes += widthClasses;
   classes += colorClasses;

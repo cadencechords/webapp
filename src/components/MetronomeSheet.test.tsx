@@ -13,12 +13,11 @@ const song = (id: number) => ({ id, name: `Song ${id}`, bpm: 90 }) as Song;
 
 test('MetronomeSheet drops unsaved changes when another song is shown', () => {
   const onSongChange = vi.fn<(field: 'bpm', value?: number) => void>();
-  const { container, rerender } = renderWithProvider(
+  const { rerender } = renderWithProvider(
     <MetronomeSheet song={song(1)} onSongChange={onSongChange} />,
     { preloadedState: editor }
   );
-  // The metronome's plus button.
-  fireEvent.click(container.querySelector('button.ml-2')!);
+  fireEvent.click(screen.getByRole('button', { name: 'Increase tempo' }));
   expect(onSongChange).toHaveBeenCalledWith('bpm', 91);
   expect(screen.getByText('Save changes')).toBeInTheDocument();
 

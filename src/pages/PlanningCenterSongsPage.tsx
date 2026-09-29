@@ -6,10 +6,9 @@ import { Redirect } from 'react-router-dom';
 import usePlanningCenterSongs from '../hooks/api/usePlanningCenterSongs';
 import Alert from '../components/Alert';
 import PageLoading from '../components/PageLoading';
-import WellInput from '../components/inputs/WellInput';
+import SearchField from '../components/inputs/SearchField';
 import { Fragment, useState, type ReactNode } from 'react';
 import MobileMenuButton from '../components/buttons/MobileMenuButton';
-import { PulseLoader } from 'react-spinners';
 import Checkbox from '../components/Checkbox';
 import Button from '../components/Button';
 import NoDataMessage from '../components/NoDataMessage';
@@ -20,6 +19,8 @@ import SongsSelectedForImportModal from '../dialogs/SongsSelectedForImportModal'
 import useImportPlanningCenterSongs from '../hooks/api/useImportPlanningCenterSongs';
 import { toast } from 'react-toastify';
 import type { PcoSong } from '../types';
+import { LIST_ITEM, LIST_ITEM_INTERACTIVE } from '../components/lists/listItem';
+import LoadingIndicator from '../components/feedback/LoadingIndicator';
 
 export default function PlanningCenterSongsPage() {
   const [query, setQuery] = useState('');
@@ -82,11 +83,11 @@ export default function PlanningCenterSongsPage() {
           </Button>
         )}
       </div>
-      <WellInput
+      <SearchField
         placeholder="Search your songs"
         value={query}
         onChange={setQuery}
-        className="mb-4 lg:text-sm"
+        className="mb-4"
       />
       {songPages && (
         <div>
@@ -94,27 +95,27 @@ export default function PlanningCenterSongsPage() {
             <NoDataMessage type={'songs'} />
           ) : (
             <div className="mb-10 md:mb-4">
-              {songPages.map((songs, index) => (
-                <Fragment key={index}>
-                  {songs.map(song => (
-                    <label
-                      key={song.id}
-                      className="flex items-center h-12 gap-4 px-3 border-b sm:rounded-lg sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0"
-                    >
-                      <Checkbox
-                        checked={selectedSongs.includes(song)}
-                        onChange={isChecked =>
-                          handleToggleSong(isChecked, song)
-                        }
-                        standAlone={false}
-                      />
-                      <span className="inline-block overflow-hidden whitespace-nowrap text-ellipsis">
-                        {song.title}
-                      </span>
-                    </label>
-                  ))}
-                </Fragment>
-              ))}
+              <div className="list-segmented">
+                {songPages.map((songs, index) => (
+                  <Fragment key={index}>
+                    {songs.map(song => (
+                      <label
+                        key={song.id}
+                        className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE} cursor-pointer`}
+                      >
+                        <Checkbox
+                          checked={selectedSongs.includes(song)}
+                          onChange={isChecked =>
+                            handleToggleSong(isChecked, song)
+                          }
+                          standAlone={false}
+                        />
+                        <span className="min-w-0 truncate">{song.title}</span>
+                      </label>
+                    ))}
+                  </Fragment>
+                ))}
+              </div>
               {hasNextPage && (
                 <MobileMenuButton
                   color="blue"
@@ -123,7 +124,7 @@ export default function PlanningCenterSongsPage() {
                   disabled={isFetchingNextPage}
                 >
                   {isFetchingNextPage ? (
-                    <PulseLoader size="7px" color="#1f6feb" />
+                    <LoadingIndicator size={20} />
                   ) : (
                     'Load more'
                   )}
@@ -164,7 +165,7 @@ function SaveButton({ children, loading, onClick }: SaveButtonProps) {
   return (
     <>
       <Button
-        className="fixed left-0 right-0 md:hidden bottom-14"
+        className="fixed left-0 right-0 md:hidden bottom-[calc(4rem+env(safe-area-inset-bottom))]"
         style={{ borderRadius: 0 }}
         loading={loading}
         onClick={onClick}

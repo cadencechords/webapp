@@ -44,29 +44,40 @@ const song = {
 } as Song;
 const member = { auth: { currentUser: { id: 1, role: { permissions: [] } } } };
 
-test('Alert defaults to blue and not dismissable', () => {
+test('Alert defaults to blue (secondary-container) and not dismissable', () => {
   const { container } = render(<Alert>Hi</Alert>);
-  expect(container.firstElementChild).toHaveClass('bg-blue-100');
+  expect(container.firstElementChild).toHaveClass('bg-secondary-container');
   expect(screen.queryByRole('button')).not.toBeInTheDocument();
 });
 
-test('StyledDialog defaults to md, fullscreen, bordered, with a close button', () => {
+test('StyledDialog defaults to md, fullscreen, with a close button and no underline', () => {
   render(
     <StyledDialog open onCloseDialog={() => {}} title="Title">
       <p>Body</p>
     </StyledDialog>
   );
   const panel = screen.getByText('Body').closest('.inline-block');
-  expect(panel).toHaveClass('sm:max-w-md', 'min-h-screen', 'sm:rounded-xl');
+  expect(panel).toHaveClass(
+    'sm:max-w-md',
+    'min-h-screen',
+    'sm:rounded-extra-large',
+    'bg-surface',
+    'sm:bg-surface-container-high'
+  );
   expect(within(panel as HTMLElement).getByRole('button')).toBeInTheDocument();
-  expect(screen.getByRole('heading')).toHaveClass('border-b');
-  expect(screen.getByText('Body').parentElement).toHaveClass('py-4');
+  expect(screen.getByRole('heading').className).not.toContain('border-b');
+  expect(screen.getByText('Body').parentElement).toHaveClass('pt-0', 'pb-6');
 });
 
 test('PageTitle defaults to a left-aligned, read-only title', () => {
   render(<PageTitle title="Songs" />);
   const title = screen.getByRole('heading');
-  expect(title).toHaveClass('justify-left');
+  // justify-start: the old justify-left/-right weren't Tailwind classes.
+  expect(title).toHaveClass(
+    'justify-start',
+    'text-headline-small-emphasized',
+    'text-on-surface'
+  );
   expect(title.className).not.toContain('undefined');
 });
 
@@ -77,8 +88,8 @@ test('MobileHeader shows the add button by default', () => {
 
 test('PasswordRequirements defaults to unmet', () => {
   const { container } = render(<PasswordRequirements />);
-  expect(container.querySelectorAll('svg.text-red-600')).toHaveLength(2);
-  expect(container.querySelector('svg.text-green-600')).toBeNull();
+  expect(container.querySelectorAll('li')).toHaveLength(2);
+  expect(container.querySelector('svg.text-primary')).toBeNull();
 });
 
 test('TableRow is not removable by default', () => {
@@ -125,9 +136,34 @@ test('AutoscrollSheet has no stray classes', () => {
   );
   expect(container.firstElementChild?.className).toBe(' ');
   // The floating shortcut appears once scrolling starts.
-  userEvent.click(container.querySelector('button') as HTMLElement);
+  userEvent.click(screen.getByRole('button', { name: 'Start auto scroll' }));
   const shortcut = container.querySelector('.fixed.flex-center');
   expect(shortcut?.className).toBe('fixed flex-center flex-col z-10 ');
+});
+
+test('AutoscrollSheet shows a pause and stop shortcut while scrolling', () => {
+  vi.spyOn(window, 'requestAnimationFrame').mockReturnValue(42);
+  vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+  renderWithProvider(<AutoscrollSheet song={song} onSongChange={() => {}} />, {
+    preloadedState: member,
+  });
+  userEvent.click(screen.getByRole('button', { name: 'Start auto scroll' }));
+  expect(
+    screen.getAllByRole('button', { name: 'Pause auto scroll' })
+  ).toHaveLength(2);
+
+  // The shortcut's pause leaves it showing, to resume from.
+  userEvent.click(
+    screen.getAllByRole('button', { name: 'Pause auto scroll' })[1]
+  );
+  expect(
+    screen.getByRole('button', { name: 'Resume auto scroll' })
+  ).toHaveAttribute('aria-pressed', 'false');
+
+  userEvent.click(screen.getByRole('button', { name: 'Stop auto scroll' }));
+  expect(
+    screen.queryByRole('button', { name: 'Stop auto scroll' })
+  ).not.toBeInTheDocument();
 });
 
 test('AutoscrollSheet stops scrolling when another song is shown', () => {
@@ -137,11 +173,13 @@ test('AutoscrollSheet stops scrolling when another song is shown', () => {
   const cancelFrame = vi
     .spyOn(window, 'cancelAnimationFrame')
     .mockImplementation(() => {});
-  const { container, rerender } = renderWithProvider(
+  const { rerender } = renderWithProvider(
     <AutoscrollSheet song={song} onSongChange={() => {}} />,
     { preloadedState: member }
   );
-  const toggle = () => container.querySelector('button') as HTMLElement;
+  // The sheet's play/pause toggle (the shortcut's comes after it).
+  const toggle = () =>
+    screen.getAllByRole('button', { name: /auto scroll$/ })[0]!;
 
   userEvent.click(toggle());
   expect(requestFrame).toHaveBeenCalledTimes(1);
@@ -188,6 +226,42 @@ test('AutoscrollSheet drops an unsaved speed change when another song is shown',
   expect(screen.queryByText('Save changes')).not.toBeInTheDocument();
 });
 
+test('AutoscrollSheet steps the speed between 1 and 10, with the slider', () => {
+  const onSongChange = vi.fn<(field: 'scroll_speed', value: number) => void>();
+  const { rerender } = renderWithProvider(
+    <AutoscrollSheet
+      song={{ ...song, scroll_speed: 3 }}
+      onSongChange={onSongChange}
+    />,
+    { preloadedState: member }
+  );
+  expect(
+    screen.getByRole('heading', { name: 'Auto scroll' })
+  ).toBeInTheDocument();
+  expect(screen.getByText('Speed').previousElementSibling).toHaveTextContent(
+    '3'
+  );
+  userEvent.click(screen.getByRole('button', { name: 'Faster' }));
+  expect(onSongChange).toHaveBeenLastCalledWith('scroll_speed', 4);
+  userEvent.click(screen.getByRole('button', { name: 'Slower' }));
+  expect(onSongChange).toHaveBeenLastCalledWith('scroll_speed', 2);
+
+  rerender(
+    <AutoscrollSheet
+      song={{ ...song, scroll_speed: 10 }}
+      onSongChange={onSongChange}
+    />
+  );
+  expect(screen.getByRole('button', { name: 'Faster' })).toBeDisabled();
+  rerender(
+    <AutoscrollSheet
+      song={{ ...song, scroll_speed: 1 }}
+      onSongChange={onSongChange}
+    />
+  );
+  expect(screen.getByRole('button', { name: 'Slower' })).toBeDisabled();
+});
+
 test('MetronomeSheet has no stray class', () => {
   const { container } = renderWithProvider(
     <MetronomeSheet song={song} onSongChange={() => {}} />,
@@ -229,11 +303,18 @@ test.each<[string, () => JSX.Element]>([
 
 // With className undefined, React leaves the class attribute out entirely.
 test.each<[string, () => JSX.Element]>([
-  ['StackedList', () => <StackedList />],
   ['AddStickyNoteIcon', () => <AddStickyNoteIcon />],
   ['ScrollIcon', () => <ScrollIcon />],
   ['SessionIcon', () => <SessionIcon />],
 ])('%s renders an empty class', (_, renderComponent) => {
   const { container } = render(renderComponent());
   expect(container.firstElementChild).toHaveAttribute('class', '');
+});
+
+test('StackedList has only its list class by default', () => {
+  const { container } = render(<StackedList />);
+  expect(container.firstElementChild).toHaveAttribute(
+    'class',
+    'list-segmented'
+  );
 });

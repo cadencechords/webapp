@@ -1,7 +1,9 @@
 import Button from '../components/Button';
 import OnsongsSongsList from '../components/OnsongSongsList';
+import ImportStepHeader from './ImportStepHeader';
 import PageLoading from './PageLoading';
 import Icon from './Icon';
+import { pluralize } from '../utils/StringUtils';
 import type { OnsongFile } from '../types';
 
 type OnsongChooseSongsFromBackupProps = {
@@ -17,6 +19,8 @@ type OnsongChooseSongsFromBackupProps = {
   onConfirmSongSelection: () => void;
 };
 
+// Step 2: the backup's songs to pick from, with the count and the next step
+// on a bar stuck to the bottom while the list scrolls.
 export default function OnsongChooseSongsFromBackup({
   uploading,
   unzippedFiles,
@@ -28,36 +32,48 @@ export default function OnsongChooseSongsFromBackup({
   onBackClick,
   onConfirmSongSelection,
 }: OnsongChooseSongsFromBackupProps) {
-  if (uploading) {
-    return <PageLoading>We are pulling up your files now</PageLoading>;
-  } else {
-    return (
-      <>
-        <OnsongsSongsList
-          songs={unzippedFiles}
-          selectedSongs={selectedSongs}
-          onToggleSong={onSongToggled}
-          onSelectAll={onSelectAll}
-          onUnselectAll={onUnselectAll}
-        />
-        <div className="flex-between">
-          <Button variant="open" color="gray" bold onClick={onBackClick}>
-            <div className="flex-center">
-              <Icon name="arrow_back" className="w-5 h-5 mr-2" /> Back
-            </div>
-          </Button>
-          <Button
-            disabled={selectedSongs?.length === 0}
-            loading={importing}
-            onClick={onConfirmSongSelection}
-          >
-            <div className="flex-center">
-              Choose Binder
-              <Icon name="arrow_forward" className="w-5 h-5 ml-2" />
-            </div>
-          </Button>
-        </div>
-      </>
-    );
-  }
+  const count = unzippedFiles?.length ?? 0;
+  return (
+    <>
+      <ImportStepHeader
+        step="Step 2 of 4"
+        title="Choose songs"
+        subtitle={
+          uploading
+            ? undefined
+            : `${count} ${pluralize('song', count)} in backup`
+        }
+        onBack={onBackClick}
+        backLabel="Back to choosing a backup"
+      />
+      {uploading ? (
+        <PageLoading>Opening your backup</PageLoading>
+      ) : (
+        <>
+          <OnsongsSongsList
+            songs={unzippedFiles}
+            selectedSongs={selectedSongs}
+            onToggleSong={onSongToggled}
+            onSelectAll={onSelectAll}
+            onUnselectAll={onUnselectAll}
+          />
+          <div className="sticky bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-4 z-10 flex items-center justify-between gap-4 p-2 pl-5 mt-6 rounded-full bg-surface-container-high shadow-(--md-sys-elevation-level2) font-plain">
+            <span className="text-label-large text-on-surface-variant">
+              {selectedSongs.length} selected
+            </span>
+            <Button
+              size="sm"
+              className="gap-2 flex-center"
+              disabled={selectedSongs.length === 0}
+              loading={importing}
+              onClick={onConfirmSongSelection}
+            >
+              Choose folder
+              <Icon name="arrow_forward" className="w-5 h-5" />
+            </Button>
+          </div>
+        </>
+      )}
+    </>
+  );
 }

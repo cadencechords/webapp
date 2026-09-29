@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 
+import AuthPage, { TEXT_LINK } from '../components/AuthPage';
 import Button from '../components/Button';
-import CenteredPage from '../components/CenteredPage';
 import OutlinedInput from '../components/inputs/OutlinedInput';
 import TeamApi from '../api/TeamApi';
 import TeamPlanOption from '../components/TeamPlanOption';
@@ -35,8 +36,14 @@ export default function CreateNewTeamPage() {
   const router = useHistory();
   const dispatch = useDispatch();
 
-  const handleCreate = async () => {
-    setLoading(!loading);
+  useEffect(() => {
+    document.title = 'New Team';
+  }, []);
+
+  const handleCreate = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!teamName) return;
+    setLoading(true);
 
     try {
       const newTeam = { name: teamName, plan: selectedPlan };
@@ -50,45 +57,65 @@ export default function CreateNewTeamPage() {
   };
 
   return (
-    <CenteredPage>
-      <div className="mb-6 text-xl font-bold text-center">Your New Team</div>
-      <TeamPlanOption
-        name="Starter"
-        onClick={setSelectedPlan}
-        selected={'Starter' === selectedPlan}
-        className="mb-2"
-        pricing="$0.00"
-        trialMessage="Always free"
-      />
-      <TeamPlanOption
-        name="Pro"
-        onClick={setSelectedPlan}
-        selected={'Pro' === selectedPlan}
-        className="mb-8"
-        pricing={
-          <div>
-            $20.00<span className="text-sm"> / month</span>
+    <AuthPage
+      title="Create a team"
+      description="Name your team and pick a plan to start with."
+      footer={
+        <Link to="/login/teams" className={TEXT_LINK}>
+          Back to your teams
+        </Link>
+      }
+    >
+      <form onSubmit={handleCreate} className="flex flex-col gap-4">
+        <OutlinedInput
+          label="Team name"
+          value={teamName}
+          onChange={editedTeamName => setTeamIdName(editedTeamName)}
+        />
+        <div className="mt-2">
+          <div
+            id="plan-label"
+            className="px-1 mb-2 font-plain text-label-large text-on-surface-variant"
+          >
+            Plan
           </div>
-        }
-        trialMessage="7 Day Free Trial"
-      />
-      <div className="mb-1 font-semibold text-left">Your team&apos;s name</div>
-      <OutlinedInput
-        placeholder="Name"
-        value={teamName}
-        onChange={editedTeamName => setTeamIdName(editedTeamName)}
-      />
-
-      <div className="mt-6">
+          <div
+            role="radiogroup"
+            aria-labelledby="plan-label"
+            className="flex flex-col gap-3"
+          >
+            <TeamPlanOption
+              name="Starter"
+              onClick={setSelectedPlan}
+              selected={'Starter' === selectedPlan}
+              pricing="$0.00"
+              trialMessage="Always free"
+            />
+            <TeamPlanOption
+              name="Pro"
+              onClick={setSelectedPlan}
+              selected={'Pro' === selectedPlan}
+              pricing={
+                <>
+                  $20.00
+                  <span className="text-body-medium"> / month</span>
+                </>
+              }
+              trialMessage="7 day free trial"
+            />
+          </div>
+        </div>
         <Button
           full
+          size="md"
           loading={loading}
-          onClick={handleCreate}
           disabled={!teamName}
+          type="submit"
+          className="mt-2"
         >
-          Create
+          Create team
         </Button>
-      </div>
-    </CenteredPage>
+      </form>
+    </AuthPage>
   );
 }

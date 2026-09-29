@@ -30,7 +30,7 @@ export default function SongPresenterBottomSheet({
   }
 
   return (
-    <BottomSheet open={open} onClose={onClose} className="px-3 py-2">
+    <BottomSheet open={open} onClose={onClose}>
       <MetronomeSheet
         song={song}
         onSongChange={onSongChange}

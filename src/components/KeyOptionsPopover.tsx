@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import StyledPopover from './StyledPopover';
-import Button from './Button';
 import KeyOptionsSheet from './KeyOptionsSheet';
 import classNames from 'classnames';
 import TransposeKeySheet from './TransposeKeySheet';
@@ -39,27 +38,41 @@ export default function KeyOptionsPopover({
     return song.original_key;
   }
 
+  const capoNumber =
+    song.capo && song.show_capo
+      ? determineCapoNumber(
+          // As (both): kept as before, an unset key (a song with only a
+          // capo, or a capo cleared in CapoKeySheet and shown again) is
+          // passed through.
+          getNonCapoKey() as string,
+          song.capo.capo_key as string
+        )
+      : undefined;
+  const displayKey = getDisplayKey();
+
   return (
     <StyledPopover
       position="bottom-end"
+      // Transpose and Capo open their own sheets in the popover.
+      closeOnSelect={false}
+      // The popover's own button, styled as an M3 small filled button (a
+      // Button inside it would nest buttons): 40dp, round, squaring off while
+      // pressed.
+      buttonClassName="flex-center gap-1.5 h-10 min-w-10 px-4 rounded-[20px] [--shape-morph-to:8px] bg-primary text-on-primary font-plain text-label-large state-layer-flat focus-ring shape-morph"
+      buttonProps={{
+        'aria-label': `Key ${displayKey ?? ''}${
+          capoNumber != null ? `, capo ${capoNumber}` : ''
+        }`.trim(),
+      }}
       button={
-        <Button
-          className="gap-2 mr-2 h-9 flex-center"
-          style={{ borderRadius: '12px', padding: '0 10px', minWidth: '40px' }}
-        >
-          {getDisplayKey()}
-          {song.capo && song.show_capo && (
-            <span className="text-xs">
-              {determineCapoNumber(
-                // As (both): kept as before, an unset key (a song with only a
-                // capo, or a capo cleared in CapoKeySheet and shown again)
-                // is passed through.
-                getNonCapoKey() as string,
-                song.capo.capo_key as string
-              )}
+        <>
+          <span className="text-title-medium">{displayKey}</span>
+          {capoNumber != null && (
+            <span className="text-label-medium opacity-80">
+              Capo {capoNumber}
             </span>
           )}
-        </Button>
+        </>
       }
     >
       <div className={classNames(SHEET_WIDTHS[sheet])}>
@@ -85,7 +98,7 @@ export default function KeyOptionsPopover({
   );
 }
 const SHEET_WIDTHS: Record<string, string> = {
-  options: 'w-48',
+  options: 'w-56',
   transpose: 'w-80',
   capo: 'w-80',
 };

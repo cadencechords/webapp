@@ -3,14 +3,14 @@ type KeyBadgeProps = {
   songKey?: string;
 };
 
+// The song's key on secondary-container in the M3 Expressive "square"
+// shape (9px corners at its 22px height). It's as wide as its key plus 4px
+// each side, and at least square, so one-letter keys stay square.
 export default function KeyBadge({ songKey }: KeyBadgeProps) {
-  if (songKey) {
-    return (
-      <span className="text-xs font-bold text-gray-700 dark:text-dark-gray-200 bg-gray-200 dark:bg-dark-gray-400 dark:border-dark-gray-200 py-0.5 px-1 rounded-md grow-0 ml-2">
-        {songKey}
-      </span>
-    );
-  } else {
-    return null;
-  }
+  if (!songKey) return null;
+  return (
+    <span className="inline-flex items-center justify-center shrink-0 grow-0 min-w-[22px] h-[22px] px-1 ml-2 rounded-[9px] bg-secondary-container font-plain text-label-small-emphasized tracking-tight text-on-secondary-container">
+      {songKey}
+    </span>
+  );
 }

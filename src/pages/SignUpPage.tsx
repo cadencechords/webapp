@@ -1,10 +1,17 @@
-import { useEffect, useState, type ComponentProps } from 'react';
+import {
+  useEffect,
+  useState,
+  type ComponentProps,
+  type FormEvent,
+} from 'react';
 
 import Alert from '../components/Alert';
 import AuthApi from '../api/AuthApi';
+import AuthPage, { TEXT_LINK } from '../components/AuthPage';
 import Button from '../components/Button';
 import { Link } from 'react-router-dom';
 import OutlinedInput from '../components/inputs/OutlinedInput';
+import PasswordInput from '../components/inputs/PasswordInput';
 import PasswordRequirements from '../components/PasswordRequirements';
 import useQuery from '../hooks/useQuery';
 import type { AxiosError } from 'axios';
@@ -63,7 +70,9 @@ export default function SignUpPage() {
     setIsUncommon(score >= 3);
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!canSignUp()) return;
     setLoading(true);
 
     try {
@@ -102,6 +111,10 @@ export default function SignUpPage() {
     setIsUncommon(false);
   };
 
+  // Only once they've started confirming, so the field isn't red up front.
+  const passwordsDiffer =
+    passwordConfirmation !== '' && passwordConfirmation !== password;
+
   const canSignUp = () => {
     return (
       passwordConfirmation === password &&
@@ -114,98 +127,84 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex w-screen h-screen">
-      <div className="w-full max-w-xl px-3 m-auto lg:w-2/5 sm:w-3/4 md:w-3/5">
-        <h1 className="mb-2 text-3xl font-bold text-center">
-          Sign up for an account
-        </h1>
-        <div className="mb-4 text-center">
-          Or
-          <Link to="/login" className="ml-1 font-semibold text-blue-600">
-            login here
+    <AuthPage
+      title="Create your account"
+      description="Join Mezzo to keep your team's songs and sets in one place."
+      footer={
+        <>
+          Already have an account?
+          <Link to="/login" className={TEXT_LINK}>
+            Sign in
           </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSignUp} className="flex flex-col gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <OutlinedInput
+            label="First name"
+            autoComplete="given-name"
+            onChange={setFirstName}
+            value={firstName}
+          />
+          <OutlinedInput
+            label="Last name"
+            autoComplete="family-name"
+            onChange={setLastName}
+            value={lastName}
+          />
         </div>
-        <div className="py-2">
-          <div className="flex mb-4">
-            <div className="w-full pr-2">
-              <div className="mb-2">First Name</div>
-              <OutlinedInput
-                placeholder="first name"
-                onChange={setFirstName}
-                value={firstName}
-              />
-            </div>
-            <div className="w-full pl-2">
-              <div className="mb-2">Last Name</div>
-              <OutlinedInput
-                placeholder="last name"
-                onChange={setLastName}
-                value={lastName}
-              />
-            </div>
-          </div>
-          <div className="mb-2">Email</div>
-          <div className="mb-4">
-            <OutlinedInput
-              placeholder="email"
-              type="email"
-              onChange={setEmail}
-              value={email}
+        <OutlinedInput
+          label="Email"
+          type="email"
+          autoComplete="email"
+          onChange={setEmail}
+          value={email}
+        />
+        <PasswordInput
+          label="Password"
+          autoComplete="new-password"
+          value={password}
+          onFocus={() => setIsPasswordFocused(true)}
+          onChange={handlePasswordChange}
+        />
+        {isPasswordFocused && (
+          // Tucked under the field, like its supporting text.
+          <div className="-mt-2">
+            <PasswordRequirements
+              isUncommon={isUncommon}
+              isLongEnough={isLongEnough}
             />
-          </div>
-          <div className="mb-2">Password</div>
-          <div className="mb-4">
-            <OutlinedInput
-              value={password}
-              placeholder="password"
-              type="password"
-              onFocus={() => setIsPasswordFocused(true)}
-              onChange={handlePasswordChange}
-            />
-
-            {isPasswordFocused && (
-              <div className="mt-4">
-                <PasswordRequirements
-                  isUncommon={isUncommon}
-                  isLongEnough={isLongEnough}
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="mb-2">Confirm Password</div>
-          <div className="mb-4">
-            <OutlinedInput
-              value={passwordConfirmation}
-              placeholder="enter your password again"
-              type="password"
-              onChange={setPasswordConfirmation}
-            />
-          </div>
-        </div>
-        {alertMessage && (
-          <div className="mb-6">
-            <Alert
-              // Non-null: the color is set with the message (handleSignUp).
-              color={alertColor!}
-              dismissable
-              onDismiss={() => setAlertMessage(null)}
-            >
-              {alertMessage}
-            </Alert>
           </div>
         )}
-
+        <PasswordInput
+          label="Confirm password"
+          autoComplete="new-password"
+          value={passwordConfirmation}
+          onChange={setPasswordConfirmation}
+          error={passwordsDiffer ? "Passwords don't match" : undefined}
+        />
+        {alertMessage && (
+          <Alert
+            // Non-null: the color is set with the message (handleSignUp).
+            color={alertColor!}
+            dismissable
+            onDismiss={() => setAlertMessage(null)}
+          >
+            {alertMessage}
+          </Alert>
+        )}
         <Button
           full
+          size="md"
           disabled={!canSignUp()}
           loading={loading}
-          onClick={handleSignUp}
-          name="sign up"
+          type="submit"
+          className="mt-2"
         >
-          Sign Up
+          Create account
         </Button>
-      </div>
-    </div>
+      </form>
+    </AuthPage>
   );
 }

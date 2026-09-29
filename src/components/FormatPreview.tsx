@@ -1,7 +1,6 @@
-import React from 'react';
 import { html } from '../utils/SongUtils';
 import classNames from 'classnames';
-import Badge from './Badge';
+import Icon from './Icon';
 import type { FormatPreset } from '../types';
 
 type FormatPreviewProps = {
@@ -19,21 +18,34 @@ export default function FormatPreview({
   disabled,
 }: FormatPreviewProps) {
   return (
+    // An M3E selectable card: the preview on a large-cornered surface, with
+    // a primary outline and a Default pill when it's the team's default.
     <button
-      className="shrink-0 text-left w-96"
+      type="button"
+      className="shrink-0 text-left w-80 font-plain group disabled:cursor-default"
       onClick={() => onChange(selected ? null : format)}
       disabled={disabled}
+      aria-pressed={selected}
     >
       <div
         className={classNames(
-          'p-4 mb-2 relative overflow-y-hidden rounded-xl h-96 bg-gray-50 dark:bg-dark-gray-800',
-          selected && 'ring-2 ring-blue-500 dark:ring-dark-blue'
+          'p-4 mb-2 relative overflow-y-hidden rounded-extra-large h-96 bg-surface-container-low text-on-surface outline-offset-2 transition-fast-effects',
+          selected
+            ? 'outline-3 outline-solid outline-primary'
+            : 'group-enabled:group-hover:bg-surface-container'
         )}
       >
         {html({ content: testContent, format })}
-        {selected && <Badge className="absolute top-5 right-5">Default</Badge>}
+        {selected && (
+          <span className="absolute inline-flex items-center gap-1 h-7 px-3 top-4 right-4 rounded-full bg-primary text-on-primary text-label-large">
+            <Icon name="check" className="w-4 h-4" />
+            Default
+          </span>
+        )}
       </div>
-      <div className="text-sm text-center">{format.name}</div>
+      <div className="text-title-small text-center text-on-surface">
+        {format.name}
+      </div>
     </button>
   );
 }

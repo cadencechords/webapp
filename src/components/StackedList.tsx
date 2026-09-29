@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import type { ReactElement } from 'react';
 import StackedListItem from './StackedListItem';
 
@@ -11,7 +12,7 @@ export default function StackedList({
   className = '',
 }: StackedListProps) {
   return (
-    <div className={className}>
+    <div className={classNames('list-segmented', className)}>
       {items?.map((item, index) => (
         <StackedListItem key={item.id ? item.id : index}>
           {item}

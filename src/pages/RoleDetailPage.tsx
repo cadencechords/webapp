@@ -95,44 +95,56 @@ export default function RoleDetailPage() {
   if (isErrorRole || isErrorPermissions)
     return <Alert color="red">There was an issue retrieving this role.</Alert>;
 
+  const isBuiltIn = !!(role?.is_admin || role?.is_member);
+  const canEdit = currentMember.can(EDIT_ROLES) && !isBuiltIn;
+
+  // M3E: the role's name and description (editable unless it's built in),
+  // a chip for built-in roles, then its members and its permissions.
   return (
-    <div className="mb-8">
-      <div className="flex-between">
+    <div className="max-w-3xl mx-auto mb-8 font-plain">
+      <div className="flex items-start gap-2">
         <PageTitle
           title={role?.name}
-          editable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
+          editable={canEdit}
           onChange={newValue => handleChange('name', newValue)}
           placeholder="None title provided yet"
         />
-        {currentMember.can(DELETE_ROLES) &&
-          !role?.is_admin &&
-          !role?.is_member && (
-            <Button
-              size="md"
-              variant="icon"
-              color="gray"
-              onClick={() => setShowConfirmDelete(true)}
-            >
-              <Icon name="delete" className="w-5 h-5" />
-            </Button>
-          )}
+        {currentMember.can(DELETE_ROLES) && !isBuiltIn && (
+          <Button
+            size="md"
+            variant="icon"
+            color="gray"
+            name="Delete role"
+            onClick={() => setShowConfirmDelete(true)}
+          >
+            <Icon name="delete" className="w-6 h-6" />
+          </Button>
+        )}
       </div>
-      <EditableData
-        value={role?.description}
-        editable={
-          currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member)
-        }
-        placeholder="No description provided yet"
-        onChange={newValue => handleChange('description', newValue)}
-      />
-      <RoleMembers role={role} members={role?.memberships} />
-      <RolePermissions
-        onPermissionToggled={handlePermissionToggled}
-        role={role}
-      />
+      {/* PageTitle pads its text 8px: the rest lines up with it. */}
+      <div className="flex flex-col gap-8 px-2">
+        <div className="flex flex-col items-start gap-3">
+          {isBuiltIn && (
+            <span className="inline-flex items-center gap-2 h-8 px-3 rounded-small bg-surface-container-highest text-label-large text-on-surface-variant">
+              <Icon name="lock" className="w-4 h-4" />
+              Built-in role: its name and permissions can&rsquo;t change
+            </span>
+          )}
+          <div className="w-full -mx-1">
+            <EditableData
+              value={role?.description}
+              editable={canEdit}
+              placeholder="No description provided yet"
+              onChange={newValue => handleChange('description', newValue)}
+            />
+          </div>
+        </div>
+        <RoleMembers role={role} members={role?.memberships} />
+        <RolePermissions
+          onPermissionToggled={handlePermissionToggled}
+          role={role}
+        />
+      </div>
       <ConfirmDeleteDialog
         show={showConfirmDelete}
         onCloseDialog={() => setShowConfirmDelete(false)}

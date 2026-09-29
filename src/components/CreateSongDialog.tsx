@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-import Button from './Button';
-import OrDivider from './OrDivider';
+import Button, { buttonClasses } from './Button';
+import DialogActions from './DialogActions';
 import OutlinedInput from './inputs/OutlinedInput';
 import StyledDialog from './StyledDialog';
 import useSongForm from '../hooks/forms/useSongForm';
@@ -51,32 +51,38 @@ export default function CreateSongDialog({
       size="lg"
       fullscreen={true}
     >
-      <div className="mb-4">
-        <div className="mb-2">Name</div>
-        <OutlinedInput
-          placeholder="ex: Amazing Grace"
-          value={name}
-          onChange={newName => onChange('name', newName)}
-          ref={inputRef}
-        />
-      </div>
+      <OutlinedInput
+        label="Name"
+        value={name}
+        onChange={newName => onChange('name', newName)}
+        ref={inputRef}
+      />
 
-      <Button
-        full
-        disabled={!isValid}
-        loading={isCreating}
-        onClick={handleCreate}
-      >
-        Create Song
-      </Button>
-
-      <OrDivider />
-
-      <Link to="/import">
-        <Button variant="open" full color="blue">
+      {/* Importing instead sits at the start, apart from Cancel and Create. */}
+      <DialogActions>
+        <Link
+          to="/import"
+          className={buttonClasses({
+            variant: 'open',
+            size: 'sm',
+            className: 'flex-center mr-auto',
+          })}
+        >
           Import a song
+        </Link>
+        <Button variant="open" color="gray" size="sm" onClick={onCloseDialog}>
+          Cancel
         </Button>
-      </Link>
+        <Button
+          variant="open"
+          size="sm"
+          disabled={!isValid}
+          loading={isCreating}
+          onClick={handleCreate}
+        >
+          Create
+        </Button>
+      </DialogActions>
     </StyledDialog>
   );
 }

@@ -1,16 +1,16 @@
-import React from 'react';
 import StyledPopover from './StyledPopover';
-import Button from './Button';
-import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuItem, MenuList } from './Menu';
 import usePerformanceMode from '../hooks/usePerformanceMode';
 import Icon from './Icon';
+import { PRESENTER_ICON_BUTTON } from './PresenterTopAppBar';
 
 type MarkupPopoverProps = {
   onAddNote: () => void;
   onShowMarkingsModal: () => void;
 };
 
+// The top app bar's markup action: a standard icon button opening a menu to
+// add a sticky note or a marking, or to start annotating.
 export default function MarkupPopover({
   onAddNote,
   onShowMarkingsModal,
@@ -20,49 +20,39 @@ export default function MarkupPopover({
   return (
     <StyledPopover
       position="bottom-end"
+      // The popover's own button, styled as an icon button: a Button inside
+      // it would nest buttons.
+      buttonClassName={PRESENTER_ICON_BUTTON}
       button={
-        <Button variant="icon" size="md" color="gray">
-          <AddStickyNoteIcon className="w-6 h-6" />
-        </Button>
+        <>
+          <Icon name="edit_note" className="w-6 h-6" />
+          <span className="sr-only">Add markup</span>
+        </>
       }
     >
-      <div className="overflow-hidden rounded-lg w-60">
-        <MobileMenuButton
-          full
-          className="border-b h-11 flex-between dark:border-dark-gray-400"
-          color="black"
-          style={{ paddingTop: 0, paddingBottom: 0 }}
-          onClick={onAddNote}
-        >
+      <MenuList className="w-60">
+        <MenuItem onClick={onAddNote} icon={<Icon name="sticky_note_2" />}>
           Sticky note
-          <AddStickyNoteIcon className="w-5 h-5" />
-        </MobileMenuButton>
-        <MobileMenuButton
+        </MenuItem>
+        <MenuItem
           onClick={onShowMarkingsModal}
-          full
-          className="border-b dark:border-dark-gray-400 h-11 flex-between"
-          color="black"
-          style={{ paddingTop: 0, paddingBottom: 0 }}
+          icon={
+            // A dynamic marking's own face: an italic, bold f.
+            <span
+              aria-hidden="true"
+              style={{ fontFamily: 'Times New Roman' }}
+              className="w-6 text-2xl italic font-bold leading-none text-center"
+            >
+              f
+            </span>
+          }
         >
           Marking
-          <span
-            style={{ fontFamily: 'Times New Roman' }}
-            className="w-5 text-xl italic font-bold text-center"
-          >
-            f
-          </span>
-        </MobileMenuButton>
-        <MobileMenuButton
-          onClick={beginAnnotating}
-          full
-          className="h-11 flex-between"
-          color="black"
-          style={{ paddingTop: 0, paddingBottom: 0 }}
-        >
+        </MenuItem>
+        <MenuItem onClick={beginAnnotating} icon={<Icon name="draw" />}>
           Annotate
-          <Icon name="edit" filled className="w-5 h-5" />
-        </MobileMenuButton>
-      </div>
+        </MenuItem>
+      </MenuList>
     </StyledPopover>
   );
 }

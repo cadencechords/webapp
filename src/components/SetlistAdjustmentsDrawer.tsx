@@ -1,18 +1,19 @@
-import { EDIT_SONGS, noop, START_SESSIONS } from '../utils/constants';
+import { EDIT_SONGS, START_SESSIONS } from '../utils/constants';
 import { useSelector } from 'react-redux';
 
 import Drawer from './Drawer';
-import MobileMenuButton from './buttons/MobileMenuButton';
 import ScrollIcon from '../icons/ScrollIcon';
-import Toggle from './Toggle';
 import { selectCurrentMember } from '../store/authSlice';
-import { Link } from 'react-router-dom';
 import { selectCurrentSubscription } from '../store/subscriptionSlice';
 import SessionIcon from '../icons/SessionIcon';
 import { useSessionsContext } from '../contexts/SessionsProvider';
 import NumberBadge from './NumberBadge';
-import AddStickyNoteIcon from '../icons/AddStickyNoteIcon';
 import Icon from './Icon';
+import {
+  SettingsAction,
+  SettingsSection,
+  SettingsSwitch,
+} from './SettingsList';
 import type { SetPresenterSheet } from './SetPresenterBottomSheet';
 import type { Setlist, Song, SongFormat } from '../types';
 
@@ -45,7 +46,6 @@ export default function SetlistAdjustmentsDrawer({
   // Non-null: kept as before. SecuredRoutes renders pages once the team is
   // set, and the subscription is dispatched right after it.
   const currentSubscription = useSelector(selectCurrentSubscription)!;
-  const iconClasses = 'w-5 h-5 mr-3 text-blue-600 dark:text-dark-blue';
   const {
     sessions,
     onStartSession,
@@ -74,120 +74,81 @@ export default function SetlistAdjustmentsDrawer({
     onClose();
   }
 
+  const hosting = Boolean(activeSession && isHost);
+
   return (
-    <Drawer open={open} onClose={onClose}>
-      <div className="pt-8">
-        <MobileMenuButton
-          full
-          className="flex-between"
-          onClick={() =>
-            handleFormatUpdate('autosize', !song?.format?.autosize)
-          }
-        >
-          Resize lyrics
-          <Toggle enabled={song?.format?.autosize} onChange={noop} />
-        </MobileMenuButton>
-        <MobileMenuButton
-          full
-          className="flex-between"
-          onClick={() =>
-            handleFormatUpdate('chords_hidden', !song?.format?.chords_hidden)
-          }
-        >
-          Show chords
-          <Toggle
-            enabled={!song?.format?.chords_hidden}
-            onChange={noop}
-            spacing="between"
-          />
-        </MobileMenuButton>
-        <MobileMenuButton
-          full
-          className="flex-between"
-          onClick={() => onSongUpdate('show_roadmap', !song?.show_roadmap)}
-        >
-          Show roadmap
-          <Toggle
-            enabled={song?.show_roadmap}
-            onChange={noop}
-            spacing="between"
-          />
-        </MobileMenuButton>
+    <Drawer open={open} onClose={onClose} title="Song settings">
+      <SettingsSection title="Display">
+        <SettingsSwitch
+          label="Resize lyrics"
+          enabled={song?.format?.autosize}
+          onChange={enabled => handleFormatUpdate('autosize', enabled)}
+        />
+        <SettingsSwitch
+          label="Show chords"
+          enabled={!song?.format?.chords_hidden}
+          onChange={enabled => handleFormatUpdate('chords_hidden', !enabled)}
+        />
+        <SettingsSwitch
+          label="Show roadmap"
+          enabled={song?.show_roadmap}
+          onChange={enabled => onSongUpdate('show_roadmap', enabled)}
+        />
+      </SettingsSection>
 
-        {currentSubscription.isPro && (
-          <MobileMenuButton
-            full
-            className="flex items-center"
-            onClick={onAddNote}
-          >
-            <AddStickyNoteIcon className={iconClasses} />
-            Add a note
-          </MobileMenuButton>
-        )}
-
-        {currentMember.can(EDIT_SONGS) && (
-          <>
-            <Link
-              to={{ pathname: `/songs/${song?.id}/edit`, state: song }}
-              className="w-full"
-            >
-              <MobileMenuButton full className="flex items-center">
-                <Icon name="edit" filled className={iconClasses} />
-                Edit
-              </MobileMenuButton>
-            </Link>
-          </>
-        )}
-        <MobileMenuButton
-          className="flex items-center"
+      <SettingsSection title="Tools">
+        <SettingsAction
+          icon={<ScrollIcon />}
+          label="Auto scroll"
           onClick={() => onShowBottomSheet('autoscroll')}
-          full
-        >
-          <ScrollIcon className={iconClasses} /> Auto scroll
-        </MobileMenuButton>
-
-        {currentSubscription.isPro && currentMember.can(START_SESSIONS) && (
-          <MobileMenuButton
-            full
-            className="flex items-center"
-            onClick={handleToggleSessionAndCloseDrawer}
-          >
-            <SessionIcon className={iconClasses} />
-            {activeSession && isHost ? 'End session' : 'Start session'}
-          </MobileMenuButton>
-        )}
-
+        />
         {currentSubscription.isPro && (
-          <MobileMenuButton
-            full
-            className="flex items-center"
-            // Boolean(): without an active session this was null, which both
-            // components treat like false (it skips MobileMenuButton's
-            // default, and a null `disabled` renders no attribute).
-            disabled={Boolean(activeSession && isHost)}
-            onClick={() => onShowBottomSheet('sessions')}
-          >
-            <NumberBadge
-              className="mr-2"
-              disabled={Boolean(activeSession && isHost)}
-            >
-              {sessions.length}
-            </NumberBadge>
-            <div>View sessions</div>
-          </MobileMenuButton>
+          <SettingsAction
+            icon={<Icon name="sticky_note_2" />}
+            label="Add a note"
+            onClick={onAddNote}
+          />
         )}
+        {currentMember.can(EDIT_SONGS) && (
+          <SettingsAction
+            icon={<Icon name="edit" />}
+            label="Edit song"
+            to={{ pathname: `/songs/${song?.id}/edit`, state: song }}
+          />
+        )}
+      </SettingsSection>
 
-        {currentSubscription.isPro && activeSession && !isHost && (
-          <MobileMenuButton
-            full
-            className="flex items-center"
-            color="red"
-            onClick={handleLeaveSessionAndCloseDrawer}
-          >
-            Leave session
-          </MobileMenuButton>
-        )}
-      </div>
+      {currentSubscription.isPro && (
+        <SettingsSection title="Session">
+          {currentMember.can(START_SESSIONS) && (
+            <SettingsAction
+              icon={<SessionIcon />}
+              label={hosting ? 'End session' : 'Start session'}
+              onClick={handleToggleSessionAndCloseDrawer}
+            />
+          )}
+          <SettingsAction
+            icon={<Icon name="group" filled />}
+            label="View sessions"
+            // You can't join another session while hosting one.
+            disabled={hosting}
+            onClick={() => onShowBottomSheet('sessions')}
+            trailing={
+              <NumberBadge className="px-1.5 h-5 min-w-5" disabled={hosting}>
+                {sessions.length}
+              </NumberBadge>
+            }
+          />
+          {activeSession && !isHost && (
+            <SettingsAction
+              icon={<Icon name="logout" />}
+              label="Leave session"
+              destructive
+              onClick={handleLeaveSessionAndCloseDrawer}
+            />
+          )}
+        </SettingsSection>
+      )}
     </Drawer>
   );
 }

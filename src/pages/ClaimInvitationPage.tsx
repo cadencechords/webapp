@@ -2,14 +2,12 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { setAuth, setTeamId } from '../store/authSlice';
 import { useEffect, useState } from 'react';
 
-import Alert from '../components/Alert';
-import Button from '../components/Button';
-import CenteredPage from '../components/CenteredPage';
+import AuthPage, { TEXT_LINK } from '../components/AuthPage';
 import InvitationApi from '../api/InvitationApi';
-import PulseLoader from 'react-spinners/PulseLoader';
 import { reportError } from '../utils/error';
 import { useDispatch } from 'react-redux';
 import type { AxiosResponse } from 'axios';
+import LoadingIndicator from '../components/feedback/LoadingIndicator';
 
 /** A failed claim, as axios rejects it. A 404 says why in `message`. */
 type ClaimError = { response: AxiosResponse<{ message: string }> };
@@ -20,7 +18,8 @@ export function useQuery() {
 
 export default function ClaimInvitationPage() {
   const token = useQuery().get('token');
-  const [claimingToken, setClaimingToken] = useState(false);
+  // Claiming starts as soon as there's a token, so nothing blank shows first.
+  const [claimingToken, setClaimingToken] = useState(!!token);
   const [errors, setErrors] = useState<string | null>(null);
 
   const dispatch = useDispatch();
@@ -57,31 +56,42 @@ export default function ClaimInvitationPage() {
     }
   }, [token, dispatch, router]);
 
+  const signInFooter = (
+    <>
+      Already have an account?
+      <Link to="/login" className={TEXT_LINK}>
+        Sign in
+      </Link>
+    </>
+  );
+
   if (!token) {
     return (
-      <CenteredPage>
-        <div className="text-center">
-          Uh oh, looks like something went wrong.
-          <Link className="mt-3 block" to="/login">
-            <Button>Take me home</Button>
-          </Link>
-        </div>
-      </CenteredPage>
-    );
-  } else if (claimingToken) {
-    return (
-      <CenteredPage>
-        <div className="text-center">
-          <div className="mb-4 font-semibold">Claiming your invitation</div>
-          <PulseLoader color="#1f6feb" />
-        </div>
-      </CenteredPage>
+      <AuthPage
+        title="This invitation doesn't work"
+        description="Invalid invitation link. Ask whoever invited you to send a new one."
+        footer={signInFooter}
+      />
     );
   } else if (errors) {
     return (
-      <CenteredPage>
-        <Alert color="red">{errors}</Alert>
-      </CenteredPage>
+      <AuthPage
+        title="This invitation doesn't work"
+        // The API's message may end with a period; don't double it.
+        description={`${errors.replace(/\.$/, '')}. Ask whoever invited you to send a new one.`}
+        footer={signInFooter}
+      />
+    );
+  } else if (claimingToken) {
+    return (
+      <AuthPage
+        title="Joining your team"
+        description="Hang tight while we accept your invitation."
+      >
+        <div className="flex justify-center">
+          <LoadingIndicator />
+        </div>
+      </AuthPage>
     );
   }
   return <></>;

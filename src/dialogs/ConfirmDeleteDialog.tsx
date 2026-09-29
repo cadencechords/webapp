@@ -1,4 +1,5 @@
 import Button from '../components/Button';
+import DialogActions from '../components/DialogActions';
 import StyledDialog from '../components/StyledDialog';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
@@ -32,25 +33,19 @@ export default function ConfirmDeleteDialog({
       open={show}
       onCloseDialog={onCloseDialog}
       fullscreen={false}
-      borderedTop={false}
     >
-      <div className="mb-6">
+      <div className="text-body-medium text-on-surface-variant">
         {children ? children : 'Deleting this item is irreversible.'}
       </div>
-      <div className="flex gap-2">
-        <Button full color="red" onClick={onCancel}>
+      {/* The destructive action in the error role. */}
+      <DialogActions>
+        <Button variant="open" color="gray" size="sm" onClick={onCancel}>
           Cancel
         </Button>
-        <Button
-          full
-          variant="open"
-          color="gray"
-          onClick={handleConfirm}
-          loading={loading}
-        >
+        <Button color="red" size="sm" onClick={handleConfirm} loading={loading}>
           Yes, delete
         </Button>
-      </div>
+      </DialogActions>
     </StyledDialog>
   );
 }

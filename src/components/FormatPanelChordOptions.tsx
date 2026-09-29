@@ -1,11 +1,10 @@
-import React from 'react';
 import useSongEditor from '../hooks/useSongEditor';
 import type { SongFormat } from '../types';
 import BoldItalicButtonGroup from './BoldItalicButtonGroup';
 import ColorPicker from './ColorPicker';
 import FormatOption from './FormatOption';
-import FormatOptionLabel from './FormatOptionLabel';
 
+// The chords' style (bold, italic) and colors, one row each.
 export default function FormatPanelChordOptions() {
   const { song, updateFormat } = useSongEditor();
   const {
@@ -23,37 +22,33 @@ export default function FormatPanelChordOptions() {
   }
 
   return (
-    <div>
-      <div className="mb-4">
-        <FormatOption>
-          <BoldItalicButtonGroup
-            isBold={isBold}
-            isItalic={isItalic}
-            onChange={handleUpdateFormat}
-          />
-        </FormatOption>
-      </div>
-      <FormatOption>
-        <FormatOptionLabel>Highlight color</FormatOptionLabel>
-        <div className="flex justify-end w-32 mr-2">
-          <ColorPicker
-            color={highlightColor}
-            onChange={(newColor: string) =>
-              handleUpdateFormat('highlight_color', newColor)
-            }
-          />
-        </div>
+    <div className="flex flex-col">
+      <FormatOption label="Style">
+        <BoldItalicButtonGroup
+          isBold={isBold}
+          isItalic={isItalic}
+          onChange={handleUpdateFormat}
+        />
       </FormatOption>
-      <FormatOption>
-        <FormatOptionLabel>Chord color</FormatOptionLabel>
-        <div className="flex justify-end w-32 mr-2">
-          <ColorPicker
-            color={chordColor}
-            onChange={(newColor: string) =>
-              handleUpdateFormat('chord_color', newColor)
-            }
-          />
-        </div>
+      <FormatOption label="Chord color">
+        <ColorPicker
+          large
+          label="Chord color"
+          color={chordColor}
+          onChange={(newColor: string) =>
+            handleUpdateFormat('chord_color', newColor)
+          }
+        />
+      </FormatOption>
+      <FormatOption label="Highlight color">
+        <ColorPicker
+          large
+          label="Highlight color"
+          color={highlightColor}
+          onChange={(newColor: string) =>
+            handleUpdateFormat('highlight_color', newColor)
+          }
+        />
       </FormatOption>
     </div>
   );

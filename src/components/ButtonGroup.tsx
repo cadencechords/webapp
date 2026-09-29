@@ -1,5 +1,10 @@
 import React from 'react';
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
+import {
+  connectedButtonClasses,
+  connectedGroupClasses,
+} from './buttons/connectedButtonGroup';
 
 export type ButtonGroupOption<Value> = {
   value: Value;
@@ -24,10 +29,6 @@ export default function ButtonGroup<Value>({
   selected = [],
   onChange,
 }: ButtonGroupProps<Value>) {
-  function isNotLastOption(index: number) {
-    return index !== options.length - 1;
-  }
-
   function isSelected(option: ButtonGroupOption<Value>) {
     return selected.includes(option.value);
   }
@@ -36,30 +37,17 @@ export default function ButtonGroup<Value>({
     onChange?.({ selected: !isSelected(option), option });
   }
 
-  function isFirst(index: number) {
-    return index === 0;
-  }
-
-  function isLast(index: number) {
-    return index === options.length - 1;
-  }
   return (
-    <div className="flex w-full bg-gray-100 rounded-md dark:bg-dark-gray-600">
+    <div className={classNames(connectedGroupClasses, 'w-full')}>
       {options.map((option, index) => (
         <button
           onClick={() => handleClick(option)}
-          className={
-            `flex-1 py-1  flex-center ` +
-            ` ${
-              isNotLastOption(index) && 'border-r dark:border-dark-gray-400'
-            } ` +
-            ` ${
-              isSelected(option) ? 'bg-gray-700 text-white' : 'text-gray-600'
-            } ` +
-            ` 
-            ${isFirst(index) && 'rounded-l-md'} ` +
-            ` ${isLast(index) && 'rounded-r-md'}`
-          }
+          className={connectedButtonClasses({
+            index,
+            count: options.length,
+            selected: isSelected(option),
+            size: 'xs',
+          })}
           key={index}
         >
           {option.display}

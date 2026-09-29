@@ -1,6 +1,11 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSelector,
+  createSlice,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
 import type { Id, Role, Team, User } from '../types';
 import type { RootState } from './store';
+import { clearRecentlyViewed } from '../utils/recentlyViewed';
 
 export interface AuthState {
   // Every field is optional because logOut deletes them all.
@@ -84,6 +89,7 @@ export const authSlice = createSlice({
       localStorage.removeItem('uid');
       localStorage.removeItem('client');
       localStorage.removeItem('teamId');
+      clearRecentlyViewed();
     },
   },
 });
@@ -113,24 +119,30 @@ export const selectCurrentUser = (state: RootState) => state.auth.currentUser;
 export const selectCurrentTeam = (state: RootState) => state.auth.currentTeam;
 /**
  * The current user with their permissions on the current team, or null until
- * their membership loads (`setMembership`).
+ * their membership loads (`setMembership`). Memoized on the current user: a
+ * new object on every call made useSelector re-render its component on any
+ * store change, and re-ran effects that depend on it (SetlistDetailPage
+ * refetched its set on every render).
  */
-export const selectCurrentMember = (state: RootState) => {
-  // Non-null (here and below): kept as before, this throws when no user is
-  // signed in rather than returning null.
-  if (!state.auth.currentUser!.role) return null;
+export const selectCurrentMember = createSelector(
+  [(state: RootState) => state.auth.currentUser],
+  currentUser => {
+    // Non-null (here and below): kept as before, this throws when no user is
+    // signed in rather than returning null.
+    if (!currentUser!.role) return null;
 
-  const permissions = state.auth.currentUser!.role?.permissions?.map(
-    permission => permission.name
-  );
-  return {
-    permissions,
-    ...state.auth.currentUser!,
-    can: (permission: string) => {
-      return permissions?.includes(permission);
-    },
-  };
-};
+    const permissions = currentUser!.role?.permissions?.map(
+      permission => permission.name
+    );
+    return {
+      permissions,
+      ...currentUser!,
+      can: (permission: string) => {
+        return permissions?.includes(permission);
+      },
+    };
+  }
+);
 
 /** The current user with `permissions` and `can`, once the membership loads. */
 export type CurrentMember = NonNullable<ReturnType<typeof selectCurrentMember>>;

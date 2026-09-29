@@ -31,7 +31,7 @@ export default function EditableData({
       <input
         className={
           `appearance-none p-1 w-full sm:text-sm text-base outline-hidden focus:outline-hidden ` +
-          ` focus:bg-gray-100 hover:bg-gray-100 dark:hover:bg-dark-gray-700 dark:focus:bg-dark-gray-700 rounded-sm bg-transparent transition-colors ` +
+          ` text-on-surface placeholder:text-on-surface-variant caret-primary hover:bg-surface-container-highest focus:bg-surface-container-highest focus:shadow-[inset_0_-2px_0_var(--color-primary)] rounded-t-extra-small bg-transparent transition-fast-effects ` +
           ` ${centered ? ' text-center ' : ''}` +
           ` ${className} `
         }
@@ -46,7 +46,7 @@ export default function EditableData({
     );
   } else {
     return (
-      <div className="p-1 w-full sm:text-sm text-base">
+      <div className="p-1 w-full sm:text-sm text-base text-on-surface">
         {value || 'None provided'}
       </div>
     );

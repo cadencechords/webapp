@@ -1,0 +1,54 @@
+/* M3 Expressive grouped lists (CAD-89). Put list-segmented on a list's
+   container: each child becomes a segment on surface-container, 2px apart,
+   with large corners at the ends of the group and small ones between. In the
+   components layer, so an item's own utilities (a background, a radius)
+   still win. */
+@layer components {
+  /* The 2px spacing is margins, not a flex gap: react-beautiful-dnd measures
+     margins when it moves rows aside and drops them, and ignores gaps. Every
+     segment gets the same 1px above and below (flex margins don't collapse),
+     so a row's margin box is the same wherever it's dragged from or to; the
+     container's negative margins take back the 1px at each end. */
+  .list-segmented {
+    display: flex;
+    flex-direction: column;
+    margin-block: -1px;
+  }
+  .list-segmented > * {
+    background-color: var(--md-sys-color-surface-container);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    margin-block: 1px;
+  }
+  .list-segmented > :first-child {
+    border-top-left-radius: var(--md-sys-shape-corner-large);
+    border-top-right-radius: var(--md-sys-shape-corner-large);
+  }
+  .list-segmented > :last-child,
+  .list-segmented > :has(+ [data-rbd-placeholder-context-id]:last-child) {
+    border-bottom-left-radius: var(--md-sys-shape-corner-large);
+    border-bottom-right-radius: var(--md-sys-shape-corner-large);
+  }
+  /* react-beautiful-dnd's placeholder holds the dragged row's place: an
+     empty gap, not a segment. */
+  .list-segmented > [data-rbd-placeholder-context-id] {
+    background-color: transparent;
+  }
+  /* A segment being dragged lifts off the list: large corners all round, on
+     level 3
+     (state-layer-flat adds the 16% dragged layer). */
+  .list-segmented > [data-dragging] {
+    border-radius: var(--md-sys-shape-corner-large);
+    box-shadow: var(--md-sys-elevation-level3);
+  }
+
+  /* A long list (songs, sets, binders): rows straight on the page, no
+     container or dividers; row height separates them. With nothing to line
+     up with, a row's hover is rounded. */
+  .list-divided {
+    display: flex;
+    flex-direction: column;
+  }
+  .list-divided > * {
+    border-radius: var(--md-sys-shape-corner-medium);
+  }
+}

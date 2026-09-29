@@ -6,8 +6,7 @@ export default function Label({ children, className }: LabelProps) {
   return (
     <div
       className={
-        'mb-2 font-semibold text-sm text-gray-700 dark:text-dark-gray-200 ' +
-        className
+        'mb-2 font-plain text-label-large text-on-surface-variant ' + className
       }
     >
       {children}

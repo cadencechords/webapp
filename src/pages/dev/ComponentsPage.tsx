@@ -1,0 +1,711 @@
+// /dev/components: a fixture page for the shared components as they're
+// restyled to M3 Expressive. Not linked from the nav; used to review every
+// variant and state in one place, in both themes.
+import { useState } from 'react';
+import type { ReactNode } from 'react';
+
+import Button from '../../components/Button';
+import type {
+  ButtonColor,
+  ButtonSize,
+  ButtonVariant,
+} from '../../components/Button';
+import ButtonGroup from '../../components/ButtonGroup';
+import SegmentedControl from '../../components/SegmentedControl';
+import ButtonSwitch from '../../components/buttons/ButtonSwitch';
+import IconButton from '../../components/buttons/IconButton';
+import MobileMenuButton from '../../components/buttons/MobileMenuButton';
+import AddCancelActions from '../../components/buttons/AddCancelActions';
+import Icon from '../../components/Icon';
+import OutlinedInput from '../../components/inputs/OutlinedInput';
+import WellInput from '../../components/inputs/WellInput';
+import OpenInput from '../../components/inputs/OpenInput';
+import EditableData from '../../components/inputs/EditableData';
+import TimeInput from '../../components/inputs/TimeInput';
+import Label from '../../components/Label';
+import FileInput from '../../components/FileInput';
+import Checkbox from '../../components/Checkbox';
+import Toggle from '../../components/Toggle';
+import Range from '../../components/Range';
+import Select from '../../components/Select';
+import StyledListBox from '../../components/StyledListBox';
+import ColorPicker from '../../components/ColorPicker';
+import StyledDialog from '../../components/StyledDialog';
+import ConfirmDeleteDialog from '../../dialogs/ConfirmDeleteDialog';
+import Drawer from '../../components/Drawer';
+import BottomSheet from '../../components/BottomSheet';
+import StyledPopover from '../../components/StyledPopover';
+import { MenuDivider, MenuItem, MenuList } from '../../components/Menu';
+import Card from '../../components/Card';
+import { Tab } from '@headlessui/react';
+import { MemoryRouter } from 'react-router-dom';
+import NavigationRailItem from '../../components/NavigationRailItem';
+import BinderIcon from '../../icons/BinderIcon';
+import BinderColor from '../../components/BinderColor';
+import { PrimaryTab, PrimaryTabs } from '../../components/tabs/PrimaryTabs';
+import Badge from '../../components/Badge';
+import KeyBadge from '../../components/KeyBadge';
+import DetailTag from '../../components/DetailTag';
+import NumberBadge from '../../components/NumberBadge';
+import ProfilePicture from '../../components/ProfilePicture';
+import TableHead from '../../components/TableHead';
+import TableRow from '../../components/TableRow';
+import { toast } from 'react-toastify';
+import Alert from '../../components/Alert';
+import LoadingIndicator from '../../components/feedback/LoadingIndicator';
+import LinearProgress from '../../components/feedback/LinearProgress';
+import NoDataMessage from '../../components/NoDataMessage';
+import SectionTitle from '../../components/SectionTitle';
+import OrDivider from '../../components/OrDivider';
+import {
+  LIST_ITEM,
+  LIST_ITEM_INTERACTIVE,
+  LIST_ITEM_TWO_LINE,
+  LIST_SUPPORTING_TEXT,
+} from '../../components/lists/listItem';
+
+const VARIANTS: [ButtonVariant, string][] = [
+  ['filled', 'Filled'],
+  ['accent', 'Tonal'],
+  ['outlined', 'Outlined'],
+  ['open', 'Text'],
+];
+const COLORS: ButtonColor[] = [
+  'blue',
+  'red',
+  'purple',
+  'gray',
+  'black',
+  'white',
+  'green',
+  'yellow',
+  'indigo',
+  'pink',
+];
+const LIST_OPTIONS = ['Member', 'Leader', 'Admin'].map((role, index) => ({
+  value: index,
+  template: role,
+}));
+// The M3 corner scale (docs/design-tokens.md), as full class names so
+// Tailwind sees them.
+const CORNERS: [string, string][] = [
+  ['rounded-none', 'none · 0'],
+  ['rounded-extra-small', 'extra-small · 4'],
+  ['rounded-small', 'small · 8'],
+  ['rounded-medium', 'medium · 12'],
+  ['rounded-large', 'large · 16'],
+  ['rounded-large-increased', 'large-increased · 20'],
+  ['rounded-extra-large', 'extra-large · 28'],
+  ['rounded-extra-large-increased', 'extra-large-increased · 32'],
+  ['rounded-extra-extra-large', 'extra-extra-large · 48'],
+  ['rounded-full', 'full'],
+];
+const SIZES: ButtonSize[] = ['xs', 'sm', 'small', 'md', 'medium'];
+
+function Section({ title, children }: { title: string; children?: ReactNode }) {
+  return (
+    <section className="mb-12">
+      <h2 className="mb-4 text-headline-small font-plain text-on-surface">
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+function Row({ label, children }: { label: string; children?: ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-center gap-3 mb-3">
+      <span className="w-24 text-label-medium text-on-surface-variant">
+        {label}
+      </span>
+      {children}
+    </div>
+  );
+}
+
+export default function ComponentsPage() {
+  const [styles, setStyles] = useState<string[]>(['bold']);
+  const [segment, setSegment] = useState('General');
+  const [quality, setQuality] = useState('Major');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('worship@example.com');
+  const [query, setQuery] = useState('');
+  const [inline, setInline] = useState('Amazing Grace');
+  const [checked, setChecked] = useState(true);
+  const [unchecked, setUnchecked] = useState(false);
+  const [enabled, setEnabled] = useState(true);
+  const [disabledToggle, setDisabledToggle] = useState(false);
+  const [speed, setSpeed] = useState(4);
+  const [font, setFont] = useState('Roboto Mono');
+  const [color, setColor] = useState('rgba(31, 111, 235, 1)');
+  const [listOption, setListOption] = useState(LIST_OPTIONS[0]);
+  const [dialog, setDialog] = useState<
+    'basic' | 'fullscreen' | 'delete' | 'drawer' | 'sheet' | 'menu' | null
+  >(null);
+  // ConfirmDeleteDialog stays loading after a confirm, as it does in the
+  // app (callers close it for good), so reopening it here shows that state.
+  const closeDialog = () => setDialog(null);
+
+  return (
+    <div className="min-h-screen p-6 bg-surface text-on-surface font-plain">
+      <h1 className="mb-2 text-display-small">Components</h1>
+      <p className="mb-10 text-body-large text-on-surface-variant">
+        Shared components in M3 Expressive. Hover, press, or Tab to see state
+        layers, the press morph and the focus ring. Toggle the app theme to
+        check dark mode.
+      </p>
+
+      <Section title="Shapes">
+        <div className="flex flex-wrap gap-4 mb-6">
+          {CORNERS.map(([className, label]) => (
+            <div key={className} className="flex flex-col items-center w-28">
+              <div className={`w-24 h-24 bg-primary-container ${className}`} />
+              <code className="mt-2 text-center text-label-small text-on-surface-variant">
+                {label}
+              </code>
+            </div>
+          ))}
+        </div>
+        <Row label="Press morph">
+          <button
+            type="button"
+            className="w-24 h-24 rounded-extra-large bg-secondary-container text-on-secondary-container state-layer shape-morph focus-ring text-label-large"
+          >
+            Press me
+          </button>
+        </Row>
+        <Row label="Folder color">
+          <BinderColor color="blue" />
+          <BinderColor color="red" />
+          <BinderColor color="green" size={3} />
+          <BinderColor color="none" />
+        </Row>
+      </Section>
+
+      <Section title="Buttons">
+        {VARIANTS.map(([variant, label]) => (
+          <Row key={variant} label={label}>
+            {COLORS.map(color => (
+              <Button key={color} variant={variant} color={color}>
+                {color}
+              </Button>
+            ))}
+            <Button variant={variant} disabled>
+              disabled
+            </Button>
+            <Button variant={variant} loading>
+              loading
+            </Button>
+          </Row>
+        ))}
+        <Row label="Sizes">
+          {SIZES.map(size => (
+            <Button key={size} size={size}>
+              {size}
+            </Button>
+          ))}
+          <Button full={false} size="md" variant="accent">
+            Tonal M
+          </Button>
+        </Row>
+        <Row label="Icon">
+          {(['sm', 'md', 'lg'] as const).map(size => (
+            <Button
+              key={size}
+              variant="icon"
+              color="gray"
+              size={size}
+              name={`Delete ${size}`}
+            >
+              <Icon name="delete" className="w-6 h-6" />
+            </Button>
+          ))}
+          <Button variant="icon" color="blue" name="Add">
+            <Icon name="add" className="w-6 h-6" />
+          </Button>
+          <Button variant="icon" disabled name="Disabled">
+            <Icon name="delete" className="w-6 h-6" />
+          </Button>
+          <IconButton color="blue">
+            <Icon name="add" className="h-7 w-7" />
+          </IconButton>
+        </Row>
+        <Row label="Actions">
+          <div className="w-80">
+            <AddCancelActions />
+          </div>
+        </Row>
+        <Row label="Menu">
+          <div className="w-56 py-2 rounded-large bg-surface-container">
+            <MobileMenuButton full className="text-left">
+              Edit
+            </MobileMenuButton>
+            <MobileMenuButton full color="red" className="text-left">
+              Delete
+            </MobileMenuButton>
+            <MobileMenuButton full disabled className="text-left">
+              Disabled
+            </MobileMenuButton>
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Connected button groups">
+        <div className="space-y-4 max-w-md">
+          <ButtonGroup
+            options={[
+              { value: 'bold', display: <b>B</b> },
+              { value: 'italic', display: <i>I</i> },
+            ]}
+            selected={styles}
+            onChange={({ selected, option }) =>
+              setStyles(s =>
+                selected
+                  ? [...s, option.value]
+                  : s.filter(v => v !== option.value)
+              )
+            }
+          />
+          <SegmentedControl
+            name="components-md"
+            options={['General', 'Chords', 'Lyrics']}
+            selected={segment}
+            onChange={setSegment}
+          />
+          <SegmentedControl
+            name="components-sm"
+            size="sm"
+            options={['General', 'Chords', 'Lyrics']}
+            selected={segment}
+            onChange={setSegment}
+          />
+          <ButtonSwitch
+            buttonLabels={['Major', 'Minor']}
+            activeButtonLabel={quality}
+            onClick={setQuality}
+          />
+        </div>
+      </Section>
+
+      <Section title="Text fields">
+        <div className="grid max-w-3xl gap-6 md:grid-cols-2">
+          <OutlinedInput label="Name" value={name} onChange={setName} />
+          <OutlinedInput
+            label="Email"
+            value={email}
+            onChange={setEmail}
+            supportingText="We'll send the invite here"
+          />
+          <OutlinedInput
+            label="Search"
+            placeholder="Song title"
+            value=""
+            onChange={() => {}}
+            error="Couldn't find that song"
+          />
+          <OutlinedInput
+            label="Scheduled date"
+            type="date"
+            value=""
+            onChange={() => {}}
+          />
+          <OutlinedInput
+            label="Add a new theme"
+            button="Create"
+            value=""
+            onChange={() => {}}
+          />
+          <OutlinedInput placeholder="No label" value="" onChange={() => {}} />
+          <WellInput value={query} onChange={setQuery} />
+          <TimeInput defaultValue="7:30 PM" />
+          <div>
+            <Label>Open input</Label>
+            <OpenInput
+              placeholder="Search songs"
+              value={query}
+              onChange={setQuery}
+            />
+          </div>
+          <div>
+            <Label>Editable data</Label>
+            <EditableData value={inline} onChange={setInline} />
+          </div>
+          <FileInput onChange={() => {}} onRemove={() => {}} />
+        </div>
+      </Section>
+
+      <Section title="Selection controls">
+        <div className="grid max-w-3xl gap-8 md:grid-cols-2">
+          <Row label="Checkbox">
+            <Checkbox checked={checked} onChange={setChecked} />
+            <Checkbox checked={unchecked} onChange={setUnchecked} />
+            <Checkbox checked color="green" onChange={() => {}} />
+            <Checkbox checked color="pink" onChange={() => {}} />
+          </Row>
+          <div className="space-y-4">
+            <Toggle
+              label="Autosize"
+              enabled={enabled}
+              onChange={setEnabled}
+              spacing="between"
+            />
+            <Toggle
+              label="Show roadmap"
+              enabled={disabledToggle}
+              onChange={setDisabledToggle}
+              spacing="between"
+            />
+          </div>
+          <div className="pt-12">
+            <Range
+              min={1}
+              max={10}
+              step={1}
+              value={speed}
+              onChange={setSpeed}
+            />
+          </div>
+          <div className="w-40">
+            <Select
+              options={['Roboto Mono', 'Open Sans', 'Courier'].map(f => ({
+                value: f,
+                display: f,
+              }))}
+              selected={font}
+              onChange={setFont}
+              className="h-8"
+            />
+          </div>
+          <div className="w-56">
+            <StyledListBox
+              options={LIST_OPTIONS}
+              selectedOption={listOption}
+              onChange={value =>
+                setListOption(LIST_OPTIONS.find(o => o.value === value)!)
+              }
+            />
+          </div>
+          <Row label="Color">
+            <ColorPicker color={color} onChange={setColor} />
+          </Row>
+        </div>
+      </Section>
+
+      <Section title="Dialogs and sheets">
+        <div className="flex flex-wrap gap-3">
+          <Button variant="accent" onClick={() => setDialog('basic')}>
+            Basic dialog
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('fullscreen')}>
+            Full-screen dialog
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('delete')}>
+            Confirm delete
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('drawer')}>
+            Side sheet
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('sheet')}>
+            Bottom sheet
+          </Button>
+          <Button variant="accent" onClick={() => setDialog('menu')}>
+            Menu in a dialog
+          </Button>
+        </div>
+        <StyledDialog
+          open={dialog === 'basic' || dialog === 'fullscreen'}
+          onCloseDialog={closeDialog}
+          title="Create a setlist"
+          fullscreen={dialog === 'fullscreen'}
+        >
+          <div className="space-y-4">
+            <OutlinedInput label="Name" value="" onChange={() => {}} />
+            <OutlinedInput
+              label="Scheduled date"
+              type="date"
+              value=""
+              onChange={() => {}}
+            />
+            <AddCancelActions onCancel={closeDialog} onAdd={closeDialog} />
+          </div>
+        </StyledDialog>
+        <ConfirmDeleteDialog
+          show={dialog === 'delete'}
+          onCloseDialog={closeDialog}
+          onCancel={closeDialog}
+          onConfirm={closeDialog}
+        />
+        <Drawer open={dialog === 'drawer'} onClose={closeDialog}>
+          <div className="p-4 text-title-medium">Adjustments</div>
+        </Drawer>
+        <BottomSheet open={dialog === 'sheet'} onClose={closeDialog}>
+          <div className="p-6 pt-16 text-body-large">A bottom sheet</div>
+        </BottomSheet>
+        <StyledDialog
+          open={dialog === 'menu'}
+          onCloseDialog={closeDialog}
+          title="Profile Picture"
+          fullscreen={false}
+        >
+          <MenuList className="-mx-3 *:rounded-medium">
+            <MenuItem
+              onClick={closeDialog}
+              icon={<Icon name="desktop_windows" />}
+            >
+              Upload from device
+            </MenuItem>
+            <MenuItem
+              destructive
+              onClick={closeDialog}
+              icon={<Icon name="delete" />}
+            >
+              Remove photo
+            </MenuItem>
+          </MenuList>
+        </StyledDialog>
+      </Section>
+
+      <Section title="Menus">
+        <div className="flex flex-wrap items-start gap-6">
+          {(['bottom-start', 'bottom-end', 'top'] as const).map(position => (
+            <div key={position}>
+              <StyledPopover
+                position={position}
+                button={<Button variant="accent">{position}</Button>}
+              >
+                <MenuList className="w-60">
+                  <MenuItem icon={<Icon name="print" />}>Print</MenuItem>
+                  <MenuItem
+                    selected
+                    icon={<Icon name="edit" />}
+                    trailing={<Icon name="check" className="w-5 h-5" />}
+                  >
+                    Edit
+                  </MenuItem>
+                  <MenuItem icon={<Icon name="download" />} disabled>
+                    Download (disabled)
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem destructive icon={<Icon name="delete" />}>
+                    Delete
+                  </MenuItem>
+                </MenuList>
+              </StyledPopover>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Lists, cards and chips">
+        <Row label="List">
+          <div className="w-full max-w-md list-segmented">
+            <div
+              className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE}`}
+              tabIndex={0}
+            >
+              <span className="flex items-center min-w-0">
+                <span className="min-w-0 truncate">Amazing Grace</span>
+                <KeyBadge songKey="G" />
+              </span>
+            </div>
+            <div
+              className={`${LIST_ITEM_TWO_LINE} ${LIST_ITEM_INTERACTIVE}`}
+              tabIndex={0}
+            >
+              <div className="min-w-0">
+                <div className="truncate">Sunday morning</div>
+                <div className={LIST_SUPPORTING_TEXT}>
+                  5 songs · Sun Oct 4, 2026
+                </div>
+              </div>
+            </div>
+            <div
+              className={`${LIST_ITEM} ${LIST_ITEM_INTERACTIVE}`}
+              tabIndex={0}
+              data-dragging
+            >
+              Being dragged
+            </div>
+          </div>
+        </Row>
+        <Row label="Cards">
+          <div className="grid w-full max-w-2xl grid-cols-3 gap-4">
+            <Card>Filled</Card>
+            <Card variant="elevated">Elevated</Card>
+            <Card variant="outlined">Outlined</Card>
+            <Card onClick={() => {}}>Filled, clickable</Card>
+          </div>
+        </Row>
+        <Row label="Table">
+          <table className="w-full max-w-2xl">
+            <TableHead columns={['EMAIL', 'SENT', '']} />
+            <tbody>
+              <TableRow
+                columns={['ada@example.com', 'Sun Sep 27 2026']}
+                removable
+                onRemove={() => {}}
+              />
+              <TableRow columns={['grace@example.com', 'Sat Sep 26 2026']} />
+            </tbody>
+          </table>
+        </Row>
+        <Row label="Chips">
+          <div className="flex flex-wrap items-center gap-3">
+            <KeyBadge songKey="Bb" />
+            <DetailTag>Hymn</DetailTag>
+            <Badge className="">Default</Badge>
+            <Badge color="green" className="">
+              Trialing
+            </Badge>
+            <NumberBadge className="">3</NumberBadge>
+            <NumberBadge className="" disabled>
+              12
+            </NumberBadge>
+          </div>
+        </Row>
+        <Row label="Avatars">
+          <div className="flex items-center gap-3">
+            <ProfilePicture name="Ada Lovelace" size="xs" />
+            <ProfilePicture name="grace@example.com" size="sm" />
+            <ProfilePicture name="Cadence" />
+            <ProfilePicture size="sm" />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Tabs">
+        <Tab.Group as="div" className="max-w-xl">
+          <PrimaryTabs>
+            <PrimaryTab>Details</PrimaryTab>
+            <PrimaryTab>Reminders</PrimaryTab>
+            <PrimaryTab>Set</PrimaryTab>
+          </PrimaryTabs>
+          <Tab.Panels className="py-4 text-body-medium text-on-surface-variant">
+            <Tab.Panel>Details panel</Tab.Panel>
+            <Tab.Panel>Reminders panel</Tab.Panel>
+            <Tab.Panel>Set panel</Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
+      </Section>
+
+      <Section title="Navigation rail">
+        <p className="mb-4 text-body-medium text-on-surface-variant">
+          Collapsed below 1024px, expanded above. Pick a destination to move the
+          indicator.
+        </p>
+        {/* Its own router, so the links don't leave this page. */}
+        <MemoryRouter initialEntries={['/songs']}>
+          <div className="flex flex-col w-24 gap-1 py-3 rounded-large border border-outline-variant lg:w-[220px] lg:gap-0 lg:px-3">
+            <NavigationRailItem
+              text="Dashboard"
+              to="/"
+              exact
+              icon={<Icon name="dashboard" filled className="w-6 h-6" />}
+            />
+            <NavigationRailItem
+              text="Songs"
+              to="/songs"
+              icon={<Icon name="music_note" filled className="w-6 h-6" />}
+            />
+            <NavigationRailItem
+              text="Folders"
+              to="/folders"
+              icon={<BinderIcon className="w-6 h-6" />}
+            />
+            <NavigationRailItem
+              text="Team members"
+              to="/members"
+              icon={<Icon name="person" filled className="w-6 h-6" />}
+            />
+          </div>
+        </MemoryRouter>
+      </Section>
+
+      <Section title="Feedback">
+        <Row label="Loading indicators">
+          <div className="flex items-center gap-4">
+            <LoadingIndicator />
+            <LoadingIndicator contained />
+            <Button loading>Save</Button>
+          </div>
+        </Row>
+        <Row label="Full-width loading">
+          <div className="w-full max-w-md">
+            <Button loading full>
+              Login
+            </Button>
+          </div>
+        </Row>
+        <Row label="Linear progress">
+          <div className="flex flex-col gap-4 w-full max-w-md">
+            <LinearProgress />
+            <LinearProgress wavy />
+          </div>
+        </Row>
+        <Row label="Alerts">
+          <div className="flex flex-col gap-3 w-full max-w-md">
+            <Alert color="red" dismissable onDismiss={() => {}}>
+              Invalid login credentials.
+            </Alert>
+            <Alert color="yellow">This invitation link has expired.</Alert>
+            <Alert color="green">Your changes were saved.</Alert>
+            <Alert>Check your email to confirm your account.</Alert>
+            <Alert color="gray">Passwords need at least 8 characters.</Alert>
+          </div>
+        </Row>
+        <Row label="Snackbars">
+          <div className="flex flex-wrap gap-3">
+            <Button
+              variant="outlined"
+              onClick={() => toast('Host ended session')}
+            >
+              Show
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => toast.success('Your song has been saved')}
+            >
+              Success
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                const id = toast.loading('Uploading...');
+                setTimeout(
+                  () =>
+                    toast.update(id, {
+                      render: 'Uploaded',
+                      type: 'success',
+                      isLoading: false,
+                      autoClose: 3000,
+                    }),
+                  2000
+                );
+              }}
+            >
+              Loading
+            </Button>
+          </div>
+        </Row>
+        <Row label="Empty state">
+          <div className="w-full max-w-md">
+            <NoDataMessage type="songs" />
+          </div>
+        </Row>
+        <Row label="Compact">
+          <div className="w-full max-w-md">
+            <NoDataMessage compact>No folders found</NoDataMessage>
+          </div>
+        </Row>
+        <Row label="Titles">
+          <div className="w-full max-w-md">
+            <SectionTitle title="Pending invitations" underline />
+            <p className="text-body-medium subtext">Secondary text</p>
+            <OrDivider />
+          </div>
+        </Row>
+      </Section>
+    </div>
+  );
+}

@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 
 import Alert from '../components/Alert';
 import AuthApi from '../api/AuthApi';
+import AuthPage, { TEXT_LINK } from '../components/AuthPage';
 import Button from '../components/Button';
-import CenteredPage from '../components/CenteredPage';
 import OutlinedInput from '../components/inputs/OutlinedInput';
-import PageTitle from '../components/PageTitle';
 import { reportError } from '../utils/error';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [email, setEmail] = useState('');
   const [sending, setSending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -17,12 +17,12 @@ export default function ForgotPasswordPage() {
     document.title = 'Forgot Password';
   }, []);
 
-  const handleSendInstructions = async () => {
+  const handleSendInstructions = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email) return;
     try {
       setSending(true);
-      // Non-null: the button is disabled, and Enter does nothing, until an
-      // email is typed.
-      await AuthApi.sendResetPasswordInstructions(email!);
+      await AuthApi.sendResetPasswordInstructions(email);
       setShowSuccess(true);
     } catch (error) {
       reportError(error);
@@ -31,40 +31,43 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  const handleEnterPressed = () => {
-    if (email) {
-      handleSendInstructions();
-    }
-  };
-
   return (
-    <CenteredPage>
-      <PageTitle title="Reset Password" align="center" />
-      <div className="mb-6 text-lg font-semibold text-gray-600 dark:text-dark-gray-200">
-        Enter the email address you used to register with Mezzo. If the email
-        matches an account in Mezzo, we&apos;ll send you instructions to reset
-        your password.
-      </div>
-      <OutlinedInput
-        className="mb-6"
-        onChange={setEmail}
-        placeholder="Email address"
-        onEnter={handleEnterPressed}
-        value={email}
-      />
-      {showSuccess && (
-        <Alert className="mb-6">
-          If you have an account with Mezzo, you should receive an email soon!
-        </Alert>
-      )}
-      <Button
-        full
-        disabled={!email}
-        loading={sending}
-        onClick={handleSendInstructions}
-      >
-        Send instructions
-      </Button>
-    </CenteredPage>
+    <AuthPage
+      title="Forgot your password?"
+      description="Enter the email you signed up with. If it matches a Mezzo account, we'll send you a link to reset your password."
+      footer={
+        <>
+          Remembered it?
+          <Link to="/login" className={TEXT_LINK}>
+            Sign in
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSendInstructions} className="flex flex-col gap-4">
+        <OutlinedInput
+          label="Email"
+          type="email"
+          autoComplete="email"
+          onChange={setEmail}
+          value={email}
+        />
+        {showSuccess && (
+          <Alert>
+            If you have an account with Mezzo, you should receive an email soon!
+          </Alert>
+        )}
+        <Button
+          full
+          size="md"
+          disabled={!email}
+          loading={sending}
+          type="submit"
+          className="mt-2"
+        >
+          Send instructions
+        </Button>
+      </form>
+    </AuthPage>
   );
 }

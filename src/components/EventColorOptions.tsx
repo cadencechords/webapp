@@ -1,34 +1,58 @@
-import EventColorOption from './EventColorOption';
-import Label from './Label';
+import classNames from 'classnames';
+import Icon from './Icon';
+import { userColorClasses } from '../utils/userColors';
 import type { ButtonColor } from './Button';
+
+const EVENT_COLORS: ButtonColor[] = [
+  'red',
+  'blue',
+  'yellow',
+  'green',
+  'pink',
+  'purple',
+  'indigo',
+  'gray',
+  'black',
+];
 
 type EventColorOptionsProps = {
   selectedColor?: ButtonColor;
-  /** EventColorOption hands on its color as optional. */
-  onClick: (color: ButtonColor | undefined) => void;
+  onClick: (color: ButtonColor) => void;
 };
 
+// An event's color as a row of 40dp round swatches that wraps, as a radio
+// group, like a folder's (ColorSwatches). The picked one shows a check and a
+// ring 2px outside it.
 export default function EventColorOptions({
   selectedColor,
   onClick,
 }: EventColorOptionsProps) {
   return (
-    <div className="mb-8">
-      <Label className="flex items-center gap-2 mb-4">
-        Color{' '}
-        {selectedColor && <EventColorOption color={selectedColor} disabled />}
-      </Label>
-      <div className="flex items-center">
-        <EventColorOption color="red" onClick={onClick} className="mr-4" />
-        <EventColorOption color="blue" onClick={onClick} className="mr-4" />
-        <EventColorOption color="yellow" onClick={onClick} className="mr-4" />
-        <EventColorOption color="green" onClick={onClick} className="mr-4" />
-        <EventColorOption color="pink" onClick={onClick} className="mr-4" />
-        <EventColorOption color="purple" onClick={onClick} className="mr-4" />
-        <EventColorOption color="indigo" onClick={onClick} className="mr-4" />
-        <EventColorOption color="gray" onClick={onClick} className="mr-4" />
-        <EventColorOption color="black" onClick={onClick} />
-      </div>
+    <div role="radiogroup" aria-label="Color" className="flex flex-wrap gap-3">
+      {EVENT_COLORS.map(color => {
+        const isPicked = color === selectedColor;
+        const { color: background, onColor } = userColorClasses(color);
+        return (
+          <button
+            key={color}
+            type="button"
+            role="radio"
+            aria-checked={isPicked}
+            aria-label={color}
+            onClick={() => onClick(color)}
+            className={classNames(
+              'flex-center w-10 h-10 rounded-full focus-ring transition-fast-effects',
+              background,
+              onColor,
+              isPicked
+                ? 'outline-2 outline-offset-2 outline-solid outline-on-surface'
+                : 'hover:scale-110'
+            )}
+          >
+            {isPicked && <Icon name="check" className="w-5 h-5" />}
+          </button>
+        );
+      })}
     </div>
   );
 }

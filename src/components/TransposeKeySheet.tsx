@@ -88,16 +88,16 @@ export default function TransposeKeySheet({
         />
       </div>
 
-      <div className="grid grid-cols-7 p-2 my-4 bg-gray-100 rounded-lg dark:bg-dark-gray-600 ">
+      <div className="grid grid-cols-7 p-2 my-4 bg-surface-container-high rounded-large">
         {keys.map(key => (
           <button
             onClick={() => handleKeyChange(key)}
             key={key}
             className={classNames(
-              'text-sm h-10 font-semibold flex-center rounded-lg',
+              'h-10 font-plain text-label-large flex-center rounded-medium state-layer-flat focus-ring',
               song.transposed_key === key
-                ? 'bg-blue-600 dark:bg-dark-blue text-white'
-                : 'dark:hover:bg-dark-gray-400 hover:bg-gray-200'
+                ? 'bg-primary text-on-primary'
+                : 'text-on-surface'
             )}
           >
             {key}

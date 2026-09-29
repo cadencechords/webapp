@@ -1,7 +1,6 @@
 import AppMenu from './mobile menus/AppMenu';
 import MobileNavLink from './MobileNavLink';
 import { useState } from 'react';
-import PlaylistIcon from '../icons/PlaylistIcon';
 import Icon from './Icon';
 
 export default function MobileNav() {
@@ -10,14 +9,20 @@ export default function MobileNav() {
   const iconClasses = 'h-6 w-6';
   return (
     <>
-      <div className="fixed bottom-0 z-40 flex w-full py-1 bg-white border-t dark:bg-dark-gray-800 dark:border-0 md:hidden">
+      {/* M3 Expressive navigation bar: 64dp on surface-container, no
+          border, plus the home indicator's inset. Pages keep clear of it
+          with bottom-[calc(4rem+env(safe-area-inset-bottom))]. */}
+      <nav
+        aria-label="Main"
+        className="fixed bottom-0 z-40 flex items-center w-full h-[calc(4rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] bg-surface-container md:hidden"
+      >
         <MobileNavLink
           icon={<Icon name="music_note" filled className={iconClasses} />}
           to="/songs"
           text="Songs"
         />
         <MobileNavLink
-          icon={<PlaylistIcon className="w-7 h-7" />}
+          icon={<Icon name="queue_music" filled className={iconClasses} />}
           to="/sets"
           text="Sets"
         />
@@ -36,7 +41,7 @@ export default function MobileNav() {
           to="/account"
           text="Account"
         />
-      </div>
+      </nav>
       <AppMenu
         open={showMenuDialog}
         onCloseDialog={() => setShowMenuDialog(false)}

@@ -1,5 +1,6 @@
 import { EDIT_ROLES } from '../utils/constants';
 import Permission from './Permission';
+import SectionTitle from './SectionTitle';
 import { selectCurrentMember } from '../store/authSlice';
 import { useSelector } from 'react-redux';
 import useAddPermission from '../hooks/api/useAddPermission';
@@ -46,474 +47,266 @@ export default function RolePermissions({
     }
   }
 
+  const checkable =
+    currentMember.can(EDIT_ROLES) && !(role?.is_admin || role?.is_member);
+
+  // Each group of permissions under a section title, as a segmented list of
+  // switch rows.
   return (
-    <div>
-      <div className="pt-3 mt-12 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Song permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Add songs')}
-          name="Add songs"
-          description="User can create new songs or import them from other sources"
-          onChange={checkedValue =>
-            handlePermissionToggled('Add songs', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Edit songs')}
-          name="Edit songs"
-          description="User can edit songs"
-          onChange={checkedValue =>
-            handlePermissionToggled('Edit songs', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Delete songs')}
-          name="Delete songs"
-          description="User can delete songs"
-          onChange={checkedValue =>
-            handlePermissionToggled('Delete songs', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('View songs')}
-          name="View songs"
-          description="User can view songs"
-          onChange={checkedValue =>
-            handlePermissionToggled('View songs', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Export songs')}
-          name="Export songs"
-          description="Allow user to export songs from this team to another team"
-          onChange={checkedValue =>
-            handlePermissionToggled('Export songs', checkedValue)
-          }
-        />
-      </div>
-
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Binder permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Add binders')}
-          name="Add binders"
-          description="User can create new binders"
-          onChange={checkedValue =>
-            handlePermissionToggled('Add binders', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Edit binders')}
-          name="Edit binders"
-          description="User can edit binders, including adding and removing songs"
-          onChange={checkedValue =>
-            handlePermissionToggled('Edit binders', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Delete binders')}
-          name="Delete binders"
-          description="User can delete binders"
-          onChange={checkedValue =>
-            handlePermissionToggled('Delete binders', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('View binders')}
-          name="View binders"
-          description="User can view binders"
-          onChange={checkedValue =>
-            handlePermissionToggled('View binders', checkedValue)
-          }
-        />
-      </div>
-
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Set permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Add sets')}
-          name="Add sets"
-          description="User can create new sets"
-          onChange={checkedValue =>
-            handlePermissionToggled('Add sets', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Edit sets')}
-          name="Edit sets"
-          description="User can edit sets, including adding and removing songs"
-          onChange={checkedValue =>
-            handlePermissionToggled('Edit sets', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Delete sets')}
-          name="Delete sets"
-          description="User can delete sets"
-          onChange={checkedValue =>
-            handlePermissionToggled('Delete sets', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('View sets')}
-          name="View sets"
-          description="User can view sets"
-          onChange={checkedValue =>
-            handlePermissionToggled('View sets', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Publish sets')}
-          name="Publish sets"
-          description="User can publish and unpublish sets"
-          onChange={checkedValue =>
-            handlePermissionToggled('Publish sets', checkedValue)
-          }
-        />
-      </div>
-
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Session permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Start sessions')}
-          name="Start sessions"
-          description="User can start new sessions for sets"
-          onChange={checkedValue =>
-            handlePermissionToggled('Start sessions', checkedValue)
-          }
-        />
-      </div>
-
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Role permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Add roles')}
-          name="Add roles"
-          description="User can create new roles"
-          onChange={checkedValue =>
-            handlePermissionToggled('Add roles', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Edit roles')}
-          name="Edit roles"
-          description="User can edit roles, including adding and removing permissions"
-          onChange={checkedValue =>
-            handlePermissionToggled('Edit roles', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Delete roles')}
-          name="Delete roles"
-          description="User can delete roles"
-          onChange={checkedValue =>
-            handlePermissionToggled('Delete roles', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('View roles')}
-          name="View roles"
-          description="User can view roles"
-          onChange={checkedValue =>
-            handlePermissionToggled('View roles', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Assign roles')}
-          name="Assign roles"
-          description="User can assign members new roles"
-          onChange={checkedValue =>
-            handlePermissionToggled('Assign roles', checkedValue)
-          }
-        />
-      </div>
-
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Member permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Add members')}
-          name="Add members"
-          description="User can add new members to the team"
-          onChange={checkedValue =>
-            handlePermissionToggled('Add members', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Remove members')}
-          name="Remove members"
-          description="User can remove members from the team"
-          onChange={checkedValue =>
-            handlePermissionToggled('Remove members', checkedValue)
-          }
-        />
-      </div>
-
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Event permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Add events')}
-          name="Add events"
-          description="User can add events to the calendar"
-          onChange={checkedValue =>
-            handlePermissionToggled('Add events', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Edit events')}
-          name="Edit events"
-          description="User can edit existing events on the calendar"
-          onChange={checkedValue =>
-            handlePermissionToggled('Edit events', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Delete events')}
-          name="Delete events"
-          description="User can delete/cancel events on the calendar"
-          onChange={checkedValue =>
-            handlePermissionToggled('Delete events', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('View events')}
-          name="View events"
-          description="User can view events on the calendar"
-          onChange={checkedValue =>
-            handlePermissionToggled('View events', checkedValue)
-          }
-        />
-      </div>
-
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        File permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Add files')}
-          name="Add files"
-          description="User can add or attach files to a song"
-          onChange={checkedValue =>
-            handlePermissionToggled('Add files', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Edit files')}
-          name="Edit files"
-          description="User can edit and change the name of existing file names"
-          onChange={checkedValue =>
-            handlePermissionToggled('Edit files', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Delete files')}
-          name="Delete files"
-          description="User can delete/unattach files from a song"
-          onChange={checkedValue =>
-            handlePermissionToggled('Delete files', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('View files')}
-          name="View files"
-          description="User can view/download files attached to a song"
-          onChange={checkedValue =>
-            handlePermissionToggled('View files', checkedValue)
-          }
-        />
-      </div>
-
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Saved formats
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Add format presets')}
-          name="Save format preset"
-          description="User can save formats that can be applied to other songs, sets or the entire library"
-          onChange={checkedValue =>
-            handlePermissionToggled('Add format presets', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Edit format presets')}
-          name="Edit format preset"
-          description="User can edit a saved format"
-          onChange={checkedValue =>
-            handlePermissionToggled('Edit format presets', checkedValue)
-          }
-        />
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Delete format presets')}
-          name="Delete format preset"
-          description="User can delete a saved format"
-          onChange={checkedValue =>
-            handlePermissionToggled('Delete format presets', checkedValue)
-          }
-        />
-      </div>
-      <div className="pt-3 mt-8 mb-3 text-lg font-semibold border-t flex-between dark:border-dark-gray-600">
-        Billing permissions
-      </div>
-      <div>
-        <Permission
-          checkable={
-            currentMember.can(EDIT_ROLES) &&
-            !(role?.is_admin || role?.is_member)
-          }
-          checked={isPermissionEnabled('Manage billing')}
-          name="Manage billing"
-          description="User can manage billing for the team as well as upgrade/downgrade tiers"
-          onChange={checkedValue =>
-            handlePermissionToggled('Manage billing', checkedValue)
-          }
-        />
-      </div>
+    <div className="flex flex-col gap-6">
+      {GROUPS.map(group => (
+        <section key={group.title}>
+          <SectionTitle title={group.title} />
+          <div className="list-segmented">
+            {group.permissions.map(({ permission, name, description }) => (
+              <Permission
+                key={permission}
+                checkable={checkable}
+                checked={isPermissionEnabled(permission)}
+                name={name}
+                description={description}
+                onChange={checkedValue =>
+                  handlePermissionToggled(permission, checkedValue)
+                }
+              />
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
+
+// The API's permission names, with how each shows: folders are binders and
+// saved formats are format presets there.
+const GROUPS: {
+  title: string;
+  permissions: { permission: string; name: string; description: string }[];
+}[] = [
+  {
+    title: 'Song permissions',
+    permissions: [
+      {
+        permission: 'Add songs',
+        name: 'Add songs',
+        description:
+          'User can create new songs or import them from other sources',
+      },
+      {
+        permission: 'Edit songs',
+        name: 'Edit songs',
+        description: 'User can edit songs',
+      },
+      {
+        permission: 'Delete songs',
+        name: 'Delete songs',
+        description: 'User can delete songs',
+      },
+      {
+        permission: 'View songs',
+        name: 'View songs',
+        description: 'User can view songs',
+      },
+      {
+        permission: 'Export songs',
+        name: 'Export songs',
+        description:
+          'Allow user to export songs from this team to another team',
+      },
+    ],
+  },
+  {
+    title: 'Folder permissions',
+    permissions: [
+      {
+        permission: 'Add binders',
+        name: 'Add folders',
+        description: 'User can create new folders',
+      },
+      {
+        permission: 'Edit binders',
+        name: 'Edit folders',
+        description:
+          'User can edit folders, including adding and removing songs',
+      },
+      {
+        permission: 'Delete binders',
+        name: 'Delete folders',
+        description: 'User can delete folders',
+      },
+      {
+        permission: 'View binders',
+        name: 'View folders',
+        description: 'User can view folders',
+      },
+    ],
+  },
+  {
+    title: 'Set permissions',
+    permissions: [
+      {
+        permission: 'Add sets',
+        name: 'Add sets',
+        description: 'User can create new sets',
+      },
+      {
+        permission: 'Edit sets',
+        name: 'Edit sets',
+        description: 'User can edit sets, including adding and removing songs',
+      },
+      {
+        permission: 'Delete sets',
+        name: 'Delete sets',
+        description: 'User can delete sets',
+      },
+      {
+        permission: 'View sets',
+        name: 'View sets',
+        description: 'User can view sets',
+      },
+      {
+        permission: 'Publish sets',
+        name: 'Publish sets',
+        description: 'User can publish and unpublish sets',
+      },
+    ],
+  },
+  {
+    title: 'Session permissions',
+    permissions: [
+      {
+        permission: 'Start sessions',
+        name: 'Start sessions',
+        description: 'User can start new sessions for sets',
+      },
+    ],
+  },
+  {
+    title: 'Role permissions',
+    permissions: [
+      {
+        permission: 'Add roles',
+        name: 'Add roles',
+        description: 'User can create new roles',
+      },
+      {
+        permission: 'Edit roles',
+        name: 'Edit roles',
+        description:
+          'User can edit roles, including adding and removing permissions',
+      },
+      {
+        permission: 'Delete roles',
+        name: 'Delete roles',
+        description: 'User can delete roles',
+      },
+      {
+        permission: 'View roles',
+        name: 'View roles',
+        description: 'User can view roles',
+      },
+      {
+        permission: 'Assign roles',
+        name: 'Assign roles',
+        description: 'User can assign members new roles',
+      },
+    ],
+  },
+  {
+    title: 'Member permissions',
+    permissions: [
+      {
+        permission: 'Add members',
+        name: 'Add members',
+        description: 'User can add new members to the team',
+      },
+      {
+        permission: 'Remove members',
+        name: 'Remove members',
+        description: 'User can remove members from the team',
+      },
+    ],
+  },
+  {
+    title: 'Event permissions',
+    permissions: [
+      {
+        permission: 'Add events',
+        name: 'Add events',
+        description: 'User can add events to the calendar',
+      },
+      {
+        permission: 'Edit events',
+        name: 'Edit events',
+        description: 'User can edit existing events on the calendar',
+      },
+      {
+        permission: 'Delete events',
+        name: 'Delete events',
+        description: 'User can delete/cancel events on the calendar',
+      },
+      {
+        permission: 'View events',
+        name: 'View events',
+        description: 'User can view events on the calendar',
+      },
+    ],
+  },
+  {
+    title: 'File permissions',
+    permissions: [
+      {
+        permission: 'Add files',
+        name: 'Add files',
+        description: 'User can add or attach files to a song',
+      },
+      {
+        permission: 'Edit files',
+        name: 'Edit files',
+        description: 'User can edit and change the name of existing file names',
+      },
+      {
+        permission: 'Delete files',
+        name: 'Delete files',
+        description: 'User can delete/unattach files from a song',
+      },
+      {
+        permission: 'View files',
+        name: 'View files',
+        description: 'User can view/download files attached to a song',
+      },
+    ],
+  },
+  {
+    title: 'Saved formats',
+    permissions: [
+      {
+        permission: 'Add format presets',
+        name: 'Save format preset',
+        description:
+          'User can save formats that can be applied to other songs, sets or the entire library',
+      },
+      {
+        permission: 'Edit format presets',
+        name: 'Edit format preset',
+        description: 'User can edit a saved format',
+      },
+      {
+        permission: 'Delete format presets',
+        name: 'Delete format preset',
+        description: 'User can delete a saved format',
+      },
+    ],
+  },
+  {
+    title: 'Billing permissions',
+    permissions: [
+      {
+        permission: 'Manage billing',
+        name: 'Manage billing',
+        description:
+          'User can manage billing for the team as well as upgrade/downgrade tiers',
+      },
+    ],
+  },
+];

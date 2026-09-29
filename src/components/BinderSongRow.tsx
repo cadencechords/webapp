@@ -4,6 +4,7 @@ import KeyBadge from './KeyBadge';
 import Button from './Button';
 import useRemoveSongFromBinder from '../hooks/api/useRemoveSongFromBinder';
 import Icon from './Icon';
+import { LIST_ITEM_INTERACTIVE } from './lists/listItem';
 import type { Id, Song } from '../types';
 
 type BinderSongRowProps = {
@@ -15,28 +16,32 @@ export default function BinderSongRow({ song, binderId }: BinderSongRowProps) {
   const router = useHistory();
   const { isLoading: isRemoving, run: removeSongFromBinder } =
     useRemoveSongFromBinder({
-      onSuccess: () => router.replace(`/binders/${binderId}`, null),
+      onSuccess: () => router.replace(`/folders/${binderId}`, null),
     });
 
   return (
-    <div className="flex items-center justify-between h-12 px-3 border-b sm:h-10 sm:rounded-lg sm:hover:bg-gray-100 sm:dark:hover:bg-dark-gray-800 dark:border-dark-gray-600 last:border-0 sm:border-0">
+    // The link fills the row up to the remove button, so the whole row (bar
+    // the button) opens the song. The link has the state layer and focus
+    // ring; the button has its own.
+    <div className="flex items-center gap-2 pr-2 font-plain text-body-large text-on-surface">
       <Link
         to={{ pathname: `/songs/${song.id}`, state: song }}
-        className="flex items-center w-full h-full mr-5 overflow-hidden"
+        className={`flex items-center flex-1 min-w-0 min-h-14 py-2 pl-4 rounded-[inherit] ${LIST_ITEM_INTERACTIVE}`}
       >
-        <div className="inline-block overflow-hidden whitespace-nowrap text-ellipsis hover:underline">
-          {song.name}{' '}
-        </div>
+        <div className="min-w-0 truncate">{song.name} </div>
         <KeyBadge songKey={song.transposed_key || song.original_key} />
       </Link>
+      {/* M3 trailing icon button: 40px, with a 20px icon. */}
       <Button
         variant="icon"
         color="gray"
+        size="md"
+        name={`Remove ${song.name} from folder`}
         onClick={() => removeSongFromBinder({ binderId, songId: song.id })}
-        loading={isRemoving}
-        className="whitespace-nowrap"
+        disabled={isRemoving}
+        className="shrink-0"
       >
-        <Icon name="delete" className="w-4 h-4" />
+        <Icon name="delete" className="w-5 h-5" />
       </Button>
     </div>
   );

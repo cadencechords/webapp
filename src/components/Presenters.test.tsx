@@ -11,9 +11,10 @@ import presenterReducer, {
 import { setupStore } from '../store/store';
 import type MetronomeTool from '../tools/metronome';
 import { findSessionCurrentUserIsHosting } from '../utils/sessions';
-import Metronome from './Metronome';
+import Metronome, { MAX_BPM, MIN_BPM, sliderBpm } from './Metronome';
 import SetlistNavigation from './SetlistNavigation';
 import SetlistAdjustmentsDrawer from './SetlistAdjustmentsDrawer';
+import SessionsSheet from './SessionsSheet';
 import {
   SessionsContext,
   type SessionsContextValue,
@@ -76,7 +77,8 @@ describe('Metronome', () => {
     const onBpmChange =
       vi.fn<ComponentProps<typeof Metronome>['onBpmChange']>();
     render(<Metronome bpm={bpm} onBpmChange={onBpmChange} />);
-    const [minus, plus] = screen.getAllByRole('button');
+    const minus = screen.getByRole('button', { name: 'Decrease tempo' });
+    const plus = screen.getByRole('button', { name: 'Increase tempo' });
     return { onBpmChange, minus, plus };
   }
 
@@ -110,9 +112,46 @@ describe('Metronome', () => {
     fireEvent.change(input, { target: { value: '-3' } });
     expect(onBpmChange).toHaveBeenCalledTimes(1);
   });
+
+  test('sets the bpm from the slider', () => {
+    const { onBpmChange } = renderMetronome(100);
+    const slider = screen.getByRole('slider');
+    expect(slider).toHaveAttribute('min', String(MIN_BPM));
+    expect(slider).toHaveAttribute('max', String(MAX_BPM));
+    expect(slider).toHaveValue('100');
+    fireEvent.change(slider, { target: { value: '140' } });
+    expect(onBpmChange).toHaveBeenLastCalledWith(140);
+  });
+
+  test('keeps the slider in range, at the low end without a bpm', () => {
+    expect(sliderBpm(120)).toBe(120);
+    expect(sliderBpm(500)).toBe(MAX_BPM);
+    expect(sliderBpm(10)).toBe(MIN_BPM);
+    expect(sliderBpm(undefined)).toBe(MIN_BPM);
+    expect(sliderBpm(0)).toBe(MIN_BPM);
+    expect(sliderBpm(NaN)).toBe(MIN_BPM);
+
+    renderMetronome(undefined);
+    expect(screen.getByRole('slider')).toHaveValue(String(MIN_BPM));
+  });
+
+  test('starts and stops with a toggle button', () => {
+    renderMetronome(100);
+    const start = screen.getByRole('button', { name: 'Start metronome' });
+    expect(start).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(start);
+    const stop = screen.getByRole('button', { name: 'Stop metronome' });
+    expect(stop).toHaveAttribute('aria-pressed', 'true');
+
+    // Tapping the tempo stops it.
+    fireEvent.click(screen.getByRole('button', { name: 'Tap' }));
+    expect(
+      screen.getByRole('button', { name: 'Start metronome' })
+    ).toHaveAttribute('aria-pressed', 'false');
+  });
 });
 
-test('SetlistNavigation labels the ends and moves by one', () => {
+test('SetlistNavigation shows where the song is and moves by one, stopping at the ends', () => {
   const songs: Song[] = [
     { ...song, id: 1, name: 'First' },
     { ...song, id: 2, name: 'Second' },
@@ -122,14 +161,19 @@ test('SetlistNavigation labels the ends and moves by one', () => {
   const { rerender } = render(
     <SetlistNavigation songs={songs} index={0} onIndexChange={onIndexChange} />
   );
-  expect(screen.getByText('Beginning')).toBeInTheDocument();
-  fireEvent.click(screen.getByText('Second'));
+  expect(screen.getByText('1 of 2')).toBeInTheDocument();
+  expect(screen.getByText('Next: Second')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Previous song' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Next: Second' }));
   expect(onIndexChange).toHaveBeenLastCalledWith(1);
+
   rerender(
     <SetlistNavigation songs={songs} index={1} onIndexChange={onIndexChange} />
   );
-  expect(screen.getByText('End')).toBeInTheDocument();
-  fireEvent.click(screen.getByText('First'));
+  expect(screen.getByText('2 of 2')).toBeInTheDocument();
+  expect(screen.getByText('End of set')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Next song' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Previous: First' }));
   expect(onIndexChange).toHaveBeenLastCalledWith(0);
 });
 
@@ -199,5 +243,87 @@ describe('SetlistAdjustmentsDrawer', () => {
     expect(onSongUpdate).toHaveBeenLastCalledWith('format', {
       autosize: true,
     });
+  });
+
+  test('groups the settings, with a switch per display setting', () => {
+    const { onSongUpdate } = renderDrawer(session, false);
+    expect(
+      screen.getAllByRole('heading').map(heading => heading.textContent)
+    ).toEqual(['Song settings', 'Display', 'Tools', 'Session']);
+    expect(
+      screen.getByRole('switch', { name: 'Resize lyrics' })
+    ).not.toBeChecked();
+    expect(screen.getByRole('switch', { name: 'Show chords' })).toBeChecked();
+
+    fireEvent.click(screen.getByRole('switch', { name: 'Show chords' }));
+    expect(onSongUpdate).toHaveBeenLastCalledWith('format', {
+      autosize: false,
+      chords_hidden: true,
+    });
+    expect(screen.getByRole('button', { name: 'Leave session' })).toHaveClass(
+      'text-error'
+    );
+  });
+});
+
+describe('SessionsSheet', () => {
+  const me: User = { id: 1, email: 'me@b.c' };
+  const host: User = {
+    id: 7,
+    email: 'host@b.c',
+    first_name: 'Sam',
+    last_name: 'Lee',
+  };
+  const other: User = {
+    id: 8,
+    email: 'kim@b.c',
+    first_name: 'Kim',
+    last_name: 'Ro',
+  };
+  const followed: Session = { id: 3, setlist_id: 2, user_id: 7, user: host };
+  const another: Session = { id: 4, setlist_id: 2, user_id: 8, user: other };
+
+  function renderSheet(sessions: Session[], activeSession: Session | null) {
+    const value = {
+      sessions,
+      activeSessionDetails: { activeSession, isHost: false, socket: null },
+      onJoinAsMember: vi.fn<SessionsContextValue['onJoinAsMember']>(),
+      onLeaveAsMember: vi.fn<SessionsContextValue['onLeaveAsMember']>(),
+      // `as`: the sheet reads only these.
+    } as Partial<SessionsContextValue> as SessionsContextValue;
+    const onClose = vi.fn<() => void>();
+    renderWithProvider(
+      <SessionsContext.Provider value={value}>
+        <SessionsSheet className="" onClose={onClose} />
+      </SessionsContext.Provider>,
+      { preloadedState: { auth: { currentUser: me } } }
+    );
+    return { ...value, onClose };
+  }
+
+  test('marks the session you follow, and joins another', () => {
+    const { onJoinAsMember, onClose } = renderSheet(
+      [followed, another],
+      followed
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Sessions' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Host · Following')).toBeInTheDocument();
+    expect(
+      screen.getByText('Sam Lee').closest('.list-segmented > *')
+    ).toHaveClass('bg-secondary-container');
+    expect(
+      screen.getByText('Kim Ro').closest('.list-segmented > *')
+    ).not.toHaveClass('bg-secondary-container');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Join session' }));
+    expect(onJoinAsMember).toHaveBeenCalledWith(another);
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  test('says when there are no sessions to join', () => {
+    renderSheet([], null);
+    expect(screen.getByText('No sessions to join')).toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { BACKGROUND_COLORS } from '../Button';
+import { BUTTON_COLORS } from '../Button';
 import type { ButtonColor } from '../Button';
 
 type IconButtonProps = {
@@ -17,7 +17,8 @@ export default function IconButton({
 }: IconButtonProps) {
   return (
     <button
-      className={`focus:outline-hidden outline-hidden border-0 rounded-full ${BACKGROUND_COLORS[color]} items-center transition-all p-2 ${className}`}
+      // M3 filled icon button
+      className={`state-layer-flat focus-ring border-0 rounded-full ${BUTTON_COLORS[color].filled} items-center transition-all p-2 ${className}`}
       onClick={onClick}
     >
       {children}

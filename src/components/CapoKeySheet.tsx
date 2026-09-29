@@ -101,14 +101,14 @@ export default function CapoKeySheet({
         />
       </div>
 
-      <div className="grid grid-cols-5 p-2 my-4 bg-gray-100 rounded-lg gap-y-2 gap-x-1 dark:bg-dark-gray-600">
+      <div className="grid grid-cols-5 p-2 my-4 bg-surface-container-high rounded-large gap-y-2 gap-x-1">
         <button
           onClick={() => handleKeyChange(null)}
           className={classNames(
-            'text-sm h-12 font-semibold flex-center flex-col rounded-lg',
+            'h-12 font-plain text-label-large flex-center flex-col rounded-medium state-layer-flat focus-ring',
             !song.capo?.capo_key
-              ? 'bg-blue-600 dark:bg-dark-blue text-white'
-              : 'dark:hover:bg-dark-gray-400 hover:bg-gray-200'
+              ? 'bg-primary text-on-primary'
+              : 'text-on-surface'
           )}
         >
           <Icon name="cancel" filled className={classNames('w-6 h-6')} />
@@ -118,10 +118,10 @@ export default function CapoKeySheet({
             onClick={() => handleKeyChange(key.capoKey)}
             key={key.capoKey}
             className={classNames(
-              'text-sm h-12 font-semibold flex-center flex-col rounded-lg',
+              'h-12 font-plain text-label-large flex-center flex-col rounded-medium state-layer-flat focus-ring',
               song.capo?.capo_key === key.capoKey
-                ? 'bg-blue-600 dark:bg-dark-blue text-white'
-                : 'dark:hover:bg-dark-gray-400 hover:bg-gray-200'
+                ? 'bg-primary text-on-primary'
+                : 'text-on-surface'
             )}
           >
             {key.capoKey}{' '}

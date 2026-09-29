@@ -1,5 +1,5 @@
 import React from 'react';
-import MobileMenuButton from './buttons/MobileMenuButton';
+import { MenuItem, MenuList } from './Menu';
 import classNames from 'classnames';
 import { determineCapoNumber } from '../utils/capo';
 import Icon from './Icon';
@@ -17,35 +17,41 @@ export default function KeyOptionsSheet({
   className,
   song,
 }: KeyOptionsSheetProps) {
-  const iconClasses = 'h-5 w-5 text-green-500 dark:text-dark-green ml-2';
+  // The same selected state as the song page's key menu: a tonal pill and a
+  // check, in the pill's content color.
+  const transposed = !!(song.show_transposed && song.transposed_key);
+  const capo = !!(song.capo?.capo_key && song.show_capo);
+  const check = <Icon name="check" className="w-5 h-5" />;
   const currentNonCapoKey =
     (song.show_transposed && song.transposed_key) || song.original_key;
 
   return (
-    <div className={classNames(className)}>
-      <MobileMenuButton
-        size="sm"
-        full
-        className="border-b rounded-t-md dark:border-dark-gray-400 flex-between"
+    <MenuList className={classNames(className)}>
+      <MenuItem
         onClick={() => onChangeSheet('transpose')}
+        selected={transposed}
+        trailing={transposed && check}
       >
-        <span className="flex-center">
+        <span className="flex items-center">
           Transpose
           {song.transposed_key && (
-            <span className="ml-1 text-xs">({song.transposed_key})</span>
+            <span
+              className={classNames(
+                'ml-1 text-body-small',
+                !transposed && 'text-on-surface-variant'
+              )}
+            >
+              ({song.transposed_key})
+            </span>
           )}
         </span>
-        {song.show_transposed && song.transposed_key && (
-          <Icon name="check" className={iconClasses} />
-        )}
-      </MobileMenuButton>
-      <MobileMenuButton
-        size="sm"
-        full
-        className="rounded-b-md flex-between"
+      </MenuItem>
+      <MenuItem
         onClick={() => onChangeSheet('capo')}
+        selected={capo}
+        trailing={capo && check}
       >
-        <span className="flex-center">
+        <span className="flex items-center">
           Capo
           {song.capo?.capo_key && (
             <span className="ml-1 flex-center">
@@ -55,14 +61,18 @@ export default function KeyOptionsSheet({
                 currentNonCapoKey as string,
                 song.capo.capo_key
               )}
-              <span className="ml-2 text-xs">({song.capo.capo_key})</span>
+              <span
+                className={classNames(
+                  'ml-2 text-body-small',
+                  !capo && 'text-on-surface-variant'
+                )}
+              >
+                ({song.capo.capo_key})
+              </span>
             </span>
           )}
         </span>
-        {song.capo?.capo_key && song.show_capo && (
-          <Icon name="check" className={iconClasses} />
-        )}
-      </MobileMenuButton>
-    </div>
+      </MenuItem>
+    </MenuList>
   );
 }

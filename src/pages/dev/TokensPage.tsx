@@ -87,7 +87,7 @@ export default function TokensPage() {
 
       <Section title="User colors">
         <p className="mb-4 text-body-medium text-on-surface-variant">
-          Stored binder, note and event colors, as they render in the current
+          Stored folder, note and event colors, as they render in the current
           theme.
         </p>
         <div className="flex flex-wrap gap-3">

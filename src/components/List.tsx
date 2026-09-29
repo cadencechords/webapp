@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 type ListProps<T> = {
@@ -19,7 +20,10 @@ export default function List<T>({
     <>
       {ListHeader && <div>{ListHeader}</div>}
       {data?.length ? (
-        <div className={className}>{data.map(renderItem)}</div>
+        // Rows on the page with dividers between them (list-divided).
+        <div className={classNames('list-divided', className)}>
+          {data.map(renderItem)}
+        </div>
       ) : (
         ListEmpty
       )}

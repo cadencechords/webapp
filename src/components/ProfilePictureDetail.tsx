@@ -4,12 +4,11 @@ import { useRef, useState } from 'react';
 
 import Button from './Button';
 import FileApi from '../api/FileApi';
-import Label from './Label';
-import MobileProfilePictureMenu from './mobile menus/MobileProfilePictureMenu';
 import ProfilePicture from './ProfilePicture';
 import { reportError } from '../utils/error';
 import Icon from './Icon';
 import type { User } from '../types';
+import { getNameOrEmail } from '../utils/model';
 
 type ProfilePictureDetailProps = {
   url: User['image_url'];
@@ -18,7 +17,6 @@ type ProfilePictureDetailProps = {
 export default function ProfilePictureDetail({
   url,
 }: ProfilePictureDetailProps) {
-  const [showMobileActionsDialog, setShowMobileActionsDialog] = useState(false);
   const dispatch = useDispatch();
   // Non-null: only AccountProfilePage renders this, once the current user
   // loads.
@@ -38,7 +36,6 @@ export default function ProfilePictureDetail({
     dispatch(setCurrentUser({ ...currentUser, image_url: tempImageUrl }));
 
     try {
-      setShowMobileActionsDialog(false);
       setUploading(true);
       await FileApi.addImageToUser(files[0]);
     } catch (error) {
@@ -62,21 +59,11 @@ export default function ProfilePictureDetail({
     }
   };
 
+  // A card with the photo, large and centered, and a tonal Change photo
+  // button (Remove beside it when there's a photo).
   return (
-    <>
-      <Label>Photo</Label>
-      <div className="relative m-auto mb-4">
-        <div className="flex-center">
-          <ProfilePicture url={url} size="xl2" />
-        </div>
-        <button
-          onClick={() => setShowMobileActionsDialog(true)}
-          className="focus:outline-hidden outline-hidden absolute bottom-0 left-1/2 ml-3 mb-1 border border-white bg-blue-700 p-1.5 rounded-full md:hidden"
-        >
-          <Icon name="edit" className="h-4 text-white" />
-        </button>
-      </div>
-
+    <section className="flex flex-col items-center gap-4 px-6 pt-8 pb-6 rounded-extra-large-increased bg-surface-container-low text-on-surface">
+      <ProfilePicture url={url} name={getNameOrEmail(currentUser)} size="xl2" />
       <input
         type="file"
         className="hidden"
@@ -85,35 +72,30 @@ export default function ProfilePictureDetail({
         // Non-null: `files` is null only on inputs that aren't type="file".
         onChange={e => handleImageSelected(e.target.files!)}
       />
-      <div className="hidden md:flex md:justify-end">
-        <span className="md:mr-2 md:w-20">
-          <Button
-            color="blue"
-            variant="accent"
-            size="xs"
-            onClick={handleOpenFileDialog}
-            loading={uploading}
-          >
-            Change
-          </Button>
-        </span>
+      <div className="flex flex-wrap justify-center gap-2">
         <Button
-          variant="open"
-          color="blue"
-          className="md:w-20"
-          onClick={handleDeleteImage}
-          loading={removing}
-          size="xs"
+          variant="accent"
+          color="gray"
+          size="sm"
+          className="flex-center gap-2"
+          onClick={handleOpenFileDialog}
+          loading={uploading}
         >
-          Remove
+          <Icon name="photo_camera" className="w-5 h-5" />
+          {url ? 'Change photo' : 'Add photo'}
         </Button>
+        {url && (
+          <Button
+            variant="open"
+            color="red"
+            size="sm"
+            onClick={handleDeleteImage}
+            loading={removing}
+          >
+            Remove
+          </Button>
+        )}
       </div>
-      <MobileProfilePictureMenu
-        open={showMobileActionsDialog}
-        onCloseDialog={() => setShowMobileActionsDialog(false)}
-        onOpenFileDialog={handleOpenFileDialog}
-        onDeleteImage={handleDeleteImage}
-      />
-    </>
+    </section>
   );
 }

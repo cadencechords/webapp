@@ -1,6 +1,6 @@
 import { useRef, useState, type ChangeEvent } from 'react';
 
-import BarLoader from 'react-spinners/BarLoader';
+import LinearProgress from './feedback/LinearProgress';
 import Button from './Button';
 import FilesApi from '../api/filesApi';
 import { reportError } from '../utils/error';
@@ -35,17 +35,16 @@ export default function SongFileUpload({
   return (
     <>
       <div className="flex justify-end mb-4">
+        {/* An M3E small tonal button (tertiary) with a leading icon. */}
         <Button
-          variant="open"
-          color="black"
-          className="flex-center"
+          variant="accent"
+          color="purple"
+          size="sm"
+          className="flex-center gap-2"
           // Non-null: the input is always rendered.
           onClick={() => inputRef.current!.click()}
         >
-          <Icon
-            name="note_add"
-            className="w-4 h-4 mr-1.5 text-blue-600 dark:text-dark-blue"
-          />
+          <Icon name="note_add" className="w-5 h-5" />
           Add file
         </Button>
         <input
@@ -64,15 +63,9 @@ export default function SongFileUpload({
         {filesBeingUploaded?.map((file, index) => (
           <div
             key={index}
-            className="border border-gray-300 rounded-md relative px-3 pt-2.5 pb-2"
+            className="relative overflow-hidden border border-outline-variant rounded-medium px-3 pt-3 pb-2 text-body-medium text-on-surface"
           >
-            <BarLoader
-              width="100%"
-              color="#2563eb"
-              css={
-                'display: inline-block; position: absolute; left: 0; top: 0; right: 0; border-top-left-radius: 4px;  border-top-right-radius: 4px'
-              }
-            />
+            <LinearProgress className="absolute top-0 inset-x-0" />
             {file.name}
           </div>
         ))}

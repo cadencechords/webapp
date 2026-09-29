@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+
 type PageTitleProps = {
   title?: string;
   editable?: boolean;
@@ -7,6 +9,8 @@ type PageTitleProps = {
   className?: string;
 };
 
+// A page's title in headline-small (emphasized), or an input styled like it
+// for renaming: a state layer on hover and a filled field while focused.
 export default function PageTitle({
   title,
   editable = false,
@@ -18,11 +22,12 @@ export default function PageTitle({
   if (editable) {
     return (
       <input
-        className={
-          `bg-transparent appearance-none font-bold p-2 text-2xl w-full outline-hidden ` +
-          ` focus:outline-hidden focus:bg-gray-100 hover:bg-gray-100 dark:hover:bg-dark-gray-800 dark:focus:bg-dark-gray-800 rounded-sm transition-colors` +
-          ` ${className}`
-        }
+        className={classNames(
+          'w-full p-2 bg-transparent appearance-none rounded-small outline-hidden',
+          'text-headline-small-emphasized font-plain text-on-surface placeholder:text-on-surface-variant',
+          'state-layer-flat focus:bg-surface-container-highest',
+          className
+        )}
         value={title || ''}
         onChange={e => onChange?.(e.target.value)}
         placeholder={placeholder}
@@ -31,7 +36,11 @@ export default function PageTitle({
   } else {
     return (
       <h1
-        className={`p-2 dark:text-dark-gray-100 font-bold flex items-center w-full ${ALIGNMENTS[align]} text-2xl ${className}`}
+        className={classNames(
+          'flex items-center w-full p-2 text-headline-small-emphasized font-plain text-on-surface',
+          ALIGNMENTS[align],
+          className
+        )}
         id="title"
       >
         {title}
@@ -41,7 +50,7 @@ export default function PageTitle({
 }
 
 const ALIGNMENTS = {
-  left: 'justify-left',
+  left: 'justify-start',
   center: 'justify-center',
-  right: 'justify-right',
+  right: 'justify-end',
 };

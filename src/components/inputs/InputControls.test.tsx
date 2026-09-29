@@ -20,7 +20,7 @@ test('Checkbox defaults to blue and toggles through its hidden input', () => {
   const onChange = vi.fn<ComponentProps<typeof Checkbox>['onChange']>();
   const { container } = render(<Checkbox checked onChange={onChange} />);
   const button = screen.getByRole('button');
-  expect(button).toHaveClass('ring-blue-400', 'bg-blue-600');
+  expect(button).toHaveClass('text-primary');
   expect(button.className).not.toContain('undefined');
   userEvent.click(button);
   expect(onChange).toHaveBeenCalledWith(false);
@@ -29,8 +29,8 @@ test('Checkbox defaults to blue and toggles through its hidden input', () => {
 
 test('Toggle defaults to blue with no spacing', () => {
   const { container } = render(<Toggle enabled label="On" />);
-  expect(screen.getByRole('switch')).toHaveClass('bg-blue-600');
-  expect(container.firstElementChild?.className).toBe('flex items-center ');
+  expect(screen.getByRole('switch')).toHaveClass('bg-primary');
+  expect(container.firstElementChild?.className).toBe('flex items-center');
 });
 
 test('Range has no stray class and reports numbers', () => {
@@ -38,14 +38,14 @@ test('Range has no stray class and reports numbers', () => {
     vi.fn<NonNullable<ComponentProps<typeof Range>['onChange']>>();
   render(<Range min={0} max={10} value={5} onChange={onChange} />);
   const range = screen.getByRole('slider');
-  expect(range.className).toBe('w-full ');
+  expect(range.className).toBe('m3-slider peer w-full ');
   fireEvent.change(range, { target: { value: '7' } });
   expect(onChange).toHaveBeenCalledWith(7);
 });
 
 test('StyledListBox defaults to a transparent background', () => {
   render(<StyledListBox selectedOption={{ value: 1, template: 'One' }} />);
-  expect(screen.getByRole('button')).toHaveClass('bg-transparent-200');
+  expect(screen.getByRole('button')).toHaveClass('bg-transparent');
 });
 
 test('EditableData is an editable text input by default', () => {
@@ -85,7 +85,9 @@ test('OutlinedInput defaults to type text and calls onEnter', () => {
   render(<OutlinedInput value="" onChange={() => {}} onEnter={onEnter} />);
   const input = screen.getByRole('textbox');
   expect(input).toHaveAttribute('type', 'text');
-  expect(input).toHaveAttribute('pattern', '');
+  // An empty pattern only matches an empty value, so it would block a form's
+  // submit once anything's typed.
+  expect(input).not.toHaveAttribute('pattern');
   userEvent.type(input, '{enter}');
   expect(onEnter).toHaveBeenCalledTimes(1);
 });
@@ -105,7 +107,7 @@ test('BinderColor defaults to a white, size 4, editable swatch', () => {
     vi.fn<NonNullable<ComponentProps<typeof BinderColor>['onClick']>>();
   const { container } = render(<BinderColor onClick={onClick} />);
   const swatch = container.firstElementChild as HTMLElement;
-  expect(swatch).toHaveClass('h-4', 'w-4', 'cursor-pointer');
+  expect(swatch).toHaveClass('h-4.5', 'w-4.5', 'cursor-pointer');
   userEvent.click(swatch);
   expect(onClick).toHaveBeenCalledWith('white');
 });

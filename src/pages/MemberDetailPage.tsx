@@ -5,6 +5,8 @@ import Button from '../components/Button';
 import MemberMenu from '../components/mobile menus/MemberMenu';
 import PageLoading from '../components/PageLoading';
 import ProfilePicture from '../components/ProfilePicture';
+import Icon from '../components/Icon';
+import DetailItem from '../components/lists/DetailItem';
 import UserApi from '../api/UserApi';
 import { reportError } from '../utils/error';
 import { toMonthYearDate } from '../utils/DateUtils';
@@ -13,6 +15,7 @@ import { useParams } from 'react-router';
 import usePermissionsCheck from '../hooks/usePermissionsCheck';
 import { REMOVE_MEMBERS } from '../utils/constants';
 import type { User } from '../types';
+import { getNameOrEmail } from '../utils/model';
 
 export default function MemberDetail() {
   const { id } = useParams<{ id: string }>();
@@ -62,57 +65,62 @@ export default function MemberDetail() {
     return <PageLoading>Loading profile</PageLoading>;
   } else if (!member) {
     return (
-      <div className="max-w-sm mx-auto mt-4">
+      <div className="max-w-md mx-auto mt-4">
         <Alert color="red">We were unable to load this member.</Alert>
       </div>
     );
   } else {
+    // An M3E profile: the member on a card (a large avatar, their name and
+    // email), their details as a segmented list, and the member actions.
     return (
-      <>
-        <div className="max-w-sm mx-auto mt-4">
-          {alert && (
-            <div className="mb-4">
-              <Alert color="yellow">{alert}</Alert>
-            </div>
-          )}
-          <div className="mb-1 text-2xl font-bold text-center">
+      <div className="max-w-md mx-auto mt-4 flex flex-col gap-4 font-plain">
+        {alert && <Alert color="yellow">{alert}</Alert>}
+        <section className="flex flex-col items-center gap-1 px-6 pt-8 pb-6 text-center rounded-extra-large-increased bg-surface-container-low text-on-surface">
+          <div className="mb-3">
+            <ProfilePicture
+              url={member.image_url}
+              name={getNameOrEmail(member)}
+              size="xl"
+            />
+          </div>
+          <h1 className="max-w-full truncate text-headline-small-emphasized">
             {hasName() ? getFullName() : member.email}
-          </div>
-          <div className="mb-4 text-lg text-center text-gray-600 dark:text-dark-gray-200">
+          </h1>
+          <p className="max-w-full truncate text-body-large text-on-surface-variant">
             {hasName() ? member.email : 'No name provided yet'}
-          </div>
-          <div className="mb-2 flex-center">
-            <ProfilePicture url={member.image_url} />
-          </div>
+          </p>
+        </section>
 
-          <div className="mb-4 text-sm">
-            <div className="pb-2 text-gray-600 border-b dark:text-dark-gray-200 flex-between dark:border-dark-gray-600">
-              <div className="font-semibold">Position:</div>
-              {member?.position ? member.position : 'No position provided yet'}
-            </div>
-            <div className="py-2 text-gray-600 dark:text-dark-gray-200 flex-between">
-              <div className="font-semibold">Joined:</div>
-              {/* Non-null: the API sends when the member joined. */}
-              {toMonthYearDate(member.created_at!)}
-            </div>
-          </div>
-          {can(REMOVE_MEMBERS) && (
-            <Button
-              full
-              variant="accent"
-              onClick={() => setMemberMenuOpen(true)}
-            >
-              Actions
-            </Button>
-          )}
-          <MemberMenu
-            open={memberMenuOpen}
-            onCloseDialog={() => setMemberMenuOpen(false)}
-            member={member}
-            onRemoved={handleMemberRemoved}
-          />
+        <div className="list-segmented">
+          <DetailItem icon="work" label="Position">
+            {member.position || 'No position provided yet'}
+          </DetailItem>
+          <DetailItem icon="calendar_month" label="Joined">
+            {/* Non-null: the API sends when the member joined. */}
+            {toMonthYearDate(member.created_at!)}
+          </DetailItem>
         </div>
-      </>
+
+        {can(REMOVE_MEMBERS) && (
+          <Button
+            full
+            variant="accent"
+            color="gray"
+            size="md"
+            className="flex-center gap-2"
+            onClick={() => setMemberMenuOpen(true)}
+          >
+            <Icon name="manage_accounts" className="w-6 h-6" />
+            Manage member
+          </Button>
+        )}
+        <MemberMenu
+          open={memberMenuOpen}
+          onCloseDialog={() => setMemberMenuOpen(false)}
+          member={member}
+          onRemoved={handleMemberRemoved}
+        />
+      </div>
     );
   }
 }

@@ -1,5 +1,4 @@
-import DetailTitle from './DetailTitle';
-import EditableData from './inputs/EditableData';
+import { DetailPlaceholder, DetailTile, TILE_INPUT } from './SongDetailParts';
 
 type BpmFieldProps = {
   /** A number from the API, or the edited string. */
@@ -10,14 +9,18 @@ type BpmFieldProps = {
 
 export default function BpmField({ bpm, onChange, editable }: BpmFieldProps) {
   return (
-    <div className="flex flex-row items-center mb-1">
-      <DetailTitle>BPM:</DetailTitle>
-      <EditableData
-        value={bpm ? bpm : ''}
-        onChange={onChange}
-        placeholder="Add bpm"
-        editable={editable}
-      />
-    </div>
+    <DetailTile label="BPM" input={editable}>
+      {editable ? (
+        <input
+          className={TILE_INPUT}
+          value={bpm ?? ''}
+          onChange={e => onChange(e.target.value)}
+          placeholder="Add"
+          inputMode="numeric"
+        />
+      ) : (
+        bpm || <DetailPlaceholder tile>None</DetailPlaceholder>
+      )}
+    </DetailTile>
   );
 }

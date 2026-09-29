@@ -87,7 +87,6 @@ export default function CreateSetlistDialog({
       <div className="mb-4">
         <OutlinedInput
           label="Name"
-          placeholder="Give your set a name"
           value={name}
           onChange={setName}
           ref={inputRef}

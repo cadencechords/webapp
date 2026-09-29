@@ -1,5 +1,6 @@
-import { BACKGROUND_COLORS } from '../Button';
+import classNames from 'classnames';
 import { getTimeFromDate } from '../../utils/date';
+import { userColorClasses } from '../../utils/userColors';
 import type { CalendarEvent } from '../../types';
 
 /** The fields of an event that an entry shows. */
@@ -14,23 +15,32 @@ type CalendarEventEntryProps<E extends CalendarEventEntryEvent> = {
   onClick?: (event: E) => void;
 };
 
+// An event in a calendar cell: a small-cornered chip in the event's color
+// (a user color), or surface-container-highest without one. The time shows
+// from sm up, where there's room.
 export default function CalendarEventEntry<E extends CalendarEventEntryEvent>({
   event,
   onClick,
 }: CalendarEventEntryProps<E>) {
-  const colors = event.color
-    ? `${BACKGROUND_COLORS[event.color]} text-white transition-colors`
-    : 'text-black';
+  const { color, onColor } = userColorClasses(event.color);
+  const time = getTimeFromDate(event.start_time);
 
   return (
     <button
+      type="button"
       // Non-null: Calendar always passes onEventClick down through
       // CalendarBody, CalendarRow and CalendarCell. Without one a click
       // throws, as before.
       onClick={() => onClick!(event)}
-      className={`outline-hidden focus:outline-hidden rounded-md px-1 py-0.5 w-full ${colors} text-xs text-left truncate`}
+      className={classNames(
+        'block w-full px-1.5 py-0.5 rounded-small text-left truncate font-plain text-label-medium state-layer-flat focus-ring transition-colors',
+        event.color
+          ? `${color} ${onColor}`
+          : 'bg-surface-container-highest text-on-surface'
+      )}
     >
-      {getTimeFromDate(event.start_time)} {event.title}
+      {time && <span className="hidden sm:inline">{time} </span>}
+      {event.title}
     </button>
   );
 }
