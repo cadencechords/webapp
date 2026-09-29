@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import DialogActions from './DialogActions';
 import Button from './Button';
 import StyledDialog from './StyledDialog';
+import AddCancelActions from './buttons/AddCancelActions';
 
 // headlessui's Dialog can use ResizeObserver, which jsdom doesn't have.
 beforeEach(() => {
@@ -87,4 +88,37 @@ test.each([
   renderDialog(fullscreen);
   expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+});
+
+test('the header keeps a close button when the dialog hides its own', () => {
+  stubWidth(false);
+  const onClose = vi.fn<() => void>();
+  render(
+    <StyledDialog
+      open
+      onCloseDialog={onClose}
+      title="Pick"
+      showClose={false}
+      hideTitle
+    >
+      <DialogActions onCancel={onClose} primary={<Button>Add</Button>} />
+    </StyledDialog>
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+  expect(onClose).toHaveBeenCalled();
+});
+
+test('AddCancelActions moves its Add button to the header on a phone', () => {
+  stubWidth(false);
+  const onAdd = vi.fn<() => void>();
+  render(
+    <StyledDialog open onCloseDialog={() => {}} title="Add genres">
+      <AddCancelActions onAdd={onAdd} addText="Add 2 genres" />
+    </StyledDialog>
+  );
+  const header = screen.getByRole('heading', { name: 'Add genres' })
+    .parentElement as HTMLElement;
+  fireEvent.click(within(header).getByRole('button', { name: 'Add 2 genres' }));
+  expect(onAdd).toHaveBeenCalled();
+  expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull();
 });

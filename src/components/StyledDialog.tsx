@@ -125,23 +125,23 @@ export default function StyledDialog({
                 (surface === 'low-in-dark'
                   ? ' dark:bg-surface-container-low dark:sm:bg-surface-container-low '
                   : '') +
-                ` relative overflow-y-auto text-left align-middle font-plain text-on-surface `
+                ` relative ${mobileHeader ? '' : 'overflow-y-auto'} text-left align-middle font-plain text-on-surface `
               }
             >
+              {/* Sticky, so the primary action stays in reach as the body scrolls.
+                  The close button is always there: a full-screen dialog needs
+                  a way out. */}
               {mobileHeader && (
-                <div className="flex items-center gap-2 h-16 px-2">
-                  {showClose && (
-                    <Button
-                      variant="icon"
-                      size="md"
-                      color="gray"
-                      onClick={onCloseDialog}
-                      name="Close"
-                      tabIndex={1}
-                    >
-                      <Icon name="close" className="w-6 h-6" />
-                    </Button>
-                  )}
+                <div className="sticky top-0 z-10 flex items-center gap-2 h-16 px-2 bg-inherit">
+                  <Button
+                    variant="icon"
+                    size="md"
+                    color="gray"
+                    onClick={onCloseDialog}
+                    name="Close"
+                  >
+                    <Icon name="close" className="w-6 h-6" />
+                  </Button>
                   <Dialog.Title
                     as="h3"
                     className={
