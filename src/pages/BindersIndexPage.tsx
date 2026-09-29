@@ -41,7 +41,7 @@ export default function BindersIndexPage() {
 
   return (
     <div className="mb-10">
-      <PageHeader title="Folders" headerRightVisible={false} />
+      <PageHeader title="Folders" />
       {isLoading && <PageLoading />}
       {isError && (
         <Alert color="red">There was an issue retrieving your folders.</Alert>

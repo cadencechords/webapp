@@ -30,13 +30,20 @@ export const SHRINK: CSSProperties = {
   transition: `scale ${spring('fast-effects')}, opacity ${spring('fast-effects')}`,
 };
 
+// A custom property's value is read back as written, and the production CSS
+// minifier rewrites 350ms as .35s, so the unit has to be read too.
+function toMilliseconds(value: string) {
+  const time = parseFloat(value);
+  return value.trim().endsWith('ms') ? time : time * 1000;
+}
+
 // Tapping the destination you're already on (or the search FAB) swells it and
 // lets it spring back, so the tap still registers. The motion tokens are read
 // at tap time: reduced motion sets their durations to 0, which skips it.
 export function pulse(indicator: HTMLElement | null) {
   if (!indicator?.animate) return;
   const style = getComputedStyle(indicator);
-  const duration = parseFloat(
+  const duration = toMilliseconds(
     style.getPropertyValue('--md-sys-motion-duration-fast-spatial')
   );
   if (!duration) return;
@@ -110,7 +117,7 @@ export default function NavigationRailItem({
         className={classNames(
           'relative whitespace-nowrap font-plain text-label-medium lg:text-label-large',
           isCurrentRoute
-            ? 'text-primary lg:text-on-primary-container'
+            ? 'text-on-surface lg:text-on-primary-container'
             : 'text-on-surface-variant'
         )}
       >

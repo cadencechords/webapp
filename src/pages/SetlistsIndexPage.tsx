@@ -68,7 +68,7 @@ export default function SetlistsIndexPage() {
 
   return (
     <div className="mb-10">
-      <PageHeader title="Sets" headerRightVisible={false} />
+      <PageHeader title="Sets" />
       {isLoading && <PageLoading />}
       {isError && (
         <Alert color="red">There was an issue retrieving your sets.</Alert>

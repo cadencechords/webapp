@@ -33,11 +33,14 @@ export default function ConfirmDeleteDialog({
       open={show}
       onCloseDialog={onCloseDialog}
       fullscreen={false}
+      size="sm"
+      showClose={false}
     >
       <div className="text-body-medium text-on-surface-variant">
         {children ? children : 'Deleting this item is irreversible.'}
       </div>
-      {/* The destructive action in the error role. */}
+      {/* A basic dialog: no close button, Cancel and the destructive action in
+          the error role. */}
       <DialogActions>
         <Button variant="open" color="gray" size="sm" onClick={onCancel}>
           Cancel

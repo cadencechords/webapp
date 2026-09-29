@@ -42,7 +42,7 @@ export default function MobileNavLink({
       <span
         className={classNames(
           'font-plain text-label-medium',
-          isCurrentRoute ? 'text-primary' : 'text-on-surface-variant'
+          isCurrentRoute ? 'text-on-surface' : 'text-on-surface-variant'
         )}
       >
         {text}

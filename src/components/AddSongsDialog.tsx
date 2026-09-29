@@ -30,8 +30,9 @@ type AddSongsDialogProps = {
 };
 
 // Picks songs from the team's library to add to a set or a folder: a search
-// bar, then the songs as a segmented list of checkbox rows (with their keys),
-// then Cancel and Add. No header: the search bar leads.
+// bar, then the songs as a segmented list of checkbox rows (with their keys).
+// Full-screen (below sm) the header holds a close button and Add; from sm they
+// are Cancel and Add at the bottom. The title is hidden: the search bar leads.
 export default function AddSongsDialog({
   open,
   onCloseDialog,
@@ -100,7 +101,10 @@ function SongPicker({
             No songs found
           </p>
         ) : (
-          <div className="list-segmented max-h-[60vh] md:max-h-[70vh] overflow-y-auto">
+          <div // Full-screen (below sm) the list runs to the bottom and the whole
+            // dialog scrolls; from sm the list scrolls inside the panel.
+            className="list-segmented sm:max-h-[60vh] md:max-h-[70vh] sm:overflow-y-auto"
+          >
             {matching.map(song => (
               // A label: a click anywhere on the row toggles its checkbox.
               <label
@@ -129,20 +133,20 @@ function SongPicker({
             ))}
           </div>
         ))}
-      <DialogActions>
-        <Button variant="open" color="gray" size="sm" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button
-          variant="open"
-          size="sm"
-          onClick={() => onAdd(picked)}
-          loading={adding}
-          disabled={picked.length === 0}
-        >
-          Add {picked.length} {pluralize('song', picked.length)}
-        </Button>
-      </DialogActions>
+      <DialogActions
+        onCancel={onCancel}
+        primary={
+          <Button
+            variant="open"
+            size="sm"
+            onClick={() => onAdd(picked)}
+            loading={adding}
+            disabled={picked.length === 0}
+          >
+            Add {picked.length} {pluralize('song', picked.length)}
+          </Button>
+        }
+      />
     </>
   );
 }

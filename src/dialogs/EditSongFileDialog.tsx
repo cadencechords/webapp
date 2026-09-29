@@ -58,20 +58,20 @@ export default function EditSongFileDialog({
         onEnter={handleSave}
         label="File name"
       />
-      <DialogActions>
-        <Button variant="open" color="gray" size="sm" onClick={handleClose}>
-          Cancel
-        </Button>
-        <Button
-          variant="open"
-          size="sm"
-          disabled={!dirty}
-          onClick={handleSave}
-          loading={loading}
-        >
-          Save changes
-        </Button>
-      </DialogActions>
+      <DialogActions
+        onCancel={handleClose}
+        primary={
+          <Button
+            variant="open"
+            size="sm"
+            disabled={!dirty}
+            onClick={handleSave}
+            loading={loading}
+          >
+            Save changes
+          </Button>
+        }
+      />
     </StyledDialog>
   );
 }

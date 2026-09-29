@@ -55,7 +55,7 @@ type SettingsActionProps = {
   /** At the end of the row, e.g. a count. */
   trailing?: ReactNode;
   onClick?: () => void;
-  /** Makes the row a link instead. */
+  /** Makes the row a link instead; onClick still runs on navigating. */
   to?: Parameters<typeof Link>[0]['to'];
   disabled?: boolean;
   /** In the error color, e.g. leaving a session. */
@@ -99,7 +99,7 @@ export function SettingsAction({
 
   if (to) {
     return (
-      <Link to={to} className={className}>
+      <Link to={to} onClick={onClick} className={className}>
         {content}
       </Link>
     );

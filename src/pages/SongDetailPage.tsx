@@ -301,7 +301,11 @@ export default function SongDetailPage() {
     <div className="grid grid-cols-4">
       <div className="col-span-4 lg:border-r lg:dark:border-dark-gray-700 lg:pr-4 lg:col-span-3">
         {currentMember.can(EDIT_SONGS) && !isEmpty(pendingUpdates) && (
-          <UnsavedChangesBar onSave={handleSaveChanges} isSaving={saving} />
+          <UnsavedChangesBar
+            changes={pendingUpdates}
+            onSave={handleSaveChanges}
+            isSaving={saving}
+          />
         )}
         <div className="mb-2 flex-between">
           <PageTitle

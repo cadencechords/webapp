@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { renderWithProvider } from '../utils/test';
 import { MANAGE_BILLING, VIEW_EVENTS, VIEW_ROLES } from '../utils/constants';
 import NavigationRail from './NavigationRail';
-import NavigationRailItem from './NavigationRailItem';
+import NavigationRailItem, { pulse } from './NavigationRailItem';
 
 function state(permissions: string[], isPro = true) {
   return {
@@ -72,6 +72,9 @@ test('the current destination is marked and shows its indicator', () => {
   renderRail('/songs/12', []);
   expect(link('Songs')).toHaveAttribute('aria-current', 'page');
   expect(link('Songs')).toHaveClass('text-on-primary-container');
+  // Collapsed, the label is neutral: primary is only the indicator.
+  expect(screen.getByText('Songs')).toHaveClass('text-on-surface');
+  expect(screen.getByText('Songs')).not.toHaveClass('text-primary');
   expect(indicator('Songs')).toHaveClass(
     'bg-primary-container',
     'rounded-full',
@@ -108,4 +111,20 @@ test('following a link moves the indicator', () => {
   expect(link('Folders')).toHaveAttribute('aria-current', 'page');
   expect(indicator('Folders')).toHaveClass('scale-x-100');
   expect(indicator('Songs')).toHaveClass('scale-x-0');
+});
+
+test.each([
+  ['350ms', 350],
+  ['.35s', 350],
+])('tapping the current destination pulses for %s', (token, expected) => {
+  const animate = vi.fn<HTMLElement['animate']>();
+  const indicator = document.createElement('span');
+  indicator.animate = animate;
+  indicator.style.setProperty('--md-sys-motion-duration-fast-spatial', token);
+  document.body.append(indicator);
+
+  pulse(indicator);
+
+  expect(animate.mock.calls[0][1]).toMatchObject({ duration: expected });
+  indicator.remove();
 });

@@ -20,19 +20,19 @@ export default function AddCancelActions({
   addText = 'Add',
 }: AddCancelActionsProps) {
   return (
-    <DialogActions>
-      <Button variant="open" color="gray" size="sm" onClick={onCancel}>
-        Cancel
-      </Button>
-      <Button
-        variant="open"
-        size="sm"
-        onClick={onAdd}
-        loading={loadingAdd}
-        disabled={addDisabled}
-      >
-        {addText}
-      </Button>
-    </DialogActions>
+    <DialogActions
+      onCancel={onCancel}
+      primary={
+        <Button
+          variant="open"
+          size="sm"
+          onClick={onAdd}
+          loading={loadingAdd}
+          disabled={addDisabled}
+        >
+          {addText}
+        </Button>
+      }
+    />
   );
 }

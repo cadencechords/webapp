@@ -10,7 +10,6 @@ import CalendarCell from './calendar/CalendarCell';
 import Card from './Card';
 import DragAndDropTable from './DragAndDropTable';
 import MetronomeSheet from './MetronomeSheet';
-import MobileHeader from './MobileHeader';
 import PageTitle from './PageTitle';
 import PasswordRequirements from './PasswordRequirements';
 import ScrollIcon from '../icons/ScrollIcon';
@@ -79,11 +78,6 @@ test('PageTitle defaults to a left-aligned, read-only title', () => {
     'text-on-surface'
   );
   expect(title.className).not.toContain('undefined');
-});
-
-test('MobileHeader shows the add button by default', () => {
-  render(<MobileHeader title="Songs" />);
-  expect(screen.getByRole('button')).toBeInTheDocument();
 });
 
 test('PasswordRequirements defaults to unmet', () => {

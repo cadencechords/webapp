@@ -97,7 +97,7 @@ export default function AddTracksDialog({
     <StyledDialog
       open={open}
       size="3xl"
-      onCloseDialog={onCloseDialog}
+      onCloseDialog={handleCancel}
       title="Add tracks"
     >
       <div className="flex items-center mb-4">

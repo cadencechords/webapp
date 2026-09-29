@@ -124,6 +124,22 @@ test('ConfirmDeleteDialog has a default message', () => {
   vi.unstubAllGlobals();
 });
 
+test('MobileNavLink shows its current route with a primary pill and a neutral label', () => {
+  render(
+    <MemoryRouter initialEntries={['/songs']}>
+      <MobileNavLink to="/songs" text="Songs" />
+      <MobileNavLink to="/sets" text="Sets" />
+    </MemoryRouter>
+  );
+  expect(screen.getByText('Songs')).toHaveClass('text-on-surface');
+  expect(screen.getByText('Sets')).toHaveClass('text-on-surface-variant');
+  expect(
+    screen
+      .getByRole('link', { name: 'Songs' })
+      .querySelector('.bg-primary-container')
+  ).toHaveClass('scale-x-100');
+});
+
 test('MobileNavLink renders a link for a route and a button otherwise', () => {
   const onClick = vi.fn<() => void>();
   render(
