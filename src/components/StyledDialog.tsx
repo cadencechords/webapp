@@ -72,7 +72,7 @@ export default function StyledDialog({
   // the scrolling container, which would clip it at the panel's edge.
   const mobileStyleClasses = fullscreen
     ? ` bg-surface sm:bg-surface-container-high sm:shadow-(--md-sys-elevation-level3) sm:rounded-extra-large sm:my-8 `
-    : ` bg-surface-container-high shadow-(--md-sys-elevation-level3) rounded-extra-large my-8`;
+    : ` bg-surface-container-high shadow-(--md-sys-elevation-level3) rounded-extra-large my-auto mx-auto`;
 
   return (
     <Transition show={open} as={Fragment}>
@@ -89,8 +89,10 @@ export default function StyledDialog({
         <div
           className={classNames(
             'max-h-full overflow-auto text-center sm:px-4',
-            // A basic dialog sits in the middle of the screen.
-            !fullscreen && 'flex min-h-full items-center justify-center'
+            // A basic dialog sits in the middle of the screen: auto margins
+            // on the panel center it, and unlike items-center they leave a
+            // tall one scrollable from its top.
+            !fullscreen && 'flex min-h-full py-8'
           )}
         >
           <Transition.Child
