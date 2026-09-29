@@ -30,8 +30,9 @@ type AddSongsDialogProps = {
 };
 
 // Picks songs from the team's library to add to a set or a folder: a search
-// bar, then the songs as a segmented list of checkbox rows (with their keys),
-// then Cancel and Add. No header: the search bar leads.
+// bar, then the songs as a segmented list of checkbox rows (with their keys).
+// Full-screen (below sm) the header holds a close button and Add; from sm they
+// are Cancel and Add at the bottom. The title is hidden: the search bar leads.
 export default function AddSongsDialog({
   open,
   onCloseDialog,

@@ -66,6 +66,9 @@ test('a full-screen dialog on a phone puts close and save in its header', () => 
   const buttons = within(header).getAllByRole('button');
   expect(buttons.map(button => button.textContent)).toEqual(['', 'Save']);
   expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull();
+  // Sticky, and in a panel that doesn't scroll itself, so it stays in reach.
+  expect(header).toHaveClass('sticky', 'top-0');
+  expect(header.parentElement).not.toHaveClass('overflow-y-auto');
 
   fireEvent.click(within(header).getByRole('button', { name: 'Close' }));
   expect(onClose).toHaveBeenCalled();

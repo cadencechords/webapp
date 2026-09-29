@@ -72,6 +72,9 @@ test('the current destination is marked and shows its indicator', () => {
   renderRail('/songs/12', []);
   expect(link('Songs')).toHaveAttribute('aria-current', 'page');
   expect(link('Songs')).toHaveClass('text-on-primary-container');
+  // Collapsed, the label is neutral: primary is only the indicator.
+  expect(screen.getByText('Songs')).toHaveClass('text-on-surface');
+  expect(screen.getByText('Songs')).not.toHaveClass('text-primary');
   expect(indicator('Songs')).toHaveClass(
     'bg-primary-container',
     'rounded-full',
