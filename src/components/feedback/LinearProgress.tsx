@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 
 // The M3 Expressive indeterminate linear progress indicator: two primary
-// segments chase along a secondary-container track, with 4px gaps and round
+// segments chase along a primary-container track, with 4px gaps and round
 // caps, optionally wavy. Unlike upstream, the gap is measured between the
 // round caps at every thickness.
 
@@ -167,7 +167,7 @@ export default function LinearProgress({
         <svg width={width} height={height} className="block">
           <path
             ref={track}
-            className="stroke-secondary-container"
+            className="stroke-primary-container"
             {...stroke}
           />
           <path ref={active} className="stroke-primary" {...stroke} />

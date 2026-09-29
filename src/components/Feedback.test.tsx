@@ -431,7 +431,7 @@ describe('LinearProgress', () => {
     expect(box).toHaveAttribute('aria-hidden', 'true');
     expect(box.querySelector('svg')).toHaveAttribute('width', '200');
     expect(box.querySelectorAll('path')[0]).toHaveClass(
-      'stroke-secondary-container'
+      'stroke-primary-container'
     );
     expect(box.querySelectorAll('path')[1]).toHaveClass('stroke-primary');
   });
