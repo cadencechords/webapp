@@ -117,7 +117,7 @@ export default function NavigationRailItem({
         className={classNames(
           'relative whitespace-nowrap font-plain text-label-medium lg:text-label-large',
           isCurrentRoute
-            ? 'text-primary lg:text-on-primary-container'
+            ? 'text-on-surface lg:text-on-primary-container'
             : 'text-on-surface-variant'
         )}
       >
