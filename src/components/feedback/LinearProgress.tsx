@@ -165,11 +165,7 @@ export default function LinearProgress({
     >
       {width > 0 && (
         <svg width={width} height={height} className="block">
-          <path
-            ref={track}
-            className="stroke-primary-container"
-            {...stroke}
-          />
+          <path ref={track} className="stroke-primary-container" {...stroke} />
           <path ref={active} className="stroke-primary" {...stroke} />
         </svg>
       )}
