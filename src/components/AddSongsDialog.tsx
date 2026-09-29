@@ -100,7 +100,10 @@ function SongPicker({
             No songs found
           </p>
         ) : (
-          <div className="list-segmented max-h-[60vh] md:max-h-[70vh] overflow-y-auto">
+          <div // Full-screen (below sm) the list runs to the bottom and the whole
+            // dialog scrolls; from sm the list scrolls inside the panel.
+            className="list-segmented sm:max-h-[60vh] md:max-h-[70vh] sm:overflow-y-auto"
+          >
             {matching.map(song => (
               // A label: a click anywhere on the row toggles its checkbox.
               <label
