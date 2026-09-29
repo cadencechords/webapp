@@ -65,10 +65,7 @@ export default function PlanningCenterSongsPage() {
 
   return (
     <div className="container max-w-4xl mx-auto">
-      <PageHeader
-        title="Import from Planning Center"
-        headerRightVisible={false}
-      />
+      <PageHeader title="Import from Planning Center" />
 
       <div className="flex items-center h-8 mb-2">
         {selectedSongs.length} selected{' '}

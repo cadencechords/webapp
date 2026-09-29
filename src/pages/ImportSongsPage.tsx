@@ -20,7 +20,7 @@ export default function ImportSongsPage() {
     // M3E: the sources as a segmented list of rows, each opening its import.
     return (
       <div className="max-w-2xl mx-auto font-plain">
-        <PageHeader title="Import songs" headerRightVisible={false} />
+        <PageHeader title="Import songs" />
         <p className="mb-4 text-body-medium text-on-surface-variant">
           Bring songs in from another app, another team or your own files.
         </p>

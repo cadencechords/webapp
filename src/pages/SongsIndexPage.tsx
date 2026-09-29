@@ -43,7 +43,7 @@ export default function SongsIndexPage() {
 
   return (
     <div className="mb-10">
-      <PageHeader title="Songs" headerRightVisible={false} />
+      <PageHeader title="Songs" />
       {isLoading && <PageLoading />}
       {isError && (
         <Alert color="red">There was an issue retrieving your songs.</Alert>
