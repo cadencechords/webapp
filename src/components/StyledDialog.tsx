@@ -86,7 +86,13 @@ export default function StyledDialog({
         open={open}
         onClose={onCloseDialog}
       >
-        <div className="max-h-full overflow-auto text-center sm:px-4">
+        <div
+          className={classNames(
+            'max-h-full overflow-auto text-center sm:px-4',
+            // A basic dialog sits in the middle of the screen.
+            !fullscreen && 'flex min-h-full items-center justify-center'
+          )}
+        >
           <Transition.Child
             as={Fragment}
             enter="transition-default-effects"
