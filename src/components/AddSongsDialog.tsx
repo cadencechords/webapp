@@ -129,20 +129,20 @@ function SongPicker({
             ))}
           </div>
         ))}
-      <DialogActions>
-        <Button variant="open" color="gray" size="sm" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button
-          variant="open"
-          size="sm"
-          onClick={() => onAdd(picked)}
-          loading={adding}
-          disabled={picked.length === 0}
-        >
-          Add {picked.length} {pluralize('song', picked.length)}
-        </Button>
-      </DialogActions>
+      <DialogActions
+        onCancel={onCancel}
+        primary={
+          <Button
+            variant="open"
+            size="sm"
+            onClick={() => onAdd(picked)}
+            loading={adding}
+            disabled={picked.length === 0}
+          >
+            Add {picked.length} {pluralize('song', picked.length)}
+          </Button>
+        }
+      />
     </>
   );
 }

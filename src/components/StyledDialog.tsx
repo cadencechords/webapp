@@ -1,9 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react';
 
 import Button from './Button';
-import { Fragment, type ReactNode } from 'react';
+import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import Icon from './Icon';
+import { DialogHeaderContext } from './DialogHeaderContext';
 
 export type DialogSize = keyof typeof MAX_WIDTHS;
 
@@ -24,6 +25,25 @@ type StyledDialogProps = {
   className?: string;
 };
 
+const SM = '(min-width: 640px)';
+
+// Whether the viewport is at least Tailwind's sm. Without matchMedia (jsdom)
+// it is, so the dialog is laid out for a desktop.
+function useIsSm() {
+  const [isSm, setIsSm] = useState(
+    () => window.matchMedia?.(SM).matches ?? true
+  );
+  useEffect(() => {
+    const query = window.matchMedia?.(SM);
+    if (!query) return;
+    const update = () => setIsSm(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+  return isSm;
+}
+
 export default function StyledDialog({
   open,
   onCloseDialog,
@@ -36,6 +56,13 @@ export default function StyledDialog({
   surface = 'high',
   className,
 }: StyledDialogProps) {
+  // A full-screen dialog (below sm) has an M3 full-screen dialog's header: a
+  // close button at the start, the title, and the dialog's primary action
+  // (see DialogActions) at the end.
+  const isSm = useIsSm();
+  const mobileHeader = fullscreen && !isSm;
+  const [actionSlot, setActionSlot] = useState<HTMLElement | null>(null);
+
   const sizeClasses = fullscreen
     ? `min-h-screen sm:min-h-full w-full ${SM_MAX_WIDTHS[size]} `
     : ` ${MAX_WIDTHS[size]} w-full `;
@@ -95,7 +122,38 @@ export default function StyledDialog({
                 ` relative overflow-y-auto text-left align-middle font-plain text-on-surface `
               }
             >
-              {showClose && (
+              {mobileHeader && (
+                <div className="flex items-center gap-2 h-16 px-2">
+                  {showClose && (
+                    <Button
+                      variant="icon"
+                      size="md"
+                      color="gray"
+                      onClick={onCloseDialog}
+                      name="Close"
+                      tabIndex={1}
+                    >
+                      <Icon name="close" className="w-6 h-6" />
+                    </Button>
+                  )}
+                  <Dialog.Title
+                    as="h3"
+                    className={
+                      hideTitle
+                        ? 'sr-only'
+                        : 'flex-1 min-w-0 truncate text-title-large text-on-surface'
+                    }
+                  >
+                    {title}
+                  </Dialog.Title>
+                  {hideTitle && <div className="flex-1" />}
+                  <div
+                    ref={setActionSlot}
+                    className="flex items-center shrink-0"
+                  />
+                </div>
+              )}
+              {!mobileHeader && showClose && (
                 <span className="absolute top-4 right-4">
                   <Button
                     variant="icon"
@@ -108,7 +166,7 @@ export default function StyledDialog({
                   </Button>
                 </span>
               )}
-              {hideTitle ? (
+              {mobileHeader ? null : hideTitle ? (
                 <>
                   <Dialog.Title as="h3" className="sr-only">
                     {title}
@@ -137,7 +195,11 @@ export default function StyledDialog({
                   hideTitle && !showClose ? ' pt-4 pb-6 ' : ' pb-6 pt-0 '
                 }`}
               >
-                {children}
+                <DialogHeaderContext.Provider
+                  value={{ mobile: mobileHeader, slot: actionSlot }}
+                >
+                  {children}
+                </DialogHeaderContext.Provider>
               </div>
             </div>
           </Transition.Child>

@@ -59,30 +59,32 @@ export default function CreateSongDialog({
       />
 
       {/* Importing instead sits at the start, apart from Cancel and Create. */}
-      <DialogActions>
-        <Link
-          to="/import"
-          className={buttonClasses({
-            variant: 'open',
-            size: 'sm',
-            className: 'flex-center mr-auto',
-          })}
-        >
-          Import a song
-        </Link>
-        <Button variant="open" color="gray" size="sm" onClick={onCloseDialog}>
-          Cancel
-        </Button>
-        <Button
-          variant="open"
-          size="sm"
-          disabled={!isValid}
-          loading={isCreating}
-          onClick={handleCreate}
-        >
-          Create
-        </Button>
-      </DialogActions>
+      <DialogActions
+        onCancel={onCloseDialog}
+        start={
+          <Link
+            to="/import"
+            className={buttonClasses({
+              variant: 'open',
+              size: 'sm',
+              className: 'flex-center mr-auto',
+            })}
+          >
+            Import a song
+          </Link>
+        }
+        primary={
+          <Button
+            variant="open"
+            size="sm"
+            disabled={!isValid}
+            loading={isCreating}
+            onClick={handleCreate}
+          >
+            Create
+          </Button>
+        }
+      />
     </StyledDialog>
   );
 }

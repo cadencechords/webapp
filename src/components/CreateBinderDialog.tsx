@@ -68,24 +68,19 @@ export default function CreateBinderDialog({
         <ColorSwatches onChange={setColor} color={color} />
       </div>
 
-      <DialogActions>
-        <Button
-          variant="open"
-          color="gray"
-          size="sm"
-          onClick={handleCloseDialog}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="open"
-          size="sm"
-          loading={isCreating}
-          onClick={handleCreateBinder}
-        >
-          Create
-        </Button>
-      </DialogActions>
+      <DialogActions
+        onCancel={handleCloseDialog}
+        primary={
+          <Button
+            variant="open"
+            size="sm"
+            loading={isCreating}
+            onClick={handleCreateBinder}
+          >
+            Create
+          </Button>
+        }
+      />
     </StyledDialog>
   );
 }

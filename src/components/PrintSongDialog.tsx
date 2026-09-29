@@ -2,7 +2,7 @@ import StyledDialog from './StyledDialog';
 import { usePDF } from '@react-pdf/renderer';
 import { toPdf } from '../utils/PdfUtils';
 import { useCallback, useEffect, useState } from 'react';
-import Button, { buttonClasses } from './Button';
+import { buttonClasses } from './Button';
 import DialogActions from './DialogActions';
 import ColorPicker from './ColorPicker';
 import Toggle from './Toggle';
@@ -200,30 +200,25 @@ export default function PrintSongDialog({
           />
         </div>
       </div>
-      <DialogActions>
-        <Button
-          variant="open"
-          color="gray"
-          size="sm"
-          onClick={handleCloseDialog}
-        >
-          Cancel
-        </Button>
-        {/* A link styled as a text button: it downloads the rendered PDF. */}
-        <a
-          // The url is null until the PDF renders; React leaves out an href
-          // of null, as it does undefined.
-          href={instance.url as string | undefined}
-          download={`${song.name}.pdf`}
-          className={buttonClasses({
-            variant: 'open',
-            size: 'sm',
-            className: 'flex-center',
-          })}
-        >
-          Download
-        </a>
-      </DialogActions>
+      <DialogActions
+        onCancel={handleCloseDialog}
+        primary={
+          // A link styled as a text button: it downloads the rendered PDF.
+          <a
+            // The url is null until the PDF renders; React leaves out an href
+            // of null, as it does undefined.
+            href={instance.url as string | undefined}
+            download={`${song.name}.pdf`}
+            className={buttonClasses({
+              variant: 'open',
+              size: 'sm',
+              className: 'flex-center',
+            })}
+          >
+            Download
+          </a>
+        }
+      />
     </StyledDialog>
   );
 }

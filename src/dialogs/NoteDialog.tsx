@@ -94,24 +94,26 @@ function NoteForm({
         ))}
       </div>
       {/* Delete at the start, apart from Cancel and Save at the end. */}
-      <DialogActions>
-        <Button
-          variant="open"
-          color="red"
-          size="sm"
-          onClick={handleDelete}
-          className="flex-center gap-2 mr-auto"
-        >
-          <Icon name="delete" className="w-5 h-5" />
-          Delete
-        </Button>
-        <Button variant="open" color="gray" size="sm" onClick={onCloseDialog}>
-          Cancel
-        </Button>
-        <Button size="sm" onClick={handleConfirmUpdates}>
-          Save
-        </Button>
-      </DialogActions>
+      <DialogActions
+        onCancel={onCloseDialog}
+        start={
+          <Button
+            variant="open"
+            color="red"
+            size="sm"
+            onClick={handleDelete}
+            className="flex-center gap-2 mr-auto"
+          >
+            <Icon name="delete" className="w-5 h-5" />
+            Delete
+          </Button>
+        }
+        primary={
+          <Button size="sm" onClick={handleConfirmUpdates}>
+            Save
+          </Button>
+        }
+      />
     </>
   );
 }
