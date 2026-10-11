@@ -100,23 +100,21 @@ export default function TeamDetailPage() {
   const store = useStore<RootState>();
   const savingAutoRoadmaps = useRef(false);
 
-  const setAutoRoadmaps = (enabled: boolean | undefined) => {
-    // The latest team, not this render's: a rename or photo may have changed
-    // it while the save was in flight.
-    const team = selectCurrentTeam(store.getState())!;
-    dispatch(setCurrentTeam({ ...team, auto_roadmaps: enabled }));
-  };
-
   const handleToggleAutoRoadmaps = async (enabled: boolean) => {
     if (savingAutoRoadmaps.current) return;
     savingAutoRoadmaps.current = true;
-    const previous = currentTeam!.auto_roadmaps;
-    setAutoRoadmaps(enabled);
+    const { id, auto_roadmaps: previous } = currentTeam!;
+    dispatch(setCurrentTeam({ ...currentTeam!, auto_roadmaps: enabled }));
     try {
       await TeamApi.update({ auto_roadmaps: enabled });
     } catch (error) {
       reportError(error);
-      setAutoRoadmaps(previous);
+      // Turned back on the latest team, not this render's: a rename may have
+      // changed it meanwhile. Not if the user signed out or switched teams.
+      const team = selectCurrentTeam(store.getState());
+      if (team?.id === id) {
+        dispatch(setCurrentTeam({ ...team, auto_roadmaps: previous }));
+      }
     } finally {
       savingAutoRoadmaps.current = false;
     }

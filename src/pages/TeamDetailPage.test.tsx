@@ -204,3 +204,21 @@ test('turning automatic roadmaps back keeps a rename made meanwhile', async () =
     auto_roadmaps: undefined,
   });
 });
+
+test("doesn't turn automatic roadmaps back on another team", async () => {
+  let rejectSave!: (error: Error) => void;
+  vi.mocked(TeamApi.update).mockReturnValueOnce(
+    new Promise((_resolve, reject) => {
+      rejectSave = reject;
+    })
+  );
+  const { store } = renderPage({ permissions: ['Edit team'] });
+  const otherTeam: Team = { id: 9, name: 'Choir', auto_roadmaps: false };
+
+  fireEvent.click(screen.getByRole('switch', { name: /Automatic roadmaps/ }));
+  store.dispatch(setCurrentTeam(otherTeam));
+  rejectSave(new Error('Network Error'));
+
+  await waitFor(() => expect(reportError).toHaveBeenCalled());
+  expect(store.getState().auth.currentTeam).toEqual(otherTeam);
+});
