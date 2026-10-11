@@ -4,7 +4,7 @@ import {
   setCurrentTeam,
 } from '../store/authSlice';
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { EDIT_TEAM } from '../utils/constants';
 import FileApi from '../api/FileApi';
@@ -19,6 +19,7 @@ import Button from '../components/Button';
 import Icon from '../components/Icon';
 import DetailItem from '../components/lists/DetailItem';
 import FormatPresets from '../components/FormatPresets';
+import { useSetAutoRoadmaps } from '../hooks/api/team.hooks';
 import Toggle from '../components/Toggle';
 import { SettingsRowText } from '../components/settings/SettingsRow';
 import {
@@ -27,7 +28,6 @@ import {
 } from '../components/lists/listItem';
 import classNames from 'classnames';
 import type { ChangeEvent } from 'react';
-import type { RootState } from '../store/store';
 
 export default function TeamDetailPage() {
   const currentTeam = useSelector(selectCurrentTeam);
@@ -94,31 +94,7 @@ export default function TeamDetailPage() {
     'flush'
   );
 
-  // One automatic roadmaps save at a time: clicks while one is in flight are
-  // ignored, so a failure can't turn the switch back to another click's
-  // unsaved value.
-  const store = useStore<RootState>();
-  const savingAutoRoadmaps = useRef(false);
-
-  const handleToggleAutoRoadmaps = async (enabled: boolean) => {
-    if (savingAutoRoadmaps.current) return;
-    savingAutoRoadmaps.current = true;
-    const { id, auto_roadmaps: previous } = currentTeam!;
-    dispatch(setCurrentTeam({ ...currentTeam!, auto_roadmaps: enabled }));
-    try {
-      await TeamApi.update({ auto_roadmaps: enabled });
-    } catch (error) {
-      reportError(error);
-      // Turned back on the latest team, not this render's: a rename may have
-      // changed it meanwhile. Not if the user signed out or switched teams.
-      const team = selectCurrentTeam(store.getState());
-      if (team?.id === id) {
-        dispatch(setCurrentTeam({ ...team, auto_roadmaps: previous }));
-      }
-    } finally {
-      savingAutoRoadmaps.current = false;
-    }
-  };
+  const { run: setAutoRoadmaps } = useSetAutoRoadmaps();
 
   if (currentTeam && currentSubscription) {
     const canEdit = currentMember.can(EDIT_TEAM);
@@ -201,7 +177,7 @@ export default function TeamDetailPage() {
           <Toggle
             // The API defaults it to on, so a team without it has it on.
             enabled={currentTeam.auto_roadmaps ?? true}
-            onChange={handleToggleAutoRoadmaps}
+            onChange={setAutoRoadmaps}
             disabled={!canEdit}
             className={classNames(
               LIST_ITEM_TWO_LINE,

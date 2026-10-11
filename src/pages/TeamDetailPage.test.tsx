@@ -123,14 +123,18 @@ test('lets editors turn automatic roadmaps off and on', async () => {
 
   fireEvent.click(toggle);
   expect(toggle).not.toBeChecked();
-  expect(TeamApi.update).toHaveBeenCalledWith({ auto_roadmaps: false });
+  await waitFor(() =>
+    expect(TeamApi.update).toHaveBeenCalledWith({ auto_roadmaps: false })
+  );
   await waitFor(() =>
     expect(store.getState().auth.currentTeam?.auto_roadmaps).toBe(false)
   );
 
   fireEvent.click(toggle);
   expect(toggle).toBeChecked();
-  expect(TeamApi.update).toHaveBeenLastCalledWith({ auto_roadmaps: true });
+  await waitFor(() =>
+    expect(TeamApi.update).toHaveBeenLastCalledWith({ auto_roadmaps: true })
+  );
 });
 
 test('shows automatic roadmaps off when the team turned them off', () => {
@@ -177,6 +181,7 @@ test('ignores automatic roadmaps clicks while a save is in flight', async () => 
   fireEvent.click(toggle);
   fireEvent.click(toggle);
   expect(toggle).not.toBeChecked();
+  await waitFor(() => expect(TeamApi.update).toHaveBeenCalled());
   expect(TeamApi.update).toHaveBeenCalledTimes(1);
 
   rejectSave(new Error('Network Error'));
