@@ -1,5 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import FileApi from '../api/FileApi';
+import TeamApi from '../api/TeamApi';
+import { reportError } from '../utils/error';
 import { renderWithProvider } from '../utils/test';
 import TeamDetailPage from './TeamDetailPage';
 import type { Subscription, Team } from '../types';
@@ -14,6 +16,10 @@ vi.mock('../hooks/api/formatPresets.hooks', () => ({
   }),
   useSetDefaultFormat: () => ({ run: () => {}, isLoading: false }),
 }));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 const team: Team = {
   id: 3,
@@ -105,4 +111,54 @@ test('shows the format presets as selectable cards on Pro', () => {
   const preset = screen.getByRole('button', { name: /Big chords/ });
   expect(preset).toHaveAttribute('aria-pressed', 'true');
   expect(preset).toHaveTextContent('Default');
+});
+
+test('lets editors turn automatic roadmaps off and on', async () => {
+  const { store } = renderPage({ permissions: ['Edit team'] });
+  const toggle = screen.getByRole('switch', { name: /Automatic roadmaps/ });
+  expect(toggle).toHaveAccessibleName(/get a roadmap from their sections/);
+  // On when the team doesn't say: the API's default.
+  expect(toggle).toBeChecked();
+
+  fireEvent.click(toggle);
+  expect(toggle).not.toBeChecked();
+  expect(TeamApi.update).toHaveBeenCalledWith({ auto_roadmaps: false });
+  await waitFor(() =>
+    expect(store.getState().auth.currentTeam?.auto_roadmaps).toBe(false)
+  );
+
+  fireEvent.click(toggle);
+  expect(toggle).toBeChecked();
+  expect(TeamApi.update).toHaveBeenLastCalledWith({ auto_roadmaps: true });
+});
+
+test('shows automatic roadmaps off when the team turned them off', () => {
+  renderPage({ currentTeam: { ...team, auto_roadmaps: false } });
+  expect(
+    screen.getByRole('switch', { name: /Automatic roadmaps/ })
+  ).not.toBeChecked();
+});
+
+test("doesn't let members without Edit team change automatic roadmaps", () => {
+  renderPage();
+  const toggle = screen.getByRole('switch', { name: /Automatic roadmaps/ });
+  expect(toggle).toBeDisabled();
+
+  fireEvent.click(toggle);
+  fireEvent.click(screen.getByText('Automatic roadmaps'));
+  expect(toggle).toBeChecked();
+  expect(TeamApi.update).not.toHaveBeenCalled();
+});
+
+test('turns automatic roadmaps back when saving fails', async () => {
+  const error = new Error('Network Error');
+  vi.mocked(TeamApi.update).mockRejectedValueOnce(error);
+  const { store } = renderPage({ permissions: ['Edit team'] });
+  const toggle = screen.getByRole('switch', { name: /Automatic roadmaps/ });
+
+  fireEvent.click(toggle);
+  expect(toggle).not.toBeChecked();
+  await waitFor(() => expect(reportError).toHaveBeenCalledWith(error));
+  expect(toggle).toBeChecked();
+  expect(store.getState().auth.currentTeam?.auto_roadmaps).toBeUndefined();
 });
