@@ -25,7 +25,12 @@ const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { networkMode: 'offlineFirst' },
+    mutations: { networkMode: 'offlineFirst' },
+  },
+});
 
 function App() {
   return (
