@@ -27,8 +27,9 @@ const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
+    // Mutations stay on 'online': they don't retry, so offline-first would
+    // fail a save made offline instead of holding it until reconnect.
     queries: { networkMode: 'offlineFirst' },
-    mutations: { networkMode: 'offlineFirst' },
   },
 });
 
