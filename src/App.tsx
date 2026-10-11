@@ -25,7 +25,13 @@ const ClaimInvitationPage = lazy(() => import('./pages/ClaimInvitationPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const InvitationSignUpPage = lazy(() => import('./pages/InvitationSignUpPage'));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    // Mutations stay on 'online': they don't retry, so offline-first would
+    // fail a save made offline instead of holding it until reconnect.
+    queries: { networkMode: 'offlineFirst' },
+  },
+});
 
 function App() {
   return (
