@@ -94,7 +94,7 @@ export default function TeamDetailPage() {
     'flush'
   );
 
-  const { run: setAutoRoadmaps } = useSetAutoRoadmaps();
+  const { mutate: setAutoRoadmaps } = useSetAutoRoadmaps();
 
   if (currentTeam && currentSubscription) {
     const canEdit = currentMember.can(EDIT_TEAM);
