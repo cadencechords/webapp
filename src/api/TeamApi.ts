@@ -8,6 +8,7 @@ const TEAMS_URL = import.meta.env.REACT_APP_API_URL + '/teams';
 export interface TeamUpdates {
   name?: string;
   join_link_enabled?: boolean;
+  auto_roadmaps?: boolean;
 }
 
 export default class TeamApi {

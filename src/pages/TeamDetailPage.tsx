@@ -19,6 +19,14 @@ import Button from '../components/Button';
 import Icon from '../components/Icon';
 import DetailItem from '../components/lists/DetailItem';
 import FormatPresets from '../components/FormatPresets';
+import { useSetAutoRoadmaps } from '../hooks/api/team.hooks';
+import Toggle from '../components/Toggle';
+import { SettingsRowText } from '../components/settings/SettingsRow';
+import {
+  LIST_ITEM_INTERACTIVE,
+  LIST_ITEM_TWO_LINE,
+} from '../components/lists/listItem';
+import classNames from 'classnames';
 import type { ChangeEvent } from 'react';
 
 export default function TeamDetailPage() {
@@ -85,6 +93,8 @@ export default function TeamDetailPage() {
     1000,
     'flush'
   );
+
+  const { mutate: setAutoRoadmaps } = useSetAutoRoadmaps();
 
   if (currentTeam && currentSubscription) {
     const canEdit = currentMember.can(EDIT_TEAM);
@@ -159,6 +169,32 @@ export default function TeamDetailPage() {
               </span>
             </DetailItem>
           </div>
+        </div>
+
+        {/* Like a notification setting: clicking anywhere on the row flips
+            the switch, for editors. Others see it dimmed. */}
+        <div className="list-segmented">
+          <Toggle
+            // The API defaults it to on, so a team without it has it on.
+            enabled={currentTeam.auto_roadmaps ?? true}
+            onChange={setAutoRoadmaps}
+            disabled={!canEdit}
+            className={classNames(
+              LIST_ITEM_TWO_LINE,
+              canEdit && LIST_ITEM_INTERACTIVE
+            )}
+            labelClassName={classNames(
+              'flex items-center flex-1 min-w-0 gap-4',
+              canEdit && 'cursor-pointer'
+            )}
+            label={
+              <SettingsRowText
+                icon="route"
+                title="Automatic roadmaps"
+                description="New songs get a roadmap from their sections when lyrics and chords are first added."
+              />
+            }
+          />
         </div>
 
         {currentSubscription.isPro && (

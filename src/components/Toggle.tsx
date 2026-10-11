@@ -35,13 +35,14 @@ export default function Toggle({
         <Switch.Label className={labelClassName}>{label}</Switch.Label>
         {/* An M3 switch a step under the spec's 52x32: a 46x28 track; the
             thumb grows from 14px to 20px when selected, and to 24px while
-            pressed. */}
+            pressed. Its focus ring is primary, like the selected track,
+            rather than focus-ring's secondary. */}
         <Switch
           checked={enabled}
           onChange={onChange}
           disabled={disabled}
           className={classNames(
-            'group relative inline-flex shrink-0 items-center w-[46px] h-7 rounded-full border-2 focus-ring transition-fast-effects disabled:opacity-38',
+            'group relative inline-flex shrink-0 items-center w-[46px] h-7 rounded-full border-2 focus-ring focus-visible:outline-primary transition-fast-effects disabled:opacity-38',
             enabled
               ? classNames(BUTTON_COLORS[color].filled, 'border-transparent')
               : 'bg-surface-container-highest border-outline'

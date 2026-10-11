@@ -49,6 +49,9 @@ export interface Team {
   join_link_enabled?: boolean;
   /** Null once the default is unset (FormatPresets). */
   default_format?: FormatPreset | null;
+  /** New songs get a roadmap from their sections when lyrics and chords are
+      first added. On unless the team turns it off. */
+  auto_roadmaps?: boolean;
 }
 
 /** `TeamApi.getCurrentTeam`. */
