@@ -4,7 +4,7 @@ import {
   setCurrentTeam,
 } from '../store/authSlice';
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import { EDIT_TEAM } from '../utils/constants';
 import FileApi from '../api/FileApi';
@@ -27,6 +27,7 @@ import {
 } from '../components/lists/listItem';
 import classNames from 'classnames';
 import type { ChangeEvent } from 'react';
+import type { RootState } from '../store/store';
 
 export default function TeamDetailPage() {
   const currentTeam = useSelector(selectCurrentTeam);
@@ -93,14 +94,31 @@ export default function TeamDetailPage() {
     'flush'
   );
 
-  const handleToggleAutoRoadmaps = async (enabled: boolean) => {
-    const team = currentTeam!;
+  // One automatic roadmaps save at a time: clicks while one is in flight are
+  // ignored, so a failure can't turn the switch back to another click's
+  // unsaved value.
+  const store = useStore<RootState>();
+  const savingAutoRoadmaps = useRef(false);
+
+  const setAutoRoadmaps = (enabled: boolean | undefined) => {
+    // The latest team, not this render's: a rename or photo may have changed
+    // it while the save was in flight.
+    const team = selectCurrentTeam(store.getState())!;
     dispatch(setCurrentTeam({ ...team, auto_roadmaps: enabled }));
+  };
+
+  const handleToggleAutoRoadmaps = async (enabled: boolean) => {
+    if (savingAutoRoadmaps.current) return;
+    savingAutoRoadmaps.current = true;
+    const previous = currentTeam!.auto_roadmaps;
+    setAutoRoadmaps(enabled);
     try {
       await TeamApi.update({ auto_roadmaps: enabled });
     } catch (error) {
       reportError(error);
-      dispatch(setCurrentTeam(team));
+      setAutoRoadmaps(previous);
+    } finally {
+      savingAutoRoadmaps.current = false;
     }
   };
 

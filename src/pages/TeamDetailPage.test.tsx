@@ -1,6 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import FileApi from '../api/FileApi';
 import TeamApi from '../api/TeamApi';
+import { setCurrentTeam } from '../store/authSlice';
 import { reportError } from '../utils/error';
 import { renderWithProvider } from '../utils/test';
 import TeamDetailPage from './TeamDetailPage';
@@ -161,4 +162,45 @@ test('turns automatic roadmaps back when saving fails', async () => {
   await waitFor(() => expect(reportError).toHaveBeenCalledWith(error));
   expect(toggle).toBeChecked();
   expect(store.getState().auth.currentTeam?.auto_roadmaps).toBeUndefined();
+});
+
+test('ignores automatic roadmaps clicks while a save is in flight', async () => {
+  let rejectSave!: (error: Error) => void;
+  vi.mocked(TeamApi.update).mockReturnValueOnce(
+    new Promise((_resolve, reject) => {
+      rejectSave = reject;
+    })
+  );
+  renderPage({ permissions: ['Edit team'] });
+  const toggle = screen.getByRole('switch', { name: /Automatic roadmaps/ });
+
+  fireEvent.click(toggle);
+  fireEvent.click(toggle);
+  expect(toggle).not.toBeChecked();
+  expect(TeamApi.update).toHaveBeenCalledTimes(1);
+
+  rejectSave(new Error('Network Error'));
+  await waitFor(() => expect(toggle).toBeChecked());
+});
+
+test('turning automatic roadmaps back keeps a rename made meanwhile', async () => {
+  let rejectSave!: (error: Error) => void;
+  vi.mocked(TeamApi.update).mockReturnValueOnce(
+    new Promise((_resolve, reject) => {
+      rejectSave = reject;
+    })
+  );
+  const { store } = renderPage({ permissions: ['Edit team'] });
+
+  fireEvent.click(screen.getByRole('switch', { name: /Automatic roadmaps/ }));
+  store.dispatch(
+    setCurrentTeam({ ...team, auto_roadmaps: false, name: 'Band' })
+  );
+  rejectSave(new Error('Network Error'));
+
+  await waitFor(() => expect(reportError).toHaveBeenCalled());
+  expect(store.getState().auth.currentTeam).toMatchObject({
+    name: 'Band',
+    auto_roadmaps: undefined,
+  });
 });
